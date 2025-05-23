@@ -71,6 +71,7 @@ jobs:
       - run: |
           quarto --version
           R --version
+        shell: pixi run bash -e {0}
 
       - name: Render project without publishing
         env:
