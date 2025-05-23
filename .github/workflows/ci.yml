@@ -63,6 +63,10 @@ jobs:
           cache: true
           cache-write: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
 
+      - name: List pixi
+        run: |
+          ls .pixi
+
       - name: Run R with pixi shell
         run: R --version
         shell: pixi run bash -e {0}
