@@ -63,10 +63,17 @@ jobs:
           cache: true
           cache-write: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
 
+      - name: Run R with pixi shell
+        run: R --version
+        shell: pixi run bash -e {0}
+
       - name: Add pixi environment directly to PATH
         run: |
           ls .pixi
           echo "${HOME}/.pixi/envs/build/bin" >> $GITHUB_PATH
+
+      - name: Run R without pixi shell
+        run: R --version
 
       - name: Setup Quarto
         uses: quarto-dev/quarto-actions/setup@v2
