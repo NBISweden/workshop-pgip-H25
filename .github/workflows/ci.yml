@@ -66,6 +66,8 @@ jobs:
       - name: List pixi
         run: |
           ls .pixi
+          ls .pixi/envs/build/bin
+          echo "${HOME}/.pixi/envs/build/bin" >> $GITHUB_PATH
 
       - name: Run R with pixi shell
         run: R --version
