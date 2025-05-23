@@ -67,19 +67,9 @@ jobs:
         run: |
           ls .pixi
           ls .pixi/envs/build/bin
+          .pixi/envs/build/bin/R --version
+          echo "${HOME}/.pixi/envs/build/bin"
           echo "${HOME}/.pixi/envs/build/bin" >> $GITHUB_PATH
-
-      - name: Run R with pixi shell
-        run: R --version
-        shell: pixi run bash -e {0}
-
-      - name: Add pixi environment directly to PATH
-        run: |
-          ls .pixi
-          echo "${HOME}/.pixi/envs/build/bin" >> $GITHUB_PATH
-
-      - name: Run R without pixi shell
-        run: R --version
 
       - name: Setup Quarto
         uses: quarto-dev/quarto-actions/setup@v2
@@ -88,8 +78,6 @@ jobs:
 
       - run: |
           quarto --version
-          R --version
-        shell: pixi run bash -e {0}
 
       - name: Render project without publishing
         env:
@@ -98,7 +86,7 @@ jobs:
         run: |
           quarto render .
           echo "QUARTO_OUTPUT=_site" >> $GITHUB_ENV
-        shell: pixi run bash -e {0}
+        #shell: pixi run bash -e {0}
 
       - name: Publish to GitHub Pages
         env:
@@ -107,4 +95,4 @@ jobs:
         if: ${{ github.ref_name == 'main' || github.ref_name == 'test-build' }}
         run: |
           quarto publish gh-pages --no-browser
-        shell: pixi run bash -e {0}
+        #shell: pixi run bash -e {0}
