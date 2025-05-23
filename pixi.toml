@@ -45,6 +45,7 @@ r-devtools = ">=2.4.5,<3"
 jupyterlite = ">=0.5.1,<0.6"
 jupyterlab = ">=4.4.2,<5"
 pixy = ">=2.0.0.beta8,<3"
+r = ">=4.4,<4.5"
 
 [environments]
 lint = { features = ["lint"], solve-group = "prod" }
