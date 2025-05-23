@@ -73,13 +73,19 @@ jobs:
           R --version
 
       - name: Render project without publishing
-        uses: quarto-dev/quarto-actions/render@v2
+        env:
+          QUARTO_PRINT_STACK: true
         if: ${{ github.event_name == 'pull_request' }}
+        run: |
+          quarto render .
+          echo "QUARTO_OUTPUT=_site" >> $GITHUB_ENV
+        shell: pixi run bash -e {0}
 
       - name: Publish to GitHub Pages
-        uses: quarto-dev/quarto-actions/publish@v2
-        if: ${{ github.ref_name == 'main' || github.ref_name == 'test-build' }}
-        with:
-          target: gh-pages
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          QUARTO_PRINT_STACK: true
+        if: ${{ github.ref_name == 'main' || github.ref_name == 'test-build' }}
+        run: |
+          quarto publish gh-pages --no-browser
+        shell: pixi run bash -e {0}
