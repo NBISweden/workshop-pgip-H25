@@ -1,0 +1,10 @@
+---
+title: Welcome page
+format: nbis-course-html
+---
+
+::: {.callout-important icon=false .large}
+
+This website is work in progress.
+
+:::

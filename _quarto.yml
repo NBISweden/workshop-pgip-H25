@@ -1,0 +1,73 @@
+# -*- yaml -*-
+project:
+  type: website
+  title: "Population genomics in practice"
+  output-dir: _site
+  preview:
+    port: 8888
+  #pre-render:
+  #post-render:
+  render:
+    - index.qmd
+    - contents.qmd
+    - info.qmd
+    # Slides
+    - slides/index.qmd
+    - slides/pgip/index.qmd
+    # Exercises
+    - exercises/index.qmd
+    # Recipes
+    - recipes/index.qmd
+    # Exclude
+    - "!fixme.qmd"
+    - "*.ipynb"
+
+metadata-files:
+  - _website.yml
+
+bibliography: assets/bibliography.bib
+csl: https://raw.githubusercontent.com/citation-style-language/styles/master/apa.csl
+lightbox: true
+
+format:
+  nbis-course-html:
+    toc: true
+    embed-resources: false
+    date: last-modified
+    date-format: "DD-MMM-YYYY"
+    code-link: true
+    code-block-border-left: "#a7c947"
+    lightbox:
+      match: auto
+  nbis-course-revealjs:
+    toc: false
+    toc-depth: 2
+    slide-level: 2
+    slide-number: true
+    preview-links: true
+    chalkboard: false
+    footer: Population Genomics in Practice
+    smaller: true
+    highlight-style: gruvbox
+    fig-height: 3
+    fig-width: 3
+    fig-align: center
+    text-align: center
+    width: 1050
+    height: 700
+    margin: 0.05
+    navigation-mode: vertical
+    ultitle: true
+    nbistitlelogo: false
+    embed-resources: false
+    csl: assets/presentation.csl
+    nbishome:
+      url: ../..
+      position:
+        left: 100px
+        bottom: 14px
+    revealjs-plugins:
+      - nbishome
+
+filters:
+  - fontawesome

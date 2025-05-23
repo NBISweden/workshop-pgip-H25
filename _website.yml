@@ -1,0 +1,18 @@
+website:
+  title: Population Genomics in Practice 2025
+  navbar:
+    logo: assets/logos/nbislogo-green.svg
+    right:
+      - text: Slides
+        href: slides/index.qmd
+      - text: Exercises
+        href: exercises/index.qmd
+      - text: Code recipes
+        href: recipes/index.qmd
+
+  page-footer:
+    border: false
+    left: "2025 [NBIS](https://nbis.se) | [GPL-3 License](https://choosealicense.com/licenses/gpl-3.0/)"
+    right: "Published with [Quarto](https://quarto.org/) v<?quarto.version?>"
+
+  favicon: assets/logos/nbislogo-green.svg
