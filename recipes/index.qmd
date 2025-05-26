@@ -1,4 +1,0 @@
----
-title: Code recipes
-subtitle: "PGIP 2025 • Population Genomics in Practice"
----
