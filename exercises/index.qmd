@@ -1,0 +1,5 @@
+---
+title: Exercises
+subtitle: "PGIP 2025 • Population Genomics in Practice"
+format: nbis-course-html
+---

@@ -1,0 +1,96 @@
+---
+title: "Population genomics in practice"
+subtitle: "What is population genomics?"
+author:
+    - "Per Unneberg"
+format:
+  nbis-course-revealjs:
+    toc: false
+    footer: Population genomics in practice
+---
+
+## Setup  {visibility="hidden" .unnumbered .unlisted}
+
+{{< include ../_knitr.qmd >}}
+
+{{< include ../_rlibs.qmd >}}
+
+```{r libs}
+#| echo: false
+#| eval: true
+#| cache: false
+library(readxl)
+library(curl)
+```
+
+## Intended learning outcomes
+
+### Course
+
+- Present minimum toolkit of methods that should be known to anyone
+  starting out in population genomics
+- Sufficiently small for one-week workshop
+
+### Lecture
+
+- Present practical example of toolkit as applied in
+  [@fuller_PopulationGeneticsCoral_2020]
+- Briefly discuss baseline model
+  [@johri_RecommendationsImprovingStatistical_2022]
+
+### {visibility="hidden"}
+
+::: {.notes }
+
+Aim of lecture is to:
+
+- present a practical application of commonly used methods in
+  population genomics
+- link population genomics to population genetics
+- discuss statistical inference and the need of a baseline model with
+  which to compare observations and conclusions
+
+#### What is population genomics?
+
+Points from [@hahn_MolecularPopulationGenetics_2019, pp. 249-250]:
+
+- whole-genome data instead of single loci - population genomics is
+  population genetics for whole-genome sequences
+  - if only this, not too exciting
+- major promise: enables analyses not possible for single loci or that
+  require genomic context
+- addresses interactions between different forces, notably selection
+  and demographic history
+
+#### Some applications
+
+- genome-wide scans for selection
+  - selection vs demography (p. 251)
+- methods for genome-wide scans (p. 258)
+
+#### Caveats
+
+- non-independence (p. 267)
+  - different statistics rely on similar input
+  - overlapping peaks from different statistics *not* independent
+
+#### General points
+
+[@hartl1997principles p. 469-470]:
+
+- more emphasis on differences within populations
+- goal: understand differences among genomes -> requires complete
+  sequence data from multiple individuals
+
+[@li_InferenceHumanPopulation_2011, supplementary notes, p. 6] on the
+use of PSMC on autosomes:
+
+"...highly consistent except for the very recent history,
+demonstrating the power of using whole-genome data."
+
+:::
+
+## Bibliography {.unnumbered .unlisted .smaller}
+
+::: { #refs }
+:::
