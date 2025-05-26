@@ -1,0 +1,30 @@
+[
+  {
+    "objectID": "slides/pgip/index.html#intended-learning-outcomes",
+    "href": "slides/pgip/index.html#intended-learning-outcomes",
+    "title": "Population genomics in practice",
+    "section": "Intended learning outcomes",
+    "text": "Intended learning outcomes\nCourse\n\nPresent minimum toolkit of methods that should be known to anyone starting out in population genomics\nSufficiently small for one-week workshop\n\nLecture\n\nPresent practical example of toolkit as applied in Fuller et al., Science, 369(6501), eaba4674, 2020\nBriefly discuss baseline model Johri et al., PLOS Biology, 20(5), e3001669, 2022\n\n\n\nAim of lecture is to:\n\npresent a practical application of commonly used methods in population genomics\nlink population genomics to population genetics\ndiscuss statistical inference and the need of a baseline model with which to compare observations and conclusions\n\nWhat is population genomics?\nPoints from Hahn, 2019, pp. 249–250:\n\nwhole-genome data instead of single loci - population genomics is population genetics for whole-genome sequences\n\nif only this, not too exciting\n\nmajor promise: enables analyses not possible for single loci or that require genomic context\naddresses interactions between different forces, notably selection and demographic history\n\nSome applications\n\ngenome-wide scans for selection\n\nselection vs demography (p. 251)\n\nmethods for genome-wide scans (p. 258)\n\nCaveats\n\nnon-independence (p. 267)\n\ndifferent statistics rely on similar input\noverlapping peaks from different statistics not independent\n\n\nGeneral points\nHartl & Clark, 1997, pp. 469–470:\n\nmore emphasis on differences within populations\ngoal: understand differences among genomes -&gt; requires complete sequence data from multiple individuals\n\nLi & Durbin, Nature, 475(7357), 493–496, 2011, supplementary notes, p. 6 on the use of PSMC on autosomes:\n“…highly consistent except for the very recent history, demonstrating the power of using whole-genome data.”"
+  },
+  {
+    "objectID": "slides/pgip/index.html#bibliography",
+    "href": "slides/pgip/index.html#bibliography",
+    "title": "Population genomics in practice",
+    "section": "Bibliography",
+    "text": "Bibliography\n\n\nFuller, Z. L., Mocellin, V. J. L., Morris, L. A., Cantin, N., Shepherd, J., Sarre, L., Peng, J., Liao, Y., Pickrell, J., Andolfatto, P., Matz, M., Bay, L. K., & Przeworski, M. (2020). Population genetics of the coral Acropora millepora: Toward genomic prediction of bleaching. Science, 369(6501), eaba4674. https://doi.org/10.1126/science.aba4674\n\n\nHahn, M. (2019). Molecular Population Genetics (First). Oxford University Press.\n\n\nHartl, D. L., & Clark, A. G. (1997). Principles of population genetics. Sinauer Associates.\n\n\nJohri, P., Aquadro, C. F., Beaumont, M., Charlesworth, B., Excoffier, L., Eyre-Walker, A., Keightley, P. D., Lynch, M., McVean, G., Payseur, B. A., Pfeifer, S. P., Stephan, W., & Jensen, J. D. (2022). Recommendations for improving statistical inference in population genomics. PLOS Biology, 20(5), e3001669. https://doi.org/10.1371/journal.pbio.3001669\n\n\nLi, H., & Durbin, R. (2011). Inference of human population history from individual whole-genome sequences. Nature, 475(7357), 493–496. https://doi.org/10.1038/nature10231"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Welcome page",
+    "section": "",
+    "text": "Important\n\n\n\nThis website is work in progress."
+  },
+  {
+    "objectID": "slides/index.html",
+    "href": "slides/index.html",
+    "title": "Slides",
+    "section": "",
+    "text": "A note on usage\nHtml slides have been authored using revealjs and can be viewed directly in the browser. In some cases, there are accompanying speaker notes that can be viewed by pressing s. Whenever there is a  symbol, it links to a recipe that is related to the figure or content on the active slide.\n\n\nSlides\n\n\n\n\n\n\n\nPopulation genomics in practice\n\n\nWhat is population genomics?\n\n\n\nPer Unneberg\n\n\n\n\n\n\nNo matching items"
+  }
+]
