@@ -1,0 +1,13 @@
+---
+format:
+  nbis-course-html:
+    fontsize: 0.8em
+
+number-sections: true
+knitr:
+  opts_chunk:
+    collapse: true
+    code-fold: true
+---
+
+# Recipes in slides {#sec-recipe-slides}
