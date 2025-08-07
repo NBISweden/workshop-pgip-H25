@@ -1,0 +1,23 @@
+/*-- scss:rules --*/
+
+.circular-image img {
+  height: 150px;
+  width: 150px;
+  object-fit: cover;
+  border-radius: 90%;
+}
+
+.flushright {
+  float: right;
+}
+
+.dna {
+  font-weight: normal;
+  font-family: monospace;
+}
+
+.dna .italic {
+  font-weight: bold;
+  font-family: monospace;
+  color: $aqua75;
+}

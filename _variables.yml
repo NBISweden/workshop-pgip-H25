@@ -1,0 +1,11 @@
+# -*- yaml -*-
+recipes:
+  base: /recipes/index.html
+  slides: /recipes/slides/index.html
+  slim: /recipes/slides/slim.html
+
+# Popgen symbols
+fst: $F_{\mathrm{ST}}$
+dxy: $d_{\mathrm{XY}}$
+dx: $d_{\mathrm{X}}$
+dy: $d_{\mathrm{Y}}$

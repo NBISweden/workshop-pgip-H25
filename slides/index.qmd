@@ -10,7 +10,7 @@ listing:
   sort: false
   contents:
     - pgip/index.qmd
-    # - foundations/index.qmd
+    - foundations/index.qmd
     # - simulation/index.qmd
     # - variant_calling/index.qmd
     # - variant_filtering/index.qmd
