@@ -10,4 +10,27 @@ knitr:
     code-fold: true
 ---
 
+
 # Recipes in slides {#sec-recipe-slides}
+
+## Foundations
+
+### Hardy-Weinberg Equilibrium {#sec-recipe-slides-hwe}
+
+Code to generate Hardy-Weinberg equilibrium plot.
+
+```{bash}
+#| label: recipe-slides-hwe-bash
+#| echo: true
+#| eval: false
+#| code-summary: "hwe.sh: bash script to download data from 1000 genomes"
+#| file: foundations/hwe.sh
+```
+
+```{r }
+#| label: recipe-slides-hwe-r
+#| echo: true
+#| eval: false
+#| code-summary: "hwe.R: R code to plot HWE proportions"
+#| file: foundations/hwe.R
+```

@@ -3,3 +3,26 @@ title: Code recipes
 subtitle: "PGIP 2025 • Population Genomics in Practice"
 format: nbis-course-html
 ---
+
+# Code recipes
+
+::: {.callout-important}
+
+Disclaimer: although the code posted here has at some point been used
+to generate figures and data, in some cases it may be out of date and
+not work out of the box. Please report any bugs or inconsistencies by
+posting an issue at
+<https://github.com/NBISweden/workshop-pgip/issues>.
+
+:::
+
+## Slides
+
+Collection of recipes to generate data and figures for lecture notes.
+For full listing, see [slides/index.html](slides/index.qmd).
+
+## SLiM recipes
+
+Collection of SLiM recipes [@hallerben_MesserLabSLiM_2016] used to
+generate figures and examples. See [slim/index.html](slim/index.qmd)
+for full listing.

@@ -5,7 +5,9 @@ project:
   output-dir: _site
   preview:
     port: 8888
-  #pre-render:
+  pre-render:
+    - scripts/init-site.sh
+    - scripts/setup-pgip-data.sh
   #post-render:
   render:
     - index.qmd
@@ -85,3 +87,13 @@ format:
 filters:
   - fontawesome
 #  - nbis-course
+
+knitr:
+  opts_chunk:
+    code-fold: false
+    tidy: true
+    comment-char: "#>"
+    fig-format: svg
+    engine.opts:
+      dvisvgm.opts: --font-format=woff
+      template: assets/www/tikzfig.tex
