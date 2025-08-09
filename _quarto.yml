@@ -8,6 +8,7 @@ project:
   pre-render:
     - scripts/init-site.sh
     - scripts/setup-pgip-data.sh
+    - scripts/setup-data.py
   #post-render:
   render:
     - index.qmd
@@ -17,6 +18,7 @@ project:
     - slides/index.qmd
     - slides/pgip/index.qmd
     - slides/foundations/index.qmd
+    - slides/variant_calling/index.qmd
     # Exercises
     - exercises/index.qmd
     # Recipes
@@ -54,39 +56,9 @@ format:
     fig-width: 10
     fig-align: center
     fig-cap-location: top
-  # nbis-course-revealjs:
-  #   toc: false
-  #   toc-depth: 2
-  #   slide-level: 2
-  #   slide-number: true
-  #   preview-links: true
-  #   chalkboard: false
-  #   footer: Population Genomics in Practice
-  #   smaller: true
-  #   highlight-style: gruvbox
-  #   fig-height: 3
-  #   fig-width: 3
-  #   fig-align: center
-  #   text-align: center
-  #   width: 1050
-  #   height: 700
-  #   margin: 0.05
-  #   navigation-mode: vertical
-  #   ultitle: true
-  #   nbistitlelogo: false
-  #   embed-resources: false
-  #   csl: assets/presentation.csl
-  # nbishome:
-  #   url: ../..
-  #   position:
-  #     left: 100px
-  #     bottom: 14px
-  #revealjs-plugins:
-  #  - nbishome
 
 filters:
   - fontawesome
-#  - nbis-course
 
 knitr:
   opts_chunk:

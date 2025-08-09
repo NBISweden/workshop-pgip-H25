@@ -4831,7 +4831,7 @@ census population sizes.
 
 ## Summary
 
-We have looked at the **Wright-Fisher model** as a model of populations and **genealogies***
+We have looked at the **Wright-Fisher model** as a model of populations and **genealogies**
 
 **Genetic drift** moves allele frequencies up and down at random and
 removes variation at rate $\propto 1/2N$
