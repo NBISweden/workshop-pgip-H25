@@ -1334,4 +1334,41 @@ GATK has no prior [@li_BetterUnderstandingArtifacts_2014]
 
 :::
 
+# Exercise on variant calling
+
+## The monkeyflower system {.smaller}
+
+:::{}
+
+<!-- markdownlint-disable MD013 -->
+
+![](https://www.science.org/cms/10.1126/science.365.6456.854/asset/db271bee-8914-4712-9965-dcf1615b6a43/assets/graphic/365_854_f1.jpeg){fig-alt="The allure of monkeyflowers (DOI: 10.1126/science.365.6456.854)" width=50% fig-align=center}
+
+<!-- markdownlint-enable MD013 -->
+
+:::
+
+From <https://jgi.doe.gov/csp-2021-genomic-resources-for-mimulus/>
+
+> Plants in the genus Mimulus inhabit highly variable habitats and are
+> famous for their extraordinary ecological diversity. Mimulus is now
+> a powerful system for ecological genomic studies, thanks to its
+> experimental tractability, rapidly growing research community, and
+> the JGI-generated reference genome for M. guttatus.
+
+## Learning outcomes
+
+Follow GATK best practices to
+
+- Perform qc on sequencing reads and interpret results
+- Prepare reference for read mapping
+- Map reads to reference
+- Mark duplicates
+- Perform raw variant calling to generate a set of sites to exclude
+  from recalibration
+- Perform base quality score recalibration
+- Perform variant calling on base recalibrated data
+- Do genotyping on all samples and combine results to a raw variant
+  call set
+
 ## Bibliography {.smaller}
