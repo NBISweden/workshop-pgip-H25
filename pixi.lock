@@ -758,6 +758,7 @@ environments:
       - conda: https://conda.anaconda.org/bioconda/noarch/qualimap-2.3-hdfd78af_0.tar.bz2
       - conda: https://conda.anaconda.org/conda-forge/noarch/r-4.4-r44hd8ed1ab_1008.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/r-abind-1.4_5-r44hc72bb7e_1006.conda
+      - conda: https://conda.anaconda.org/conda-forge/linux-64/r-ape-5.8_1-r44h3704496_1.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/r-askpass-1.2.1-r44h2b5f3a1_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/r-assertthat-0.2.1-r44hc72bb7e_5.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/r-base-4.4.2-hbab086e_1.conda
@@ -1420,6 +1421,7 @@ environments:
       - conda: https://conda.anaconda.org/bioconda/noarch/qualimap-2.3-hdfd78af_0.tar.bz2
       - conda: https://conda.anaconda.org/conda-forge/noarch/r-4.4-r44hd8ed1ab_1008.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/r-abind-1.4_5-r44hc72bb7e_1006.conda
+      - conda: https://conda.anaconda.org/conda-forge/osx-64/r-ape-5.8_1-r44h1934be7_1.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-64/r-askpass-1.2.1-r44h199b6f9_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/r-assertthat-0.2.1-r44hc72bb7e_5.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-64/r-base-4.4.2-h277ddab_1.conda
@@ -2083,6 +2085,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/linux-64/quarto-1.7.33-ha770c72_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/r-4.4-r44hd8ed1ab_1008.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/r-abind-1.4_5-r44hc72bb7e_1006.conda
+      - conda: https://conda.anaconda.org/conda-forge/linux-64/r-ape-5.8_1-r44h3704496_1.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/r-askpass-1.2.1-r44h2b5f3a1_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/r-assertthat-0.2.1-r44hc72bb7e_5.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/r-base-4.4.2-hbab086e_1.conda
@@ -2751,6 +2754,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/osx-64/quarto-1.7.33-h694c41f_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/r-4.4-r44hd8ed1ab_1008.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/r-abind-1.4_5-r44hc72bb7e_1006.conda
+      - conda: https://conda.anaconda.org/conda-forge/osx-64/r-ape-5.8_1-r44h1934be7_1.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-64/r-askpass-1.2.1-r44h199b6f9_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/r-assertthat-0.2.1-r44hc72bb7e_5.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-64/r-base-4.4.2-h277ddab_1.conda
@@ -11471,6 +11475,41 @@ packages:
   license_family: LGPL
   size: 79179
   timestamp: 1719758982179
+- conda: https://conda.anaconda.org/conda-forge/linux-64/r-ape-5.8_1-r44h3704496_1.conda
+  sha256: e2a6dd646b24cd2593f9424ab46c80c9134df97878180d6f71ea5daa19a8896b
+  md5: 2c3478933ce3eb60ad38898e2b047e93
+  depends:
+  - __glibc >=2.17,<3.0.a0
+  - libblas >=3.9.0,<4.0a0
+  - libgcc >=14
+  - liblapack >=3.9.0,<4.0a0
+  - libstdcxx >=14
+  - r-base >=4.4,<4.5.0a0
+  - r-digest
+  - r-lattice
+  - r-nlme
+  - r-rcpp >=0.12.0
+  license: GPL-2.0-or-later
+  license_family: GPL3
+  size: 2941887
+  timestamp: 1754241824643
+- conda: https://conda.anaconda.org/conda-forge/osx-64/r-ape-5.8_1-r44h1934be7_1.conda
+  sha256: 5acdfc8edfe93516b60e0d73fb81d5effbde43ed0244e614b3b53fe1cc2fd87c
+  md5: 894c10846ade8e2294e0b7dee689bf11
+  depends:
+  - __osx >=10.13
+  - libblas >=3.9.0,<4.0a0
+  - libcxx >=19
+  - liblapack >=3.9.0,<4.0a0
+  - r-base >=4.4,<4.5.0a0
+  - r-digest
+  - r-lattice
+  - r-nlme
+  - r-rcpp >=0.12.0
+  license: GPL-2.0-or-later
+  license_family: GPL3
+  size: 2937927
+  timestamp: 1754241945434
 - conda: https://conda.anaconda.org/conda-forge/linux-64/r-askpass-1.2.1-r44h2b5f3a1_0.conda
   sha256: 2f3a1aacc36eb09e7269258ef7be30c881a30020f8270a4056b039768046caf9
   md5: 6e2597e8d6c7e8c2d7dec6d50103d958
