@@ -198,3 +198,18 @@ diagrams and illustrations. Make sure to set `cache: true`.
 \end{tikzpicture}
 ```
 ````
+
+# Content
+
+Content is organized under folders `slides`, `exercises` and
+`recipes`. Each folder contains an index file that lists content. Add
+content by adding a subdirectory along with an `index.qmd` file. The
+relative path to the index file should be listed in the content index
+file and the main `_quarto.yml`.
+
+Slides have been developed using the
+[nbis-quarto-revealjs](https://github.com/percyfal/nbis-quarto-revealjs)
+Quarto template. Exercises make use of the
+[nbis-course](https://github.com/percyfal/nbis-course-quarto) template
+(NB: targeted for update!). The recipes are code snippets that have
+been used to generate plots and simulations.

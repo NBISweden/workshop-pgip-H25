@@ -21,11 +21,13 @@ project:
     - slides/variant_calling/index.qmd
     - slides/variant_filtering/index.qmd
     - slides/genetic_diversity/index.qmd
+    - slides/simulation/index.qmd
     # Exercises
     - exercises/index.qmd
     # Recipes
     - recipes/index.qmd
     - recipes/slides/index.qmd
+    - recipes/simulation/index.qmd
     # Exclude
     - "!fixme.qmd"
     - "*.ipynb"
