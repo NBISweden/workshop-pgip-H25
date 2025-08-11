@@ -19,6 +19,8 @@ project:
     - slides/pgip/index.qmd
     - slides/foundations/index.qmd
     - slides/variant_calling/index.qmd
+    - slides/variant_filtering/index.qmd
+    - slides/genetic_diversity/index.qmd
     # Exercises
     - exercises/index.qmd
     # Recipes

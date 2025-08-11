@@ -21,3 +21,11 @@
   font-family: monospace;
   color: $aqua75;
 }
+
+.translatey50 {
+  transform: translate(0, -50px);
+}
+
+.translatey100 {
+  transform: translate(0, -100px);
+}
