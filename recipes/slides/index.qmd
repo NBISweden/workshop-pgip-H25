@@ -34,3 +34,16 @@ Code to generate Hardy-Weinberg equilibrium plot.
 #| code-summary: "hwe.R: R code to plot HWE proportions"
 #| file: foundations/hwe.R
 ```
+
+## Genetic diversity
+
+### Trees {#sec-recipe-diversity-msprime-trees}
+
+```{python }
+#| label: recipe-slides-diversity-msprime-trees
+#| echo: true
+#| eval: false
+#| code-summary: |
+#|     Python code to generate example coalescent trees.
+#| file: genetic_diversity/trees.py
+```
