@@ -13,19 +13,7 @@ execute:
 
 {{< include ../_rlibs.qmd >}}
 
-```{bash }
-#| label: variant-calling-init-data
-#| echo: false
-#| eval: true
-mkdir -p fastqc
-fastqc -o fastqc fastq/*PUN-Y-INJ*.fastq.gz > /dev/null 2>&1
-if [ ! -e fastqc/PUN-Y-INJ_R1_fastqc ]; then
-    unzip fastqc/PUN-Y-INJ_R1_fastqc.zip -d fastqc > /dev/null 2>&1
-fi
-if [ ! -e fastqc/PUN-Y-INJ_R2_fastqc ]; then
-    unzip fastqc/PUN-Y-INJ_R2_fastqc.zip -d fastqc > /dev/null 2>&1
-fi
-```
+{{< include _init_data.qmd >}}
 
 <!-- markdownlint-enable MD041 -->
 
