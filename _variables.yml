@@ -4,6 +4,14 @@ recipes:
   slides: /recipes/slides/index.html
   slim: /recipes/slides/slim.html
 
+naissproject: pg_pgip_2025
+pdc_time_allocation: edu25.pgip
+pg_pgip_dir: /cfs/klemming/projects/supr/pgip_2025
+monkeyflower:
+  dir: /cfs/klemming/projects/supr/pgip_2025/data/monkeyflower
+  url: https://export.uppmax.uu.se/uppstore2017171/pgip/data/monkeyflower.tar.gz
+naiss_max_cores: 10
+
 # Popgen symbols
 fst: $F_{\mathrm{ST}}$
 dxy: $d_{\mathrm{XY}}$

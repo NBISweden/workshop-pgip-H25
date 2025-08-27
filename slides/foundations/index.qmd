@@ -1477,7 +1477,9 @@ wf %>%
 #| fig-keep: all
 #| fig-cap: Wright-Fisher model
 #| fig-format: png
-#| out-height: 600px
+#| out-width: 90%
+#| fig-height: 7
+#| fig-width: 7
 popsize <- max(V(wf)$x) + 1
 generations <- max(V(wf)$y) + 1
 for (t in 3:generations) {

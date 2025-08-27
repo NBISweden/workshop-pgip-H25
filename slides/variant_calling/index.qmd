@@ -19,7 +19,6 @@ format:
 #| cache: false
 library(readxl)
 library(curl)
-
 ```
 
 ## Previously
