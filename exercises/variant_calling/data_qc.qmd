@@ -1,0 +1,241 @@
+---
+title: Data quality control
+author:
+  - Per Unneberg
+format: nbis-course-html
+execute:
+  cache: false
+---
+
+<!-- markdownlint-disable MD041 -->
+
+{{< include ../_knitr.qmd >}}
+
+{{< include ../_rlibs.qmd >}}
+
+```{bash }
+#| label: variant-calling-init-data
+#| echo: false
+#| eval: true
+mkdir -p fastqc
+fastqc -o fastqc fastq/*PUN-Y-INJ*.fastq.gz > /dev/null 2>&1
+if [ ! -e fastqc/PUN-Y-INJ_R1_fastqc ]; then
+    unzip fastqc/PUN-Y-INJ_R1_fastqc.zip -d fastqc > /dev/null 2>&1
+fi
+if [ ! -e fastqc/PUN-Y-INJ_R2_fastqc ]; then
+    unzip fastqc/PUN-Y-INJ_R2_fastqc.zip -d fastqc > /dev/null 2>&1
+fi
+```
+
+<!-- markdownlint-enable MD041 -->
+
+::: {.callout-important collapse=true}
+
+#### {{< fa server >}} Compute environment setup
+
+If you haven't already done so, please read [Compute
+environment](../compute_environment/index.qmd) for information on how
+to prepare your working directory.
+
+:::
+
+In this exercise we will familiarize ourselves with the command line
+and compile some basic quality statistics from raw sequence data
+files.
+
+::: {.callout-note}
+
+This is a technical exercise, where the focus is not so much on the
+biology as on getting programs to run and interpreting the output.
+
+:::
+
+::: {.callout-important}
+
+The commands of this document have been run on a subset (a subregion)
+of the data. Therefore, although you will use the same commands, your
+results will differ from those presented here.
+
+:::
+
+::: {.callout-tip collapse=true}
+
+## Learning objectives
+
+- Get familiar with command line
+- Perform qc on sequencing reads and interpret results
+
+:::
+
+::: {.callout-note collapse=true}
+
+## Tools
+
+:::{.panel-tabset}
+
+#### Listing
+
+[fastqc](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/)
+
+#### {{< fa server >}} PDC
+
+Choose **one** of **Modules** and **Virtual environment** to access
+relevant tools.
+
+##### Modules
+
+Execute the following command to load modules:
+
+```{bash }
+#| label: pdc-load-modules
+#| echo: true
+#| eval: false
+module load fastqc/0.12.1
+```
+
+##### Virtual environment
+
+Activate the `e-variant-calling` environment:
+
+```bash
+# $OPTIONS is provided via the init script
+pixi shell -e e-variant-calling $OPTIONS
+```
+
+#### {{< fa laptop >}} pixi
+
+Copy the contents to a file `pixi.toml` in directory
+`variant-calling`, `cd` to directory and activate environment with
+`pixi shell`.
+
+```{lang="text" }
+[workspace]
+channels = ["conda-forge", "bioconda"]
+name = "variant-calling"
+
+[dependencies]
+fastqc = ">=0.12.1,<0.13"
+```
+
+:::
+
+:::
+
+### Read quality control
+
+:::{.column-margin}
+
+:::{#fig-fastqc-base-quality}
+
+![](fastqc/PUN-Y-INJ_R1_fastqc/Images/per_base_quality.png)
+
+![](fastqc/PUN-Y-INJ_R2_fastqc/Images/per_base_quality.png)
+
+Per base quality scores, read 1 (upper) and read 2 (lower panel),
+obtained from the FastQC program. Quality values are on the $y$-axis,
+base position in sequence read on $x$-axis.
+
+:::
+
+:::
+
+DNA sequencers score the quality of each sequenced base as [phred
+quality scores](https://en.wikipedia.org/wiki/Phred_quality_score),
+which is equivalent to the probability $P$ that the call is incorrect.
+The base quality scores, denoted $Q$, are defined as
+
+$$
+Q = -10 \log_{10} P
+$$
+
+which for $P=0.01$ gives $Q=20$. Converting from quality to
+probability is done by solving for $P$:
+
+$$
+P = 10^{-Q/10}
+$$
+
+Hence, a base quality score $Q=20$ (somtimes written Q20) corresponds
+to a 1% probability that the call is incorrect, Q30 a 0.1%
+probability, and so on, where the higher the quality score, the
+better. Bases with low quality scores are usually discarded from
+downstream analyses, but what is a good threshold? The human genome
+has approximately 1 SNP per 1,000 bp, which means sequencing errors
+will be ten times as probable in a single read for Q20 base calls. A
+reasonable threshold is therefore around Q20-Q30 for many purposes.
+
+The base qualities typically drop towards the end of the reads
+(@fig-fastqc-base-quality). Prior to mapping it may therefore be
+prudent to remove reads that display too high drop in quality, too low
+mean quality, or on some other quality metric reported by the qc
+software.
+
+The quality scores are encoded using ASCII codes. An example of a
+[FASTQ](https://en.wikipedia.org/wiki/FASTQ_format) sequence is given
+below. The code snippet shows an example of shell commands^[For any
+shell command, use the option `--help` to print information about the
+commands and its options. `zcat` is a variant of the `cat` command
+that prints the contents of a file on the terminal; the `z` prefix
+shows the command works on compressed files, a common naming
+convention. `head` views the first lines of a file, and `cut` can be
+used to cut out columns from a tab-delimited file, or in this case,
+cut the longest strings to 30 characters width.] that are separated by
+a so-called pipe (`|`) character which takes the output from one
+process and sends it as input to the next^[For more information, see
+[unix pipelines](<https://en.wikipedia.org/wiki/Pipeline_(Unix)>)].
+
+Note that we use the *long* option names to clarify commands, and we
+aim to do so consistently when a new command is introduced. Once you
+feel confident you know what a command does, you will probably want to
+switch to *short* option names, and we may do so in the instructions
+for some commonly used commands (e.g., `head -n`) without warning.
+Remember to use `--help` to examine command options.
+
+```{bash }
+#| label: cat-fastq
+#| echo: true
+#| eval: true
+#| fig-cap: |
+# Command using long (-- prefix) option names
+zcat fastq/PUN-Y-INJ_R1.fastq.gz | head --lines 4 | cut --characters -30
+# Equivalent command using short (single -, single character) option names
+# zcat fastq/PUN-Y-INJ_R1.fastq.gz | head -n 4 | cut -c -30
+```
+
+A FASTQ entry consists of four lines:
+
+1. sequence id (prefixed by `@`)
+2. DNA sequence
+3. separator (`+`)
+4. phred base quality scores
+
+::: {.callout-exercise}
+
+{{< fa brands linux >}} Use the command `wc` to determine how many
+sequences are in `PUN-Y-INJ_R1.fastq.gz`.
+
+::: {.callout-hint}
+
+The `wc` help page (`wc --help`) shows `wc` prints newline, word and
+byte counts for a file, where newline is what we're after. We can
+restrict the output to newline characters with the `--lines` option.
+Use `zcat` to print the contents of `PUN-Y-INJ_R1.fastq.gz` to the
+screen, piping (`|`) the output to `wc --lines`.
+
+:::
+
+::: {.callout-answer}
+
+```{bash }
+#| label: wc-exercise-answer
+#| echo: true
+#| eval: false
+zcat fastq/PUN-Y-INJ_R1.fastq.gz | wc --lines
+```
+
+Since there are four lines per sequence (id, sequence, `+` separator,
+qualities) you need to divide the final number by four (622744 / 4).
+
+:::
+
+:::

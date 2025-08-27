@@ -1,0 +1,107 @@
+---
+title: Variant calling exercises
+description: List of variant calling exercises
+format:
+  nbis-course-html:
+    number-sections: false
+author:
+  - Per Unneberg
+execute:
+  cache: false
+---
+
+## About
+
+A generic variant calling workflow consists of the following basic
+steps:
+
+1. read quality control and filtering
+2. read mapping
+3. removal / marking of duplicate reads
+4. joint / sample-based variant calling and genotyping
+
+There are different tweaks and additions to each of these steps,
+depending on application and method. The variant calling exercises
+here present the basic steps to go from raw data to variant calls.
+
+The exercises are based on the [Monkeyflowers
+dataset](../datasets/monkeyflowers.qmd). Make sure to read the dataset
+document before running any commands as it will give you the
+biological background and general information about where to find and
+how to setup the data. We will focus on the *red* and *yellow*
+ecotypes in what follows.
+
+## Exercises
+
+::: {.callout-note collapse=true}
+
+## Data setup
+
+:::{.panel-tabset}
+
+#### {{< fa server >}} PDC
+
+<!-- markdownlint-disable MD038 -->
+
+Source the initialization script {{< var pg_pgip_dir >}}/init.sh
+
+```bash
+source {{< var pg_pgip_dir >}}/init.sh
+```
+
+and run the exercise setup command:
+
+```{bash }
+#| label: setup-exercise
+#| echo: true
+#| eval: false
+pgip exercises setup variant-calling -v
+```
+
+#### {{< fa laptop >}} Local
+
+Create an exercise directory called `exercises` and `cd` to it:
+
+```{bash }
+#| label: create-exercises-directory-local
+#| echo: true
+#| eval: false
+mkdir -p exercises
+cd exercises
+```
+
+Retrieve the data `{{< var monkeyflower.url >}}` with `wget`:
+
+```bash
+wget {{< var monkeyflower.url >}}
+tar -zxvf monkeyflower.tar.gz
+```
+
+:::
+
+:::
+
+1. [Data preparation, quality control and
+   filtering](data_qc.qmd){#variant-calling-data-qc}
+
+   Introduction to the command line interface. Preparation of data,
+   raw data quality control and filtering for downstream analyses.
+
+2. [Read mapping and duplicate
+   marking](read_mapping.qmd){#variant-calling-read-mapping}
+
+   Read mapping to reference sequence and removal of duplicate reads.
+
+3. [Variant calling and genotyping
+   workflow](variant_calling_workflow.qmd){#variant-calling-workflow}
+
+   Perform variant calling and genotyping. Introduction to workflow
+   manager systems.
+
+## Additional material
+
+[Variant calling, long description](variant_calling_long.qmd){#variant-calling-long}
+
+: Describes all steps of a standard variant calling workflow from data
+  preparation to final summary QC. All commands are run manually
+  without the aid of a workflow manager.

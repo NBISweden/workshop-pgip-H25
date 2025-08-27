@@ -1,0 +1,187 @@
+---
+title: Compute environment
+author:
+  - Per Unneberg
+format:
+  nbis-course-html:
+    fontsize: 1.4em
+    page-layout: full
+---
+
+<!-- markdownlint-disable MD041 -->
+
+{{< include ../_knitr.qmd >}}
+
+{{< include ../_rlibs.qmd >}}
+
+This page briefly describes different compute environments that may be
+used for exercises. We use the following symbols to icons that
+indicate the type of environment ({{< fa server >}} HPC resource; {{<
+fa laptop >}} local compute environment; {{< fa brands firefox >}}
+online browser-based resource). Make sure to read these instructions
+before proceeding with the exercises.
+
+<!-- markdownlint-enable MD041 -->
+
+## {{< fa server >}} Dardel @ PDC
+
+::: {.callout-important collapse=true}
+
+#### Prerequisite: SUPR account
+
+If you want to run the exercises on the Dardel HPC you need an
+account. Follow the instructions at the [precourse
+page](https://nbisweden.github.io/workshop-pgip/precourse.html#dardel-compute-resources).
+
+:::
+
+We will primarily be using KTH's high-performance computing (HPC)
+center
+[Dardel](https://www.pdc.kth.se/hpc-services/computing-systems/dardel-hpc-system/dardel-1.1043529)
+to run exercises. Course material will be hosted in a dedicated course
+project directory `{{< var pg_pgip_dir >}}`.
+
+We recommend you setup a working directory based on your username in
+`{{< var pg_pgip_dir >}}/users` in which to run your exercises:
+
+```bash
+mkdir -p {{< var pg_pgip_dir >}}/users/YOURUSERNAME
+cd {{< var pg_pgip_dir >}}/users/YOURUSERNAME
+```
+
+All computations should be run on a compute node. You can request an
+[interactive
+session](https://support.pdc.kth.se/doc/run_jobs/run_interactively/)
+with the `salloc` command. For example, to request an eight hour
+job on {{< var naiss_max_cores >}} cores, run
+
+```bash
+salloc -A {{< var naissproject >}} -n {{< var naiss_max_cores >}} \
+   --time 08:00:00 \
+   --reservation {{< var pdc_time_allocation >}}
+```
+
+Make a note of the allocated node ID and use `ssh` to access it.
+
+```bash
+ssh node_id
+```
+
+::: {.callout-important}
+
+#### Please do not book more than {{< var naiss_max_cores >}} cores
+
+We have priviliged access to a limited number of nodes. Please do not
+book more than {{< var naiss_max_cores >}} cores or else your fellow
+students will experience long waiting times.
+
+:::
+
+::: {.callout-important}
+
+#### Make sure to login to a compute node before running any heavy commands
+
+:::
+
+### Tutorials
+
+PDC hosts tutorials and user guides at
+<https://support.pdc.kth.se/doc>. In particular,
+<https://support.pdc.kth.se/doc/basics/quickstart> has information on
+how to connect to and work on Dardel.
+
+## {{< fa laptop >}} Jupyter Notebooks
+
+[Jupyter Notebook](https://jupyter.org/) exercises will be run in
+local compute environments on your laptop. See the section below on
+setting up a `pgip` environment with [pixi](https://pixi.sh/latest/),
+which by default installs `jupyter` and its dependencies.
+
+### {{< fa brands firefox >}} JupyterLite
+
+There are some Jupyter Notebook exercises that are hosted online and
+run using [JupyterLite](https://github.com/jupyterlite/jupyterlite)
+which is a JupyterLab distribution that runs entirely in the browser.
+Apart from having a browser, no preparations are necessary. Note that
+some users have reported issues with Firefox and that Google Chrome
+may be a better solution.
+
+## {{< fa laptop >}} Pixi {#sec-compute-environment-pixi}
+
+Exercises that require local software installation will make use of
+the [pixi](https://pixi.sh/latest/) package manager to install
+necessary [conda](https://docs.conda.io/en/latest/) requirements from
+the package repositories [bioconda](https://bioconda.github.io/) and
+[conda-forge](https://conda-forge.org/). This is also the fallback
+solution in case there are issues with the HPC.
+
+To start using pixi, follow the [install
+instructions](https://pixi.sh/latest/installation/) to install. You
+can choose to run all exercises on a local computer if you have pixi
+setup. You would then need to download relevant data, as detailed for
+each exercise. We have tried to make the exercise data sets small such
+that you can run the exercises locally.
+
+## Tools
+
+Computer exercise requirements are listed in `Tools` callout blocks in
+each exercise. The `Tools` callout block contains listings of
+programs, along with package dependencies and specifications for
+Dardel and pixi, whenever relevant. An example block is shown below.
+
+::: {.callout-note collapse=true}
+
+### Tools - example
+
+Example Tools block.
+
+:::{.panel-tabset}
+
+#### Listing
+
+Provides list of packages linked to repository, and citation when
+available.
+
+- [fastqc](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/)
+- [bwa](https://github.com/lh3/bwa) [@li_AligningSequenceReads_2013]
+
+#### Dardel modules
+
+Provides command and instructions to load relevant PDC modules.
+
+Example:
+
+```{bash }
+#| label: pdc-load-modules
+#| echo: true
+#| eval: false
+module load bwa/0.7.18 fastqc/0.12.1
+```
+
+#### pixi
+
+Provides a [pixi manifest
+file](https://pixi.sh/latest/reference/pixi_manifest/) that lists
+dependencies and where to retrieve them.
+
+To install, copy the contents in the code block to a file `pixi.toml`
+in a new directory (e.g., `exercise-name`) and in the directory run
+`pixi update`. This will install a local environment in
+`.pixi/envs/default`. Run `pixi shell` to activate the environment.
+
+```{lang="text" }
+[workspace]
+channels = ["conda-forge", "bioconda"]
+name = "exercise-name"
+platforms = ["linux-64"]
+
+[dependencies]
+bwa = ">=0.7.19,<0.8"
+fastqc = ">=0.12.1,<0.13"
+```
+
+:::
+
+:::
+
+## References

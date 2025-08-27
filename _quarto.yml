@@ -22,8 +22,14 @@ project:
     - slides/variant_filtering/index.qmd
     - slides/genetic_diversity/index.qmd
     - slides/simulation/index.qmd
-    # Exercises
+    - slides/scratch/index.qmd
+    # Exercises and datasets
     - exercises/index.qmd
+    - exercises/compute_environment/index.qmd
+    - exercises/datasets/monkeyflowers.qmd
+    - exercises/variant_calling/index.qmd
+    - exercises/variant_calling/variant_calling_long.qmd
+    - exercises/variant_calling/data_qc.qmd
     # Recipes
     - recipes/index.qmd
     - recipes/slides/index.qmd
@@ -47,6 +53,8 @@ format:
     date-format: "DD-MMM-YYYY"
     code-link: true
     code-block-border-left: "#a7c947"
+    page-layout: full
+    fontsize: 1.8em
     lightbox:
       match: auto
   nbis-quarto-revealjs:
@@ -62,7 +70,8 @@ format:
     fig-cap-location: top
 
 filters:
-  - fontawesome
+  - quarto-ext/fontawesome
+  - percyfal/nbis-course
 
 knitr:
   opts_chunk:
