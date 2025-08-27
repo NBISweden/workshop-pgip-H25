@@ -33,52 +33,52 @@ __red_fastq__:
   - fastq/PUN-Y-INJ_R2.fastq.gz: monkeyflower/tiny/PUN-Y-INJ/PUN-Y-INJ_R2.fastq.gz
 
 __red_gvcf__:
-  - hc/PUN-R-ELF.g.vcf.gz: monkeyflower/tiny/PUN-R-ELF/PUN-R-ELF.sort.dup.recal.hc.g.vcf.gz
-  - hc/PUN-R-ELF.g.vcf.gz.tbi: monkeyflower/tiny/PUN-R-ELF/PUN-R-ELF.sort.dup.recal.hc.g.vcf.gz.tbi
-  - hc/PUN-R-JMC.g.vcf.gz: monkeyflower/tiny/PUN-R-JMC/PUN-R-JMC.sort.dup.recal.hc.g.vcf.gz
-  - hc/PUN-R-JMC.g.vcf.gz.tbi: monkeyflower/tiny/PUN-R-JMC/PUN-R-JMC.sort.dup.recal.hc.g.vcf.gz.tbi
-  - hc/PUN-R-LH.g.vcf.gz: monkeyflower/tiny/PUN-R-LH/PUN-R-LH.sort.dup.recal.hc.g.vcf.gz
-  - hc/PUN-R-LH.g.vcf.gz.tbi: monkeyflower/tiny/PUN-R-LH/PUN-R-LH.sort.dup.recal.hc.g.vcf.gz.tbi
-  - hc/PUN-R-MT.g.vcf.gz: monkeyflower/tiny/PUN-R-MT/PUN-R-MT.sort.dup.recal.hc.g.vcf.gz
-  - hc/PUN-R-MT.g.vcf.gz.tbi: monkeyflower/tiny/PUN-R-MT/PUN-R-MT.sort.dup.recal.hc.g.vcf.gz.tbi
-  - hc/PUN-R-UCSD.g.vcf.gz: monkeyflower/tiny/PUN-R-UCSD/PUN-R-UCSD.sort.dup.recal.hc.g.vcf.gz
-  - hc/PUN-R-UCSD.g.vcf.gz.tbi: monkeyflower/tiny/PUN-R-UCSD/PUN-R-UCSD.sort.dup.recal.hc.g.vcf.gz.tbi
+  - gatk-hc-bqsr/PUN-R-ELF.g.vcf.gz: monkeyflower/tiny/PUN-R-ELF/PUN-R-ELF.sort.dup.recal.hc.g.vcf.gz
+  - gatk-hc-bqsr/PUN-R-ELF.g.vcf.gz.tbi: monkeyflower/tiny/PUN-R-ELF/PUN-R-ELF.sort.dup.recal.hc.g.vcf.gz.tbi
+  - gatk-hc-bqsr/PUN-R-JMC.g.vcf.gz: monkeyflower/tiny/PUN-R-JMC/PUN-R-JMC.sort.dup.recal.hc.g.vcf.gz
+  - gatk-hc-bqsr/PUN-R-JMC.g.vcf.gz.tbi: monkeyflower/tiny/PUN-R-JMC/PUN-R-JMC.sort.dup.recal.hc.g.vcf.gz.tbi
+  - gatk-hc-bqsr/PUN-R-LH.g.vcf.gz: monkeyflower/tiny/PUN-R-LH/PUN-R-LH.sort.dup.recal.hc.g.vcf.gz
+  - gatk-hc-bqsr/PUN-R-LH.g.vcf.gz.tbi: monkeyflower/tiny/PUN-R-LH/PUN-R-LH.sort.dup.recal.hc.g.vcf.gz.tbi
+  - gatk-hc-bqsr/PUN-R-MT.g.vcf.gz: monkeyflower/tiny/PUN-R-MT/PUN-R-MT.sort.dup.recal.hc.g.vcf.gz
+  - gatk-hc-bqsr/PUN-R-MT.g.vcf.gz.tbi: monkeyflower/tiny/PUN-R-MT/PUN-R-MT.sort.dup.recal.hc.g.vcf.gz.tbi
+  - gatk-hc-bqsr/PUN-R-UCSD.g.vcf.gz: monkeyflower/tiny/PUN-R-UCSD/PUN-R-UCSD.sort.dup.recal.hc.g.vcf.gz
+  - gatk-hc-bqsr/PUN-R-UCSD.g.vcf.gz.tbi: monkeyflower/tiny/PUN-R-UCSD/PUN-R-UCSD.sort.dup.recal.hc.g.vcf.gz.tbi
 
 __yellow_gvcf__:
-  - hc/PUN-Y-BCRD.g.vcf.gz: monkeyflower/tiny/PUN-Y-BCRD/PUN-Y-BCRD.sort.dup.recal.hc.g.vcf.gz
-  - hc/PUN-Y-BCRD.g.vcf.gz.tbi: monkeyflower/tiny/PUN-Y-BCRD/PUN-Y-BCRD.sort.dup.recal.hc.g.vcf.gz.tbi
-  - hc/PUN-Y-INJ.g.vcf.gz: monkeyflower/tiny/PUN-Y-INJ/PUN-Y-INJ.sort.dup.recal.hc.g.vcf.gz
-  - hc/PUN-Y-INJ.g.vcf.gz.tbi: monkeyflower/tiny/PUN-Y-INJ/PUN-Y-INJ.sort.dup.recal.hc.g.vcf.gz.tbi
-  - hc/PUN-Y-LO.g.vcf.gz: monkeyflower/tiny/PUN-Y-LO/PUN-Y-LO.sort.dup.recal.hc.g.vcf.gz
-  - hc/PUN-Y-LO.g.vcf.gz.tbi: monkeyflower/tiny/PUN-Y-LO/PUN-Y-LO.sort.dup.recal.hc.g.vcf.gz.tbi
-  - hc/PUN-Y-PCT.g.vcf.gz: monkeyflower/tiny/PUN-Y-PCT/PUN-Y-PCT.sort.dup.recal.hc.g.vcf.gz
-  - hc/PUN-Y-PCT.g.vcf.gz.tbi: monkeyflower/tiny/PUN-Y-PCT/PUN-Y-PCT.sort.dup.recal.hc.g.vcf.gz.tbi
-  - hc/PUN-Y-POTR.g.vcf.gz: monkeyflower/tiny/PUN-Y-POTR/PUN-Y-POTR.sort.dup.recal.hc.g.vcf.gz
-  - hc/PUN-Y-POTR.g.vcf.gz.tbi: monkeyflower/tiny/PUN-Y-POTR/PUN-Y-POTR.sort.dup.recal.hc.g.vcf.gz.tbi
+  - gatk-hc-bqsr/PUN-Y-BCRD.g.vcf.gz: monkeyflower/tiny/PUN-Y-BCRD/PUN-Y-BCRD.sort.dup.recal.hc.g.vcf.gz
+  - gatk-hc-bqsr/PUN-Y-BCRD.g.vcf.gz.tbi: monkeyflower/tiny/PUN-Y-BCRD/PUN-Y-BCRD.sort.dup.recal.hc.g.vcf.gz.tbi
+  - gatk-hc-bqsr/PUN-Y-INJ.g.vcf.gz: monkeyflower/tiny/PUN-Y-INJ/PUN-Y-INJ.sort.dup.recal.hc.g.vcf.gz
+  - gatk-hc-bqsr/PUN-Y-INJ.g.vcf.gz.tbi: monkeyflower/tiny/PUN-Y-INJ/PUN-Y-INJ.sort.dup.recal.hc.g.vcf.gz.tbi
+  - gatk-hc-bqsr/PUN-Y-LO.g.vcf.gz: monkeyflower/tiny/PUN-Y-LO/PUN-Y-LO.sort.dup.recal.hc.g.vcf.gz
+  - gatk-hc-bqsr/PUN-Y-LO.g.vcf.gz.tbi: monkeyflower/tiny/PUN-Y-LO/PUN-Y-LO.sort.dup.recal.hc.g.vcf.gz.tbi
+  - gatk-hc-bqsr/PUN-Y-PCT.g.vcf.gz: monkeyflower/tiny/PUN-Y-PCT/PUN-Y-PCT.sort.dup.recal.hc.g.vcf.gz
+  - gatk-hc-bqsr/PUN-Y-PCT.g.vcf.gz.tbi: monkeyflower/tiny/PUN-Y-PCT/PUN-Y-PCT.sort.dup.recal.hc.g.vcf.gz.tbi
+  - gatk-hc-bqsr/PUN-Y-POTR.g.vcf.gz: monkeyflower/tiny/PUN-Y-POTR/PUN-Y-POTR.sort.dup.recal.hc.g.vcf.gz
+  - gatk-hc-bqsr/PUN-Y-POTR.g.vcf.gz.tbi: monkeyflower/tiny/PUN-Y-POTR/PUN-Y-POTR.sort.dup.recal.hc.g.vcf.gz.tbi
 
 __red_recal_bam__:
-  - recal/PUN-R-ELF.bam: monkeyflower/tiny/PUN-R-ELF/PUN-R-ELF.sort.dup.recal.bam
-  - recal/PUN-R-ELF.bai: monkeyflower/tiny/PUN-R-ELF/PUN-R-ELF.sort.dup.recal.bai
-  - recal/PUN-R-JMC.bam: monkeyflower/tiny/PUN-R-JMC/PUN-R-JMC.sort.dup.recal.bam
-  - recal/PUN-R-JMC.bai: monkeyflower/tiny/PUN-R-JMC/PUN-R-JMC.sort.dup.recal.bai
-  - recal/PUN-R-LH.bam: monkeyflower/tiny/PUN-R-LH/PUN-R-LH.sort.dup.recal.bam
-  - recal/PUN-R-LH.bai: monkeyflower/tiny/PUN-R-LH/PUN-R-LH.sort.dup.recal.bai
-  - recal/PUN-R-MT.bam: monkeyflower/tiny/PUN-R-MT/PUN-R-MT.sort.dup.recal.bam
-  - recal/PUN-R-MT.bai: monkeyflower/tiny/PUN-R-MT/PUN-R-MT.sort.dup.recal.bai
-  - recal/PUN-R-UCSD.bam: monkeyflower/tiny/PUN-R-UCSD/PUN-R-UCSD.sort.dup.recal.bam
-  - recal/PUN-R-UCSD.bai: monkeyflower/tiny/PUN-R-UCSD/PUN-R-UCSD.sort.dup.recal.bai
+  - gatk-bqsr/PUN-R-ELF.bam: monkeyflower/tiny/PUN-R-ELF/PUN-R-ELF.sort.dup.recal.bam
+  - gatk-bqsr/PUN-R-ELF.bai: monkeyflower/tiny/PUN-R-ELF/PUN-R-ELF.sort.dup.recal.bai
+  - gatk-bqsr/PUN-R-JMC.bam: monkeyflower/tiny/PUN-R-JMC/PUN-R-JMC.sort.dup.recal.bam
+  - gatk-bqsr/PUN-R-JMC.bai: monkeyflower/tiny/PUN-R-JMC/PUN-R-JMC.sort.dup.recal.bai
+  - gatk-bqsr/PUN-R-LH.bam: monkeyflower/tiny/PUN-R-LH/PUN-R-LH.sort.dup.recal.bam
+  - gatk-bqsr/PUN-R-LH.bai: monkeyflower/tiny/PUN-R-LH/PUN-R-LH.sort.dup.recal.bai
+  - gatk-bqsr/PUN-R-MT.bam: monkeyflower/tiny/PUN-R-MT/PUN-R-MT.sort.dup.recal.bam
+  - gatk-bqsr/PUN-R-MT.bai: monkeyflower/tiny/PUN-R-MT/PUN-R-MT.sort.dup.recal.bai
+  - gatk-bqsr/PUN-R-UCSD.bam: monkeyflower/tiny/PUN-R-UCSD/PUN-R-UCSD.sort.dup.recal.bam
+  - gatk-bqsr/PUN-R-UCSD.bai: monkeyflower/tiny/PUN-R-UCSD/PUN-R-UCSD.sort.dup.recal.bai
 
 __yellow_recal_bam__:
-  - recal/PUN-Y-BCRD.bam: monkeyflower/tiny/PUN-Y-BCRD/PUN-Y-BCRD.sort.dup.recal.bam
-  - recal/PUN-Y-BCRD.bai: monkeyflower/tiny/PUN-Y-BCRD/PUN-Y-BCRD.sort.dup.recal.bai
-  - recal/PUN-Y-INJ.bam: monkeyflower/tiny/PUN-Y-INJ/PUN-Y-INJ.sort.dup.recal.bam
-  - recal/PUN-Y-INJ.bai: monkeyflower/tiny/PUN-Y-INJ/PUN-Y-INJ.sort.dup.recal.bai
-  - recal/PUN-Y-LO.bam: monkeyflower/tiny/PUN-Y-LO/PUN-Y-LO.sort.dup.recal.bam
-  - recal/PUN-Y-LO.bai: monkeyflower/tiny/PUN-Y-LO/PUN-Y-LO.sort.dup.recal.bai
-  - recal/PUN-Y-PCT.bam: monkeyflower/tiny/PUN-Y-PCT/PUN-Y-PCT.sort.dup.recal.bam
-  - recal/PUN-Y-PCT.bai: monkeyflower/tiny/PUN-Y-PCT/PUN-Y-PCT.sort.dup.recal.bai
-  - recal/PUN-Y-POTR.bam: monkeyflower/tiny/PUN-Y-POTR/PUN-Y-POTR.sort.dup.recal.bam
-  - recal/PUN-Y-POTR.bai: monkeyflower/tiny/PUN-Y-POTR/PUN-Y-POTR.sort.dup.recal.bai
+  - gatk-bqsr/PUN-Y-BCRD.bam: monkeyflower/tiny/PUN-Y-BCRD/PUN-Y-BCRD.sort.dup.recal.bam
+  - gatk-bqsr/PUN-Y-BCRD.bai: monkeyflower/tiny/PUN-Y-BCRD/PUN-Y-BCRD.sort.dup.recal.bai
+  - gatk-bqsr/PUN-Y-INJ.bam: monkeyflower/tiny/PUN-Y-INJ/PUN-Y-INJ.sort.dup.recal.bam
+  - gatk-bqsr/PUN-Y-INJ.bai: monkeyflower/tiny/PUN-Y-INJ/PUN-Y-INJ.sort.dup.recal.bai
+  - gatk-bqsr/PUN-Y-LO.bam: monkeyflower/tiny/PUN-Y-LO/PUN-Y-LO.sort.dup.recal.bam
+  - gatk-bqsr/PUN-Y-LO.bai: monkeyflower/tiny/PUN-Y-LO/PUN-Y-LO.sort.dup.recal.bai
+  - gatk-bqsr/PUN-Y-PCT.bam: monkeyflower/tiny/PUN-Y-PCT/PUN-Y-PCT.sort.dup.recal.bam
+  - gatk-bqsr/PUN-Y-PCT.bai: monkeyflower/tiny/PUN-Y-PCT/PUN-Y-PCT.sort.dup.recal.bai
+  - gatk-bqsr/PUN-Y-POTR.bam: monkeyflower/tiny/PUN-Y-POTR/PUN-Y-POTR.sort.dup.recal.bam
+  - gatk-bqsr/PUN-Y-POTR.bai: monkeyflower/tiny/PUN-Y-POTR/PUN-Y-POTR.sort.dup.recal.bai
 
 __reference__:
   - ref/M_aurantiacus_v1.fasta: monkeyflower/tiny/M_aurantiacus_v1_splitline_ordered.fasta

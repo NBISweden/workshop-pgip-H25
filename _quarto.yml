@@ -30,6 +30,7 @@ project:
     - exercises/variant_calling/index.qmd
     - exercises/variant_calling/variant_calling_long.qmd
     - exercises/variant_calling/data_qc.qmd
+    - exercises/variant_calling/read_mapping.qmd
     # Recipes
     - recipes/index.qmd
     - recipes/slides/index.qmd
