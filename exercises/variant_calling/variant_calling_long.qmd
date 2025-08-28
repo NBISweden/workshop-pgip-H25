@@ -718,11 +718,11 @@ Once we have a duplicate marked BAM file, we can proceed with Base
 Quality Score Recalibration (BQSR). The purpose here is to correct any
 systematic errors made by the sequencing machine. This is done by
 applying a machine learning model. Before we do so, however, we need
-to generate a list of *known sites* that should not be
-recalibrated^[If we don't supply a list of known sites, the variants
-will be treated as errors and therefore recalibrated to the reference
-state.]. Therefore, we will first perform a preliminary round of
-variant calling and filtering to generate a known sites callset.
+to generate a list of *known sites* that should not be recalibrated^[If we
+don't supply a list of known sites, the variants will be treated as
+errors and therefore recalibrated to the reference state.]. Therefore,
+we will first perform a preliminary round of variant calling and
+filtering to generate a known sites callset.
 
 ```{bash }
 #| label: gatk-known-sites-callset
@@ -771,8 +771,8 @@ gatk HaplotypeCaller --help 2>&1 | less
 ```
 
 and look for `-OVI`. This option is shorthand for
-`--create-output-variant-index` and makes `HaplotypeCaller` create a
-VCF index.
+`--create-output-variant-index` and makes `HaplotypeCaller` create a VCF
+index.
 
 :::
 
@@ -935,7 +935,7 @@ gatk HaplotypeCaller --create-output-variant-index true \
 gatk VariantFiltration -OVI true \
   --variant gatk-hc-bqsr/${SAMPLE}.g.vcf.gz \
   --output gatk-filter-bqsr/${SAMPLE}.g.vcf.gz \
-     --filter-name FisherStrand --filter 'FS > 60.0' \
+  --filter-name FisherStrand --filter 'FS > 60.0' \
   --filter-name QualByDepth --filter 'QD < 2.0' \
   --filter-name MappingQuality --filter 'MQ < 40.0'
 ```
@@ -1013,9 +1013,9 @@ gatk CombineGVCFs -OVI true --output gatk-combine-gvcf/subset.g.vcf.gz \
   --reference ${REF} \
   --variant gatk-hc-bqsr/PUN-Y-INJ.g.vcf.gz \
   --variant gatk-hc-bqsr/PUN-R-ELF.g.vcf.gz
-gatk GenotypeGVCFs -OVI true -R ${REF} -V gatk-genotype-gvcf/subset.g.vcf.gz \
+gatk GenotypeGVCFs -OVI true -R ${REF} -V gatk-combine-gvcf/subset.g.vcf.gz \
   --output gatk-genotype-gvcf/variantsites.subset.vcf.gz
-gatk GenotypeGVCFs -OVI true -R ${REF} -V gatk-genotype-gvcf/subset.g.vcf.gz \
+gatk GenotypeGVCFs -OVI true -R ${REF} -V gatk-combine-gvcf/subset.g.vcf.gz \
   --output gatk-genotype-gvcf/allsites.subset.vcf.gz \
   --all-sites
 ```
