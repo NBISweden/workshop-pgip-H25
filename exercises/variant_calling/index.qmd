@@ -1,6 +1,6 @@
 ---
-title: Variant calling exercises
-description: List of variant calling exercises
+title: Variant calling
+description: List of exercises
 format:
   nbis-course-html:
     number-sections: false

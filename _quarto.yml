@@ -33,6 +33,14 @@ project:
     - exercises/variant_calling/read_mapping.qmd
     - exercises/variant_calling/variant_calling_workflow.qmd
     - exercises/variant_calling/variant_calling_long.qmd
+    - exercises/variant_filtering/index.qmd
+    - exercises/genetic_diversity/index.qmd
+    - exercises/recombination_linkage/index.qmd
+    - exercises/population_structure/index.qmd
+    - exercises/demography/index.qmd
+    - exercises/selection/index.qmd
+    - exercises/simulation/index.qmd
+    - exercises/ancestral_recombination_graphs/index.qmd
     # Recipes
     - recipes/index.qmd
     - recipes/slides/index.qmd

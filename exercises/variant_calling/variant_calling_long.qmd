@@ -737,7 +737,7 @@ gatk HaplotypeCaller -OVI true \
 gatk VariantFiltration -OVI true \
   --variant gatk-hc-raw/${SAMPLE}.g.vcf.gz \
   --output gatk-filter-raw/${SAMPLE}.g.vcf.gz \
-     --filter-name FisherStrand --filter 'FS > 50.0' \
+  --filter-name FisherStrand --filter 'FS > 50.0' \
   --filter-name QualByDepth --filter 'QD < 4.0' \
   --filter-name MappingQuality --filter 'MQ < 50.0'
 ```
