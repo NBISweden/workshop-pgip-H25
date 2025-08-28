@@ -26,11 +26,29 @@ __yellow_ubam__:
   - ubam/PUN-Y-POTR.bam: monkeyflower/tiny/PUN-Y-POTR/PUN-Y-POTR.unmapped.bam
   - ubam/PUN-Y-POTR.bam.bai: monkeyflower/tiny/PUN-Y-POTR/PUN-Y-POTR.unmapped.bam.bai
 
-__red_fastq__:
+__yellow_fastq__:
   - fastq/PUN-Y-BCRD_R1.fastq.gz: monkeyflower/tiny/PUN-Y-BCRD/PUN-Y-BCRD_R1.fastq.gz
   - fastq/PUN-Y-BCRD_R2.fastq.gz: monkeyflower/tiny/PUN-Y-BCRD/PUN-Y-BCRD_R2.fastq.gz
   - fastq/PUN-Y-INJ_R1.fastq.gz: monkeyflower/tiny/PUN-Y-INJ/PUN-Y-INJ_R1.fastq.gz
   - fastq/PUN-Y-INJ_R2.fastq.gz: monkeyflower/tiny/PUN-Y-INJ/PUN-Y-INJ_R2.fastq.gz
+  - fastq/PUN-Y-LO_R1.fastq.gz: monkeyflower/tiny/PUN-Y-LO/PUN-Y-LO_R1.fastq.gz
+  - fastq/PUN-Y-LO_R2.fastq.gz: monkeyflower/tiny/PUN-Y-LO/PUN-Y-LO_R2.fastq.gz
+  - fastq/PUN-Y-PCT_R1.fastq.gz: monkeyflower/tiny/PUN-Y-PCT/PUN-Y-PCT_R1.fastq.gz
+  - fastq/PUN-Y-PCT_R2.fastq.gz: monkeyflower/tiny/PUN-Y-PCT/PUN-Y-PCT_R2.fastq.gz
+  - fastq/PUN-Y-POTR_R1.fastq.gz: monkeyflower/tiny/PUN-Y-POTR/PUN-Y-POTR_R1.fastq.gz
+  - fastq/PUN-Y-POTR_R2.fastq.gz: monkeyflower/tiny/PUN-Y-POTR/PUN-Y-POTR_R2.fastq.gz
+
+__red_fastq__:
+  - fastq/PUN-R-ELF_R1.fastq.gz: monkeyflower/tiny/PUN-R-ELF/PUN-R-ELF_R1.fastq.gz
+  - fastq/PUN-R-ELF_R2.fastq.gz: monkeyflower/tiny/PUN-R-ELF/PUN-R-ELF_R2.fastq.gz
+  - fastq/PUN-R-JMC_R1.fastq.gz: monkeyflower/tiny/PUN-R-JMC/PUN-R-JMC_R1.fastq.gz
+  - fastq/PUN-R-JMC_R2.fastq.gz: monkeyflower/tiny/PUN-R-JMC/PUN-R-JMC_R2.fastq.gz
+  - fastq/PUN-R-LH_R1.fastq.gz: monkeyflower/tiny/PUN-R-LH/PUN-R-LH_R1.fastq.gz
+  - fastq/PUN-R-LH_R2.fastq.gz: monkeyflower/tiny/PUN-R-LH/PUN-R-LH_R2.fastq.gz
+  - fastq/PUN-R-MT_R1.fastq.gz: monkeyflower/tiny/PUN-R-MT/PUN-R-MT_R1.fastq.gz
+  - fastq/PUN-R-MT_R2.fastq.gz: monkeyflower/tiny/PUN-R-MT/PUN-R-MT_R2.fastq.gz
+  - fastq/PUN-R-UCSD_R1.fastq.gz: monkeyflower/tiny/PUN-R-UCSD/PUN-R-UCSD_R1.fastq.gz
+  - fastq/PUN-R-UCSD_R2.fastq.gz: monkeyflower/tiny/PUN-R-UCSD/PUN-R-UCSD_R2.fastq.gz
 
 __red_gvcf__:
   - gatk-hc-bqsr/PUN-R-ELF.g.vcf.gz: monkeyflower/tiny/PUN-R-ELF/PUN-R-ELF.sort.dup.recal.hc.g.vcf.gz
@@ -110,6 +128,7 @@ exercises/variant_calling:
     - __red_ubam__
     - __red_fastq__
     - __yellow_ubam__
+    - __yellow_fastq__
     - __red_gvcf__
     - __yellow_gvcf__
     - __reference__

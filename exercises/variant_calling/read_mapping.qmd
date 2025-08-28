@@ -1,0 +1,212 @@
+---
+title: Read mapping and duplicate removal
+author:
+  - Per Unneberg
+format: nbis-course-html
+execute:
+  cache: false
+---
+
+{{< include ../_knitr.qmd >}}
+
+{{< include ../_rlibs.qmd >}}
+
+{{< include _init_data.qmd >}}
+
+## Read mapping
+
+We will start by mapping `FASTQ` read pairs to the reference. We will
+use the `bwa` read mapper together with `samtools` to process the
+resulting output.
+
+### Read group information identifies sequence sets
+
+Some of the downstream processes require that reads have been assigned
+`read groups` [@ReadGroups_2023], which is a compact string
+representation of a set of reads that originate from a sequencing unit
+and sample. Assigning read groups becomes particularly important for
+multiplexing protocols, or when a sample has been sequenced on
+different lanes or platform units, as it allows for the identification
+of sequence batch issues (e.g., poor sequence quality). Here, we want
+to assign a unique `ID`, the sample id (`SM`), and the sequencing
+platform (`PL`), where the latter informs the algorithms on what error
+model to apply. The read group is formatted as
+`@RG\tID:uniqueid\tSM:sampleid\tPU:platform`, where `\t` is the tab
+character. More fields can be added; see the SAM specification,
+section 1.3 [@HTSFormatSpecifications_2023] for a complete list.
+
+Sample information is available in the `sampleinfo.csv` file:
+
+```{bash }
+#| label: head-sampleinfo
+#| echo: true
+#| eval: true
+head -n 3 sampleinfo.csv
+```
+
+The sample information is a combination of the run information
+obtained from the SRA (BioProject `PRJNA549183`) and the sample sheet
+provided with the article. An additional column `SampleAlias` has been
+added that names samples using a three-letter abbreviation for
+population hyphenated with the sample identifier. For the *ssp.
+puniceus*, an additional one-letter character denoting the color
+ecotype is inserted between population and sample id. `PUN-Y-BCRD`
+then is a sample from the *puniceus* subspecies with the yellow
+ecotype. We will use the `Run` column as unique `ID`, `SampleAlias` as
+the sample id `SM`, and `ILLUMINA` as the platform `PL`.
+
+### Read mapping with bwa and conversion to BAM format with samtools
+
+Let's map the FASTQ files corresponding to sample `PUN-Y-BCRD`:
+
+```{bash }
+#| label: map-pun-y-bcrd-with-bwa
+#| echo: true
+#| eval: true
+#| results: hide
+bwa mem -R "@RG\tID:SRR9309788\tSM:PUN-Y-BCRD\tPL:ILLUMINA" -t 4 \
+    -M ref/M_aurantiacus_v1.fasta \
+    fastq/PUN-Y-BCRD_R1.fastq.gz \
+    fastq/PUN-Y-BCRD_R2.fastq.gz | \
+    samtools sort - | \
+    samtools view --with-header --output bam/PUN-Y-BCRD.bam
+```
+
+There's a lot to unpack here. First, the `-R` flag to `bwa mem` passes
+the read group information to the mapper. `-t` sets the number of
+threads, and `-M` marks shorter split hits as secondary, which is for
+Picard compatibility^[`bwa` consistently uses short option names.
+Also, there is no `--help` option. To get a list of options, at the
+command line simply type `bwa mem`, or `man bwa mem` for general help
+and a complete list of options.]. The first positional argument is the
+reference sequence, followed by the FASTQ files for read 1 and 2,
+respectively.
+
+The output would be printed on the screen (try running the `bwa mem`
+command alone!), but we pipe the output to `samtools sort` to sort the
+mappings (by default by coordinate). The `-` simply means "read from
+the pipe".
+
+Finally, `samtools view` converts the text output to binary format
+(default), including the header information (short option `-h`). You
+can use the same command to view the resulting output on your screen:
+
+```{bash }
+#| label: samtools-view-example
+#| echo: true
+#| eval: true
+samtools view bam/PUN-Y-BCRD.bam | head -n 2
+```
+
+::: {.callout-exercise}
+
+Look at the header information of the output BAM file. What does the
+`@SQ` tag stand for, and what does the information on that line tell
+you?
+
+::: {.callout-hint}
+
+To get a list of options, type `samtools view`. The `-H` or
+`--header-only` option views the header only.
+
+:::
+
+::: {.callout-answer}
+
+```{bash }
+#| label: samtools-view-answer
+#| echo: true
+#| eval: true
+samtools view -H bam/PUN-Y-BCRD.bam
+```
+
+Although you can probably figure it out by looking at the data, do
+have a glance at the SAM format specification mentioned above. The
+`@SQ` tag corresponds to the reference sequence dictionary and tells
+you what region you are looking at (chromosome `LG4`, which has a
+length `LN` 100000 bases; the example reference sequence was created
+by extracting the region on `LG4` from position 12000000 to 12100000).
+
+:::
+
+:::
+
+### Mark duplicate reads with Picard MarkDuplicates
+
+Once mapping is completed, we must find and mark duplicate reads as
+these can distort the results of downstream analyses, such as variant
+calling. We here use `Picard MarkDuplicates`.
+
+To facilitate downstream processing, we will from now on make use of
+[environment
+variables](https://en.wikipedia.org/wiki/Environment_variable)^[Briefly,
+environment variables are a great way to generalise commands. To reuse
+the command, one only needs to modify the value of the variable.] to
+refer to a sample and the reference sequence. Retrieve the SRR id from
+the sampleinfo file.
+
+```{bash }
+#| label: set-envvars
+#| echo: true
+#| eval: true
+#| results: hide
+export SRR=SRR9309790
+export SAMPLE=PUN-Y-INJ
+export REF=ref/M_aurantiacus_v1.fasta
+```
+
+```{r }
+#| label: set-sample-envvars
+#| echo: false
+#| eval: true
+Sys.setenv(SRR = "SRR9309790", SAMPLE = "PUN-Y-INJ", REF = "ref/M_aurantiacus_v1.fasta")
+```
+
+```{bash }
+#| label: picard-mark-duplicates
+#| echo: true
+#| eval: true
+#| results: hide
+picard MarkDuplicates --INPUT bam/${SAMPLE}.bam \
+    --METRICS_FILE md/${SAMPLE}.dup_metrics.txt \
+    --OUTPUT md/${SAMPLE}.bam
+```
+
+The metrics output file contains information on the rate of
+duplication. We will include the output in the final `MultiQC` report.
+
+An additional mapping quality metric of interest is percentage mapped
+reads and average read depth. We can use `qualimap bamqc` to collect
+mapping statistics from a BAM file:
+
+```{bash }
+#| label: qualimap-bamqc
+#| echo: true
+#| eval: true
+#| results: hide
+qualimap bamqc -bam bam/${SAMPLE}.bam -outdir qualimap/${SAMPLE}_stats
+```
+
+A summary of the results is exported to
+`qualimap/${SAMPLE}_stats/genome_results.txt`; we show percent mapping
+and average coverage below as examples:
+
+```{bash }
+#| label: qualimap-genome-results-example
+#| echo: true
+#| eval: true
+grep "number of mapped reads" qualimap/${SAMPLE}_stats/genome_results.txt
+grep "mean coverageData" qualimap/${SAMPLE}_stats/genome_results.txt
+```
+
+## Moving on
+
+By now it should become clear that it quickly becomes tedious to
+manually write commands for each and every step. We would like to
+speed things up, and in the interest of time, the following exercise
+will introduce a **workflow manager** (e.g.,
+@wratten_ReproducibleScalableShareable_2021). However, we stress that
+you should not blindly run workflows without understanding the
+programs and their options. The only way to investigate the effects of
+parameters and settings is to manually run the programs. Hopefully,
+you have gained some insight into how this is done with this exercise.

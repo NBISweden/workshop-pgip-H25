@@ -2,10 +2,7 @@
 title: Compute environment
 author:
   - Per Unneberg
-format:
-  nbis-course-html:
-    fontsize: 1.4em
-    page-layout: full
+format: nbis-course-html
 ---
 
 <!-- markdownlint-disable MD041 -->
@@ -56,12 +53,18 @@ with the `salloc` command. For example, to request an eight hour
 job on {{< var naiss_max_cores >}} cores, run
 
 ```bash
-salloc -A {{< var naissproject >}} -n {{< var naiss_max_cores >}} \
+salloc -A {{< var pdc_time_allocation >}} -n {{< var naiss_max_cores >}} \
    --time 08:00:00 \
-   --reservation {{< var pdc_time_allocation >}}
+   --reservation=<name of reservation> \
+   --no-shell
 ```
 
-Make a note of the allocated node ID and use `ssh` to access it.
+where `<name of reservation>` needs to be replaced by the node
+reservations, which will typically be unique for every day.
+
+The `--no-shell` option will immediately exit the allocated node but
+keep the Slurm job active. Make a note of the allocated node ID and
+use `ssh` to access it.
 
 ```bash
 ssh node_id

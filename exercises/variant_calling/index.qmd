@@ -81,18 +81,22 @@ tar -zxvf monkeyflower.tar.gz
 
 :::
 
-1. [Data preparation, quality control and
+1. [Variant calling workflow introduction](introduction.qmd){#variant-calling-introduction}
+
+   A brief overview of variant calling.
+
+2. [Data preparation, quality control and
    filtering](data_qc.qmd){#variant-calling-data-qc}
 
    Introduction to the command line interface. Preparation of data,
    raw data quality control and filtering for downstream analyses.
 
-2. [Read mapping and duplicate
+3. [Read mapping and duplicate
    marking](read_mapping.qmd){#variant-calling-read-mapping}
 
    Read mapping to reference sequence and removal of duplicate reads.
 
-3. [Variant calling and genotyping
+4. [Variant calling and genotyping
    workflow](variant_calling_workflow.qmd){#variant-calling-workflow}
 
    Perform variant calling and genotyping. Introduction to workflow
