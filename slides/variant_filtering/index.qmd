@@ -28,11 +28,11 @@ library(curl)
 #| echo: false
 #| eval: true
 if [ ! -e variantsites.vcf.gz ]; then
- bcftools view data/redyellow.variantsites.vcf.gz | vcfrandomsample -r 0.1 |\
+ bcftools view redyellow/variantsites.vcf.gz | vcfrandomsample -r 0.1 |\
   bgzip -c > variantsites.vcf.gz
 fi
 if [ ! -e allsites.vcf.gz ]; then
- bcftools view data/redyellow.allsites.vcf.gz | vcfrandomsample -r 0.1 |\
+ bcftools view redyellow/allsites.vcf.gz | vcfrandomsample -r 0.1 |\
   bgzip -c > allsites.vcf.gz
 fi
 ```
@@ -413,12 +413,16 @@ Plot and select thresholds
 ::: {.column width="50%"}
 
 ```{r }
-#| label: mean-depth
+#| label: fig-mean-depth
 #| echo: true
 #| eval: true
 #| out-width: 80%
 #| fig-align: center
 #| fig-width: 14
+#| fig-cap: |
+#|   Depth uneven. High coverage often repetitive
+#|   sequence. Too low coverage will bias SNP calling due to
+#|   undersampling of alleles.
 #| code-fold: true
 vcf <- "variantsites.vcf.gz"
 system(paste("vcftools --gzvcf", vcf, "--site-depth 2>/dev/null"))
@@ -434,20 +438,20 @@ ggplot(x, aes(x=as.numeric(as.character(Var1)), y=Freq)) + geom_line() +
   ggtitle("Example threshold: 0.8X median depth, median depth + 2sd")
 ```
 
-Depth uneven. High coverage often repetitive sequence. Too low
-coverage will bias SNP calling due to undersampling of alleles.
-
 :::
 
 ::: {.column width="50%"}
 
 ```{r }
-#| label: variant-quality-score-distribution
+#| label: fig-variant-quality-score-distribution
 #| echo: true
 #| eval: true
 #| out-width: 80%
 #| fig-width: 14
 #| fig-align: center
+#| fig-cap: |
+#|   Filter variants with too low quality (Q30=0.001% chance of being
+#|   wrong)
 #| code-fold: true
 system(paste("vcftools --gzvcf", vcf, "--site-quality 2>/dev/null"))
 data <- read.table("out.lqual", header=TRUE)
@@ -457,9 +461,6 @@ ggplot(subset(data, QUAL<1000), aes(x=QUAL)) +
   geom_vline(xintercept=30, color="red", size=1.3) +
   ggtitle("Example threshold: Q30")
 ```
-
-Filter variants with too low quality (Q30=0.001% chance of being
-wrong)
 
 :::
 
@@ -472,10 +473,13 @@ wrong)
 ::: {.column width="50%"}
 
 ```{r }
-#| label: missing-indv
+#| label: fig-missing-indv
 #| echo: true
 #| eval: true
 #| out-width: 70%
+#| fig-cap: |
+#|   Missing number of sites per individual. Too many would indicate
+#|   poor sample quality.
 #| fig-align: center
 #| fig-width: 14
 #| code-fold: true
@@ -485,20 +489,21 @@ ggplot(data, aes(x=F_MISS, y=INDV)) + geom_point(size=3) +
   ggtitle("Missing data per individual")
 ```
 
-Missing number of sites per individual. Too many would indicate poor
-sample quality.
-
 :::
 
 ::: {.column width="50%"}
 
 ```{r }
-#| label: missing-site
+#| label: fig-missing-site
 #| echo: true
 #| eval: true
 #| out-width: 70%
 #| fig-align: center
 #| fig-width: 14
+#| fig-cap: |
+#|   Fraction missing calls per site. Could warrant separate filters
+#|   when comparing populations (e.g., total missing 0.2, but
+#|   population A has 0.1 missing, population B 0.4).
 #| code-fold: true
 system(paste("vcftools --gzvcf", vcf, "--missing-site 2>/dev/null"))
 data <- read.table("out.lmiss", header=TRUE)
@@ -508,10 +513,6 @@ ggplot(data, aes(x=F_MISS)) +
   geom_vline(xintercept=0.25, color="red", size=1.3) +
   ggtitle("Missing data per site: example threshold F_MISS=0.25")
 ```
-
-Fraction missing calls per site. Could warrant separate filters when
-comparing populations (e.g., total missing 0.2, but population A has
-0.1 missing, population B 0.4).
 
 :::
 
@@ -528,12 +529,14 @@ comparing populations (e.g., total missing 0.2, but population A has
 ::: {.column width="60%"}
 
 ```{r }
-#| label: minor-allele-frequency
+#| label: fig-minor-allele-frequency
 #| echo: true
 #| eval: true
 #| out-width: 100%
 #| fig-width: 14
 #| fig-align: center
+#| fig-cap: |
+#|    Minor allele frequency distribution
 #| code-fold: true
 system(paste("vcftools --gzvcf", vcf, "--freq2 --max-alleles 2 2>/dev/null"))
 data <- read.table("out.frq", skip=1)
@@ -589,12 +592,13 @@ filtered on MAF
 ::: {.column width="50%"}
 
 ```{r }
-#| label: heterozygosity
+#| label: fig-heterozygosity
 #| echo: true
 #| eval: true
 #| out-width: 60%
 #| fig-width: 14
 #| fig-align: center
+#| fig-cap: Genome-wide inbreeding coefficient by individual
 #| code-fold: true
 system(paste("vcftools --gzvcf", vcf, "--het 2>/dev/null"))
 data <- read.table("out.het", header=TRUE)
@@ -624,6 +628,15 @@ bcftools stats allsites.vcf.gz | grep "^SN"
 ```
 
 Filtering as before but excluding MAF, variant quality filters
+
+::: {.notes}
+
+Filtering on MAF would effectively remove all non-polymorphic sites.
+Guideline by @lou_BeginnerGuideLowcoverage_2021.
+
+:::
+
+## Exercise time
 
 # Filtering on bam files
 
@@ -1337,7 +1350,7 @@ echo "Coverage mask"
 #| label: bedtools-maskfasta-make-genome-mask
 #| echo: false
 #| eval: true
-REF=data/M_aurantiacus_v1.fasta
+REF=ref/M_aurantiacus_v1.fasta
 head -n 2 ${REF}
 echo -e "LG4\t10\t20\nLG4\t34\t45\nLG4\t57\t59\n" | \
  bedtools maskfasta -fi <(echo -e "LG4\t0\t60" | \
@@ -1378,7 +1391,7 @@ echo "Combined"
 #| label: bedtools-maskfasta-make-genome-mask-exons
 #| echo: false
 #| eval: true
-REF=data/M_aurantiacus_v1.fasta
+REF=ref/M_aurantiacus_v1.fasta
 head -n 2 ${REF}
 echo -e "LG4\t10\t20\nLG4\t34\t45\nLG4\t57\t59\n" | \
  bedtools maskfasta -fi <(echo -e "LG4\t0\t60" | \
@@ -1406,6 +1419,14 @@ echo -e "LG4\t10\t20\nLG4\t40\t45\n" | \
 Use with `vcftools --mask` to restrict analyses to certain positions.
 
 **NB**! Here `0` is a position that is **unmasked**, `>0` **masked**
+
+:::
+
+## {.center ultitle=false}
+
+:::{.r-fit-text}
+
+[d4explorer](https://github.com/percyfal/d4explorer) demo
 
 :::
 

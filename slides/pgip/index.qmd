@@ -507,7 +507,7 @@ variation in different functional contexts
 #| label: fig-sequencing-cost
 #| echo: false
 #| eval: true
-#| fig-cap: Sequencing cost ($) per megabase [@wetterstrandka_DNASequencingCosts_]
+#| fig-cap: Sequencing cost ($) per megabase [@wetterstrandka_DNASequencingCosts]
 #| fig-width: 12
 #| fig-height: 8
 #| out-width: 90%

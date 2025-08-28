@@ -107,16 +107,16 @@ __sampleinfo__:
   - monkeyflower/sampleinfo.csv
 
 __variants__:
-  - monkeyflower/tiny/all.allsites.vcf.gz
-  - monkeyflower/tiny/all.allsites.vcf.gz.tbi
-  - monkeyflower/small/all.variantsites.vcf.gz
-  - monkeyflower/small/all.variantsites.vcf.gz.tbi
+  - vcf/all.allsites.vcf.gz: monkeyflower/tiny/all.allsites.vcf.gz
+  - vcf/all.allsites.vcf.gz.tbi: monkeyflower/tiny/all.allsites.vcf.gz.tbi
+  - vcf/all.variantsites.vcf.gz: monkeyflower/small/all.variantsites.vcf.gz
+  - vcf/all.variantsites.vcf.gz.tbi: monkeyflower/small/all.variantsites.vcf.gz.tbi
 
 __redyellow_variants__:
-  - monkeyflower/small/redyellow.variantsites.vcf.gz
-  - monkeyflower/small/redyellow.variantsites.vcf.gz.tbi
-  - monkeyflower/tiny/redyellow.allsites.vcf.gz
-  - monkeyflower/tiny/redyellow.allsites.vcf.gz.tbi
+  - redyellow/variantsites.vcf.gz: monkeyflower/small/redyellow.variantsites.vcf.gz
+  - redyellow/variantsites.vcf.gz.tbi: monkeyflower/small/redyellow.variantsites.vcf.gz.tbi
+  - redyellow/allsites.vcf.gz: monkeyflower/tiny/redyellow.allsites.vcf.gz
+  - redyellow/allsites.vcf.gz.tbi: monkeyflower/tiny/redyellow.allsites.vcf.gz.tbi
 
 # Exercise/slide data sections
 exercises/datasets:
@@ -164,36 +164,33 @@ slides/foundations:
     - data/Homo_sapiens: Homo_sapiens
 
 slides/variant_calling:
-  dir: data
   content:
-    - monkeyflower/tiny/PUN-R-ELF/PUN-R-ELF_R1.fastq.gz
-    - monkeyflower/tiny/PUN-R-ELF/PUN-R-ELF_R2.fastq.gz
-    - monkeyflower/tiny/PUN-R-ELF/PUN-R-ELF.sort.dup.bam
-    - monkeyflower/tiny/PUN-R-ELF/PUN-R-ELF.sort.dup.bai
-    - monkeyflower/tiny/PUN-R-ELF/PUN-R-ELF.sort.dup.recal.bam
-    - monkeyflower/tiny/PUN-R-ELF/PUN-R-ELF.sort.dup.recal.bai
-    - monkeyflower/tiny/PUN-Y-INJ/PUN-Y-INJ_R1.fastq.gz
-    - monkeyflower/tiny/PUN-Y-INJ/PUN-Y-INJ_R2.fastq.gz
-    - monkeyflower/tiny/PUN-Y-INJ/PUN-Y-INJ.sort.dup.recal.bam
-    - monkeyflower/tiny/PUN-Y-INJ/PUN-Y-INJ.sort.dup.recal.bai
-    - monkeyflower/tiny/PUN-Y-INJ/PUN-Y-INJ.sort.dup.bam
-    - monkeyflower/tiny/PUN-Y-INJ/PUN-Y-INJ.sort.dup.bai
-    - monkeyflower/small/redyellow.variantsites.vcf.gz
-    - monkeyflower/small/redyellow.variantsites.vcf.gz.tbi
-    - allsites.vcf.gz: monkeyflower/tiny/redyellow.allsites.vcf.gz
-    - allsites.vcf.gz.tbi: monkeyflower/tiny/redyellow.allsites.vcf.gz.tbi
+    - fastq/PUN-R-ELF_R1.fastq.gz: monkeyflower/tiny/PUN-R-ELF/PUN-R-ELF_R1.fastq.gz
+    - fastq/PUN-R-ELF_R2.fastq.gz: monkeyflower/tiny/PUN-R-ELF/PUN-R-ELF_R2.fastq.gz
+    - bam/PUN-R-ELF.bam: monkeyflower/tiny/PUN-R-ELF/PUN-R-ELF.sort.dup.bam
+    - bam/PUN-R-ELF.bai: monkeyflower/tiny/PUN-R-ELF/PUN-R-ELF.sort.dup.bai
+    - gatk-bqsr/PUN-R-ELF.bam: monkeyflower/tiny/PUN-R-ELF/PUN-R-ELF.sort.dup.recal.bam
+    - gatk-bqsr/PUN-R-ELF.bai: monkeyflower/tiny/PUN-R-ELF/PUN-R-ELF.sort.dup.recal.bai
+    - fastq/PUN-Y-INJ_R1.fastq.gz: monkeyflower/tiny/PUN-Y-INJ/PUN-Y-INJ_R1.fastq.gz
+    - fastq/PUN-Y-INJ_R2.fastq.gz: monkeyflower/tiny/PUN-Y-INJ/PUN-Y-INJ_R2.fastq.gz
+    - gatk-bqsr/PUN-Y-INJ.bam: monkeyflower/tiny/PUN-Y-INJ/PUN-Y-INJ.sort.dup.recal.bam
+    - gatk-bqsr/PUN-Y-INJ.bai: monkeyflower/tiny/PUN-Y-INJ/PUN-Y-INJ.sort.dup.recal.bai
+    - bam/PUN-Y-INJ.bam: monkeyflower/tiny/PUN-Y-INJ/PUN-Y-INJ.sort.dup.bam
+    - bam/PUN-Y-INJ.bai: monkeyflower/tiny/PUN-Y-INJ/PUN-Y-INJ.sort.dup.bai
+    - vcf/variantsites.vcf.gz: monkeyflower/small/redyellow.variantsites.vcf.gz
+    - vcf/variantsites.vcf.gz.tbi: monkeyflower/small/redyellow.variantsites.vcf.gz.tbi
+    - vcf/allsites.vcf.gz: monkeyflower/tiny/redyellow.allsites.vcf.gz
+    - vcf/allsites.vcf.gz.tbi: monkeyflower/tiny/redyellow.allsites.vcf.gz.tbi
     - __reference__
 
 slides/variant_filtering:
-  dir: data
   content:
     - __redyellow_variants__
     - __reference__
 
 slides/genetic_diversity:
-  dir: data
   content:
     - __sampleinfo__
-    - annotation.gff: monkeyflower/tiny/MAUR_annotation_functional_submission.gff
-    - allsites.vcf.gz: monkeyflower/tiny/redyellow.allsites.vcf.gz
-    - allsites.vcf.gz.tbi: monkeyflower/tiny/redyellow.allsites.vcf.gz.tbi
+    - gff/annotation.gff: monkeyflower/tiny/MAUR_annotation_functional_submission.gff
+    - vcf/allsites.vcf.gz: monkeyflower/tiny/redyellow.allsites.vcf.gz
+    - vcf/allsites.vcf.gz.tbi: monkeyflower/tiny/redyellow.allsites.vcf.gz.tbi
