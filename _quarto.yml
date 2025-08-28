@@ -28,9 +28,11 @@ project:
     - exercises/compute_environment/index.qmd
     - exercises/datasets/monkeyflowers.qmd
     - exercises/variant_calling/index.qmd
-    - exercises/variant_calling/variant_calling_long.qmd
+    - exercises/variant_calling/introduction.qmd
     - exercises/variant_calling/data_qc.qmd
     - exercises/variant_calling/read_mapping.qmd
+    - exercises/variant_calling/variant_calling_workflow.qmd
+    - exercises/variant_calling/variant_calling_long.qmd
     # Recipes
     - recipes/index.qmd
     - recipes/slides/index.qmd
@@ -55,7 +57,7 @@ format:
     code-link: true
     code-block-border-left: "#a7c947"
     page-layout: full
-    fontsize: 1.8em
+    fontsize: 1.4em
     lightbox:
       match: auto
   nbis-quarto-revealjs:

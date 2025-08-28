@@ -1,0 +1,296 @@
+---
+title: Variant calling workflow
+author:
+  - Per Unneberg
+format: nbis-course-html
+execute:
+  cache: false
+---
+
+{{< include ../_knitr.qmd >}}
+
+{{< include ../_rlibs.qmd >}}
+
+{{< include _init_data.qmd >}}
+
+::: {.callout-tip collapse=true}
+
+## Learning objectives
+
+- Learn how workflow managers can automate complex tasks
+- Get familiar with the Snakemake manager
+
+:::
+
+::: {.callout-note collapse=true}
+
+## Tools
+
+:::{.panel-tabset}
+
+#### Listing
+
+- [bcftools](https://samtools.github.io/bcftools/bcftools.html) [@danecek_TwelveYearsSAMtools_2021]
+- [bwa](https://github.com/lh3/bwa) [@li_AligningSequenceReads_2013]
+- [fastqc](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/)
+- [Genome Analysis ToolKit  (GATK)](https://gatk.broadinstitute.org/hc/en-us)   [@depristo_FrameworkVariationDiscovery_2011]
+- [multiqc](https://multiqc.info/) [@ewels_MultiQCSummarizeAnalysis_2016]
+- [picard](https://github.com/broadinstitute/picard) [@Picard2019toolkit]
+- [qualimap](http://qualimap.conesalab.org/) [@okonechnikov_QualimapAdvancedMultisample_2016]
+- [samtools](https://github.com/samtools/samtools) [@danecek_TwelveYearsSAMtools_2021]
+- [snakemake](https://snakemake.readthedocs.io/en/stable/index.html) [@molder_SustainableDataAnalysis_2021]
+
+#### {{< fa server >}} PDC
+
+Choose **one** of **Modules** and **Virtual environment** to access
+relevant tools.
+
+##### Modules
+
+Execute the following command to load modules:
+
+```{bash }
+#| label: pdc-load-modules
+#| echo: true
+#| eval: false
+module load bcftools/1.20 bwa/0.7.18 fastqc/0.12.1 \
+       gatk/4.5.0.0 multiqc/1.30 picard/3.3.0 \
+       QualiMap/2.2.1 samtools/1.20 snakemake/9.9.0 \
+       PDCOLD/23.12
+```
+
+##### Virtual environment
+
+Activate the `e-variant-calling` environment:
+
+```bash
+# $OPTIONS is provided via the init script
+pixi shell -e e-variant-calling $OPTIONS
+```
+
+#### {{< fa laptop >}} pixi
+
+Copy the contents to a file `pixi.toml` in directory
+`variant-calling`, `cd` to directory and activate environment with
+`pixi shell`. If `variant-calling/pixi.toml` already exists, simply
+add the three dependencies to the `[dependencies]` section and run
+`pixi update`.
+
+```{.toml}
+[workspace]
+channels = ["conda-forge", "bioconda"]
+name = "variant-calling"
+
+[dependencies]
+bcftools = ">=1.22,<2"
+bwa = ">=0.7.19,<0.8"
+fastqc = ">=0.12.1,<0.13"
+gatk4 = ">=4.6.2.0,<5"
+multiqc = ">=1.30,<2"
+picard = ">=3.4.0,<4"
+qualimap = ">=2.3,<3"
+samtools = ">=1.22.1,<2"
+snakemake = ">=9.9.0,<10"
+```
+
+:::
+
+:::
+
+## Workflow managers
+
+The advent of next-generation sequencing and other high-throughput
+technologies have contributed to increasing data complexity and data
+volumes, leading to scalability and reproducibility issues
+[@wratten_ReproducibleScalableShareable_2021]. A number of workflow
+managers have beed developed to meet these needs, including
+[Snakemake](https://snakemake.readthedocs.io/en/stable/)
+[@molder_SustainableDataAnalysis_2021] and
+[Nextflow](https://www.nextflow.io/)
+[@ditommaso_NextflowEnablesReproducible_2017].
+
+In this exercise, we will use Snakemake to run a variant calling
+workflow from start to end. We urge the reader to briefly skim the
+Snakefile^[Snakemake borrows much of its terminology and philosophy
+from [Make](https://en.wikipedia.org/wiki/Make_(software)), which was
+originally designed to automate software builds.], the Snakemake
+command file. We will briefly describe how Snakemake works in the next
+section, but going into any details is out of the scope of this
+exercise. See the [Snakemake
+documentation](https://snakemake.readthedocs.io/en/stable/) for more
+information, and if you want to learn more, there are NBIS courses on
+[reproducible
+research](https://nbis.se/training/tools-for-reproducible-research)
+and
+[Snakemake](https://nbis.se/training/snakemake-byoc-bring-your-own-code-workshop).
+
+### A very brief overview of a Snakefile
+
+A Snakemake workflow consists of rules that determine how inputs are
+connected to outputs. Rules are defined in a so-called
+[Snakefile](https://snakemake.readthedocs.io/en/stable/snakefiles/rules.html).
+Below is an example of a bare minimum rule:
+
+```text
+rule samtools_index:
+    output:
+        "ref/M_aurantiacus_v1.fasta.fai"
+    input:
+        "ref/M_aurantiacus_v1.fasta"
+    shell:
+        "samtools faidx {input} -o {output}"
+```
+
+The rule consists of a **name** (`samtools_faidx`) and **keywords**
+(`output`, `input`, `shell`). The `shell` keyword defines a shell
+command to be run (`samtools faidx`), which will take the `input`
+(`ref/M_aurantiacus_v1.fasta`) and produce an `output`
+(`ref/M_aurantiacus_v1.fasta.fai`). Note here the curly brackets; these
+are [Snakemake
+wildcards](https://snakemake.readthedocs.io/en/stable/snakefiles/rules.html#wildcards)
+which makes it possible to generalize rules to match file name
+patterns.
+
+Provided the input file exists, running `snakemake` would produce the
+output, unless the output already exists. This is one neat feature of
+workflow managers - they are designed to detect whether input files
+are newer than output files, and only then will they forcefully
+regenerate the output^[You can also provide the `--force` flag to
+regenerate an output, regardless of whether the input file is younger
+or not.].
+
+:::{.callout-exercise}
+
+Copy the `samtools_index` rule to a file called `Snakefile` and run
+`snakemake --dry-run --printshellcmds --force` (alternatively
+`snakemake -n -p`). What happens?
+
+:::{.callout-answer}
+
+Snakemake will output what jobs it will run, the reason, and which
+shell command.
+
+:::
+
+:::
+
+A workflow is built by connecting outputs from one rule to inputs of
+another. A rule can depend on multiple inputs, as well as produce
+multiple outputs.
+
+:::{.callout-exercise}
+
+In the above Snakefile, add a rule `count_lines` that uses the input
+`ref/M_aurantiacus_v1.fasta.fai` to generate the output file `wc.txt`,
+and where the shell command is uses `wc -l` to count lines in the
+input and redirect (`>`) to output. Then run the command `snakemake
+wc.txt` and look at the contents of the file.
+
+:::{.callout-answer}
+
+```
+rule samtools_index:
+    output:
+        "ref/M_aurantiacus_v1.fasta.fai"
+    input:
+        "ref/M_aurantiacus_v1.fasta"
+    shell:
+        "samtools faidx {input} -o {output}"
+
+rule count_lines:
+    output: "wc.txt"
+    input: "ref/M_aurantiacus_v1.fasta.fai"
+    shell: "wc -l {input} > {output}"
+```
+
+:::
+
+:::
+
+:::{.callout-important}
+
+Make sure to remove the Snakefile before proceeding as it otherwise
+will take precedence over the `workflow/Snakefile`.
+
+:::
+
+### A look into the variant calling Snakefile
+
+Open `workflow/Snakefile` and look briefly at the contents. The top
+portion contains code to read the sampleinfo file and defines a
+variable `REFERENCE` that can be used throughout^[Snakemake is written
+in Python. If you're familiar with Python, you will recognize much of
+the syntax.]:
+
+``` {python code=readLines("workflow/Snakefile")[0:10] }
+#| label: Snakefile-heading
+#| eval: false
+#| code-line-numbers: true
+```
+
+By default, Snakemake runs the argument if no filename is provided
+when running. By convention, the first rule is called `all`:
+
+```{python code=readLines("workflow/Snakefile")[11:13] }
+#| label: Snakefile-all
+#| eval: false
+#| code-line-numbers: true
+```
+
+This is a so-called
+[pseudo-rule](https://snakemake.readthedocs.io/en/stable/snakefiles/rules.html#target-rules)
+which are used to list the final desired output file. The workflow
+will figure out how to generate necessary inputs.
+
+The remainder of the file contain the "regular" rule definitions. They
+have been kept as simple as possible, but you will notice that we have
+made use of some additional code constructs not mentioned above. Skim
+the file, and look at the `multiqc` rule at the bottom. Notice how it
+is used to "collect" necessary inputs which all have to be generated
+before the report is written.
+
+It can be difficult to get an overview of the workflow by simply
+looking at the Snakefile. Therefore, we end by showing a rulegraph of
+the workflow, which shows how rules are connected:
+
+```{bash }
+#| label: snakemake-rulegraph-print
+#| echo: true
+#| eval: false
+snakemake --rulegraph | dot -Tpng | display
+```
+
+```{bash }
+#| label: snakemake-rulegraph
+#| echo: false
+#| eval: true
+#| output: asis
+#| fig-format: svg
+#| fig-align: center
+snakemake -s workflow/Snakefile --rulegraph 2>/dev/null | \
+    dot -T svg | grep -v "<!DOCTYPE" | grep -v "dtd"
+```
+
+## Running the workflow
+
+Now we turn to actually running the workflow. First use the options
+`snakemake -n -p` to check what the actual command flow looks
+like^[You can also add the flag `--forceall/-F` to trigger a rerun of
+**all** outputs.]. If everything looks ok, launch Snakemake, adding
+the `--cores` option to run jobs in parallel:
+
+```bash
+snakemake --cores {{< var naiss_max_cores >}}
+```
+
+That's all there is to it! Now you can take a break / listen to the
+next lecture while the workflow (hopefully) runs to completion without
+interruptions.
+
+:::{.callout-exercise}
+
+Once the workflow has finished, open and have a look at
+`multiqc_report.html`. Also check the output variant files in
+directory `gatk-genotype-gvcfs`.
+
+:::

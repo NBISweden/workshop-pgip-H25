@@ -63,7 +63,9 @@ results will differ from those presented here.
 
 #### Listing
 
-[fastqc](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/)
+- [bwa](https://github.com/lh3/bwa) [@li_AligningSequenceReads_2013]
+- [picard](https://github.com/broadinstitute/picard) [@Picard2019toolkit]
+- [samtools](https://github.com/samtools/samtools) [@danecek_TwelveYearsSAMtools_2021]
 
 #### {{< fa server >}} PDC
 
@@ -78,7 +80,7 @@ Execute the following command to load modules:
 #| label: pdc-load-modules
 #| echo: true
 #| eval: false
-module load fastqc/0.12.1
+module load bwa/0.7.18 picard/3.3.0 samtools/1.20
 ```
 
 ##### Virtual environment
@@ -94,7 +96,9 @@ pixi shell -e e-variant-calling $OPTIONS
 
 Copy the contents to a file `pixi.toml` in directory
 `variant-calling`, `cd` to directory and activate environment with
-`pixi shell`.
+`pixi shell`. If `variant-calling/pixi.toml` already exists, simply
+add the three dependencies to the `[dependencies]` section and run
+`pixi update`.
 
 ```{lang="text" }
 [workspace]
@@ -102,128 +106,72 @@ channels = ["conda-forge", "bioconda"]
 name = "variant-calling"
 
 [dependencies]
-fastqc = ">=0.12.1,<0.13"
+bwa = ">=0.7.19,<0.8"
+picard = ">=3.4.0,<4"
+samtools = ">=1.22.1,<2"
 ```
 
 :::
 
 :::
 
-### Read quality control
+## Preparation: reference sequence index and read QC
 
-:::{.column-margin}
-
-:::{#fig-fastqc-base-quality}
-
-![](fastqc/PUN-Y-INJ_R1_fastqc/Images/per_base_quality.png)
-
-![](fastqc/PUN-Y-INJ_R2_fastqc/Images/per_base_quality.png)
-
-Per base quality scores, read 1 (upper) and read 2 (lower panel),
-obtained from the FastQC program. Quality values are on the $y$-axis,
-base position in sequence read on $x$-axis.
-
-:::
-
-:::
-
-DNA sequencers score the quality of each sequenced base as [phred
-quality scores](https://en.wikipedia.org/wiki/Phred_quality_score),
-which is equivalent to the probability $P$ that the call is incorrect.
-The base quality scores, denoted $Q$, are defined as
-
-$$
-Q = -10 \log_{10} P
-$$
-
-which for $P=0.01$ gives $Q=20$. Converting from quality to
-probability is done by solving for $P$:
-
-$$
-P = 10^{-Q/10}
-$$
-
-Hence, a base quality score $Q=20$ (somtimes written Q20) corresponds
-to a 1% probability that the call is incorrect, Q30 a 0.1%
-probability, and so on, where the higher the quality score, the
-better. Bases with low quality scores are usually discarded from
-downstream analyses, but what is a good threshold? The human genome
-has approximately 1 SNP per 1,000 bp, which means sequencing errors
-will be ten times as probable in a single read for Q20 base calls. A
-reasonable threshold is therefore around Q20-Q30 for many purposes.
-
-The base qualities typically drop towards the end of the reads
-(@fig-fastqc-base-quality). Prior to mapping it may therefore be
-prudent to remove reads that display too high drop in quality, too low
-mean quality, or on some other quality metric reported by the qc
-software.
-
-The quality scores are encoded using ASCII codes. An example of a
-[FASTQ](https://en.wikipedia.org/wiki/FASTQ_format) sequence is given
-below. The code snippet shows an example of shell commands^[For any
-shell command, use the option `--help` to print information about the
-commands and its options. `zcat` is a variant of the `cat` command
-that prints the contents of a file on the terminal; the `z` prefix
-shows the command works on compressed files, a common naming
-convention. `head` views the first lines of a file, and `cut` can be
-used to cut out columns from a tab-delimited file, or in this case,
-cut the longest strings to 30 characters width.] that are separated by
-a so-called pipe (`|`) character which takes the output from one
-process and sends it as input to the next^[For more information, see
-[unix pipelines](<https://en.wikipedia.org/wiki/Pipeline_(Unix)>)].
-
-Note that we use the *long* option names to clarify commands, and we
-aim to do so consistently when a new command is introduced. Once you
-feel confident you know what a command does, you will probably want to
-switch to *short* option names, and we may do so in the instructions
-for some commonly used commands (e.g., `head -n`) without warning.
-Remember to use `--help` to examine command options.
+Prior to mapping we need to create a database index. We also generate
+a fasta index and a sequence dictionary for use with the `picard`
+toolkit.
 
 ```{bash }
-#| label: cat-fastq
+#| label: samtools-faidx
 #| echo: true
 #| eval: true
-#| fig-cap: |
-# Command using long (-- prefix) option names
-zcat fastq/PUN-Y-INJ_R1.fastq.gz | head --lines 4 | cut --characters -30
-# Equivalent command using short (single -, single character) option names
-# zcat fastq/PUN-Y-INJ_R1.fastq.gz | head -n 4 | cut -c -30
+#| results: hide
+samtools faidx ref/M_aurantiacus_v1.fasta
+picard CreateSequenceDictionary --REFERENCE ref/M_aurantiacus_v1.fasta
+bwa index ref/M_aurantiacus_v1.fasta
 ```
 
-A FASTQ entry consists of four lines:
+With the program `fastqc` we can generate quality control reports for
+all input `FASTQ` files simultaneously, setting the output directory
+with the `-o` flag:
 
-1. sequence id (prefixed by `@`)
-2. DNA sequence
-3. separator (`+`)
-4. phred base quality scores
+```{bash }
+#| label: fastqc-red
+#| echo: true
+#| eval: true
+#| results: hide
+# Make fastqc output directory; --parents makes parent directories as
+# needed
+mkdir --parents fastqc
+fastqc --outdir fastqc fastq/*fastq.gz
+```
 
 ::: {.callout-exercise}
 
-{{< fa brands linux >}} Use the command `wc` to determine how many
-sequences are in `PUN-Y-INJ_R1.fastq.gz`.
-
-::: {.callout-hint}
-
-The `wc` help page (`wc --help`) shows `wc` prints newline, word and
-byte counts for a file, where newline is what we're after. We can
-restrict the output to newline characters with the `--lines` option.
-Use `zcat` to print the contents of `PUN-Y-INJ_R1.fastq.gz` to the
-screen, piping (`|`) the output to `wc --lines`.
-
-:::
+`cd` to the output directory and look at the `html` reports. Do you
+notice any difference between read 1 (R1) and read 2 (R2)?
 
 ::: {.callout-answer}
 
 ```{bash }
-#| label: wc-exercise-answer
+#| label: fastqc-exercise-answer
 #| echo: true
 #| eval: false
-zcat fastq/PUN-Y-INJ_R1.fastq.gz | wc --lines
+cd fastqc
+open PUN-Y-INJ_R1_fastqc.html
+open PUN-Y-INJ_R2_fastqc.html
 ```
 
-Since there are four lines per sequence (id, sequence, `+` separator,
-qualities) you need to divide the final number by four (622744 / 4).
+The traffic light summary indicates whether a given quality metric has
+passed or not. Typically, read 2 has slightly lower quality and more
+quality metrics with warnings. Since these reads have been deposited
+in the [Sequence Read Archive](https://www.ncbi.nlm.nih.gov/sra)
+(SRA), it is likely they were filtered prior to upload, and we will
+not take any further action here.
 
 :::
 
 :::
+
+We will use `MultiQC` later on to combine the results from several
+output reports.
