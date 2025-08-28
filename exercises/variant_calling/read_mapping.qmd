@@ -163,6 +163,16 @@ Sys.setenv(SRR = "SRR9309790", SAMPLE = "PUN-Y-INJ", REF = "ref/M_aurantiacus_v1
 ```
 
 ```{bash }
+#| label: map-ubam-with-envvars
+#| echo: false
+#| eval: true
+#| results: hide
+samtools fastq ubam/${SAMPLE}.bam | \
+ bwa mem -R "@RG\tID:${SRR}\tSM:${SAMPLE}\tPL:ILLUMINA" -t 4 -p -M ${REF} - | \
+ samtools sort - | samtools view -h -o bam/${SAMPLE}.bam
+```
+
+```{bash }
 #| label: picard-mark-duplicates
 #| echo: true
 #| eval: true
