@@ -19,7 +19,7 @@ format:
 #| label: make-results-directory
 #| echo: false
 #| eval: true
-mkdir -p results
+mkdir -p results bed
 ```
 
 # Genetic diversity
@@ -525,7 +525,11 @@ print(plot_tree(
 #| eval: true
 from trees import ts_small_mut, genotypes
 x = genotypes(ts_small_mut)
-print("\n".join([f"{k}:   {v}" for k, v in zip(x.index, x.values)]))
+for i, v in enumerate(x):
+    print(f"Sample {i}:   {v}")
+    if i == 1:
+        print()
+print("\n")
 ```
 
 Divergence: for each site, count and sum differences between all pairs
@@ -597,7 +601,11 @@ print(plot_tree(
 #| eval: true
 from trees import ts_small_mut, genotypes
 x = genotypes(ts_small_mut)
-print("\n".join([f"{k}:   {v}" for k, v in zip(x.index, x.values)]))
+for i, v in enumerate(x):
+    print(f"Sample {i}:   {v}")
+    if i == 1:
+        print()
+print("\n")
 ```
 
 ```{python }
@@ -671,7 +679,11 @@ diversity *within* subpopulations.
 #| eval: true
 from trees import ts_small_mut, genotypes
 x = genotypes(ts_small_mut)
-print("\n".join([f"{k}:   {v}" for k, v in zip(x.index, x.values)]))
+for i, v in enumerate(x):
+    print(f"Sample {i}:   {v}")
+    if i == 1:
+        print()
+print("\n")
 ```
 
 Allele Frequency Difference (AFD) proposed as intuitive alternative to
@@ -757,7 +769,11 @@ AFD proposed as a more intuitive and easier to understand statistic than Fst
 #| eval: true
 from trees import ts_small_mut, genotypes
 x = genotypes(ts_small_mut)
-print("\n".join([f"{k}:   {v}" for k, v in zip(x.index, x.values)]))
+for i, v in enumerate(x):
+    print(f"Sample {i}:   {v}")
+    if i == 1:
+        print()
+print("\n")
 ```
 
 {{< var fst >}} is another measure of differention among
@@ -854,7 +870,11 @@ differentiation from molecular data.
 #| eval: true
 from trees import ts_small_mut, genotypes
 x = genotypes(ts_small_mut)
-print("\n".join([f"{k}:   {v}" for k, v in zip(x.index, x.values)]))
+for i, v in enumerate(x):
+    print(f"Sample {i}:   {v}")
+    if i == 1:
+        print()
+print("\n")
 ```
 
 :::{}
@@ -1017,7 +1037,7 @@ Caption:
 #| echo: true
 #| eval: true
 #| results: hide
-vcftools --gzvcf data/allsites.vcf.gz --window-pi 1000 --out results/out
+vcftools --gzvcf vcf/allsites.vcf.gz --window-pi 1000 --out results/out
 csvtk plot line --tabs results/out.windowed.pi -x BIN_START -y PI \
    --point-size 0.01 --xlab "Position (bp)" \
    --ylab "Diversity" --title LG4 --width 9.0 --height 3.5 \
@@ -1110,7 +1130,7 @@ Caption (fig 1):
 #| echo: true
 #| eval: true
 #| results: hide
-vcftools --gzvcf data/allsites.vcf.gz --weir-fst-pop PUN-Y.txt \
+vcftools --gzvcf vcf/allsites.vcf.gz --weir-fst-pop PUN-Y.txt \
    --weir-fst-pop PUN-R.txt \
    --fst-window-size 1000 \
    --out results/out
@@ -1197,12 +1217,12 @@ windows are independent.
 #| label: pixy-prepare-annotation
 #| echo: true
 #| eval: true
-csvtk filter2 --tabs data/annotation.gff --filter ' $3 == "CDS" ' |\
+csvtk filter2 --tabs gff/annotation.gff --filter ' $3 == "CDS" ' |\
  csvtk mutate2 --tabs -H -e '$4 - 12000000' -w 0 |\
  csvtk mutate2 --tabs -H -e '$5 - 12000000' -w 0 |\
  csvtk cut --tabs --fields 1,10,11 | bedtools sort | bedtools merge \
-    > data/CDS.bed 2>/dev/null
-head -n 3 data/CDS.bed
+    > bed/CDS.bed 2>/dev/null
+head -n 3 bed/CDS.bed
 ```
 
 ```{bash }
@@ -1210,10 +1230,10 @@ head -n 3 data/CDS.bed
 #| echo: true
 #| eval: true
 #| results: hide
-pixy --vcf data/allsites.vcf.gz --stats pi \
+pixy --vcf vcf/allsites.vcf.gz --stats pi \
  --populations populations.txt --output_prefix cds \
- --output_folder results --bed_file data/CDS.bed
-pixy --vcf data/allsites.vcf.gz --stats pi \
+ --output_folder results --bed_file bed/CDS.bed
+pixy --vcf vcf/allsites.vcf.gz --stats pi \
  --populations populations.txt --window_size 1000 \
  --output_prefix all --output_folder results
 ```

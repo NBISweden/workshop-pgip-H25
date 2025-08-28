@@ -174,7 +174,7 @@ sequencing technologies or assembly).
 #| label: samtools-faidx-reference
 #| echo: false
 #| eval: true
-samtools faidx data/M_aurantiacus_v1.fasta
+samtools faidx ref/M_aurantiacus_v1.fasta
 ```
 
 :::: {.columns}
@@ -185,7 +185,7 @@ samtools faidx data/M_aurantiacus_v1.fasta
 #| label: show-fastq-real-data
 #| echo: false
 #| eval: true
-zcat data/PUN-Y-INJ_R1.fastq.gz | head --lines 8 | cut --characters -30
+zcat fastq/PUN-Y-INJ_R1.fastq.gz | head --lines 8 | cut --characters -30
 ```
 
 :::
@@ -198,8 +198,8 @@ zcat data/PUN-Y-INJ_R1.fastq.gz | head --lines 8 | cut --characters -30
 #| eval: true
 #| results: asis
 samtools tview -p LG4:30430 -d H -w 47 \
-   data/PUN-Y-INJ.sort.dup.bam \
-   data/M_aurantiacus_v1.fasta
+   bam/PUN-Y-INJ.bam \
+   ref/M_aurantiacus_v1.fasta
 ```
 
 :::
@@ -375,14 +375,14 @@ per library and SMRT cell
 #| label: list-fastq-files
 #| echo: true
 #| eval: false
-ls --long --human data/*.fastq.gz
+ls --long --human fastq/*.fastq.gz
 ```
 
 ```{bash }
 #| label: list-fastq-files-dereference
 #| echo: false
 #| eval: true
-ls -lLh data/PUN-Y*.fastq.gz
+ls -lLh fastq/PUN-Y*.fastq.gz
 ```
 
 ::: {.fragment}
@@ -393,7 +393,7 @@ Count number of lines:
 #| label: count-entries-fastq-file
 #| echo: true
 #| eval: true
-zcat data/PUN-Y-INJ_R1.fastq.gz | wc --lines
+zcat fastq/PUN-Y-INJ_R1.fastq.gz | wc --lines
 ```
 
 :::
@@ -421,7 +421,7 @@ Format:
 #| label: show-fastq
 #| echo: true
 #| eval: true
-zcat data/PUN-Y-INJ_R1.fastq.gz | head --lines 8 | cut --characters -30
+zcat fastq/PUN-Y-INJ_R1.fastq.gz | head --lines 8 | cut --characters -30
 ```
 
 :::
@@ -453,8 +453,8 @@ separator with optional description 4. the quality scores
 #| label: fastqc-plot
 #| echo: false
 #| eval: false
-mkdir -p results
-fastqc --extract --outdir results data/PUN-Y-INJ_R1.fastq.gz
+mkdir -p fastqc
+fastqc --extract --outdir fastqc fastq/PUN-Y-INJ_R1.fastq.gz
 ```
 
 Quality values represent the probability $P$ that the call is
@@ -476,7 +476,7 @@ A common way to do QC is with `fastqc`:
 #| label: fastqc-example
 #| echo: true
 #| eval: false
-fastqc --outdir results --extract data/*fastq.gz
+fastqc --outdir fastqc --extract fastq/*fastq.gz
 ```
 
 :::
@@ -657,7 +657,7 @@ For a recent comprehensive comparison see @donato_NewEvaluationMethods_2021
 #| label: bam-format-header
 #| echo: true
 #| eval: true
-samtools view --header-only data/PUN-Y-INJ.sort.dup.bam | head --lines 4
+samtools view --header-only bam/PUN-Y-INJ.bam | head --lines 4
 ```
 
 Format: metadata record types prefixed with `@`, e.g., `@RG` is the *read group*
@@ -672,7 +672,7 @@ Format: metadata record types prefixed with `@`, e.g., `@RG` is the *read group*
 #| label: bam-format-alignment
 #| echo: true
 #| eval: true
-samtools view data/PUN-Y-INJ.sort.dup.bam | head --lines 1
+samtools view bam/PUN-Y-INJ.bam | head --lines 1
 ```
 
 Some important columns: 1:`QUERY`, 3:`REFERENCE`, 4:`POSITION`,
@@ -710,8 +710,8 @@ being mapped and the reference sequence to which the query is mapped.
 #| eval: true
 #| results: asis
 samtools tview -p LG4:30430 -d H -w 60 \
-   data/PUN-Y-INJ.sort.dup.bam \
-   data/M_aurantiacus_v1.fasta
+   bam/PUN-Y-INJ.bam \
+   ref/M_aurantiacus_v1.fasta
 ```
 
 :::
@@ -728,8 +728,8 @@ samtools tview -p LG4:30430 -d H -w 60 \
 #| eval: true
 #| results: asis
 samtools tview -p LG4:30430 -d H -w 60 \
-   data/PUN-R-ELF.sort.dup.bam \
-   data/M_aurantiacus_v1.fasta
+   bam/PUN-R-ELF.bam \
+   ref/M_aurantiacus_v1.fasta
 ```
 
 :::
@@ -777,8 +777,8 @@ After preprocessing, reads are mapped to a reference. Observations:
 #| eval: true
 #| results: asis
 samtools tview -p LG4:30430 -d H -w 60 \
-   data/PUN-Y-INJ.sort.dup.bam \
-   data/M_aurantiacus_v1.fasta
+   bam/PUN-Y-INJ.bam \
+   ref/M_aurantiacus_v1.fasta
 ```
 
 :::
@@ -797,8 +797,8 @@ samtools tview -p LG4:30430 -d H -w 60 \
 #| eval: true
 #| results: asis
 samtools tview -p LG4:30430 -d H -w 60 \
-   data/PUN-R-ELF.sort.dup.bam \
-   data/M_aurantiacus_v1.fasta
+   bam/PUN-R-ELF.bam \
+   ref/M_aurantiacus_v1.fasta
 ```
 
 :::
@@ -870,8 +870,8 @@ likely call is homozygote alternate.
 #| eval: true
 #| results: asis
 samtools tview -p LG4:32011 -d H -w 3 \
-   data/PUN-Y-INJ.sort.dup.bam \
-   data/M_aurantiacus_v1.fasta | \
+   bam/PUN-Y-INJ.bam \
+   ref/M_aurantiacus_v1.fasta | \
  sed -e "s/LG4:32011//g"
 ```
 
@@ -953,8 +953,8 @@ to the interested reader.
 #| eval: true
 #| results: asis
 samtools tview -p LG4:32011 -d H -w 3 \
-   data/PUN-Y-INJ.sort.dup.bam \
-   data/M_aurantiacus_v1.fasta | \
+   bam/PUN-Y-INJ.bam \
+   ref/M_aurantiacus_v1.fasta | \
  sed -e "s/LG4:32011//g"
 ```
 
@@ -1101,10 +1101,10 @@ $$
 #| label: vcf-format-header
 #| echo: true
 #| eval: true
-bcftools view --header-only data/allsites.vcf.gz | head --lines 1
-bcftools view --header-only data/allsites.vcf.gz | grep "##FILTER"
-bcftools view -h data/allsites.vcf.gz | grep "##INFO" | head -n 4
-bcftools view -h data/allsites.vcf.gz | grep "##FORMAT" | head -n 8
+bcftools view --header-only vcf/allsites.vcf.gz | head --lines 1
+bcftools view --header-only vcf/allsites.vcf.gz | grep "##FILTER"
+bcftools view -h vcf/allsites.vcf.gz | grep "##INFO" | head -n 4
+bcftools view -h vcf/allsites.vcf.gz | grep "##FORMAT" | head -n 8
 ```
 
 `FILTER` defines applied filters , `INFO` fields provide additional
@@ -1125,9 +1125,9 @@ genotype entries, and more. NB: `PL` format definition.
 #| label: vcf-format-data
 #| echo: true
 #| eval: true
-bcftools view --header-only --samples PUN-R-ELF,PUN-Y-INJ data/allsites.vcf.gz |\
+bcftools view --header-only --samples PUN-R-ELF,PUN-Y-INJ vcf/allsites.vcf.gz |\
  tail --lines 1
-bcftools view --no-header  --samples PUN-R-ELF,PUN-Y-INJ data/allsites.vcf.gz LG4:6886
+bcftools view --no-header  --samples PUN-R-ELF,PUN-Y-INJ vcf/allsites.vcf.gz LG4:6886
 ```
 
 :::{}
@@ -1154,9 +1154,9 @@ bcftools view --no-header  --samples PUN-R-ELF,PUN-Y-INJ data/allsites.vcf.gz LG
 #| label: vcf-format-data-2
 #| echo: false
 #| eval: true
-bcftools view --header-only --samples PUN-R-ELF,PUN-Y-INJ data/allsites.vcf.gz |\
+bcftools view --header-only --samples PUN-R-ELF,PUN-Y-INJ vcf/allsites.vcf.gz |\
  tail --lines 1
-bcftools view --no-header  --samples PUN-R-ELF,PUN-Y-INJ data/allsites.vcf.gz LG4:6886
+bcftools view --no-header  --samples PUN-R-ELF,PUN-Y-INJ vcf/allsites.vcf.gz LG4:6886
 ```
 
 :::: {.columns}
@@ -1204,8 +1204,8 @@ Interpretation: `0/1` 10,000 times more likely than `1/1`
 #| eval: true
 #| results: asis
 samtools tview -p LG4:6885 -d H -w 3 \
-   data/PUN-R-ELF.sort.dup.bam \
-   data/M_aurantiacus_v1.fasta | \
+   bam/PUN-R-ELF.bam \
+   ref/M_aurantiacus_v1.fasta | \
  sed -e "s/LG4:6885/ELF/g"
 ```
 
@@ -1219,8 +1219,8 @@ samtools tview -p LG4:6885 -d H -w 3 \
 #| eval: true
 #| results: asis
 samtools tview -p LG4:6885 -d H -w 3 \
-   data/PUN-Y-INJ.sort.dup.bam \
-   data/M_aurantiacus_v1.fasta | \
+   bam/PUN-Y-INJ.bam \
+   ref/M_aurantiacus_v1.fasta | \
  sed -e "s/LG4:6885/INJ/g"
 ```
 
