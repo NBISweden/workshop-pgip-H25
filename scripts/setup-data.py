@@ -3,8 +3,15 @@ import argparse
 import errno
 import logging
 import os
+import shutil
 
-import yaml
+try:
+    import yaml
+except ImportError as e:
+    import sys
+
+    print(sys.executable)
+    raise ImportError("Set QUARTO_PYTHON if quarto pulls in wrong interpreter!") from e
 
 ROOT = os.path.normpath(os.path.join(os.path.dirname(__file__), os.pardir))
 
@@ -21,6 +28,22 @@ def safe_link(src, dst, dir_fd):
         raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), src)
     try:
         os.symlink(src, dst, dir_fd=dir_fd)
+    except FileExistsError:
+        logging.debug(f"Path {dst} exists; skipping")
+    except Exception as e:
+        print(e)
+        raise
+
+
+def safe_copy(src, dst, session_d):
+    logging.debug(f"Copy {dst} -> {src}")
+    if not os.path.exists(src):
+        raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), src)
+    try:
+        if os.path.isdir(src):
+            shutil.copytree(src, session_d, dirs_exist_ok=True)
+        else:
+            shutil.copy2(src, os.path.join(session_d, dst), follow_symlinks=False)
     except FileExistsError:
         logging.debug(f"Path {dst} exists; skipping")
     except Exception as e:
@@ -75,9 +98,9 @@ def main():
             dst = os.path.join(dir, dst)
             session_d = os.path.join(session, os.path.dirname(dst))
             os.makedirs(session_d, exist_ok=True)
-            dir_fd = os.open(session_d, os.O_RDONLY)
+            # If safe_link: dir_fd = os.open(session_d, os.O_RDONLY)
             src = abspath(os.path.join(DATAROOT, src))
-            safe_link(src, os.path.basename(dst), dir_fd)
+            safe_copy(src, os.path.basename(dst), session_d)
 
 
 if __name__ == "__main__":

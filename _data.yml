@@ -127,8 +127,10 @@ exercises/variant_calling:
   content:
     - __red_ubam__
     - __red_fastq__
+    - __red_recal_bam__
     - __yellow_ubam__
     - __yellow_fastq__
+    - __yellow_recal_bam__
     - __red_gvcf__
     - __yellow_gvcf__
     - __reference__
