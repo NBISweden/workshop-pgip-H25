@@ -5,6 +5,85 @@ author:
   - Per Unneberg
 ---
 
+<!-- markdownlint-disable MD041 -->
+
+{{< include ../_knitr.qmd >}}
+
+{{< include ../_rlibs.qmd >}}
+
+<!-- markdownlint-enable MD041 -->
+
+::: {.callout-tip collapse=true}
+
+## Learning objectives
+
+- Navigate directory tree
+- Run `fastqc` from command line
+
+:::
+
+::: {.callout-note collapse=true}
+
+## Tools
+
+:::{.panel-tabset}
+
+#### Listing
+
+```{r }
+#| label: tool-listing
+#| echo: false
+#| eval: true
+#| output: asis
+tool_list <- exercise_tools$variant_calling$introduction$tools
+cat(format_listing(tool_list))
+```
+
+#### {{< fa server >}} PDC
+
+Choose **one** of **Modules** and **Virtual environment** to access
+relevant tools.
+
+##### Modules
+
+Execute the following command to load modules:
+
+```{r }
+#| label: r-pdc-load-modules
+#| echo: false
+#| eval: true
+#| output: asis
+cat(format_modules(tool_list))
+```
+
+##### Virtual environment
+
+Activate the `{{< var exercises.variant_calling.venv >}}`
+environment:
+
+```bash
+# $OPTIONS is provided via the init script
+pixi shell -e {{< var exercises.variant_calling.venv >}} $OPTIONS
+```
+
+#### {{< fa laptop >}} pixi
+
+Copy the contents to a file `pixi.toml` in directory `{{< var
+exercises.variant_calling.dir >}}`, `cd` to directory and activate
+environment with `pixi shell`:
+
+```{r }
+#| label: r-pixi-manifest
+#| echo: false
+#| eval: true
+#| output: asis
+cat(format_pixi(tool_list, "{{< var exercises.variant_calling.dir >}}"))
+```
+
+:::
+
+:::
+
 ## Variant calling
 
 A generic variant calling workflow consists of the following basic

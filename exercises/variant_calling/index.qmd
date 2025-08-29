@@ -55,26 +55,38 @@ and run the exercise setup command:
 #| label: setup-exercise
 #| echo: true
 #| eval: false
-pgip exercises setup variant-calling -v
+pgip exercises setup {{< var exercises.variant_calling.dir >}} -v
 ```
 
 #### {{< fa laptop >}} Local
 
-Create an exercise directory called `exercises` and `cd` to it:
+Create an exercise directory called `{{< var
+exercises.variant_calling.dir >}}` and `cd` to it:
 
 ```{bash }
 #| label: create-exercises-directory-local
 #| echo: true
 #| eval: false
-mkdir -p exercises
-cd exercises
+mkdir -p {{< var exercises.variant_calling.dir >}}
+cd {{< var exercises.variant_calling.dir >}}
 ```
 
-Retrieve the data `{{< var monkeyflower.url >}}` with `wget`:
+Retrieve the data `{{< var datasets.variant_calling.url >}}` with
+`rsync`:
 
 ```bash
-wget {{< var monkeyflower.url >}}
-tar -zxvf monkeyflower.tar.gz
+rsync -av {{< var datasets.variant_calling.url >}} .
+```
+
+or `wget`:
+
+```bash
+wget --recursive --accept='*.*' \
+     --reject='*.gif','index*' \
+     --no-parent --no-directories \
+     --no-clobber \
+     --directory-prefix=. \
+     {{< var datasets.variant_calling.url >}}
 ```
 
 :::

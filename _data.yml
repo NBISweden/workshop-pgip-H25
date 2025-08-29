@@ -142,22 +142,42 @@ exercises/variant_calling:
     - workflow/Snakefile: monkeyflower/snakemake/variantcalling.smk
 
 exercises/variant_filtering:
-  - __red_recal_bam__
-  - __yellow_recal_bam__
-  - __reference__
-  - __sampleinfo__
-  - variantsites.vcf.gz: monkeyflower/small/redyellow.variantsites.vcf.gz
-  - variantsites.vcf.gz.tbi: monkeyflower/small/redyellow.variantsites.vcf.gz.tbi
-  - allsites.vcf.gz: monkeyflower/tiny/redyellow.allsites.vcf.gz
-  - allsites.vcf.gz.tbi: monkeyflower/tiny/redyellow.allsites.vcf.gz.tbi
+  content:
+    - bam/PUN-R-ELF.bam: monkeyflower/tiny/PUN-R-ELF/PUN-R-ELF.sort.dup.recal.bam
+    - bam/PUN-R-ELF.bai: monkeyflower/tiny/PUN-R-ELF/PUN-R-ELF.sort.dup.recal.bai
+    - bam/PUN-R-JMC.bam: monkeyflower/tiny/PUN-R-JMC/PUN-R-JMC.sort.dup.recal.bam
+    - bam/PUN-R-JMC.bai: monkeyflower/tiny/PUN-R-JMC/PUN-R-JMC.sort.dup.recal.bai
+    - bam/PUN-R-LH.bam: monkeyflower/tiny/PUN-R-LH/PUN-R-LH.sort.dup.recal.bam
+    - bam/PUN-R-LH.bai: monkeyflower/tiny/PUN-R-LH/PUN-R-LH.sort.dup.recal.bai
+    - bam/PUN-R-MT.bam: monkeyflower/tiny/PUN-R-MT/PUN-R-MT.sort.dup.recal.bam
+    - bam/PUN-R-MT.bai: monkeyflower/tiny/PUN-R-MT/PUN-R-MT.sort.dup.recal.bai
+    - bam/PUN-R-UCSD.bam: monkeyflower/tiny/PUN-R-UCSD/PUN-R-UCSD.sort.dup.recal.bam
+    - bam/PUN-R-UCSD.bai: monkeyflower/tiny/PUN-R-UCSD/PUN-R-UCSD.sort.dup.recal.bai
+    - bam/PUN-Y-BCRD.bam: monkeyflower/tiny/PUN-Y-BCRD/PUN-Y-BCRD.sort.dup.recal.bam
+    - bam/PUN-Y-BCRD.bai: monkeyflower/tiny/PUN-Y-BCRD/PUN-Y-BCRD.sort.dup.recal.bai
+    - bam/PUN-Y-INJ.bam: monkeyflower/tiny/PUN-Y-INJ/PUN-Y-INJ.sort.dup.recal.bam
+    - bam/PUN-Y-INJ.bai: monkeyflower/tiny/PUN-Y-INJ/PUN-Y-INJ.sort.dup.recal.bai
+    - bam/PUN-Y-LO.bam: monkeyflower/tiny/PUN-Y-LO/PUN-Y-LO.sort.dup.recal.bam
+    - bam/PUN-Y-LO.bai: monkeyflower/tiny/PUN-Y-LO/PUN-Y-LO.sort.dup.recal.bai
+    - bam/PUN-Y-PCT.bam: monkeyflower/tiny/PUN-Y-PCT/PUN-Y-PCT.sort.dup.recal.bam
+    - bam/PUN-Y-PCT.bai: monkeyflower/tiny/PUN-Y-PCT/PUN-Y-PCT.sort.dup.recal.bai
+    - bam/PUN-Y-POTR.bam: monkeyflower/tiny/PUN-Y-POTR/PUN-Y-POTR.sort.dup.recal.bam
+    - bam/PUN-Y-POTR.bai: monkeyflower/tiny/PUN-Y-POTR/PUN-Y-POTR.sort.dup.recal.bai
+    - __reference__
+    - __sampleinfo__
+    - variantsites.vcf.gz: monkeyflower/small/redyellow.variantsites.vcf.gz
+    - variantsites.vcf.gz.tbi: monkeyflower/small/redyellow.variantsites.vcf.gz.tbi
+    - allsites.vcf.gz: monkeyflower/tiny/redyellow.allsites.vcf.gz
+    - allsites.vcf.gz.tbi: monkeyflower/tiny/redyellow.allsites.vcf.gz.tbi
 
 exercises/genetic_diversity:
-  - __sampleinfo__
-  - __reference__
-  - variantsites.vcf.gz: monkeyflower/small/all.variantsites.vcf.gz
-  - variantsites.vcf.gz.tbi: monkeyflower/small/all.variantsites.vcf.gz.tbi
-  - allsites.vcf.gz: monkeyflower/tiny/all.allsites.vcf.gz
-  - allsites.vcf.gz.tbi: monkeyflower/tiny/all.allsites.vcf.gz.tbi
+  content:
+    - variantsites.vcf.gz: monkeyflower/small/all.variantsites.vcf.gz
+    - variantsites.vcf.gz.tbi: monkeyflower/small/all.variantsites.vcf.gz.tbi
+    - allsites.vcf.gz: monkeyflower/tiny/all.allsites.vcf.gz
+    - allsites.vcf.gz.tbi: monkeyflower/tiny/all.allsites.vcf.gz.tbi
+    - __sampleinfo__
+    - __reference__
 
 slides/foundations:
   content:

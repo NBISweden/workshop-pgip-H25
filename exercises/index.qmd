@@ -41,6 +41,16 @@ read these instructions before proceeding with the exercise itself.
 Some of the documents include a link to an external URL that hosts the
 actual exercise instructions.
 
+::: {.callout-important collapse=true}
+
+#### {{< fa server >}} Compute environment setup
+
+Before proceeding, make sure to read [Compute
+environment](../compute_environment/index.qmd) for information on how
+to prepare your working directory.
+
+:::
+
 ## On self-assessment exercise blocks
 
 Scattered throughout the documents are exercise blocks, with hidden

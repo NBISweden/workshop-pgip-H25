@@ -1,3 +1,4 @@
+# -*- yaml -*-
 website:
   title: Population Genomics in Practice 2025
   navbar:
@@ -9,7 +10,60 @@ website:
         href: exercises/index.qmd
       - text: Code recipes
         href: recipes/index.qmd
-
+  sidebar:
+    search: true
+    contents:
+      - section: Slides
+        contents:
+          - slides/index.qmd
+          - slides/pgip/index.qmd
+          - slides/foundations/index.qmd
+          - slides/variant_calling/index.qmd
+          - slides/variant_filtering/index.qmd
+          - slides/genetic_diversity/index.qmd
+          - slides/simulation/index.qmd
+      - section: Exercises
+        contents:
+          - exercises/index.qmd
+          - section: Data
+            contents:
+              - exercises/compute_environment/index.qmd
+              - exercises/datasets/monkeyflowers.qmd
+          - section: Variant calling
+            contents:
+              - exercises/variant_calling/index.qmd
+              - exercises/variant_calling/introduction.qmd
+              - exercises/variant_calling/data_qc.qmd
+              - exercises/variant_calling/read_mapping.qmd
+              - exercises/variant_calling/variant_calling_workflow.qmd
+              - exercises/variant_calling/variant_calling_long.qmd
+          - section: Variant filtering
+            contents:
+              - exercises/variant_filtering/index.qmd
+              - exercises/variant_filtering/basic_filtering.qmd
+              - exercises/variant_filtering/advanced_filtering.qmd
+          - section: Genetic diversity
+            contents:
+              - exercises/genetic_diversity/index.qmd
+          - section: Recombination and linkage
+            contents:
+              - exercises/recombination_linkage/index.qmd
+          - section: Population structure
+            contents:
+              - exercises/population_structure/index.qmd
+          - section: Demography
+            contents:
+              - exercises/demography/index.qmd
+          - section: Selection
+            contents:
+              - exercises/selection/index.qmd
+          - section: Simulation
+            contents:
+              - exercises/simulation/index.qmd
+              - exercises/ancestral_recombination_graphs/index.qmd
+      - section: Code recipes
+        contents:
+          - recipes/index.qmd
   page-footer:
     border: false
     left: "2025 [NBIS](https://nbis.se) | [GPL-3 License](https://choosealicense.com/licenses/gpl-3.0/)"

@@ -26,16 +26,6 @@ been tested!
 
 :::
 
-::: {.callout-important collapse=true}
-
-#### {{< fa server >}} Compute environment setup
-
-If you haven't already done so, please read [Compute
-environment](../compute_environment/index.qmd) for information on how
-to prepare your working directory.
-
-:::
-
 In this exercise we will produce a variant call set, going through the
 basic steps from quality control through read mapping to variant
 calling. We will be working on the [Monkeyflowers
@@ -143,10 +133,10 @@ mkdir -p variant_calling
 cd variant_calling
 ```
 
-Retrieve the data `{{< var monkeyflower.url >}}` with `wget`:
+Retrieve the data `{{< var datasets.variant_calling.url >}}` with `wget`:
 
 ```bash
-wget {{< var monkeyflower.url >}}
+wget {{< var datasets.variant_calling.url >}}
 tar -zxvf monkeyflower.tar.gz
 ```
 
@@ -162,14 +152,14 @@ tar -zxvf monkeyflower.tar.gz
 
 #### Listing
 
-- [bcftools](https://samtools.github.io/bcftools/bcftools.html) [@danecek_TwelveYearsSAMtools_2021]
-- [bwa](https://github.com/lh3/bwa) [@li_AligningSequenceReads_2013]
-- [fastqc](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/)
-- [Genome Analysis ToolKit  (GATK)](https://gatk.broadinstitute.org/hc/en-us)   [@depristo_FrameworkVariationDiscovery_2011]
-- [multiqc](https://multiqc.info/) [@ewels_MultiQCSummarizeAnalysis_2016]
-- [picard](https://github.com/broadinstitute/picard) [@Picard2019toolkit]
-- [qualimap](http://qualimap.conesalab.org/) [@okonechnikov_QualimapAdvancedMultisample_2016]
-- [samtools](https://github.com/samtools/samtools) [@danecek_TwelveYearsSAMtools_2021]
+```{r }
+#| label: tool-listing
+#| echo: false
+#| eval: true
+#| output: asis
+tool_list <- exercise_tools$variant_calling$variant_calling_long$tools
+cat(format_listing(tool_list))
+```
 
 #### {{< fa server >}} PDC
 
@@ -180,14 +170,12 @@ relevant tools.
 
 Execute the following command to load modules:
 
-```{bash }
-#| label: pdc-load-modules
-#| echo: true
-#| eval: false
-module load bcftools/1.20 bwa/0.7.18 fastqc/0.12.1 \
-       gatk/4.5.0.0 multiqc/1.30 picard/3.3.0 \
-       QualiMap/2.2.1 samtools/1.20 \
-       PDCOLD/23.12
+```{r }
+#| label: r-pdc-load-modules
+#| echo: false
+#| eval: true
+#| output: asis
+cat(format_modules(tool_list))
 ```
 
 ##### Virtual environment
@@ -201,24 +189,19 @@ pixi shell -e e-variant-calling $OPTIONS
 
 #### {{< fa laptop >}} pixi
 
-Copy the contents to a file `pixi.toml` in directory
-`variant-calling`, `cd` to directory and activate environment with
-`pixi shell`:
+Copy the contents to a file `pixi.toml` in directory `{{< var
+exercises.variant_calling.dir >}}`, `cd` to directory and activate
+environment with `pixi shell`:
 
-```{lang="text" }
-[workspace]
-channels = ["conda-forge", "bioconda"]
-name = "variant-calling"
-
-[dependencies]
-bcftools = ">=1.22,<2"
-bwa = ">=0.7.19,<0.8"
-fastqc = ">=0.12.1,<0.13"
-gatk4 = ">=4.6.2.0,<5"
-multiqc = ">=1.30,<2"
-picard = ">=3.4.0,<4"
-qualimap = ">=2.3,<3"
-samtools = ">=1.22.1,<2"
+```{r }
+#| label: r-pixi-manifest
+#| echo: false
+#| eval: true
+#| output: asis
+cat(format_pixi(
+    tool_list,
+    "{{< var exercises.variant_calling.dir >}}")
+    )
 ```
 
 :::

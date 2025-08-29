@@ -1,19 +1,67 @@
 # -*- yaml -*-
-recipes:
-  base: /recipes/index.html
-  slides: /recipes/slides/index.html
-  slim: /recipes/slides/slim.html
-
-naissproject: pg_pgip_2025
-pdc_time_allocation: edu25.pgip
-pg_pgip_dir: /cfs/klemming/projects/supr/pgip_2025
-monkeyflower:
-  dir: /cfs/klemming/projects/supr/pgip_2025/data/monkeyflower
-  url: https://export.uppmax.uu.se/uppstore2017171/pgip/data/monkeyflower.tar.gz
-naiss_max_cores: 10
 
 # Popgen symbols
 fst: $F_{\mathrm{ST}}$
 dxy: $d_{\mathrm{XY}}$
 dx: $d_{\mathrm{X}}$
 dy: $d_{\mathrm{Y}}$
+
+recipes:
+  base: /recipes/index.html
+  slides: /recipes/slides/index.html
+  slim: /recipes/slides/slim.html
+
+# Compute account information
+naissproject: pg_pgip_2025
+pdc_time_allocation: edu25.pgip
+pg_pgip_dir: /cfs/klemming/projects/supr/pgip_2025
+pg_pgip_dir_user: /cfs/klemming/projects/supr/pgip_2025/users/USERNAME
+naiss_max_cores: 10
+
+# Exercises - data, tools
+datasets:
+  variant_calling:
+    pdc: /cfs/klemming/projects/supr/pgip_2025/data/monkeyflower/variant-calling
+    url: https://export.uppmax.uu.se/uppstore2017171/pgip/data/monkeyflower/variant-calling
+  monkeyflower:
+    pdc: /cfs/klemming/projects/supr/pgip_2025/data/monkeyflower
+    url: https://export.uppmax.uu.se/uppstore2017171/pgip/data/monkeyflower
+  monkeyflower.small:
+    pdc: /cfs/klemming/projects/supr/pgip_2025/data/monkeyflower/small
+    url: https://export.uppmax.uu.se/uppstore2017171/pgip/data/monkeyflower/small
+  monkeyflower.lg4:
+    pdc: /cfs/klemming/projects/supr/pgip_2025/data/monkeyflower/LG4
+    url: https://export.uppmax.uu.se/uppstore2017171/pgip/data/monkeyflower/LG4
+
+exercises:
+  variant_calling:
+    dir: variant-calling
+    venv: e-variant-calling
+    introduction:
+      tools: [fastqc]
+    data_qc:
+      tools: [bwa, fastqc, picard, samtools]
+    read_mapping:
+      tools: [bwa, qualimap, samtools]
+    variant_calling_workflow:
+      tools:
+        [
+          bcftools,
+          bwa,
+          fastqc,
+          gatk,
+          multiqc,
+          picard,
+          qualimap,
+          samtools,
+          snakemake,
+        ]
+    variant_calling_long:
+      tools: [bcftools, bwa, fastqc, gatk, multiqc, picard, qualimap, samtools]
+  variant_filtering:
+    dir: variant-filtering
+    venv: e-variant-filtering
+    basic_filtering:
+      tools: [bcftools, bedtools, csvtk, seqkit, vcflib, vcftools]
+    advanced_filtering:
+      tools: [bcftools, bedtools, csvtk, mosdepth, seqkit, vcflib, vcftools]

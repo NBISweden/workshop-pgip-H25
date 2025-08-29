@@ -1,0 +1,1164 @@
+---
+title: Variant filtering
+subtitle: Basic filtering based on information in VCF file
+format:
+  nbis-course-html:
+    number-sections: false
+author:
+  - Per Unneberg
+execute:
+  cache: false
+---
+
+<!-- markdownlint-disable MD041 -->
+
+{{< include ../_knitr.qmd >}}
+
+{{< include ../_rlibs.qmd >}}
+
+<!-- markdownlint-enable MD041 -->
+
+In this exercise we will look at ways of filtering variant data. We
+will begin by applying filters to the variant file containing variant
+sites only, followed by an approach that filters on sequencing depth
+in a variant file containing both variant and invariant sites. The
+latter methodology can then be generalized to generate depth-based
+filters from BAM files.
+
+::: {.callout-important}
+
+The commands of this document have been run on a subset (a subregion)
+of the data. Therefore, although you will use the same commands, your
+results will differ from those presented here.
+
+:::
+
+::: {.callout-tip collapse=true}
+
+## Learning objectives
+
+- filter variants by quality, read depth, and other metrics
+- apply filters to a VCF file
+
+:::
+
+::: {.callout-note collapse=true}
+
+## Tools
+
+:::{.panel-tabset}
+
+#### Listing
+
+```{r }
+#| label: tool-listing
+#| echo: false
+#| eval: true
+#| output: asis
+tool_list <- exercise_tools$variant_filtering$basic_filtering$tools
+cat(format_listing(tool_list))
+```
+
+#### {{< fa server >}} PDC
+
+Choose **one** of **Modules** and **Virtual environment** to access
+relevant tools.
+
+##### Modules
+
+Execute the following command to load modules:
+
+```{r }
+#| label: r-pdc-load-modules
+#| echo: false
+#| eval: true
+#| output: asis
+cat(format_modules(tool_list))
+```
+
+##### Virtual environment
+
+Activate the `{{< var exercises.variant_filtering.venv >}}`
+environment:
+
+```bash
+# $OPTIONS is provided via the init script
+pixi shell -e {{< var exercises.variant_filtering.venv >}} $OPTIONS
+```
+
+#### {{< fa laptop >}} pixi
+
+Copy the contents to a file `pixi.toml` in directory `{{< var
+exercises.variant_filtering.dir >}}`, `cd` to directory and activate
+environment with `pixi shell`:
+
+```{r }
+#| label: r-pixi-manifest
+#| echo: false
+#| eval: true
+#| output: asis
+cat(format_pixi(tool_list, "{{< var exercises.variant_filtering.dir >}}"))
+```
+
+:::
+
+:::
+
+## Background
+
+Regardless of how a raw variant call set has been produced, the calls
+will be of varying quality for a number of reasons. For high-coverage
+sequencing, the two most common are incompleteness of the reference
+sequence and misalignments in repetitive regions
+[@li_BetterUnderstandingArtifacts_2014]. Low-coverage sequencing comes
+with its own biases and issues, with the most important being the
+difficulty to accurately call
+genotypes [@maruki_GenotypeCallingPopulationGenomic_2017].
+
+In order to improve the accuracy of downstream inference, a number of
+analysis-dependent quality control filters should be applied to the
+raw variant call set (for a concise summary, see
+@lou_BeginnerGuideLowcoverage_2021). In this exercise, we will begin
+by applying filters to the variant file containing variant sites only,
+followed by a more general approach based on depth filtering of a
+variant file consisting of all sites, variant as well as invariant. If
+time permits, we will also look at an approach that generates depth
+profiles directly from read mappings (BAM files) and that works also
+when it is impractical due to file size to include invariant sites in
+the variant file.
+
+It is worthwhile to spend time thinking about filtering. As we will
+see, there are numerous metrics to filter on, and different
+applications require different filters. This is not as straightforward
+as it first may seem, and even experts struggle to get filtering
+settings right.
+
+### Some recommended data filters
+
+There are many ways to filter data. Choosing the right set of filters
+is not easy, and choosing appropriate thresholds depends on
+application, among other things. Below we list some recommended data
+filters and thresholds that have general applicability and recently
+have been reviewed [@lou_BeginnerGuideLowcoverage_2021, Table 3]:
+
+- **depth**: Given the difficulty of accurately genotyping
+  low-coverage sites, it is recommended to set a minimum read depth
+  cutoff to remove false positive calls. It is also recommended to set
+  a maximum depth cutoff as excessive coverage is often due to
+  mappings to repetitive regions. The thresholds will depend on the
+  depth profile over all sites, but is usually chosen as a range
+  around the mean or median depth (e.g. lower threshold 0.8X mean,
+  upper threshold median + 2 standard deviations).
+- **minimum number of individuals**: To avoid sites with too much
+  missing data across individuals, a common requirement is that a
+  minimum number (fraction) of individuals, say 75%, have sequence
+  coverage (depth-based filter) or genotype calls.
+- **quality** (***p*-value**): Most variant calling software provide a
+  Phred-scaled probability score that a genotype is a true genotype.
+  Quality values below 20 (i.e., 1%) should not be trusted, but could
+  be set much higher (i.e., lower *p*-value) depending on application.
+  Note that if a VCF file includes invariant sites, they have quality
+  values set to 0, which renders quality based filtering
+  inappropriate.
+- **MAF**: Filter sites based on a minimum minor allele frequency
+  (MAF) threshold. The appropriate choice depends on application. For
+  instance, for PCA or admixture analyses, low-frequency SNPs are
+  uninformative, and a reasonably large cutoff (say, 0.05-0.10) could
+  be set. If an analysis depends on invariant sites, this filter
+  should not be applied.
+
+::: {.callout-important}
+
+For applications where invariant sites should be included, such as
+genetic diversity calculations, neither quality nor MAF filtering
+should be applied.
+
+:::
+
+## Basic filtering of a VCF file[^speciation] {#sec-basic-filtering}
+
+We will begin by creating filters for a VCF file consisting of variant
+sites only for *red* and *yellow* ecotypes. Before we start, let's
+review some statistics for the entire (unfiltered) call set:
+
+```{bash }
+#| label: bcftools-stats-variantsites
+#| echo: true
+#| eval: true
+bcftools stats variantsites.vcf.gz | grep ^SN
+```
+
+Keep track of these numbers as we will use them to evaluate the
+effects of filtering.
+
+### Generate random subset of variants
+
+Depending on the size of a study, both in terms of reference sequence
+and number of samples, the VCF output can become large; a VCF file may
+in fact contain millions of variants and be several hundred GB! We
+want to create filters by examining distributions of VCF quality
+metrics and setting reasonable cutoffs. In order to decrease run time,
+we will look at a random sample of sites. We use the `vcflib` program
+`vcfrandomsample` to randomly sample approximately 100,000 sites from
+our VCF file^[We select a fix number that should contain enough
+information to generate reliable statistics. This number should not
+change significantly even when files contain vastly different numbers
+of sites, which is why we need adjust the parameter *r* to the number
+of sites in the file.]:
+
+```{bash }
+#| label: vcflib-random-subsample
+#| echo: true
+#| eval: true
+# Set parameter r = 100000 / total number of variants
+bcftools view variantsites.vcf.gz | vcfrandomsample -r 0.8 |\
+    bgzip -c > variantsites.subset.vcf.gz
+bcftools index variantsites.subset.vcf.gz
+bcftools stats variantsites.subset.vcf.gz |\
+    grep "number of records:"
+```
+
+The `-r` parameter sets the *rate* of sampling which is why we get
+*approximately* 100,000 sites. You will need to adjust this parameter accordingly.
+
+We will now use `vcftools` to compile statistics. By default,
+`vcftools` outputs results to files with a prefix `out.` in the
+current directory. You can read up on settings and options by
+consulting the man pages with `man vcftools`^[`vcftools` does **not**
+have a `-h` or `--help` option.]. Therefore, we define a variable
+`OUT` where we will output our quality metrics, along with a variable
+referencing our variant subset:
+
+```{bash }
+#| label: vcftools-set-out-prefix
+#| echo: true
+#| eval: true
+mkdir -p vcftools
+OUT=vcftools/variantsites.subset
+VCF=variantsites.subset.vcf.gz
+```
+
+```{r }
+#| label: set-vcf-envvars
+#| echo: false
+#| eval: true
+Sys.setenv(
+    OUT = "vcftools/variantsites.subset",
+    VCF = "variantsites.subset.vcf.gz",
+    OUTVCF = "variantsites.filtered.vcf.gz"
+)
+```
+
+### Generate statistics for filters
+
+`vcftools` can compile many different kinds of statistics. Below we
+will focus on the ones relevant to our data filters. We will generate
+metrics and plot results as we go along, with the goal of generating a
+set of filtering thresholds to apply to the data.
+
+#### Total depth per site
+
+To get a general overview of depth of coverage, we first generate the
+average depth per *sample*^[The `2>/dev/null` outputs messages from
+`vcftools` to a special file `/dev/null` which is a kind of electronic
+dustbin.]:
+
+```{bash }
+#| label: vcftools-depth
+#| echo: true
+#| eval: true
+vcftools --gzvcf $VCF --depth --out $OUT 2>/dev/null
+cat ${OUT}.idepth
+csvtk summary -t -f MEAN_DEPTH:mean ${OUT}.idepth
+```
+
+```{r }
+#| label: r-csvtk-vcftools-depth-per-site-mean-sd
+#| echo: false
+#| eval: true
+data <- read.table("vcftools/variantsites.subset.idepth", header=TRUE)
+IDEPTH_MEAN <- round(mean(data$MEAN_DEPTH), 1)
+idepth <- sprintf("%.1fX", IDEPTH_MEAN)
+```
+
+The average coverage over all samples is `r idepth`. This actually is
+in the low range for a protocol based on explicitly calling genotypes.
+At 5X coverage, there may be a high probability that only one of the
+alleles has been sampled [@nielsen_GenotypeSNPCalling_2011], whereby
+sequencing errors may be mistaken for true variation.
+
+Then we calculate depth per site to see if we can identify reasonable depth cutoffs:
+
+```{bash }
+#| label: vcftools-depth-per-site
+#| echo: true
+#| eval: true
+vcftools --gzvcf $VCF --site-depth --out $OUT 2>/dev/null
+head -n 3 ${OUT}.ldepth
+```
+
+So, for each position, we have a value (column `SUM_DEPTH`) for the
+total depth across all samples.
+
+We plot the distribution of total depths by counting how many times
+each depth is observed. This can be done with `csvtk summary` where we
+count positions and group (`-g`) by the `SUM_DEPTH` value:^[On viewing
+`csvtk` plots: either you can **redirect** (`>`) the results from
+`csvtk` to a png output file, or you can **pipe** (`|`) it to the
+command `display` (replace `> $OUT.ldepth.png` by `| display`, which
+should fire up a window with your plot.]
+
+```{bash }
+#| label: csvtk-plot-vcftools-depth-per-site
+#| echo: true
+#| eval: true
+csvtk summary -t -g SUM_DEPTH -f POS:count -w 0 ${OUT}.ldepth |\
+ csvtk sort -t -k 1:n |\
+ csvtk plot line -t - -x SUM_DEPTH -y POS:count \
+    --point-size 0.01 --xlab "Depth of coverage (X)" \
+    --ylab "Genome coverage (bp)" \
+    --width 9.0 --height 3.5 > $OUT.ldepth.png
+```
+
+::: {#fig-csvtk-plot-vcftools-depth-per-site attr-output='.details summary="Output"'}
+
+![](vcftools/variantsites.subset.ldepth.png)
+
+Distribution of the total depth per site for all samples.
+
+:::
+
+::: {.callout-note collapse=true}
+
+#### On csvtk as plotting software
+
+You are of course perfectly welcome to use `R` or some other software
+to make these plots. We choose to generate the plots using `csvtk` to
+avoid too much context switching, and also because it emulates much of
+the functionality in `R`, albeit much less powerful when it comes to
+plotting.
+
+:::
+
+As @fig-csvtk-plot-vcftools-depth-per-site shows, most sites fall
+within a peak, but also that there are sites with very high coverage,
+up to ten times as high as the depth at the peak maximum. We calculate
+some range statistics to get an idea of the spread. The following
+`csvtk` command will calculate the minimum, first quartile, median,
+mean, third quartile, and maximum of the third column (`SUM_DEPTH`):
+
+```{bash }
+#| label: csvtk-vcftools-depth-per-site-quartiles
+#| echo: true
+#| eval: true
+csvtk summary -t -f 3:min,3:q1,3:median,3:mean,3:q3,3:max,3:stdev vcftools/variantsites.subset.ldepth
+```
+
+```{r }
+#| label: r-ldepth-summary
+#| echo: false
+#| eval: true
+df.ldepth <- read.table("vcftools/variantsites.subset.ldepth", header=TRUE)
+x <- as.vector(summary(df.ldepth$SUM_DEPTH)[c(2,5)])
+iqr <- sprintf("%i-%i", x[1], x[2])
+```
+
+The range from the first quartile (`q1`) to the third (`q3`) is
+`r iqr`, showing most sites have a depth between 50-100X. We redraw
+the plot to zoom in on the peak:
+
+```{bash }
+#| label: csvtk-plot-vcftools-depth-per-site-zoom-in
+#| echo: false
+#| eval: true
+csvtk summary -t -g SUM_DEPTH -f POS:count -w 0 ${OUT}.ldepth |\
+ csvtk sort -t -k 1:n |\
+ csvtk plot line -t - -x SUM_DEPTH -y POS:count \
+    --point-size 0.01 --xlab "Depth of coverage (X)" \
+    --ylab "Genome coverage (bp)" \
+    --width 9.0 --height 3.5  --x-min 0 --x-max 140 --y-max 2500 > $OUT.ldepth.zoomin.png
+```
+
+::: {#fig-csvtk-plot-vcftools-depth-per-site-zoom-in attr-output='.details summary="Output"'}
+
+![](vcftools/variantsites.subset.ldepth.zoomin.png)
+
+Zoomed in version of @fig-csvtk-plot-vcftools-depth-per-site which was
+achieved by adding the options `--x-min 0 --x-max 140 --y-max 2500` to
+the plotting call.
+
+:::
+
+We could choose a filter based on the quantile statistics above, or by
+eye-balling the graph. In this example, we could have chosen the range
+50-150X, which equates to 5-15X depth *per sample*; note that your
+values will probably be different.
+
+As an aside, we mention that there is a command to directly get the
+per-site mean depth, `--site-mean-depth`:
+
+```{bash }
+#| label: vcftools-mean-depth-per-site
+#| echo: true
+#| eval: true
+vcftools --gzvcf $VCF --site-mean-depth --out $OUT 2>/dev/null
+head -n 3 ${OUT}.ldepth.mean
+```
+
+#### Variant quality distribution
+
+Another quantity of interest is the variant quality. Recall, variant
+quality scores are Phred-scaled scores, meaning a value of 10 has a
+10% chance of being wrong, 20 a 1% chance, and so on; you typically
+want to at least filter on 20 or even higher. We extract and plot the
+quality values below:
+
+```{bash }
+#| label: vcftools-quality
+#| echo: true
+#| eval: true
+#| results: hide
+vcftools --gzvcf $VCF --site-quality --out $OUT
+```
+
+```{bash }
+#| label: cvstk-vcftools-site-quality
+#| echo: true
+#| eval: true
+# To improve histogram, filter out extreme quality scores. You
+# may have to fiddle with the exact values
+csvtk filter -t -f "QUAL>0" -f "QUAL<1000" ${OUT}.lqual  | \
+ csvtk summary -t -g QUAL -f POS:count -w 0 - |\
+ csvtk sort -t -k 1:n |\
+ csvtk plot hist -t --bins 100 - \
+          --xlab "Quality value" \
+    --ylab "Count" \
+    --width 9.0 --height 3.5 > $OUT.lqual.png
+```
+
+::: {#fig-csvtk-vcftools-site-quality attr-output='.details summary="Output"'}
+
+![](vcftools/variantsites.subset.lqual.png)
+
+Distribution of variant quality scores.
+
+:::
+
+Clearly most quality scores are above 20-30. For many applications, we
+**recommend setting 30 as the cutoff**.
+
+#### Minor allele frequency distribution
+
+Since we are going to calculate nucleotide diversities, we will not
+filter on the minor allele frequency (MAF) here. Nevertheless, we
+generate the distribution and plot for discussion purposes. The
+`--freq2` will output the frequencies only, adding the option
+`--max-alleles 2` to focus only on bi-allelic sites:
+
+```{bash }
+#| label: vcftools-maf
+#| echo: true
+#| eval: true
+vcftools --gzvcf $VCF --freq2 --out $OUT --max-alleles 2 2>/dev/null
+head -n 3 ${OUT}.frq
+```
+
+The last two columns are frequencies ordered according to the
+reference allele. Therefore, we need to pick the minimum value to get
+the MAF. We can use `csvtk mutate` to create a new column
+
+```{bash }
+#| label: cvstk-vcftools-minor-allele-frequency
+#| echo: true
+#| eval: true
+csvtk fix -t ${OUT}.frq 2>/dev/null |\
+ csvtk mutate2 -t -n maf -e '${5} > ${6} ? "${6}" : "${5}" ' - |\
+ csvtk plot hist -t --bins 20 -f maf - \
+       --xlab "Minor allele frequency" \
+       --ylab "Count" \
+       --width 9.0 --height 3.5 > $OUT.frq.png
+```
+
+::: {#fig-cvstk-vcftools-minor-allele-frequency attr-output='.details summary="Output"'}
+
+![](vcftools/variantsites.subset.frq.png)
+
+Distribution of minor allele frequencies.
+
+:::
+
+Since our variant file consists of 10 individuals, that is, 20
+chromosomes, there are only so many frequencies that we can observe,
+which is why the histogram looks a bit disconnected^[You can try
+different values of the `--bins` option]. In fact, given 20
+chromosomes, MAF=0.05 corresponds to one alternative allele among all
+individuals (*singleton*), MAF=0.1 to two, and so on. The maximum
+value is 0.5, which is to be expected, as it is a *minor* allele
+frequency. We note that there are more sites with a low minor allele
+frequency, which in practice means there are many singleton variants.
+
+This is where filtering on MAF can get tricky. Singletons may
+correspond to sequencing error, but if too hard a filter is applied,
+the resulting site frequency spectrum (SFS) will be skewed. For
+statistics that are based on the SFS, this may lead biased estimates.
+Since we will be applying such a statistic, we do not filter on the
+MAF here. Note, however, that for other applications, such as
+population structure, it may be warranted to more stringently (say,
+MAF>0.1) filter out low-frequency variants.
+
+#### Missing data for individuals and sites
+
+The proportion missing data per individual can indicate whether the
+input DNA was of poor quality, and that the individual should be
+excluded from analysis. Note that in this case, missing data refers to
+a missing genotype call and not sequencing depth!
+
+We can calculate the proportion of missing data
+
+```{bash }
+#| label: vcftools-missing-data-individual
+#| echo: true
+#| eval: true
+vcftools --gzvcf $VCF --missing-indv --out $OUT 2>/dev/null
+head -n 3 ${OUT}.imiss
+```
+
+and look at the results, focusing on the `F_MISS` column (proportion missing sites):
+
+```{bash }
+#| label: cvstk-vcftools-proportion-missing-ind
+#| echo: true
+#| eval: true
+csvtk plot hist -t --x-min 0 -f F_MISS ${OUT}.imiss > ${OUT}.imiss.png
+```
+
+::: {#fig-cvstk-vcftools-proportion-missing-ind output='.details summary="Output"'}
+
+![](vcftools/variantsites.subset.imiss.png)
+
+Distribution of missingness per sample.
+
+:::
+
+Here, the proportion lies in the range 0.06-0.10 for all samples,
+which indicates good coverage of all samples and we refrain from
+taking any action.
+
+Similarly, we can look at missingness per site. This is related to the
+filter based on minimum number of individuals suggested by
+@lou_BeginnerGuideLowcoverage_2021. We calculate
+
+```{bash }
+#| label: vcftools-missing-data-site
+#| echo: true
+#| eval: true
+vcftools --gzvcf $VCF --missing-site --out $OUT 2>/dev/null
+head -n 3 ${OUT}.lmiss
+```
+
+and plot to get an idea of if there are sites that lack data.
+
+```{bash }
+#| label: cvstk-vcftools-proportion-missing-site
+#| echo: true
+#| eval: true
+csvtk plot hist --bins 20 -t -f F_MISS ${OUT}.lmiss > ${OUT}.lmiss.png
+```
+
+::: {#fig-cvstk-vcftools-proportion-missing-site output='.details summary="Output"'}
+
+![](vcftools/variantsites.subset.lmiss.png)
+
+Distribution of missingness among sites.
+
+:::
+
+As @fig-cvstk-vcftools-proportion-missing-site shows, many sites have
+no or little missing data, but given the low coverage, there is a
+non-negligible number of sites with higher missingness. We calculate
+range statistics to get a feeling for a good cutoff:
+
+```{bash }
+#| label: cvstk-missing-sites-cutoff
+#| echo: true
+#| eval: true
+csvtk summary -t -f 6:min,6:q1,6:median,6:mean,6:q3,6:max vcftools/variantsites.subset.lmiss
+```
+
+The mean missingness is 8%, so we can safely use 25% missingness as
+threshold. Typical values of tolerated missingness lie in the range
+5-25%. Note that `vcftools` interprets this value as 1 - missingness,
+so it has to be inverted to 75% when filtering!
+
+#### Heterozygosity
+
+`vcftools` can calculate the heterozygosity per individual. More
+specifically, it estimates the [inbreeding coefficient
+F](https://en.wikipedia.org/wiki/F-statistics) for each individual.
+
+```{bash }
+#| label: vcftools-heterozygosity
+#| echo: true
+#| eval: true
+vcftools --gzvcf $VCF --het --out $OUT 2>/dev/null
+cat ${OUT}.het
+```
+
+Here, F is a measure of how much the observed homozygotes `O(HOM)`
+differ from the expected (`E(HOM)`; expected *by chance* under
+Hardy-Weinberg equilibrium), and may be negative. `vcftools`
+calculates F from the expression
+$F=(O-E)/(N-E)$^[@purcell_PLINKToolSet_2007, p. 565 gives a coherent
+derivation of this estimator], which you can verify by substituting
+the variables in the output.
+
+If F is positive ($O(HOM) > E(HOM)$), i.e., there are more observed
+homozygotes than expected, then there is a deficit of heterozygotes,
+which could be a sign of inbreeding or signs of allelic dropout in
+case of low sequencing coverage.
+
+If F is negative, there are fewer observed homozygotes than expected,
+or conversely, an excess of heterozygotes. This could be indicative of
+poor sequence quality (bad mappings) or contamination
+[@purcell_PLINKToolSet_2007].
+
+The underlying assumption is HWE, which holds for F=0.
+
+In this case, we know that the samples are from two different
+populations, red and yellow. In such cases, we actually expect a
+deficit of heterozygotes (and consequently, positive F) simply due to
+something called the [Wahlund
+effect](https://en.wikipedia.org/wiki/Wahlund_effect).
+
+::: {.callout-warning}
+
+The inbreeding coefficient is a population-level statistic and is not
+reliable for small sample sizes ($n<10$, say). Therefore, our sample
+size is in the lower range and the results should be taken with a
+grain of salt.
+
+:::
+
+::: {.callout-exercise}
+
+Use `bcftools view -s SAMPLENAMES | vcftools --vcf - --het --stdout` to
+calculate the heterozygosity for red and yellow samples. Substitute
+`SAMPLENAMES` for a comma-separated list of samples.
+
+::: {.callout-answer}
+
+```{bash }
+#| label: vcftools-heterozygosity-red
+#| echo: true
+#| eval: true
+bcftools view -s PUN-R-ELF,PUN-R-JMC,PUN-R-LH,PUN-R-MT,PUN-R-UCSD $VCF |\
+ vcftools --vcf - --het --stdout 2>/dev/null
+```
+
+:::
+
+:::
+
+### Filtering the VCF
+
+Now that we have decided on filters we can apply them to the VCF. We
+first set the filters as variables:
+
+```{bash }
+#| label: vcf-filter-variables
+#| echo: true
+#| eval: true
+MISS=0.75
+QUAL=30
+MIN_DEPTH=5
+MAX_DEPTH=15
+```
+
+```{r }
+#| label: vcf-filter-variables-save
+#| echo: false
+#| eval: true
+Sys.setenv(
+    MISS = 0.75,
+    QUAL = 30,
+    MIN_DEPTH = 5,
+    MAX_DEPTH = 15
+)
+```
+
+and run `vcftools` as follows:
+
+```{bash }
+#| label: vcftools-apply-filters
+#| echo: true
+#| eval: true
+OUTVCF=${VCF%.subset.vcf.gz}.filtered.vcf.gz
+vcftools --gzvcf $VCF \
+   --remove-indels --max-missing $MISS \
+   --min-meanDP $MIN_DEPTH --max-meanDP $MAX_DEPTH \
+   --minDP $MIN_DEPTH --maxDP $MAX_DEPTH --recode \
+   --stdout 2>/dev/null |
+ gzip -c > $OUTVCF
+```
+
+Compare the results with the original input:
+
+```{bash }
+#| label: bcftools-compare-filter-to-original
+#| echo: true
+#| eval: true
+bcftools stats $OUTVCF | grep "^SN"
+```
+
+Quite a substantial portion variants have in fact been removed, which
+here can most likely be attributed to the low average sequencing
+coverage.
+
+## Depth filtering of VCF with invariant sites
+
+Now we turn our attention to a VCF file containing variant and
+invariant sites. We will generate depth-based filters, with the
+motivation that they represent portions of the genome that are
+accessible to analysis, regardless of whether they contain variants or
+not. In so doing, we treat filtered sites as *missing data* and do not
+assume that they are invariant, as many software packages do.
+
+```{r, engine='tikz', fig.ext="svg"}
+#| label: fig-coverage-filters
+#| echo: false
+#| eval: true
+#| fig-cap: |
+#|     Coverage distributions for three hypothetical samples along
+#|     with the cumulative coverage for all samples.
+\addcolumnsum{\coveragetable}{A1,A2,A3}{Asum}
+\addthresholdmask{\coveragetable}{A1}{A1mask}
+\addthresholdmask{\coveragetable}{A2}{A2mask}
+\addthresholdmask{\coveragetable}{A3}{A3mask}
+\addthresholdmask{\coveragetable}{Asum}{Asummask}
+
+\let\Aonemask\empty
+\formatmask{\coveragetable}{\Aonemask}{A1mask}
+\let\Atwomask\empty
+\formatmask{\coveragetable}{\Atwomask}{A2mask}
+\let\Athreemask\empty
+\formatmask{\coveragetable}{\Athreemask}{A3mask}
+\let\Asummask\empty
+\formatmask{\coveragetable}{\Asummask}{Asummask}
+
+\begin{tikzpicture}[x=1pt, y=1pt]
+\pic[at={(0, 0)}] (A1) {coverageplot={\coveragetable}{ref}{A1}{Sample 1}{blue}};
+%%\matrix[mask, anchor=west, at={($(A1.south west)+(3pt, -10pt)$)}] (A1mask) {\Aonemask};
+\pic[yshift=-100pt] (A2) {coverageplot={\coveragetable}{ref}{A2}{Sample 2}{blue}};
+%%\matrix[mask, anchor=west, at={($(A2.south west)+(3pt, -10pt)$)}] (A2mask) {\Atwomask};
+
+\pic[yshift=-200pt] (A3) {coverageplot={\coveragetable}{ref}{A3}{Sample 3}{blue}};
+%%\matrix[mask, anchor=west, at={($(A3.south west)+(3pt, -10pt)$)}] (A3mask) {\Athreemask};
+
+\pgfplotsset{covaxis/.append style={ymax=45}}
+\pic[xshift=250pt,yshift=-120pt](Asum){coverageplot={\coveragetable}{ref}{Asum}{All samples}{red}};
+%%\matrix[mask, anchor=west, at={($(Asum.south west)+(3pt, -10pt)$)}] (Asummask) {\Asummask};
+
+\end{tikzpicture}
+```
+
+@fig-coverage-filters illustrates the sequencing coverage of three
+samples. The important thing to note is that the coverage is uneven.
+Some regions lack coverage entirely, e.g., due to random sampling or
+errors in the reference sequence. Other regions have excessive
+coverage, which could be a sign of repeats that have been collapsed in
+the reference. A general coverage filter could then seek to mask out
+sites where a fraction (50%, say) of individuals have too low or
+excessive coverage.
+
+The right panel illustrates the sum of coverages across all samples.
+Minimum and maximum depth filters could be applied to the aggregate
+coverages of all samples, or samples grouped by population, to
+eliminate sites confounding data support.
+
+As mentioned, the VCF in this exercise contains all sites; that is,
+both monomorphic and polymorphic sites are present. Every site
+contains information about depth and other metadata, which makes it
+possible to apply coverage filters directly to the variant file
+itself.
+
+However, it may not always be possible to generate a VCF with all
+sites. Species with large genomes will produce files so large that
+they prevent efficient downstream processing. Under these
+circumstances, *ad hoc* coverage filters can be applied to the BAM
+files to in turn generate sequence masks that can be used in
+conjunction with the variant file. This is the topic for the advanced
+session (@sec-advanced-filtering).
+
+Regardless of approach, the end result is a set of regions that are
+discarded (masked) for a given analysis. They can be given either as a
+BED file, or a sequence mask, which is a FASTA-like file consisting of
+integer digits (between `0` and `9`) for each position on a
+chromosome. Then, by setting a cutoff, an application can mask
+positions higher than that cutoff. We will generate mask files with
+`0` and `1` digits, an example of which is shown below, where the
+central 10 bases of the reference (top) are masked (bottom).
+
+```{bash }
+#| label: sequence-mask-example
+#| echo: false
+#| eval: true
+head -n 2 M_aurantiacus_v1.fasta | cut -c -30
+echo
+echo -e "LG4\t10\t20" | \
+ bedtools maskfasta -fi <(echo -e "LG4\t0\t30" | \
+   bedtools maskfasta -fi M_aurantiacus_v1.fasta -bed - -fo /dev/stdout -mc 0 | \
+   head -n 2 | cut -c -30) -bed - -fo /dev/stdout -mc 1
+```
+
+### Data summary and subset
+
+We start by summarising the raw data, as before.
+
+```{bash }
+#| label: bcftools-stats-allsites
+#| echo: true
+#| eval: true
+bcftools stats allsites.vcf.gz | grep ^SN
+```
+
+### Data for depth filters
+
+By now you should be familiar with the `vcftools` commands to generate
+relevant data for filters. In particular, we used `--site-depth` to
+generate depth profiles over all sites, and `--missing-site` to
+generate missingness data, based on genotype presence/abscence, for
+every site. Use these same commands again to generate a set of depth
+filters.
+
+::: {.callout-exercise}
+
+Use `vcflib` and `vcftools` to select a subset of variants from which
+to generate data. Use `vcftools` commands `--site-depth` and
+`--missing-site` as before to
+
+1. generate data
+2. (possibly) compute summary statistics with `csvtk`
+3. plot depth distributions
+4. select thresholds for depth-based and missingness filters
+5. filter the input VCF
+
+Call the final output file `allsites.filtered.vcf.gz` and compare your
+output to the input file.
+
+::: {.callout-answer}
+
+#### allsites subset
+
+```{bash }
+#| label: vcflib-random-subsample-all
+#| echo: true
+#| eval: true
+# Set parameter r = 100000 / total number of variants; input file
+# here consists of 100000 entries. Adjust this parameter.
+bcftools view allsites.vcf.gz | vcfrandomsample -r 1.0 |\
+    bgzip -c > allsites.subset.vcf.gz
+bcftools index allsites.subset.vcf.gz
+bcftools stats allsites.subset.vcf.gz |\
+    grep "^SN"
+```
+
+```{bash }
+#| label: vcftools-set-out-prefix-all
+#| echo: true
+#| eval: true
+mkdir -p vcftools
+OUT=vcftools/allsites.subset
+VCF=allsites.subset.vcf.gz
+```
+
+```{r }
+#| label: set-vcf-envvars-all
+#| echo: false
+#| eval: true
+Sys.setenv(
+    OUT = "vcftools/allsites.subset",
+    VCF = "allsites.subset.vcf.gz",
+    OUTVCF = "allsites.filtered.vcf.gz"
+)
+```
+
+#### Depth per site
+
+```{bash }
+#| label: vcftools-depth-per-site-all
+#| echo: true
+#| eval: true
+vcftools --gzvcf $VCF --site-depth --out $OUT 2>/dev/null
+head -n 3 ${OUT}.ldepth
+csvtk summary -t -f 3:min,3:q1,3:median,3:mean,3:q3,3:max,3:stdev ${OUT}.ldepth
+```
+
+```{bash }
+#| label: csvtk-plot-vcftools-depth-per-site-zoom-in-all
+#| echo: false
+#| eval: true
+csvtk summary -t -g SUM_DEPTH -f POS:count -w 0 ${OUT}.ldepth |\
+ csvtk sort -t -k 1:n |\
+ csvtk plot line -t - -x SUM_DEPTH -y POS:count \
+    --point-size 0.01 --xlab "Depth of coverage (X)" \
+    --ylab "Genome coverage (bp)" \
+    --width 9.0 --height 3.5  --x-min 0 --x-max 140 --y-max 2500 > $OUT.ldepth.zoomin.png
+```
+
+::: {#fig-csvtk-plot-vcftools-depth-per-site-zoom-in-all attr-output='.details summary="Output"'}
+
+![](vcftools/allsites.subset.ldepth.zoomin.png)
+
+Zoomed in view of depth distribution for all sites.
+
+:::
+
+#### Missingness
+
+```{bash }
+#| label: vcftools-missing-data-site-allsites
+#| echo: true
+#| eval: true
+vcftools --gzvcf $VCF --missing-site --out $OUT 2>/dev/null
+head -n 3 ${OUT}.lmiss
+csvtk summary -t -f 6:min,6:q1,6:median,6:mean,6:q3,6:max ${OUT}.lmiss
+```
+
+```{bash }
+#| label: cvstk-vcftools-proportion-missing-site-allsites
+#| echo: true
+#| eval: true
+csvtk plot hist --bins 20 -t -f F_MISS ${OUT}.lmiss > ${OUT}.lmiss.png
+```
+
+::: {#fig-cvstk-vcftools-proportion-missing-site-allsites output='.details summary="Output"'}
+
+![](vcftools/allsites.subset.lmiss.png)
+
+Distribution of missingness among all sites.
+
+:::
+
+#### Filter input
+
+Unless there is any strange bias that leads to a difference in
+coverage between variant and invariant sites, the final values should
+be similar to those before. We set filters and generate the output:
+
+```{bash }
+#| label: vcf-filter-variables-allsites
+#| echo: true
+#| eval: true
+MISS=0.75
+MIN_DEPTH=5
+MAX_DEPTH=15
+```
+
+```{r }
+#| label: vcf-filter-variables-save-allsites
+#| echo: false
+#| eval: true
+Sys.setenv(
+    MISS = 0.75,
+    MIN_DEPTH = 5,
+    MAX_DEPTH = 15
+)
+```
+
+```{bash }
+#| label: vcftools-apply-filters-allsites
+#| echo: true
+#| eval: true
+OUTVCF=${VCF%.subset.vcf.gz}.filtered.vcf.gz
+vcftools --gzvcf $VCF \
+   --remove-indels --max-missing $MISS \
+   --min-meanDP $MIN_DEPTH --max-meanDP $MAX_DEPTH \
+   --minDP $MIN_DEPTH --maxDP $MAX_DEPTH --recode \
+   --stdout 2>/dev/null |
+ gzip -c > $OUTVCF
+```
+
+Compare the results with the original input:
+
+```{bash }
+#| label: bcftools-compare-filter-to-original-allsites
+#| echo: true
+#| eval: true
+bcftools stats $OUTVCF | grep "^SN"
+```
+
+:::
+
+:::
+
+### Genotype depth data and BED output
+
+Instead of calculating missing genotypes per site, we can retrieve the
+individual depth for each genotype with `--geno-depth`. Since we know
+cutoffs for mean depth (5-15), we can run this command on the main
+input file (`allsites.vcf.gz`). For reasons that soon will become
+clear, we also rerun `--site-depth-mean`.
+
+```{bash }
+#| label: allsites-geno-depth
+#| echo: true
+#| eval: true
+VCF=allsites.vcf.gz
+OUT=vcftools/allsites
+vcftools --gzvcf  ${VCF} --geno-depth --out $OUT 2>/dev/null
+vcftools --gzvcf  ${VCF} --site-mean-depth --out $OUT 2>/dev/null
+head -n 3 ${OUT}.gdepth
+```
+
+```{r }
+#| label: set-envvars-geno-site-depth
+#| echo: false
+#| eval: true
+Sys.setenv(VCF="allsites.vcf.gz",
+           OUT="vcftools/allsites")
+```
+
+We could then combine these two files and perform filtering as
+follows: for each site check that
+
+1. the mean depth is within the filter range
+2. there is a minimimum number of genotypes with sufficient depth
+3. individual genotype depth does not exceed a maximum depth threshold
+
+If any of the points above fail, the site is discarded. We keep track
+of sites that pass the filters and output positions in [BED
+format](https://genome.ucsc.edu/FAQ/FAQformat.html#format1) (a
+[0-based](https://www.biostars.org/p/84686/) tab-separated format
+consisting of columns `chrom`, `chromStart`, and `chromEnd`).
+
+Here is some code to achieve these goals. Unfortunately `csvtk`
+doesn't seem to have support for calculating column margins out of the
+box, which is why we have to resort to this complicated construct
+using `awk` to count the number of individual genotypes that pass the
+coverage threshold 5.
+
+```{bash }
+#| label: geno-depth-ldepth-coverage-filter
+#| echo: true
+#| eval: true
+BEDOUT=${VCF%.vcf.gz}.keep.bed
+csvtk join -t ${OUT}.ldepth.mean ${OUT}.gdepth -f CHROM,POS |\
+    csvtk filter -t -f "MEAN_DEPTH>=5" |\
+    csvtk filter -t -f "MEAN_DEPTH<=15" |\
+    awk -v FS="\t" -v OFS="\t" \
+        'NR > 1 {count=0; for (i=4; i<=NF; i++)\
+ {if ($i>4) count++ }; if (count>=5) print $1, $2 - 1, $2}'|\
+    bedtools merge > ${BEDOUT}
+head -n 3 $BEDOUT
+```
+
+The BED file contains a list of regions that are accessible to
+analysis.
+
+#### Sequence masks
+
+In addition to the BED output files, we can generate sequence masks.
+First, we set a variable to point to the reference sequence and index
+it.
+
+```{bash }
+#| label: samtools-faidx-genodepth
+#| echo: true
+#| eval: true
+export REF=ref/M_aurantiacus_v1.fasta
+samtools faidx ${REF}
+```
+
+```{r }
+#| label: set-sample-envvars-genodepth
+#| echo: false
+#| eval: true
+Sys.setenv(REF="ref/M_aurantiacus_v1.fasta")
+```
+
+Now, we use the command `bedtools makefasta` to make a sequence mask
+file in FASTA format consisting solely of `1`'s:^[We need to generate
+a BED file representation of the FASTA index unfortuanely as `bedtools
+makefasta` doesn't handle FASTA indices natively.]
+
+```{bash }
+#| label: bedtools-maskfasta-make-genome-mask
+#| echo: true
+#| eval: true
+awk 'BEGIN {OFS="\t"} {print $1, 0, $2}' ${REF}.fai > ${REF}.bed
+bedtools maskfasta -fi ${REF} -mc 1 -fo ${REF}.mask.fa -bed ${REF}.bed
+```
+
+We generate a file where all positions are masked because the BED
+files contain regions that we want to keep. Therefore, we want to
+convert corresponding positions to zeros. This file will be used as a
+template for all mask files.
+
+We then apply `bedtools maskfasta` again to unmask (set to `0`) the
+positions that overlap with the BED coordinates:
+
+```{bash }
+#| label: bedtools-intersect-depth-filter-genodepth
+#| echo: true
+#| eval: true
+bedtools maskfasta -fi ${REF}.mask.fa -mc 0 -fo ${REF}.unmask.fa \
+   -bed allsites.keep.bed
+head -n 3 ${REF}.unmask.fa
+```
+
+We can convince ourselves that this has worked by counting the number
+of unmasked positions in both the BED file (with `bedtools genomecov`)
+and sequence mask:
+
+```{bash }
+#| label: count-unmasked-positions
+#| echo: true
+#| eval: true
+bedtools genomecov -i allsites.keep.bed -g ${REF}.fai | grep genome
+# tr: -d deletes all characters not (-c, complement) in the character
+# set '0'. wc: -m option counts characters
+cat ${REF}.unmask.fa | tr -d -c '0' | wc -m
+```
+
+Note that 0 and 1 in the `bedtools genomecov` output refers to
+coverage (i.e., absence/presence) and not unmask/mask as in the mask
+FASTA file.
+
+#### Example: Using a sequence mask with `vcftools`
+
+The sequence mask file can be used with `vcftools` with the option
+`--mask`. Before we use, however, we need to convert the mask file to
+one sequence per line^[For `vcftools`; unfortunate, but that's the way
+it is]. `seqkit` is a neat tool that allows us to do this without
+hassle. As an example, we then perform a genetic diversity calculation
+with and without mask file to highlight the difference:
+
+```{bash }
+#| label: vcftools-example-mask
+#| echo: true
+#| eval: true
+WIDEMASK=${REF}.unmask.wide.fa
+seqkit seq -w 0 ${REF}.unmask.fa > ${WIDEMASK}
+vcftools --gzvcf allsites.vcf.gz --mask $WIDEMASK \
+         --site-pi --stdout 2>/dev/null |\
+    csvtk summary -t --ignore-non-numbers --decimal-width 4 \
+    --fields PI:count,PI:mean
+vcftools --gzvcf allsites.vcf.gz --site-pi --stdout 2>/dev/null |\
+    csvtk summary -t --ignore-non-numbers --decimal-width 4 \
+    --fields PI:count,PI:mean
+```
+
+Clearly, filtering may have significant impact on the final outcome.
+You must choose your filters wisely!
+
+## Conclusion
+
+Congratulations! You have now gone through a set of tedious and
+complex steps to generate output files that determine what regions in
+a reference DNA sequence are amenable to analysis. In the next
+exercise we will use these files as inputs to different programs that
+calculate diversity statistics from population genomic data.
+
+## References
+
+[^speciation]: This exercise is inspired by and based on <https://speciationgenomics.github.io/filtering_vcfs/>]

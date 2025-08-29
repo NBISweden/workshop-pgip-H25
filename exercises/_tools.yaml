@@ -1,0 +1,58 @@
+# -*- yaml -*-
+# Missing on PDC: csvtk, seqkit, vcflib
+bcftools:
+  url: https://samtools.github.io/bcftools/bcftools.html
+  ref: danecek_TwelveYearsSAMtools_2021
+  pdc: bcftools/1.20
+bedtools:
+  url: https://bedtools.readthedocs.io/en/latest/index.html
+  ref: quinlan_BEDToolsFlexibleSuite_2010
+  pdc: bedtools/2.31.0
+bwa:
+  url: https://github.com/lh3/bwa
+  ref: li_AligningSequenceReads_2013
+  pdc: bwa/0.7.18
+csvtk:
+  url: https://bioinf.shenwei.me/csvtk
+fastqc:
+  url: https://www.bioinformatics.babraham.ac.uk/projects/fastqc
+  pdc: fastqc/0.12.1
+gatk:
+  name: Genome Analysis ToolKit (GATK)
+  url: https://gatk.broadinstitute.org/hc/en-us
+  ref: depristo_FrameworkVariationDiscovery_2011
+  pdc: gatk/4.5.0.0
+mosdepth:
+  url: https://github.com/brentp/mosdepth
+  ref: pedersen_MosdepthQuickCoverage_2018
+  pdc: mosdepth/0.3.3
+multiqc:
+  url: https://multiqc.info/
+  ref: ewels_MultiQCSummarizeAnalysis_2016
+  pdc: multiqc/1.30
+picard:
+  url: https://github.com/broadinstitute/picard
+  ref: Picard2019toolkit
+  pdc: picard/3.3.0
+qualimap:
+  url: http://qualimap.conesalab.org
+  ref: okonechnikov_QualimapAdvancedMultisample_2016
+  pdc: QualiMap/2.2.1
+samtools:
+  url: https://github.com/samtools/samtools
+  ref: danecek_TwelveYearsSAMtools_2021
+  pdc: samtools/1.20
+seqkit:
+  url: https://bioinf.shenwei.me/seqkit/
+  ref: shen_SeqKitCrossPlatformUltrafast_2016
+snakemake:
+  url: https://snakemake.readthedocs.io/en/stable/index.html
+  ref: molder_SustainableDataAnalysis_2021
+  pdc: snakemake/9.9.0
+vcflib:
+  url: https://github.com/vcflib/vcflib
+  ref: garrison_SpectrumFreeSoftware_2022
+vcftools:
+  url: https://vcftools.github.io
+  ref: danecek_VariantCallFormat_2011
+  pdc: vcftools/0.1.16
