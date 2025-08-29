@@ -45,6 +45,7 @@ website:
           - section: Genetic diversity
             contents:
               - exercises/genetic_diversity/index.qmd
+              - exercises/genetic_diversity/landscape.qmd
           - section: Recombination and linkage
             contents:
               - exercises/recombination_linkage/index.qmd

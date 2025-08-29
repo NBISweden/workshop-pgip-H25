@@ -46,7 +46,7 @@ actual exercise instructions.
 #### {{< fa server >}} Compute environment setup
 
 Before proceeding, make sure to read [Compute
-environment](../compute_environment/index.qmd) for information on how
+environment](compute_environment/index.qmd) for information on how
 to prepare your working directory.
 
 :::

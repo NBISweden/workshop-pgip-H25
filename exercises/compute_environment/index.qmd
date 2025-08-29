@@ -7,9 +7,9 @@ format: nbis-course-html
 
 <!-- markdownlint-disable MD041 -->
 
-{{< include ../_knitr.qmd >}}
+{{< include /exercises/_knitr.qmd >}}
 
-{{< include ../_rlibs.qmd >}}
+{{< include /exercises/_rlibs.qmd >}}
 
 This page briefly describes different compute environments that may be
 used for exercises. We use the following symbols to icons that

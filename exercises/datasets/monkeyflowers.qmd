@@ -9,9 +9,9 @@ format: nbis-course-html
 
 <!-- markdownlint-disable MD041 -->
 
-{{< include ../_knitr.qmd >}}
+{{< include /exercises/_knitr.qmd >}}
 
-{{< include ../_rlibs.qmd >}}
+{{< include /exercises/_rlibs.qmd >}}
 
 ```{r }
 #| label: r-libs-extra
@@ -60,7 +60,7 @@ sampled in California (@fig-monkeyflower-sampling-location).
 
 :::{.column-margin}
 
-![Sampling locations](../../slides/simulation/assets/images/stankowski-2019-figs2.webp){#fig-monkeyflower-sampling-location}
+![Sampling locations](/slides/simulation/assets/images/stankowski-2019-figs2.webp){#fig-monkeyflower-sampling-location}
 
 :::
 
@@ -91,7 +91,7 @@ In all, six scenarios were studied:
 
 @fig-slim-simulations shows typical results of the simulations.
 
-![Genomic landscapes simulated under different divergence histories.](../../slides/simulation/assets/images/stankowski-2019-fig7.webp){#fig-slim-simulations}
+![Genomic landscapes simulated under different divergence histories.](/slides/simulation/assets/images/stankowski-2019-fig7.webp){#fig-slim-simulations}
 
 In conclusion, the authors found that although BGS plays a role, it
 does not sufficiently explain all observations, and that other aspects
@@ -141,18 +141,16 @@ naissproject >}}` at `{{< var pg_pgip_dir >}}/data/monkeyflower`.
 ### Online access
 
 In addition, a pre-compiled dataset consisting of the files relevant
-for exercises is available from [`{{< var monkeyflower.url >}}`]({{<
-var monkeyflower.url >}}).
+for exercises is available from [`{{< var datasets.monkeyflower.url
+>}}`]({{< var datasets.monkeyflower.url >}}).
 
 ### Github
 
-The github repository
-[pgip-data](https://github.com/NBISweden/pgip-data) contains reference
-sequence and read data for 37 monkeyflower individuals for the region
-`LG4:12,000,000-12,100,000`. The data resides in the
-[data/monkeyflower/tiny](https://github.com/NBISweden/pgip-data/tree/main/data/monkeyflower/tiny)
-subdirectory. This data set is used as input data to render the
-website.
+The github repository [pgip-data]({{< var pgip_data.main >}}) contains
+reference sequence and read data for 37 monkeyflower individuals for
+the region `LG4:12,000,000-12,100,000`. The data resides in the
+[data/monkeyflower/tiny]({{< var pgip_data.tiny >}}) subdirectory. This
+data set is used as input data to render the website.
 
-The repository hosts a [Snakemake workflow](https://github.com/NBISweden/pgip-data/tree/main/data/monkeyflower/workflow)
-to generate all data needed for the exercises.
+The repository hosts a [Snakemake workflow]({{< var pgip_data.workflow
+>}}) to generate all data needed for the exercises.

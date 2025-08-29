@@ -18,6 +18,12 @@ pg_pgip_dir: /cfs/klemming/projects/supr/pgip_2025
 pg_pgip_dir_user: /cfs/klemming/projects/supr/pgip_2025/users/USERNAME
 naiss_max_cores: 10
 
+# Repositories
+pgip_data:
+  main: https://github.com/NBISweden/pgip-data
+  tiny: https://github.com/NBISweden/pgip-data/tree/main/data/monkeyflower/tiny
+  workflow: https://github.com/NBISweden/pgip-data/tree/main/data/monkeyflower/workflow
+
 # Exercises - data, tools
 datasets:
   variant_calling:
@@ -65,3 +71,8 @@ exercises:
       tools: [bcftools, bedtools, csvtk, seqkit, vcflib, vcftools]
     advanced_filtering:
       tools: [bcftools, bedtools, csvtk, mosdepth, seqkit, vcflib, vcftools]
+  genetic_diversity:
+    dir: genetic-diversity
+    venv: e-genetic-diversity
+    landscape:
+      tools: [bcftools, bedtools, csvtk, pixy, vcftools]

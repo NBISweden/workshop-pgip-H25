@@ -1,5 +1,5 @@
 # -*- yaml -*-
-# Missing on PDC: csvtk, seqkit, vcflib
+# Missing on PDC: csvtk, vcflib
 bcftools:
   url: https://samtools.github.io/bcftools/bcftools.html
   ref: danecek_TwelveYearsSAMtools_2021
@@ -26,6 +26,7 @@ mosdepth:
   url: https://github.com/brentp/mosdepth
   ref: pedersen_MosdepthQuickCoverage_2018
   pdc: mosdepth/0.3.3
+  bioinfo_tools: true
 multiqc:
   url: https://multiqc.info/
   ref: ewels_MultiQCSummarizeAnalysis_2016
@@ -34,6 +35,10 @@ picard:
   url: https://github.com/broadinstitute/picard
   ref: Picard2019toolkit
   pdc: picard/3.3.0
+pixy:
+  url: https://github.com/ksamuk/pixy.git
+  ref: korunes_PixyUnbiasedEstimation_2021
+  pdc: pixy/1.2.5.beta1
 qualimap:
   url: http://qualimap.conesalab.org
   ref: okonechnikov_QualimapAdvancedMultisample_2016
@@ -45,6 +50,8 @@ samtools:
 seqkit:
   url: https://bioinf.shenwei.me/seqkit/
   ref: shen_SeqKitCrossPlatformUltrafast_2016
+  pdc: SeqKit/2.4.0
+  bioinfo_tools: true
 snakemake:
   url: https://snakemake.readthedocs.io/en/stable/index.html
   ref: molder_SustainableDataAnalysis_2021
@@ -52,6 +59,8 @@ snakemake:
 vcflib:
   url: https://github.com/vcflib/vcflib
   ref: garrison_SpectrumFreeSoftware_2022
+  pdc: vcflib/2017-04-04
+  bioinfo-tools: true
 vcftools:
   url: https://vcftools.github.io
   ref: danecek_VariantCallFormat_2011

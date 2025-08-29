@@ -8,13 +8,24 @@ author:
   - Per Unneberg
 execute:
   cache: false
+exercise:
+  dir: variant-filtering
+  venv: e-variant-filtering
 ---
 
 <!-- markdownlint-disable MD041 -->
 
-{{< include ../_knitr.qmd >}}
+{{< include /exercises/_knitr.qmd >}}
 
-{{< include ../_rlibs.qmd >}}
+{{< include /exercises/_rlibs.qmd >}}
+
+```{r }
+#| label: r-init-vars
+#| echo: false
+#| eval: true
+tool_list <- exercise_tools$variant_filtering$basic_filtering$tools
+bioinfo_tools <- TRUE
+```
 
 <!-- markdownlint-enable MD041 -->
 
@@ -25,13 +36,9 @@ in a variant file containing both variant and invariant sites. The
 latter methodology can then be generalized to generate depth-based
 filters from BAM files.
 
-::: {.callout-important}
+{{< include /exercises/_subset.qmd >}}
 
-The commands of this document have been run on a subset (a subregion)
-of the data. Therefore, although you will use the same commands, your
-results will differ from those presented here.
-
-:::
+{{< include /exercises/_ilo.qmd >}}
 
 ::: {.callout-tip collapse=true}
 
@@ -42,67 +49,7 @@ results will differ from those presented here.
 
 :::
 
-::: {.callout-note collapse=true}
-
-## Tools
-
-:::{.panel-tabset}
-
-#### Listing
-
-```{r }
-#| label: tool-listing
-#| echo: false
-#| eval: true
-#| output: asis
-tool_list <- exercise_tools$variant_filtering$basic_filtering$tools
-cat(format_listing(tool_list))
-```
-
-#### {{< fa server >}} PDC
-
-Choose **one** of **Modules** and **Virtual environment** to access
-relevant tools.
-
-##### Modules
-
-Execute the following command to load modules:
-
-```{r }
-#| label: r-pdc-load-modules
-#| echo: false
-#| eval: true
-#| output: asis
-cat(format_modules(tool_list))
-```
-
-##### Virtual environment
-
-Activate the `{{< var exercises.variant_filtering.venv >}}`
-environment:
-
-```bash
-# $OPTIONS is provided via the init script
-pixi shell -e {{< var exercises.variant_filtering.venv >}} $OPTIONS
-```
-
-#### {{< fa laptop >}} pixi
-
-Copy the contents to a file `pixi.toml` in directory `{{< var
-exercises.variant_filtering.dir >}}`, `cd` to directory and activate
-environment with `pixi shell`:
-
-```{r }
-#| label: r-pixi-manifest
-#| echo: false
-#| eval: true
-#| output: asis
-cat(format_pixi(tool_list, "{{< var exercises.variant_filtering.dir >}}"))
-```
-
-:::
-
-:::
+{{< include /exercises/_tools.qmd >}}
 
 ## Background
 

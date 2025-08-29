@@ -1,0 +1,13 @@
+<!-- markdownlint-disable MD041 -->
+
+::: {.callout-important collapse=true}
+
+## Commands have been run on a subset of the data
+
+The commands of this document have been run on a subset (a subregion)
+of the data. Therefore, although you will use the same commands, your
+results will differ from those presented here.
+
+:::
+
+<!-- markdownlint-enable MD041 -->

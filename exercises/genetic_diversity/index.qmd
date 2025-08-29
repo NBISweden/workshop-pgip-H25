@@ -27,3 +27,7 @@ execute:
 :::
 
 :::
+
+[Genetic diversity landscapes](landscape.qmd)
+
+: Introduction to calculating genetic diversity landscapes.
