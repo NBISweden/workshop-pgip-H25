@@ -17,16 +17,6 @@ execute:
 
 <!-- markdownlint-enable MD041 -->
 
-::: {.callout-important collapse=true}
-
-#### {{< fa server >}} Compute environment setup
-
-If you haven't already done so, please read [Compute
-environment](../compute_environment/index.qmd) for information on how
-to prepare your working directory.
-
-:::
-
 In this exercise we will familiarize ourselves with the command line
 and compile some basic quality statistics from raw sequence data
 files.
@@ -63,9 +53,14 @@ results will differ from those presented here.
 
 #### Listing
 
-- [bwa](https://github.com/lh3/bwa) [@li_AligningSequenceReads_2013]
-- [picard](https://github.com/broadinstitute/picard) [@Picard2019toolkit]
-- [samtools](https://github.com/samtools/samtools) [@danecek_TwelveYearsSAMtools_2021]
+```{r }
+#| label: tool-listing
+#| echo: false
+#| eval: true
+#| output: asis
+tool_list <- exercise_tools$variant_calling$data_qc$tools
+cat(format_listing(tool_list))
+```
 
 #### {{< fa server >}} PDC
 
@@ -76,39 +71,39 @@ relevant tools.
 
 Execute the following command to load modules:
 
-```{bash }
-#| label: pdc-load-modules
-#| echo: true
-#| eval: false
-module load bwa/0.7.18 picard/3.3.0 samtools/1.20
+```{r }
+#| label: r-pdc-load-modules
+#| echo: false
+#| eval: true
+#| output: asis
+cat(format_modules(tool_list))
 ```
 
 ##### Virtual environment
 
-Activate the `e-variant-calling` environment:
+Activate the `{{< var exercises.variant_calling.venv >}}`
+environment:
 
 ```bash
 # $OPTIONS is provided via the init script
-pixi shell -e e-variant-calling $OPTIONS
+pixi shell -e {{< var exercises.variant_calling.venv >}} $OPTIONS
 ```
 
 #### {{< fa laptop >}} pixi
 
-Copy the contents to a file `pixi.toml` in directory
-`variant-calling`, `cd` to directory and activate environment with
-`pixi shell`. If `variant-calling/pixi.toml` already exists, simply
+Copy the contents to a file `pixi.toml` in directory `{{< var
+exercises.variant_calling.dir >}}`, `cd` to directory and activate
+environment with `pixi shell`. If `{{< var
+exercises.variant_calling.dir >}}/pixi.toml` already exists, simply
 add the three dependencies to the `[dependencies]` section and run
 `pixi update`.
 
-```{lang="text" }
-[workspace]
-channels = ["conda-forge", "bioconda"]
-name = "variant-calling"
-
-[dependencies]
-bwa = ">=0.7.19,<0.8"
-picard = ">=3.4.0,<4"
-samtools = ">=1.22.1,<2"
+```{r }
+#| label: r-pixi-manifest
+#| echo: false
+#| eval: true
+#| output: asis
+cat(format_pixi(tool_list, "{{< var exercises.variant_calling.dir >}}"))
 ```
 
 :::

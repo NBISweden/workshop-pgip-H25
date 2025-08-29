@@ -10,6 +10,14 @@ execute:
   cache: false
 ---
 
+<!-- markdownlint-disable MD041 -->
+
+{{< include ../_knitr.qmd >}}
+
+{{< include ../_rlibs.qmd >}}
+
+<!-- markdownlint-enable MD041 -->
+
 ## About
 
 ## Exercises
@@ -22,8 +30,62 @@ execute:
 
 #### {{< fa server >}} PDC
 
+Source the initialization script {{< var pg_pgip_dir >}}/init.sh
+
+```bash
+source {{< var pg_pgip_dir >}}/init.sh
+```
+
+and run the exercise setup command:
+
+```{bash }
+#| label: setup-exercise
+#| echo: true
+#| eval: false
+pgip exercises setup {{< var exercises.variant_filtering.dir >}} -v
+```
+
 #### {{< fa laptop >}} Local
 
+Create an exercise directory called `{{< var
+exercises.variant_filtering.dir >}}` and `cd` to it:
+
+```{bash }
+#| label: create-exercises-directory-local
+#| echo: true
+#| eval: false
+mkdir -p {{< var exercises.variant_filtering.dir >}}
+cd {{< var exercises.variant_filtering.dir >}}
+```
+
+Retrieve the data `{{< var datasets.variant_filtering.url >}}` with
+`rsync`:
+
+```bash
+rsync -av {{< var datasets.variant_filtering.url >}} .
+```
+
+or `wget`:
+
+```bash
+wget --recursive --accept='*.*' \
+     --reject='*.gif','index*' \
+     --no-parent --no-directories \
+     --no-clobber \
+     --directory-prefix=. \
+     {{< var datasets.variant_filtering.url >}}
+```
+
 :::
 
 :::
+
+[Introduction to variant filtering](basic_filtering.qmd)
+
+: Introduction to basic variant filtering using the CLI.
+
+## Additional material
+
+[Advanced variant filtering](advanced_filtering.qmd)
+
+: Old tutorial on how to summarize BAM coverages using CLI tools.
