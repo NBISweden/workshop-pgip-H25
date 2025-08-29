@@ -38,8 +38,6 @@ filters from BAM files.
 
 {{< include /exercises/_subset.qmd >}}
 
-{{< include /exercises/_ilo.qmd >}}
-
 ::: {.callout-tip collapse=true}
 
 ## Learning objectives
