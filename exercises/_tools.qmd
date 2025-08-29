@@ -1,0 +1,63 @@
+<!-- markdownlint-disable MD041 -->
+
+::: {.callout-note collapse=true}
+
+## Tools
+
+:::{.panel-tabset}
+
+#### Listing
+
+```{r }
+#| label: tool-listing
+#| echo: false
+#| eval: true
+#| output: asis
+cat(format_listing(tool_list))
+```
+
+#### {{< fa server >}} PDC
+
+Choose **one** of **Modules** and **Virtual environment** to access
+relevant tools.
+
+##### Modules
+
+Execute the following command to load modules:
+
+```{r }
+#| label: r-pdc-load-modules
+#| echo: false
+#| eval: true
+#| output: asis
+cat(format_modules(tool_list, bioinfo_tools=bioinfo_tools))
+```
+
+##### Virtual environment
+
+Activate the `{{< meta exercise.venv >}}` environment:
+
+```bash
+# $OPTIONS is provided via the init script
+pixi shell -e {{< meta exercise.venv >}} $OPTIONS
+```
+
+#### {{< fa laptop >}} pixi
+
+Copy the contents to a file `pixi.toml` in directory `{{< meta
+exercise.dir >}}`, `cd` to directory and activate
+environment with `pixi shell`:
+
+```{r }
+#| label: r-pixi-manifest
+#| echo: false
+#| eval: true
+#| output: asis
+cat(format_pixi(tool_list, "{{< meta exercise.dir >}}"))
+```
+
+:::
+
+:::
+
+<!-- markdownlint-enable MD041 -->

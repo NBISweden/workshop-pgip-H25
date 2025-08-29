@@ -25,8 +25,8 @@ depending on application and method. The variant calling exercises
 here present the basic steps to go from raw data to variant calls.
 
 The exercises are based on the [Monkeyflowers
-dataset](../datasets/monkeyflowers.qmd). Make sure to read the dataset
-document before running any commands as it will give you the
+dataset](/exercises/datasets/monkeyflowers.qmd). Make sure to read the
+dataset document before running any commands as it will give you the
 biological background and general information about where to find and
 how to setup the data. We will focus on the *red* and *yellow*
 ecotypes in what follows.

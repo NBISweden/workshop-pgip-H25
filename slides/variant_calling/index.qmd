@@ -9,9 +9,9 @@ format:
 
 ## Setup {visibility="hidden" .hidden .unnumbered .unlisted}
 
-{{< include ../_knitr.qmd >}}
+{{< include /slides/_knitr.qmd >}}
 
-{{< include ../_rlibs.qmd >}}
+{{< include /slides/_rlibs.qmd >}}
 
 ```{r libs}
 #| echo: false
@@ -217,7 +217,7 @@ done, from FASTQ input, to mapped data, to variant and genotype calls.
 
 :::{}
 
-![](../foundations/assets/images/popgen.svg)
+![](/slides/foundations/assets/images/popgen.svg)
 
 :::
 

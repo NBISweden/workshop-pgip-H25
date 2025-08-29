@@ -111,4 +111,11 @@ format_pixi <- function(tool_list, ename) {
 }
 ```
 
+```{r }
+#| label: init-custom-vars
+#| echo: false
+#| eval: true
+bioinfo_tools <- FALSE
+```
+
 <!-- markdownlint-enable MD041 -->

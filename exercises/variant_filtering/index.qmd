@@ -12,9 +12,9 @@ execute:
 
 <!-- markdownlint-disable MD041 -->
 
-{{< include ../_knitr.qmd >}}
+{{< include /exercises/_knitr.qmd >}}
 
-{{< include ../_rlibs.qmd >}}
+{{< include /exercises/_rlibs.qmd >}}
 
 <!-- markdownlint-enable MD041 -->
 

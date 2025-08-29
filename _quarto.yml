@@ -37,6 +37,7 @@ project:
     - exercises/variant_filtering/basic_filtering.qmd
     - exercises/variant_filtering/advanced_filtering.qmd
     - exercises/genetic_diversity/index.qmd
+    - exercises/genetic_diversity/landscape.qmd
     - exercises/recombination_linkage/index.qmd
     - exercises/population_structure/index.qmd
     - exercises/demography/index.qmd

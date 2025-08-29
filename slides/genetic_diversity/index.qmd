@@ -11,9 +11,9 @@ format:
 
 ## Setup  {visibility="hidden" .hidden .unnumbered .unlisted}
 
-{{< include ../_knitr.qmd >}}
+{{< include /slides/_knitr.qmd >}}
 
-{{< include ../_rlibs.qmd >}}
+{{< include /slides/_rlibs.qmd >}}
 
 ```{bash }
 #| label: make-results-directory
