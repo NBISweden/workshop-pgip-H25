@@ -20,7 +20,7 @@ exercise:
 #| label: r-init-vars
 #| echo: false
 #| eval: true
-tool_list <- exercise_tools$variant_calling$read_mapping$tools
+obj <- exercise_tools$variant_calling$read_mapping
 bioinfo_tools <- TRUE
 ```
 

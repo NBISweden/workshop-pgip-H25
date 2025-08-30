@@ -26,7 +26,7 @@ exercise:
 #| label: init-vars
 #| echo: false
 #| eval: true
-tool_list <- exercise_tools$genetic_diversity$landscape$tools
+obj <- exercise_tools$genetic_diversity$landscape
 bioinfo_tools <- TRUE
 ```
 

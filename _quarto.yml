@@ -39,7 +39,11 @@ project:
     - exercises/genetic_diversity/index.qmd
     - exercises/genetic_diversity/landscape.qmd
     - exercises/recombination_linkage/index.qmd
+    - exercises/recombination_linkage/ld_decay.qmd
     - exercises/population_structure/index.qmd
+    - exercises/population_structure/pca.qmd
+    - exercises/population_structure/admixture.qmd
+    - exercises/population_structure/dstats.qmd
     - exercises/demography/index.qmd
     - exercises/selection/index.qmd
     - exercises/simulation/index.qmd

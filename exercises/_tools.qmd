@@ -13,7 +13,7 @@
 #| echo: false
 #| eval: true
 #| output: asis
-cat(format_listing(tool_list))
+cat(format_listing(obj))
 ```
 
 #### {{< fa server >}} PDC
@@ -30,7 +30,7 @@ Execute the following command to load modules:
 #| echo: false
 #| eval: true
 #| output: asis
-cat(format_modules(tool_list, bioinfo_tools=bioinfo_tools))
+cat(format_modules(obj, bioinfo_tools=bioinfo_tools))
 ```
 
 ##### Virtual environment
@@ -53,7 +53,7 @@ environment with `pixi shell`:
 #| echo: false
 #| eval: true
 #| output: asis
-cat(format_pixi(tool_list, "{{< meta exercise.dir >}}"))
+cat(format_pixi(obj, "{{< meta exercise.dir >}}"))
 ```
 
 :::
