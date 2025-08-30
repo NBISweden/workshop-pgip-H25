@@ -27,3 +27,16 @@ execute:
 :::
 
 :::
+
+[Principal component analysis (PCA)](pca.qmd)
+
+: Generate a PCA plot of data to get an overview of population
+  structure
+
+[Admixture analysis](admixture.qmd)
+
+: Infer populations and individual ancestries
+
+[D-stastitics](dstats.qmd)
+
+: Infer introgression and hybridization with D-statistics

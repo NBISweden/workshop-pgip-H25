@@ -23,7 +23,7 @@ exercise:
 #| label: r-init-vars
 #| echo: false
 #| eval: true
-tool_list <- exercise_tools$variant_filtering$basic_filtering$tools
+obj <- exercise_tools$variant_filtering$basic_filtering
 bioinfo_tools <- TRUE
 ```
 

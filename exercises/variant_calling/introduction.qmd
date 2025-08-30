@@ -18,7 +18,7 @@ exercise:
 #| label: r-init-vars
 #| echo: false
 #| eval: true
-tool_list <- exercise_tools$variant_calling$introduction$tools
+obj <- exercise_tools$variant_calling$introduction
 ```
 
 <!-- markdownlint-enable MD041 -->

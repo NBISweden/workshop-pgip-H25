@@ -1,5 +1,10 @@
 # -*- yaml -*-
-# Missing on PDC: csvtk, vcflib
+# Missing on PDC: csvtk
+admixture:
+  url: https://dalexander.github.io/admixture/index.html
+  ref: alexander_FastModelbasedEstimation_2009
+  pdc: ADMIXTURE/1.3.0
+  bioinfo_tools: true
 bcftools:
   url: https://samtools.github.io/bcftools/bcftools.html
   ref: danecek_TwelveYearsSAMtools_2021
@@ -39,10 +44,17 @@ pixy:
   url: https://github.com/ksamuk/pixy.git
   ref: korunes_PixyUnbiasedEstimation_2021
   pdc: pixy/1.2.5.beta1
+plink2:
+  url: https://www.cog-genomics.org/plink/2.0
+  ref: chang_SecondgenerationPLINKRising_2015
+  pdc: plink/2.00a5.14
 qualimap:
   url: http://qualimap.conesalab.org
   ref: okonechnikov_QualimapAdvancedMultisample_2016
   pdc: QualiMap/2.2.1
+r:
+  url: https://www.r-project.org/
+  pdc: PDC/24.11 R/4.4.2-cpeGNU-24.11
 samtools:
   url: https://github.com/samtools/samtools
   ref: danecek_TwelveYearsSAMtools_2021

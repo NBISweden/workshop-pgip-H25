@@ -1,0 +1,45 @@
+---
+title: Principal component analysis
+author:
+  - Per Unneberg
+format:
+  nbis-course-html:
+    number-sections: false
+execute:
+  cache: false
+exercise:
+  dir: population-structure
+  venv: e-population-structure
+---
+
+<!-- markdownlint-disable MD041 -->
+
+{{< include /exercises/_knitr.qmd >}}
+
+{{< include /exercises/_rlibs.qmd >}}
+
+```{r }
+#| label: r-init-vars
+#| echo: false
+#| eval: true
+obj <- exercise_tools$population_structure$pca
+```
+
+<!-- markdownlint-enable MD041 -->
+
+## About
+
+In this exercise we will cluster...
+
+{{< include /exercises/_subset.qmd >}}
+
+:::{.callout-tip collapse=true}
+
+## Intended learning outcomes
+
+- cluster data with a Principal component analysis to detect
+  population structure
+
+:::
+
+{{< include /exercises/_tools.qmd >}}

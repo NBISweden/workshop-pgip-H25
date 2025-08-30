@@ -49,9 +49,13 @@ website:
           - section: Recombination and linkage
             contents:
               - exercises/recombination_linkage/index.qmd
+              - exercises/recombination_linkage/ld_decay.qmd
           - section: Population structure
             contents:
               - exercises/population_structure/index.qmd
+              - exercises/population_structure/pca.qmd
+              - exercises/population_structure/admixture.qmd
+              - exercises/population_structure/dstats.qmd
           - section: Demography
             contents:
               - exercises/demography/index.qmd

@@ -41,8 +41,6 @@ datasets:
 
 exercises:
   variant_calling:
-    dir: variant-calling
-    venv: e-variant-calling
     introduction:
       tools: [fastqc]
     data_qc:
@@ -65,14 +63,23 @@ exercises:
     variant_calling_long:
       tools: [bcftools, bwa, fastqc, gatk, multiqc, picard, qualimap, samtools]
   variant_filtering:
-    dir: variant-filtering
-    venv: e-variant-filtering
     basic_filtering:
       tools: [bcftools, bedtools, csvtk, seqkit, vcflib, vcftools]
     advanced_filtering:
       tools: [bcftools, bedtools, csvtk, mosdepth, seqkit, vcflib, vcftools]
   genetic_diversity:
-    dir: genetic-diversity
-    venv: e-genetic-diversity
     landscape:
       tools: [bcftools, bedtools, csvtk, pixy, vcftools]
+  recombination_linkage:
+    ld_decay:
+      tools: [plink]
+  population_structure:
+    pca:
+      tools: [plink2, r]
+      r_conda: [r-tidyverse]
+    admixture:
+      tools: [admixture]
+    dstats:
+      tools: []
+    treemix:
+      tools: []

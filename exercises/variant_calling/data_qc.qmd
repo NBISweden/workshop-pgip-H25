@@ -22,7 +22,7 @@ exercise:
 #| label: r-init-vars
 #| echo: false
 #| eval: true
-tool_list <- exercise_tools$variant_calling$data_qc$tools
+obj <- exercise_tools$variant_calling$data_qc
 ```
 
 <!-- markdownlint-enable MD041 -->

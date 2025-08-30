@@ -28,12 +28,15 @@ theme_set(bw)
 library(blogdown)
 library(here)
 library(yaml)
-deps <- blogdown::read_toml(here("pixi.toml"))$feature$build$dependencies
+pixi <- blogdown::read_toml(here("pixi.toml"))$feature$build$dependencies
 x <- yaml::read_yaml(here("exercises", "_tools.yaml"))
-tools <- lapply(names(x), function(n){
-  x[[n]]$pixi <- deps[[n]]; x[[n]]}
-  )
-names(tools) <- names(x)
+tools <- lapply(names(pixi), function(n){
+  y <- list(pixi=pixi[[n]])
+  if(!is.null(x[[n]]))
+    y <- c(y, x[[n]])
+  y
+})
+names(tools) <- names(pixi)
 exercise_tools <- yaml::read_yaml(here("_variables.yml"))$exercises
 ```
 
@@ -43,7 +46,8 @@ exercise_tools <- yaml::read_yaml(here("_variables.yml"))$exercises
 #| eval: true
 #| warning: false
 #| cache: false
-format_listing <- function(tool_list) {
+format_listing <- function(obj) {
+  tool_list <- obj$tools
   output <- ""
   for (n in tool_list) {
     tool <- tools[[n]]
@@ -56,7 +60,8 @@ format_listing <- function(tool_list) {
   }
   return(output)
 }
-format_modules <- function(tool_list, bioinfo_tools=FALSE) {
+format_modules <- function(obj, bioinfo_tools=FALSE) {
+  tool_list <- obj$tools
   msg <- "module load"
   if (bioinfo_tools)
     msg <- paste0(msg, " bioinfo-tools")
@@ -87,7 +92,10 @@ format_modules <- function(tool_list, bioinfo_tools=FALSE) {
   output <- paste0(output, msg, "\n</code></pre></div>\n")
   return(output)
 }
-format_pixi <- function(tool_list, ename) {
+format_pixi <- function(obj, ename) {
+  tool_list <- obj$tools
+  if (!is.null(obj$r_conda))
+    tool_list <- c(tool_list, obj$r_conda)
   output <- paste0(
       "<div class=\"sourceCode cell-code\">",
       "<pre class=\"sourceCode toml code-with-copy\">",

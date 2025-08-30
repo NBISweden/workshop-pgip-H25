@@ -1,0 +1,45 @@
+---
+title: Linkage disequilibrium decay
+description: Calculate LD decay
+format:
+  nbis-course-html:
+    number-sections: false
+author:
+  - Per Unneberg
+execute:
+  cache: false
+exercise:
+  dir: recombination-linkage
+  venv: e-recombination-linkage
+---
+
+<!-- markdownlint-disable MD041 -->
+
+{{< include /exercises/_knitr.qmd >}}
+
+{{< include /exercises/_rlibs.qmd >}}
+
+```{r }
+#| label: init-vars
+#| echo: false
+#| eval: true
+obj <- exercise_tools$recombination_linkage$ld_decay
+```
+
+<!-- markdownlint-enable MD041 -->
+
+## About
+
+In this exercise we...
+
+{{< include /exercises/_subset.qmd >}}
+
+:::{.callout-tip collapse=true}
+
+## Intended learning outcomes
+
+- generate linkage disequilibrium plot with `plink2`
+
+:::
+
+{{< include /exercises/_tools.qmd >}}
