@@ -35,11 +35,19 @@ cat(format_modules(obj, bioinfo_tools=bioinfo_tools))
 
 ##### Virtual environment
 
-Activate the `{{< meta exercise.venv >}}` environment:
+Run the `pgip` initialization script and activate the `pgip`
+default environment:
 
 ```bash
-# $OPTIONS is provided via the init script
-pixi shell -e {{< meta exercise.venv >}} $OPTIONS
+source {{< var pg_pgip_dir >}}/init.sh
+pgip_activate
+```
+
+Then activate the `{{< meta exercise.venv >}}` environment:
+
+```bash
+# pgip_shell calls pixi shell -e {{< meta exercise.venv >}} --as-is
+pgip_shell {{< meta exercise.venv >}}
 ```
 
 #### {{< fa laptop >}} pixi
