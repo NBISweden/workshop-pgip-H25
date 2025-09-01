@@ -42,9 +42,9 @@ biology as on getting programs to run and interpreting the output.
 
 ::: {.callout-tip collapse=true}
 
-## Learning objectives
+## Intended learning outcomes
 
-- Get familiar with command line
+- Run `fastqc` from command line
 - Perform qc on sequencing reads and interpret results
 
 :::
