@@ -25,10 +25,10 @@ obj <- exercise_tools$variant_calling$introduction
 
 ::: {.callout-tip collapse=true}
 
-## Learning objectives
+## Intendend learning outcomes
 
 - Navigate directory tree
-- Run `fastqc` from command line
+- Look at FASTQ sequence file
 
 :::
 
