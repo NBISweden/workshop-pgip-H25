@@ -72,11 +72,12 @@ exercises:
       tools: [bcftools, bedtools, csvtk, pixy, vcftools]
   recombination_linkage:
     ld_decay:
-      tools: [plink]
+      tools: [plink, r]
+      r_conda: [r-tidyverse, r-viridis]
   population_structure:
     pca:
       tools: [plink2, r]
-      r_conda: [r-tidyverse]
+      r_conda: [r-tidyverse, r-viridis]
     admixture:
       tools: [admixture]
     dstats:

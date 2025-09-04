@@ -109,12 +109,12 @@ __sampleinfo__:
 __variants__:
   - vcf/all.allsites.vcf.gz: monkeyflower/tiny/gatk-genotype-gvcf-bqsr/all.allsites.vcf.gz
   - vcf/all.allsites.vcf.gz.tbi: monkeyflower/tiny/gatk-genotype-gvcf-bqsr/all.allsites.vcf.gz.tbi
-  - vcf/all.variantsites.vcf.gz: monkeyflower/small/all.variantsites.vcf.gz
-  - vcf/all.variantsites.vcf.gz.tbi: monkeyflower/small/all.variantsites.vcf.gz.tbi
+  - vcf/all.variantsites.vcf.gz: monkeyflower/small/gatk-genotype-gvcf-bqsr/all.variantsites.vcf.gz
+  - vcf/all.variantsites.vcf.gz.tbi: monkeyflower/small/gatk-genotype-gvcf-bqsr/all.variantsites.vcf.gz.tbi
 
 __redyellow_variants__:
-  - redyellow/variantsites.vcf.gz: monkeyflower/small/redyellow.variantsites.vcf.gz
-  - redyellow/variantsites.vcf.gz.tbi: monkeyflower/small/redyellow.variantsites.vcf.gz.tbi
+  - redyellow/variantsites.vcf.gz: monkeyflower/small/gatk-genotype-gvcf-bqsr/redyellow.variantsites.vcf.gz
+  - redyellow/variantsites.vcf.gz.tbi: monkeyflower/small/gatk-genotype-gvcf-bqsr/redyellow.variantsites.vcf.gz.tbi
   - redyellow/allsites.vcf.gz: monkeyflower/tiny/gatk-genotype-gvcf-bqsr/redyellow.allsites.vcf.gz
   - redyellow/allsites.vcf.gz.tbi: monkeyflower/tiny/gatk-genotype-gvcf-bqsr/redyellow.allsites.vcf.gz.tbi
 
@@ -135,10 +135,6 @@ exercises/variant_calling:
     - __yellow_gvcf__
     - __reference__
     - __sampleinfo__
-    - variantsites.vcf.gz: monkeyflower/small/redyellow.variantsites.vcf.gz
-    - variantsites.vcf.gz.tbi: monkeyflower/small/redyellow.variantsites.vcf.gz.tbi
-    - allsites.vcf.gz: monkeyflower/tiny/gatk-genotype-gvcf-bqsr/redyellow.allsites.vcf.gz
-    - allsites.vcf.gz.tbi: monkeyflower/tiny/gatk-genotype-gvcf-bqsr/redyellow.allsites.vcf.gz.tbi
     - workflow/Snakefile: monkeyflower/snakemake/variantcalling.smk
 
 exercises/variant_filtering:
@@ -165,19 +161,30 @@ exercises/variant_filtering:
     - bam/PUN-Y-POTR.bai: monkeyflower/tiny/gatk-bqsr/PUN-Y-POTR.bai
     - __reference__
     - __sampleinfo__
-    - variantsites.vcf.gz: monkeyflower/small/redyellow.variantsites.vcf.gz
-    - variantsites.vcf.gz.tbi: monkeyflower/small/redyellow.variantsites.vcf.gz.tbi
+    - variantsites.vcf.gz: monkeyflower/small/gatk-genotype-gvcf-bqsr/redyellow.variantsites.vcf.gz
+    - variantsites.vcf.gz.tbi: monkeyflower/small/gatk-genotype-gvcf-bqsr/redyellow.variantsites.vcf.gz.tbi
     - allsites.vcf.gz: monkeyflower/tiny/gatk-genotype-gvcf-bqsr/redyellow.allsites.vcf.gz
     - allsites.vcf.gz.tbi: monkeyflower/tiny/gatk-genotype-gvcf-bqsr/redyellow.allsites.vcf.gz.tbi
 
 exercises/genetic_diversity:
   content:
-    - variantsites.vcf.gz: monkeyflower/small/all.variantsites.vcf.gz
-    - variantsites.vcf.gz.tbi: monkeyflower/small/all.variantsites.vcf.gz.tbi
-    - allsites.vcf.gz: monkeyflower/tiny/gatk-genotype-gvcf-bqsr/all.allsites.vcf.gz
-    - allsites.vcf.gz.tbi: monkeyflower/tiny/gatk-genotype-gvcf-bqsr/all.allsites.vcf.gz.tbi
+    - variantsites.vcf.gz: monkeyflower/small/vcftools-filter-bqsr/all.variantsites.vcf.gz
+    - variantsites.vcf.gz.tbi: monkeyflower/small/vcftools-filter-bqsr/all.variantsites.vcf.gz.tbi
+    - allsites.vcf.gz: monkeyflower/tiny/vcftools-filter-bqsr/all.allsites.vcf.gz
+    - allsites.vcf.gz.tbi: monkeyflower/tiny/vcftools-filter-bqsr/all.allsites.vcf.gz.tbi
     - __sampleinfo__
     - __reference__
+
+exercises/recombination_linkage:
+  content:
+    - all.variantsites.snp.biallelic.vcf.gz: monkeyflower/small/vcftools-filter-bqsr/all.variantsites.snp.biallelic.vcf.gz
+    - all.variantsites.snp.biallelic.vcf.gz.tbi: monkeyflower/small/vcftools-filter-bqsr/all.variantsites.snp.biallelic.vcf.gz.tbi
+
+exercises/population_structure:
+  content:
+    - __sampleinfo__
+    - variants.vcf.gz: monkeyflower/small/vcftools-filter-bqsr/all.variantsites.snp.biallelic.vcf.gz
+    - variants.vcf.gz.tbi: monkeyflower/small/vcftools-filter-bqsr/all.variantsites.snp.biallelic.vcf.gz.tbi
 
 slides/foundations:
   content:
@@ -197,8 +204,8 @@ slides/variant_calling:
     - gatk-bqsr/PUN-Y-INJ.bai: monkeyflower/tiny/gatk-bqsr/PUN-Y-INJ.bai
     - bam/PUN-Y-INJ.bam: monkeyflower/tiny/md/PUN-Y-INJ.bam
     - bam/PUN-Y-INJ.bai: monkeyflower/tiny/md/PUN-Y-INJ.bai
-    - vcf/variantsites.vcf.gz: monkeyflower/small/redyellow.variantsites.vcf.gz
-    - vcf/variantsites.vcf.gz.tbi: monkeyflower/small/redyellow.variantsites.vcf.gz.tbi
+    - vcf/variantsites.vcf.gz: monkeyflower/small/gatk-genotype-gvcf-bqsr/redyellow.variantsites.vcf.gz
+    - vcf/variantsites.vcf.gz.tbi: monkeyflower/small/gatk-genotype-gvcf-bqsr/redyellow.variantsites.vcf.gz.tbi
     - vcf/allsites.vcf.gz: monkeyflower/tiny/gatk-genotype-gvcf-bqsr/redyellow.allsites.vcf.gz
     - vcf/allsites.vcf.gz.tbi: monkeyflower/tiny/gatk-genotype-gvcf-bqsr/redyellow.allsites.vcf.gz.tbi
     - __reference__
@@ -212,5 +219,5 @@ slides/genetic_diversity:
   content:
     - __sampleinfo__
     - gff/annotation.gff: monkeyflower/tiny/ref/MAUR_annotation_functional_submission.gff
-    - vcf/allsites.vcf.gz: monkeyflower/tiny/gatk-genotype-gvcf-bqsr/redyellow.allsites.vcf.gz
-    - vcf/allsites.vcf.gz.tbi: monkeyflower/tiny/gatk-genotype-gvcf-bqsr/redyellow.allsites.vcf.gz.tbi
+    - vcf/allsites.vcf.gz: monkeyflower/tiny/vcftools-filter-bqsr/redyellow.allsites.vcf.gz
+    - vcf/allsites.vcf.gz.tbi: monkeyflower/tiny/vcftools-filter-bqsr/redyellow.allsites.vcf.gz.tbi

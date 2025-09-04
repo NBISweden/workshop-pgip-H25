@@ -19,7 +19,7 @@
 .dna .italic {
   font-weight: bold;
   font-family: monospace;
-  color: $aqua75;
+  color: cl.$aqua75;
 }
 
 .translatey50 {
@@ -30,17 +30,26 @@
   transform: translate(0, -100px);
 }
 
-.sourceCode.bash {
-    background-color: #ebeff5;
-}
-
 .sourceCode.r {
-    background-color: $lightgray;
+    border-left-color: cl.$grape;
+    border-left-width: 5px;
 }
 
 .sourceCode > .r::before {
-  font-family: "Font Awesome 5 Free";
-  content: "\f303";
-  font-weight: 900;
-  margin-right: 10px;
+    content: "R";
+    color: cl.$grape;
+    font-weight: 900;
+    margin-right: 10px;
+}
+
+.sourceCode.bash {
+    border-left-color: cl.$aqua;
+    border-left-width: 5px;
+}
+
+.sourceCode > .bash::before {
+    content: ">_";
+    color: cl.$aqua;
+    font-weight: 900;
+    margin-right: 10px;
 }

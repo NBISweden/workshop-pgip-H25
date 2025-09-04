@@ -1,0 +1,119 @@
+<!-- markdownlint-disable MD041 -->
+
+```{r}
+#| label: r-load-pgip
+#| echo: false
+#| eval: true
+#| cache: false
+#| warning: false
+library(pgip)
+```
+
+```{r }
+#| label: read-tool-config
+#| echo: false
+#| eval: true
+#| warning: false
+#| cache: false
+library(blogdown)
+library(here)
+library(yaml)
+pixi <- blogdown::read_toml(here("pixi.toml"))$feature$build$dependencies
+x <- yaml::read_yaml(here("exercises", "_tools.yaml"))
+tools <- lapply(names(pixi), function(n){
+  y <- list(pixi=pixi[[n]])
+  if(!is.null(x[[n]]))
+    y <- c(y, x[[n]])
+  y
+})
+names(tools) <- names(pixi)
+exercise_tools <- yaml::read_yaml(here("_variables.yml"))$exercises
+```
+
+```{r }
+#| label: r-format-tools-functions
+#| echo: false
+#| eval: true
+#| warning: false
+#| cache: false
+format_listing <- function(obj) {
+  tool_list <- obj$tools
+  output <- ""
+  for (n in tool_list) {
+    tool <- tools[[n]]
+    if (!is.null(tool$name))
+      n <- tool$name
+    entry <- paste0("- [", n, "](", tool$url, ")")
+    if (!is.null(tool$ref))
+      entry <- paste0(entry, " [@", tool$ref, "]")
+    output <- paste0(output, entry, "\n")
+  }
+  return(output)
+}
+format_modules <- function(obj, bioinfo_tools=FALSE) {
+  tool_list <- obj$tools
+  msg <- "module load"
+  if (bioinfo_tools)
+    msg <- paste0(msg, " bioinfo-tools")
+  missing <- c()
+  count <- 0
+  for (n in tool_list) {
+    tool <- tools[[n]]
+    if (!is.null(tool$pdc)) {
+      if ((count %% 3) == 0)
+        msg <- paste0(msg, " \\ \n   ")
+      entry <- paste0(" ", tool$pdc)
+      msg <- paste0(msg, entry)
+      count <- count + 1
+    } else {
+      missing <- c(missing, n)
+    }
+  }
+  output <- paste0(
+      "<div class=\"sourceCode\">",
+      "<pre class=\"sourceCode bash code-with-copy\">",
+      "<code class=\"sourceCode bash\">"
+  )
+  if (length(missing) > 0) {
+    output <- paste0(output, "# NB: the following tools are not available as modules:\n")
+    for (n in missing)
+      output <- paste0(output, "# - ", n, "\n")
+  }
+  output <- paste0(output, msg, "\n</code></pre></div>\n")
+  return(output)
+}
+format_pixi <- function(obj, ename) {
+  tool_list <- obj$tools
+  if (!is.null(obj$r_conda))
+    tool_list <- c(tool_list, obj$r_conda)
+  output <- paste0(
+      "<div class=\"sourceCode cell-code\">",
+      "<pre class=\"sourceCode toml code-with-copy\">",
+      "<code class=\"sourceCode toml\">"
+  )
+  output <- paste0(
+      output, "[workspace]\n",
+      "channels = [\"conda-forge\", \"bioconda\"]\n",
+      "name = \"", ename, "\"\n",
+      "\n[dependencies]\n"
+  )
+  for (n in tool_list) {
+    tool <- tools[[n]]
+    if (!is.null(tool$pixi)) {
+      entry <- paste0(n, " = \"", tool$pixi, "\"")
+      output <- paste0(output, entry, "\n")
+    }
+  }
+  output <- paste0(output, "\n</code></pre></div>\n")
+  return(output)
+}
+```
+
+```{r }
+#| label: init-custom-vars
+#| echo: false
+#| eval: true
+bioinfo_tools <- FALSE
+```
+
+<!-- markdownlint-enable MD041 -->

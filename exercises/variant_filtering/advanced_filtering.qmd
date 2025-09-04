@@ -17,6 +17,8 @@ exercise:
 
 {{< include /exercises/_knitr.qmd >}}
 
+{{< include /exercises/_rbuild.qmd >}}
+
 {{< include /exercises/_rlibs.qmd >}}
 
 ```{bash }

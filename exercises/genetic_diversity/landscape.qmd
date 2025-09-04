@@ -13,10 +13,11 @@ exercise:
   venv: e-genetic-diversity
 ---
 
-
 <!-- markdownlint-disable MD041 -->
 
 {{< include /exercises/_knitr.qmd >}}
+
+{{< include /exercises/_rbuild.qmd >}}
 
 {{< include /exercises/_rlibs.qmd >}}
 

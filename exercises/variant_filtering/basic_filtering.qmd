@@ -1,5 +1,5 @@
 ---
-title: Variant filtering
+title: Basic variant filtering
 subtitle: Basic filtering based on information in VCF file
 format:
   nbis-course-html:
@@ -16,6 +16,8 @@ exercise:
 <!-- markdownlint-disable MD041 -->
 
 {{< include /exercises/_knitr.qmd >}}
+
+{{< include /exercises/_rbuild.qmd >}}
 
 {{< include /exercises/_rlibs.qmd >}}
 
@@ -66,11 +68,7 @@ raw variant call set (for a concise summary, see
 @lou_BeginnerGuideLowcoverage_2021). In this exercise, we will begin
 by applying filters to the variant file containing variant sites only,
 followed by a more general approach based on depth filtering of a
-variant file consisting of all sites, variant as well as invariant. If
-time permits, we will also look at an approach that generates depth
-profiles directly from read mappings (BAM files) and that works also
-when it is impractical due to file size to include invariant sites in
-the variant file.
+variant file consisting of all sites, variant as well as invariant.
 
 It is worthwhile to spend time thinking about filtering. As we will
 see, there are numerous metrics to filter on, and different
@@ -84,7 +82,8 @@ There are many ways to filter data. Choosing the right set of filters
 is not easy, and choosing appropriate thresholds depends on
 application, among other things. Below we list some recommended data
 filters and thresholds that have general applicability and recently
-have been reviewed [@lou_BeginnerGuideLowcoverage_2021, Table 3]:
+have been reviewed [@lou_BeginnerGuideLowcoverage_2021, Table 3]; but
+see also [@hemstrom_NextgenerationDataFiltering_2024]:
 
 - **depth**: Given the difficulty of accurately genotyping
   low-coverage sites, it is recommended to set a minimum read depth
@@ -136,6 +135,16 @@ bcftools stats variantsites.vcf.gz | grep ^SN
 Keep track of these numbers as we will use them to evaluate the
 effects of filtering.
 
+### When to remove complex variants?
+
+As you can see, the raw variant data set contains indels as well as
+multiallelic SNPs. Often we are mainly concerned with SNPs, in
+particular bi-allelic SNPs, which begs the question: when should we
+remove indels and multiallelic sites; prior to or after quality
+filtering? This will depend on the research question, but a general
+recommendation is to filter on quality measures first, and then remove
+more complex variants. This is the approach we opt for here.
+
 ### Generate random subset of variants
 
 Depending on the size of a study, both in terms of reference sequence
@@ -156,7 +165,7 @@ of sites in the file.]:
 #| echo: true
 #| eval: true
 # Set parameter r = 100000 / total number of variants
-bcftools view variantsites.vcf.gz | vcfrandomsample -r 0.8 |\
+bcftools view variantsites.vcf.gz | vcfrandomsample -r 0.9 |\
     bgzip -c > variantsites.subset.vcf.gz
 bcftools index variantsites.subset.vcf.gz
 bcftools stats variantsites.subset.vcf.gz |\
@@ -731,8 +740,8 @@ sites. Species with large genomes will produce files so large that
 they prevent efficient downstream processing. Under these
 circumstances, *ad hoc* coverage filters can be applied to the BAM
 files to in turn generate sequence masks that can be used in
-conjunction with the variant file. This is the topic for the advanced
-session (@sec-advanced-filtering).
+conjunction with the variant file. This is the topic for the [advanced
+session](advanced_filtering.qmd).
 
 Regardless of approach, the end result is a set of regions that are
 discarded (masked) for a given analysis. They can be given either as a
@@ -747,11 +756,12 @@ central 10 bases of the reference (top) are masked (bottom).
 #| label: sequence-mask-example
 #| echo: false
 #| eval: true
-head -n 2 M_aurantiacus_v1.fasta | cut -c -30
+REF=ref/M_aurantiacus_v1.fasta
+head -n 2 ${REF} | cut -c -30
 echo
 echo -e "LG4\t10\t20" | \
  bedtools maskfasta -fi <(echo -e "LG4\t0\t30" | \
-   bedtools maskfasta -fi M_aurantiacus_v1.fasta -bed - -fo /dev/stdout -mc 0 | \
+   bedtools maskfasta -fi ${REF} -bed - -fo /dev/stdout -mc 0 | \
    head -n 2 | cut -c -30) -bed - -fo /dev/stdout -mc 1
 ```
 

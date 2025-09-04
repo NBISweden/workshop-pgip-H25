@@ -1,5 +1,5 @@
 ---
-title: Recombination and linkage
+title: Index
 description: List of exercises
 format:
   nbis-course-html:
