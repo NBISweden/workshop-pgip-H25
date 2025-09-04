@@ -7,6 +7,7 @@ format:
     number-sections: false
 execute:
   cache: false
+  warning: false
 exercise:
   dir: population-structure
   venv: e-population-structure
@@ -45,3 +46,148 @@ In this exercise we...
 :::
 
 {{< include /exercises/_tools.qmd >}}
+
+## R libraries and data setup
+
+```{bash }
+#| label: pca-set-envvars
+#| echo: true
+#| eval: true
+VCF=variants.vcf.gz
+PRUNE_IN=monkeyflower_pca.prune.in
+PREFIX=monkeyflower_adm
+```
+
+```{r }
+#| label: setenv
+#| echo: false
+#| eval: true
+Sys.setenv(
+    "VCF" = "variants.vcf.gz",
+    "PREFIX" = "monkeyflower_adm",
+    "PRUNE_IN" = "monkeyflower_adm.prune.in"
+)
+```
+
+```{r }
+#| label: r-library-init
+#| echo: true
+#| eval: true
+#| warning: false
+{{< include /exercises/_rlibs.R >}}
+library(dplyr)
+library(tibble)
+library(RColorBrewer)
+
+PREFIX <- "monkeyflower_adm"
+```
+
+## Admixture
+
+```{bash }
+#| label: run-plink-to-bed
+#| echo: true
+#| eval: true
+plink2 --vcf $VCF --allow-extra-chr \
+       --set-missing-var-ids @:# \
+       --extract ${PRUNE_IN} \
+       --make-bed \
+       --out ${PREFIX} > /dev/null 2>&1
+```
+
+```{bash }
+#| label: sed-change-chromosome-name
+#| echo: true
+#| eval: true
+sed -i -e "s/^\([A-Z0-9][A-Z0-9]*\)/0/g" ${PREFIX}.bim
+```
+
+```{bash }
+#| label: admixture-k-2
+#| echo: true
+#| eval: false
+admixture --cv ${PREFIX}.bed 2 > ${PREFIX}.2.log
+```
+
+```{bash }
+#| label: admixture-k-loop
+#| echo: true
+#| eval: false
+for k in {3..10}
+do
+    admixture --cv ${PREFIX}.bed $k > ${PREFIX}.${k}.log
+done
+```
+
+```{bash }
+#| label: extract-cv-error
+#| echo: true
+#| eval: true
+grep CV *log | cut -d " " -f 3,4 | sed -e "s/[()K=:]//g" > ${PREFIX}.cv.err
+```
+
+```{r }
+#| label: set-hidden-prefix
+#| echo: false
+#| eval: true
+PREFIX <- "monkeyflower_adm.save"
+```
+
+```{r }
+#| label: plot-cv-error
+#| echo: true
+#| eval: true
+df <- read.table(paste0(PREFIX, ".cv.err"))
+colnames(df) <- c("K", "CV")
+ggplot(df, aes(x=K, y=CV)) + geom_point() + ylab("CV error")
+```
+
+```{r }
+#| label: load-sampleinfo-join-fam
+#| echo: true
+#| eval: true
+sampleinfo <- read.csv("sampleinfo.csv") %>% rename(sample=SampleAlias) %>%
+  mutate(species = as.factor(gsub("ssp. ", "", Taxon))) %>%
+  select(sample, ScientificName, Taxon, Latitude, Longitude, species) %>%
+  as_tibble
+fam <- read.table(paste0(PREFIX, ".fam")) %>% select(2) %>%
+  rename(sample=V2) %>% right_join(sampleinfo) %>% as_tibble
+```
+
+```{r }
+#| label: plot-admixture-function
+#| echo: true
+#| eval: true
+plot_admixture <- function(filename, fam) {
+  df <- read.table(filename) %>%
+    rename_with(~ paste0("pop", seq_along(.))) %>%
+    mutate(sample=fam$sample) %>% left_join(fam) %>%
+    pivot_longer(cols=starts_with("pop"), names_to="Population", values_to="Q") %>%
+    mutate(across(Population, as.factor)) %>%
+    as_tibble
+  colors <- colorRampPalette(brewer.pal(12, "Set3"))(length(levels(df$Population)))
+  p <- ggplot(df, aes(x=sample, y=Q, fill=factor(Population))) +
+    geom_col(aes(color = Population), linewidth=0.1) +
+    facet_grid(~species, switch = "x", scales = "free", space = "free") +
+    labs(x="Individual", y="Q") +
+    scale_y_continuous(expand = c(0, 0)) +
+    scale_x_discrete(expand = expansion(add = 1)) +
+    theme(
+        panel.spacing.x = unit(0.1, "lines"),
+        axis.text.x = element_text(angle=45),
+        panel.grid = element_blank(),
+        strip.text.x = element_text(angle=0)
+    ) + scale_fill_manual("Population", values=colors)
+  return(p)
+}
+```
+
+```{r }
+#| label: plot-admixture
+#| echo: true
+#| eval: true
+#| warning: false
+#| fig-width: 16
+plot_admixture(paste0(PREFIX, ".2.Q"), fam)
+plot_admixture(paste0(PREFIX, ".8.Q"), fam)
+```
