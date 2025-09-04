@@ -8,6 +8,7 @@ author:
   - Per Unneberg
 execute:
   cache: false
+  warning: false
 exercise:
   dir: recombination-linkage
   venv: e-recombination-linkage
@@ -17,7 +18,11 @@ exercise:
 
 {{< include /exercises/_knitr.qmd >}}
 
+{{< include /exercises/_rbuild.qmd >}}
+
 {{< include /exercises/_rlibs.qmd >}}
+
+{{< include /exercises/recombination_linkage/_rcustom.qmd >}}
 
 ```{r }
 #| label: init-vars
@@ -30,7 +35,7 @@ obj <- exercise_tools$recombination_linkage$ld_decay
 
 ## About
 
-In this exercise we...
+FIXME: In this exercise we...
 
 {{< include /exercises/_subset.qmd >}}
 
@@ -39,7 +44,178 @@ In this exercise we...
 ## Intended learning outcomes
 
 - generate linkage disequilibrium plot with `plink2`
+- determine window size for genomic scans
 
 :::
 
 {{< include /exercises/_tools.qmd >}}
+
+## Linkage disequilibrium decay
+
+- recombination and linkage are opposing forces
+
+Rules of thumb (human, [@pritchard_OwnerGuideHuman_]):
+
+- d < 0.01 - 0.1 cM: linkage > recombination
+- d > 0.1 cM: recombination > linkage
+
+:::{.column-margin}
+
+```{r }
+#| label: fig-plot-ld
+#| echo: false
+#| eval: true
+#| fig-height: 4
+#| fig-width: 8
+#| fig-cap: Linkage disequilibrium decay for different recombination rates (r)
+#| out-width: 100%
+decay <- function(c, d0, x) {
+  d <- (1 - c)**x * d0
+  d
+}
+
+x <- seq(0, 100, 1)
+d0 <- 0.25
+
+df <- data.frame(
+      cbind(x, decay(0.05, d0, x), decay(0.1, d0, x), decay(0.5, d0, x))
+)
+colnames(df) <- c("x", "r=0.05", "r=0.1", "r=0.5")
+df <- melt(data.table(df), id.vars = "x")
+
+ggplot(df, aes(x = x, y = value, color = variable)) +
+  geom_line(linewidth=1) +
+  labs(title = TeX("LD decay"),
+       x = "Generation",
+       y = "D") +
+  geom_text(
+    data = data.frame(
+      x = c(25, 17, 10),
+      y = c(0.11, 0.072, 0.02),
+      label = c("r=0.05", "r=0.1", "r=0.5")
+    ),
+    aes(x = x, y = y, label = label),
+    color = "black",
+    size = 5
+  ) +
+  guides(color = FALSE)
+```
+
+:::
+
+## Data variables and R functions
+
+We start by setting up variables and functions to save typing further
+down. First set a variable to store the `VCF` we're analysing:
+
+```{bash }
+#| label: ld-data-setup
+#| echo: true
+#| eval: true
+VCF=all.variantsites.snp.biallelic.vcf.gz
+```
+
+```{r }
+#| label: set-ld-envvars
+#| echo: false
+#| eval: true
+Sys.setenv(
+    VCF = "all.variantsites.snp.biallelic.vcf.gz"
+)
+```
+
+:::{.callout-exercise}
+
+#### How many samples, variants and linkage groups are there?
+
+:::{.callout-hint}
+
+:::
+
+:::{.callout-answer}
+
+:::
+
+:::
+
+```{r }
+#| label: r-libraries
+#| echo: true
+#| eval: true
+{{< include /exercises/_rlibs.R >}}
+library(dplyr)
+```
+
+```{r }
+#| label: r-ld-functions
+#| echo: true
+#| eval: true
+#'
+#' Calculate average linkage disequilibrium between pairs of SNPs binned by distance
+#'
+calc_ld <- function(filename, max_bin=1e5) {
+  ld <- read.table(pipe(paste("zstdcat", filename, "| sed -e \"s/#//\"")), header=TRUE)
+  ld$dist <- ld$POS_B - ld$POS_A
+  ld$distc <- cut(ld$dist,
+                  breaks=seq(
+                      from=0,
+                      to=max_bin + 1,
+                      by=100)
+                  )
+
+  ldr2 <- ld %>% group_by(distc) %>%
+    summarise(mean=mean(UNPHASED_R2), median=median(UNPHASED_R2),
+              count=length(UNPHASED_R2))
+
+  labs <- levels(ld$distc)
+  ldr2$dist <- as.numeric( sub("[^,]*,([^]]*)\\]", "\\1", labs))
+  return(ldr2)
+}
+```
+
+## Calculate LD with plink2
+
+NB: need maf 0.2, thin 0.2 for large dataset - here we crank up thin
+to get desired shape
+
+```{bash }
+#| label: calc-ld-with-plink2
+#| echo: true
+#| eval: true
+plink2 --vcf $VCF --double-id --allow-extra-chr \
+  --set-missing-var-ids @:# \
+  --thin 0.2 --r2-unphased zs --ld-window 999999 --ld-window-kb 100 \
+  --mac 3 --geno 0.1 --mind 0.5 \
+  --ld-window-r2 0 \
+  --make-bed --out monkeyflower_ld 2>&1 > /dev/null
+```
+
+## Calculate average LD
+
+```{r }
+#| label: calculate-average-ld
+#| echo: true
+#| eval: true
+ld2r <- calc_ld("monkeyflower_ld.vcor.zst")
+```
+
+```{r }
+#| label: plot-ld2
+#| echo: false
+#| eval: true
+ggplot(ld2r, aes(x=dist, y=mean)) + geom_point() + xlim(0, 100000)
+```
+
+## Additional things to try
+
+- ld is sensitive to small sample sizes
+- try different parameter settings
+- conclusion: fine-tuning often needed
+
+:::{.callout-exercise}
+
+#### LD and small sample sizes
+
+As we have seen above, LD is
+
+:::

@@ -7,14 +7,18 @@ format:
     number-sections: false
 execute:
   cache: false
+  warning: false
 exercise:
   dir: population-structure
   venv: e-population-structure
+  init_show: true
 ---
 
 <!-- markdownlint-disable MD041 -->
 
 {{< include /exercises/_knitr.qmd >}}
+
+{{< include /exercises/_rbuild.qmd >}}
 
 {{< include /exercises/_rlibs.qmd >}}
 
@@ -43,3 +47,162 @@ In this exercise we will cluster...
 :::
 
 {{< include /exercises/_tools.qmd >}}
+
+## R libraries and data setup
+
+```{r }
+#| label: r-init-exercise
+#| echo: true
+#| eval: true
+
+```
+
+```{bash }
+#| label: pca-set-envvars
+#| echo: true
+#| eval: true
+VCF=variants.vcf.gz
+```
+
+```{r }
+#| label: setenv
+#| echo: false
+#| eval: true
+Sys.setenv(
+    "VCF" = "variants.vcf.gz"
+)
+```
+
+## LD pruning
+
+- want independent markers
+
+Show that <50 is not really optimal!
+
+```{bash }
+#| label: plink2-ld-prune
+#| echo: true
+#| eval: true
+#| error: true
+plink2 --vcf $VCF --double-id --allow-extra-chr \
+       --set-missing-var-ids @:# \
+       --indep-pairwise 50 5 0.1 \
+       --out monkeyflower_pca > /dev/null
+```
+
+Proceed anyway, keeping this in mind
+
+```{bash }
+#| label: plink-ld-prune-bad
+#| echo: true
+#| eval: true
+plink2 --vcf $VCF --double-id --allow-extra-chr \
+       --set-missing-var-ids @:# \
+       --indep-pairwise 50 5 0.1 \
+       --bad-ld \
+       --out monkeyflower_pca > /dev/null 2>&1
+```
+
+## Make a PCA
+
+```{bash }
+#| label: plink2-make-allele-frequencies
+#| echo: true
+#| eval: true
+plink2 --vcf $VCF --freq zs --out monkeyflower_pca > /dev/null 2>&1
+```
+
+```{bash }
+#| label: plink2-make-pca
+#| echo: true
+#| eval: true
+plink2 --vcf $VCF --double-id --allow-extra-chr \
+       --set-missing-var-ids @:# \
+       --extract monkeyflower_pca.prune.in \
+       --make-bed --pca --read-freq monkeyflower_pca.afreq.zst \
+       --out monkeyflower_pca > /dev/null 2>&1
+```
+
+## Plotting the PCA
+
+```{r }
+#| label: load-r-tibble-dplyr
+#| echo: true
+#| eval: true
+{{< include /exercises/_rlibs.R >}}
+library(dplyr)
+library(tibble)
+```
+
+```{r }
+#| label: read-pca-data
+#| echo: true
+#| eval: true
+eigenvec <- read.table("monkeyflower_pca.eigenvec") %>%
+  select(-V1) %>% rename(sample=V2) %>%
+  rename_with(~ paste0("PC", 1:10), -sample)
+eigenval <- read.table("monkeyflower_pca.eigenval") %>%
+  rename(value=V1) %>% mutate(pve=value/sum(value) * 100) %>%
+  mutate(PC=factor(paste0("PC", row_number()), levels=paste0("PC", row_number()))) %>%
+  as_tibble
+```
+
+```{r }
+#| label: join-eigenval-sampleinfo
+#| echo: true
+#| eval: true
+pca <- read.csv("sampleinfo.csv") %>% rename(sample=SampleAlias) %>%
+  mutate(species = as.factor(gsub("ssp. ", "", Taxon))) %>%
+  select(sample, ScientificName, Taxon, Latitude, Longitude, species) %>%
+  left_join(eigenvec) %>% as_tibble
+pca
+```
+
+```{r }
+#| label: r-plot-eigenvals
+#| echo: true
+#| eval: true
+ggplot(eigenval, aes(x=PC, y=pve)) +
+  geom_point() +
+  scale_y_continuous(limits = c(0, 25), expand = c(0, 0)) +
+  ylab("Variance explained (%)")
+```
+
+```{r }
+#| label: r-cumsum-pve
+#| echo: true
+#| eval: true
+cumsum(eigenval$pve)
+```
+
+```{r }
+#| label: r-species-colors
+#| echo: true
+#| eval: true
+species <- as_tibble(data.frame(
+    species = levels(pca$species),
+    color = c("#000000", "#65c3ca", "#0f4e8b",
+              "#8282d8", "#008b00", "#ff9d00",
+              "#b400f7", "#ff0100", "#b9a030")
+))
+```
+
+```{r }
+#| label: r-plot-pca
+#| echo: true
+#| eval: true
+ggplot(pca, aes(PC1, PC3, color=species)) +
+  geom_point(size=3, alpha=0.8) +
+  scale_color_manual(values=species$color)
+```
+
+## Questions
+
+- does it align with your expectations (look and compare with tree)
+
+## Things to try
+
+- exclude M.clevelandii
+- plot more principal components to see structure
+- change LD pruning settings (even run without)
+- change MAC/MAF cutoff

@@ -3,21 +3,6 @@
 -- Custom filter to convert divs with class "callout" to callout
 -- blocks for special callout classes exercise, answer, and hint
 --
-local callout_attrs = {
-   exercise = {
-      type = "exercise",
-      collapse = false,
-   },
-   answer = {
-      type = "answer",
-      collapse = true
-   },
-   hint = {
-      type = "hint",
-      collapse = true
-   }
-}
-
 local function isCallout(class)
    return class == 'callout' or class:match("^callout%-")
 end
@@ -52,10 +37,17 @@ function Div(div)
       title = callout_type:gsub("^%l", string.upper)
    end
 
+   collapse = true
+   if div.attr.attributes["collapse"] ~= nil then
+      if div.attr.attributes["collapse"] == "false" then
+	 collapse = false
+      end
+   end
+
    return quarto.Callout({
 	 type = callout_type,
 	 content = { pandoc.Div(div) },
 	 title = title,
-	 collapse = callout_attrs[callout_type].collapse
+	 collapse = collapse
    })
 end

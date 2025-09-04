@@ -9,7 +9,6 @@ project:
     - scripts/init-site.sh
     - scripts/setup-pgip-data.sh
     - scripts/setup-data.py
-  #post-render:
   render:
     - index.qmd
     - contents.qmd
@@ -20,6 +19,8 @@ project:
     - slides/foundations/index.qmd
     - slides/variant_calling/index.qmd
     - slides/variant_filtering/index.qmd
+    - slides/recombination/index.qmd
+    - slides/recombination/linkage.qmd
     - slides/genetic_diversity/index.qmd
     - slides/simulation/index.qmd
     - slides/scratch/index.qmd
@@ -65,6 +66,7 @@ lightbox: true
 
 format:
   nbis-course-html:
+    theme: [default, "assets/css/custom_html.scss"]
     toc: true
     embed-resources: false
     date: last-modified
@@ -79,7 +81,7 @@ format:
     footer: Population Genomics in Practice
     header-logo-left-url: https://nbis.se
     ultitle: true
-    theme: [default, "assets/css/custom.scss"]
+    theme: ["assets/css/custom.scss"]
     smaller: true
     highlight-style: gruvbox
     fig-height: 12

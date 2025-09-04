@@ -1,0 +1,15 @@
+---
+title: Recombination and linkage
+author:
+  - Per Unneberg
+format:
+  nbis-course-html:
+    number-sections: false
+---
+
+## About
+
+Slides for recombination and linkage module.
+
+- [Theory](theory)
+- [Linkage](linkage.qmd)

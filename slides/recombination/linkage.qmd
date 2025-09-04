@@ -1,0 +1,76 @@
+---
+title: Linkage disequilibrium
+author:
+  - Per Unneberg
+format:
+  nbis-quarto-revealjs:
+    footer: Linkage disequilibrium
+---
+
+<!-- markdownlint-disable MD013 -->
+
+:::{.center}
+
+```{r, engine="tikz", fig.ext="svg" }
+#| label: fig-mcdonald-kreitman
+#| echo: false
+#| eval: true
+#| out-width: 120%
+#| fig-align: center
+#| fig-cap: Shared haplotypes in the *Drosophila* ADH gene [@kreitman_NucleotidePolymorphismAlcohol_1983]
+\begin{tikzpicture}
+\tikzset {
+  every node/.style={anchor=base,font=\bfseries\sffamily\Huge, minimum size=1.5em},
+  table/.style = {
+    matrix of nodes,
+    text height=1.5em,
+    node distance=0pt,
+    column sep=2pt,
+    row sep=10pt,
+  },
+  ld/.style = {
+    color=red,
+    fill=red!5,
+    outer sep=0,
+  },
+}
+
+\matrix (m) [table] {
+  C & C & G & C & A & A & T & A & |[ld]| A & |[ld]| T & G & G & C & G & C & T & A & C & |[ld]| T & |[ld]| T & C & |[ld]| A & |[ld]| C & |[ld]| A & A & |[ld]| T & |[ld]| A & |[ld]| A & |[ld]| C & C & C & A & C & T & A & G & A & C & A & G & C & C & T \\
+  %%
+  C & C & |[ld]| C & C & A & A & T & A & T & G & G & G & C & G & C & T & A & C & |[ld]| T & |[ld]| T & C & |[ld]| A & |[ld]| C & |[ld]| A & A & |[ld]| T & |[ld]| A & |[ld]| A & |[ld]| C & C & C & A & C & T & A & G & A & C & A & G & C & C & T \\
+  %%
+  C & C & G & C & A & A & T & A & T & G & G & G & C & G & C & T & A & C & C & C & C & C & G & G & A & A & T & C & T & C & C & A & C & T & A & |[ld]| A & A & C & A & G & |[ld]| T & C & |[ld]| A \\
+  %%
+  C & C & G & C & A & A & T & A & T & G & G & G & C & G & C & T & |[ld]| G & |[ld]| T & C & C & C & C & G & G & A & A & T & C & T & C & C & A & C & T & A & |[ld]| A & A & C & |[ld]| T & |[ld]| A & C & C & T \\
+  %%
+  C & C & G & |[ld]| A & |[ld]| G & A & T & A & |[ld]| A & G & |[ld]| T & |[ld]| C & C & G & |[ld]| A & |[ld]| G & |[ld]| G & |[ld]| T & C & C & C & C & G & G & A & A & T & C & T & C & C & A & C & T & A & G & |[ld]| C & C & A & G & C & C & T \\
+  %%
+  C & C & |[ld]| C & C & A & A & T & A & T & G & G & G & C & G & C & |[ld]| G & A & C & C & C & C & C & G & G & A & A & T & C & T & C & |[ld]| T & A & |[ld]| T & T & |[ld]| C & |[ld]| A & |[ld]| C & C & A & G & C & |[ld]| T & T \\
+  %%
+  C & C & |[ld]| C & C & A & A & T & A & T & G & G & G & C & G & C & |[ld]| G & A & C & C & C & C & C & G & G & A & A & T & C & T & |[ld]| G & |[ld]| T & |[ld]| C & |[ld]| T & |[ld]| C & |[ld]| C & G & |[ld]| C & C & A & G & C & C & T \\
+  %%
+  |[ld]| T & |[ld]| G & |[ld]| C & |[ld]| A & |[ld]| G & A & T & A & A & G & |[ld]| T & |[ld]| C & |[ld]| G & G & C & |[ld]| G & A & C & C & C & C & C & G & G & A & A & T & C & T & |[ld]| G & |[ld]| T & |[ld]| C & |[ld]| T & |[ld]| C & |[ld]| C & G & |[ld]| C & |[ld]| G & A & G & C & C & T \\
+  %%
+  |[ld]| T & |[ld]| G & |[ld]| C & |[ld]| A & |[ld]| G & A & T & A & A & G & |[ld]| T & |[ld]| C & |[ld]| G & G & C & |[ld]| G & A & C & C & C & C & C & G & G & A & A & T & C & T & |[ld]| G & |[ld]| T & |[ld]| C & |[ld]| T & |[ld]| C & |[ld]| C & G & |[ld]| C & |[ld]| G & A & G & C & C & T \\
+  %%
+  |[ld]| T & |[ld]| G & |[ld]| C & |[ld]| A & |[ld]| G & A & T & A & A & G & |[ld]| T & |[ld]| C & |[ld]| G & G & C & |[ld]| G & A & C & C & C & C & C & G & G & A & A & T & C & T & |[ld]| G & |[ld]| T & |[ld]| C & |[ld]| T & |[ld]| C & |[ld]| C & G & |[ld]| C & |[ld]| G & A & G & C & C & T \\
+  %%
+  |[ld]| T & |[ld]| G & |[ld]| C & |[ld]| A & |[ld]| G & |[ld]| G & |[ld]| G & |[ld]| G & |[ld]| A & G & G & G & C & |[ld]| T & C & |[ld]| G & A & C & C & C & |[ld]| A & C & G & G & |[ld]| G & A & T & C & T & |[ld]| G & |[ld]| T & |[ld]| C & |[ld]| T & |[ld]| C & |[ld]| C & G & |[ld]| C & C & A & G & C & C & T \\
+};
+%%\scoped[on background layer] {
+  \node[fit={(m-8-1.north west) (m-11-5.south east)},
+        ultra thick, draw=red]{};
+  \node[fit={(m-8-11.north west) (m-10-13.south east)},
+        ultra thick, draw=red]{};
+  \node[fit={(m-7-30.north west) (m-11-35.south east)},
+        ultra thick, draw=red]{};
+  \node[fit={(m-1-19.north west) (m-2-29.south east)},
+        ultra thick, draw=red]{};
+%%}
+\end{tikzpicture}
+```
+
+:::
+
+<!-- markdownlint-enable MD013 -->
