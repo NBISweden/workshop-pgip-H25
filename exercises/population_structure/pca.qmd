@@ -50,13 +50,6 @@ In this exercise we will cluster...
 
 ## R libraries and data setup
 
-```{r }
-#| label: r-init-exercise
-#| echo: true
-#| eval: true
-
-```
-
 ```{bash }
 #| label: pca-set-envvars
 #| echo: true
