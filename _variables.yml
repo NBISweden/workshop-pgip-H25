@@ -80,7 +80,9 @@ exercises:
       r_conda: [r-tidyverse, r-viridis]
     admixture:
       tools: [admixture]
+      r-conda: [r-tidyverse, r-viridis]
     dstats:
-      tools: []
+      tools: [admixtools, r]
+      r-conda: [r-tidyverse, r-devtools, r-plotly]
     treemix:
       tools: []
