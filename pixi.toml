@@ -90,9 +90,13 @@ r-tidyverse = ">=2.0.0,<3"
 admixture = ">=1.3.0,<2"
 "r-data.table" = ">=1.17.8,<2"
 r-ggrepel = ">=0.9.6,<0.10"
+admixtools = ">=8.0.2,<9"
+r-plotly = ">=4.11.0,<5"
 
 [feature.build.tasks]
 rpgip = "R -e \"library(devtools); devtools::install_local('src/R/pgip', upgrade=F)\""
+radmixr = "R -e \"library(devtools); devtools::install_github('bodkan/admixr', upgrade=F)\""
+radmixtools2 = "R -e \"library(devtools); devtools::install_github('uqrmaie1/admixtools', upgrade=F)\""
 preview = "quarto preview"
 render = "quarto render"
 

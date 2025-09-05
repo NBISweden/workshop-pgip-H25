@@ -7,6 +7,7 @@ format:
     number-sections: false
 execute:
   cache: false
+  warning: false
 exercise:
   dir: population-structure
   venv: e-population-structure
@@ -39,9 +40,202 @@ In this exercise we will cluster...
 
 ## Intended learning outcomes
 
-- cluster data with a Principal component analysis to detect
-  population structure
+- use D-statistics to detect hybridization and introgression
 
 :::
 
 {{< include /exercises/_tools.qmd >}}
+
+## R libraries and data setup
+
+```{r }
+#| label: install-admixtools
+#| echo: true
+#| eval: false
+library(devtools)
+devtools::install_github("uqrmaie1/admixtools")
+```
+
+```{r }
+#| label: r-load-libraries
+#| echo: true
+#| eval: true
+{{< include /exercises/_rlibs.R >}}
+library(dplyr)
+library(tibble)
+library(admixtools)
+
+VCF <- "variants.vcf.gz"
+PREFIX <- "monkeyflower_dstats"
+```
+
+```{r }
+#| label: r-set-envvars
+#| echo: false
+#| eval: true
+Sys.setenv(
+    "VCF" = "variants.vcf.gz",
+    "PREFIX" = "monkeyflower_dstats"
+)
+```
+
+```{r }
+#| label: make-population-file
+#| echo: true
+#| eval: true
+sampleinfo <- read.csv("sampleinfo.csv") %>% rename(sample=SampleAlias) %>%
+  mutate(species = as.factor(gsub("(ssp. |M. )", "", Taxon))) %>%
+  mutate(species = as.factor(gsub(", ", "_", species))) %>%
+  select(sample, species) %>%
+  as_tibble
+write.table(sampleinfo, file=paste0(PREFIX, ".pop"),
+            row.names=FALSE, col.names=FALSE,
+            sep="\t", quote=FALSE)
+```
+
+## Convert VCF to plink ped format
+
+```{bash }
+#| label: bcftools-rename-chrom
+#| echo: true
+#| eval: true
+for i in {3..4}; do echo -e "LG${i} ${i}"; done > chrmap.txt
+bcftools annotate --rename-chrs chrmap.txt $VCF -o ${PREFIX}.vcf.gz -O z -W tbi
+```
+
+```{bash }
+#| label: plink2-vcf-to-ind
+#| echo: true
+#| eval: true
+plink2 --vcf ${PREFIX}.vcf.gz --allow-extra-chr \
+       --set-missing-var-ids @:# \
+       --make-bed \
+       --out ${PREFIX} > /dev/null 2>&1
+mv ${PREFIX}.fam ${PREFIX}.orig.fam
+csvtk join -H -t ${PREFIX}.orig.fam ${PREFIX}.pop -f "2;1" |
+    csvtk cut -t -f 7,2,3,4,5,6 |
+    csvtk replace -H -t -f 6 -r 1 > ${PREFIX}.fam
+plink2 --bfile ${PREFIX} --recode 12 ped \
+       --out ${PREFIX} > /dev/null 2>&1
+```
+
+## Convert VCF to eigenstrat
+
+```{bash }
+#| label: make-parameter-file
+#| echo: true
+#| eval: true
+cat <<EOF  > par.PED.EIGENSTRAT
+genotypename:    monkeyflower_dstats.ped
+snpname:         monkeyflower_dstats.bim
+indivname:       monkeyflower_dstats.fam
+outputformat:    EIGENSTRAT
+genotypeoutname: monkeyflower_dstats.geno
+snpoutname:      monkeyflower_dstats.snp
+indivoutname:    monkeyflower_dstats.orig.ind
+EOF
+```
+
+```{bash }
+#| label: convert-vcf-to-eigenstrat
+#| echo: true
+#| eval: true
+convertf -p par.PED.EIGENSTRAT > ${PREFIX}.convertf.log 2>&1
+```
+
+```{bash }
+#| label: join-ind-with-population
+#| echo: true
+#| eval: true
+csvtk space2tab ${PREFIX}.orig.ind |
+    csvtk cut -t -H -f 1,2,1 |
+    csvtk replace -t -H -f 1 -p "^.*:" |
+    csvtk replace -t -H -f 3 -p ":.*" > ${PREFIX}.ind
+```
+
+## Admixtools
+
+Finally we can get started with the analyses.
+
+### Fst
+
+```{r }
+#| label: admixtools-save-fst
+#| echo: true
+#| eval: true
+fst_dir <- "fst"
+extract_f2(PREFIX, fst_dir, verbose=FALSE, overwrite=TRUE)
+f2_blocks <- f2_from_precomp(fst_dir, verbose=FALSE)
+```
+
+```{r }
+#| label: plot-matrix
+#| echo: true
+#| eval: true
+apply(f2_blocks, 1:2, mean) %>% as_tibble %>%
+  mutate(pop1=colnames(.), .before=1) %>%
+  pivot_longer(!pop1, names_to="pop2") %>%
+  ggplot(aes(x=pop1, y=pop2, fill=value)) + geom_tile() +
+  scale_fill_viridis()
+```
+
+### f3 statistics
+
+### f4 statistics
+
+- according to paper there are 48 possible pairs of 4-taxon tests - I
+  don't get this; there should be choose(8, 3)=56!
+
+```{r }
+#| label: f4-statistics
+#| echo: true
+#| eval: true
+#| fig-width: 14
+#| fig-height: 8
+allpops <- c("clevelandii", "grandiflorus", "aridus", "parviflorus",
+             "longiflorus", "calycinus", "aurantiacus", "puniceus_yellow",
+             "puniceus_red")
+pops <- matrix(allpops[2:9][combn(8, 3)], , ncol=3, byrow=TRUE)[, 3:1]
+pops <- cbind(pops, "clevelandii")
+# f4 is synonym
+res <- qpdstat(f2_blocks, pops)
+res %>%  mutate(taxa=paste(pop1, pop2, pop3, sep=",")) %>%
+  as_tibble %>% arrange(est) %>%
+    mutate(taxa=factor(taxa, levels=as.character(taxa))) %>%
+    ggplot(aes(x=taxa, y=est)) + geom_point() + xlab("Taxa (P1, P2, P3)") +
+    ylab("D-statistic (P1, P2; P3, O)")
+```
+
+- qpGraph - assesses goodness-of-fit between data and *proposed*
+  admixture graph (where from? phylogenetic tree could be starting
+  point; could sketch from paper)
+
+```{r }
+#| label: define-graph-wo-admixture
+#| echo: true
+#| eval: true
+g <- matrix(c(
+    'R', 'R', 'n1', 'n1', 'n2', 'n3', 'n3', 'n2', 'n4',
+    'n4', 'n5', 'n6', 'n6', 'n5', 'n7', 'n7',
+    'clevelandii', 'n1', 'grandiflorus', 'n2', 'n3',
+    'parviflorus', 'aridus', 'n4', 'aurantiacus',
+    'n5', 'n6', 'calycinus', 'longiflorus', 'n7',
+    'puniceus-yellow', 'puniceus-red'), , 2) %>%  edges_to_igraph()
+plot_graph(g)
+```
+
+```{r }
+#| label: define-graph-admixture-long-y
+#| echo: true
+#| eval: true
+g <- matrix(c(
+    'R', 'R', 'n1', 'n1', 'n2', 'n3', 'n3', 'n2', 'n4',
+    'n4', 'n5', 'n6', 'n6', 'n5', 'n7', 'n7', 'n6',
+    'clevelandii', 'n1', 'grandiflorus', 'n2', 'n3',
+    'parviflorus', 'aridus', 'n4', 'aurantiacus',
+    'n5', 'n6', 'calycinus', 'longiflorus', 'n7',
+    'puniceus-yellow', 'puniceus-red', 'n7'), , 2) %>%  edges_to_igraph()
+plot_graph(g)
+```
+
+- fit model to graph?

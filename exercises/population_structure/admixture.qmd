@@ -89,8 +89,7 @@ PREFIX <- "monkeyflower_adm"
 #| echo: true
 #| eval: true
 plink2 --vcf $VCF --allow-extra-chr \
-       --set-missing-var-ids @:# \
-       --extract ${PRUNE_IN} \
+       --set-missing-var-ids # \
        --make-bed \
        --out ${PREFIX} > /dev/null 2>&1
 ```
