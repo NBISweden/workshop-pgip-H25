@@ -1,0 +1,14 @@
+<!-- markdownlint-disable MD041 -->
+
+```{r}
+#| label: r-libs-custom
+#| echo: false
+#| eval: true
+#| cache: false
+#| warning: false
+library(data.table)
+library(latex2exp)
+library(ggrepel)
+```
+
+<!-- markdownlint-enable MD041 -->
