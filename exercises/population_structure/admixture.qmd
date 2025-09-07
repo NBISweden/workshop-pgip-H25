@@ -89,7 +89,7 @@ PREFIX <- "monkeyflower_adm"
 #| echo: true
 #| eval: true
 plink2 --vcf $VCF --allow-extra-chr \
-       --set-missing-var-ids # \
+       --set-missing-var-ids @:# \
        --make-bed \
        --out ${PREFIX} > /dev/null 2>&1
 ```
@@ -142,6 +142,13 @@ ggplot(df, aes(x=K, y=CV)) + geom_point() + ylab("CV error")
 ```
 
 ```{r }
+#| label: reset-hidden-prefix
+#| echo: false
+#| eval: true
+PREFIX <- "monkeyflower_adm"
+```
+
+```{r }
 #| label: load-sampleinfo-join-fam
 #| echo: true
 #| eval: true
@@ -151,6 +158,13 @@ sampleinfo <- read.csv("sampleinfo.csv") %>% rename(sample=SampleAlias) %>%
   as_tibble
 fam <- read.table(paste0(PREFIX, ".fam")) %>% select(2) %>%
   rename(sample=V2) %>% right_join(sampleinfo) %>% as_tibble
+```
+
+```{r }
+#| label: set-hidden-prefix2
+#| echo: false
+#| eval: true
+PREFIX <- "monkeyflower_adm.save"
 ```
 
 ```{r }
@@ -190,3 +204,8 @@ plot_admixture <- function(filename, fam) {
 plot_admixture(paste0(PREFIX, ".2.Q"), fam)
 plot_admixture(paste0(PREFIX, ".8.Q"), fam)
 ```
+
+## Further analyses
+
+- PONG
+- Clumpak

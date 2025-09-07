@@ -62,6 +62,7 @@ exercises:
         ]
     variant_calling_long:
       tools: [bcftools, bwa, fastqc, gatk, multiqc, picard, qualimap, samtools]
+      r_conda: [r-dplyr]
   variant_filtering:
     basic_filtering:
       tools: [bcftools, bedtools, csvtk, seqkit, vcflib, vcftools]
@@ -79,7 +80,7 @@ exercises:
       tools: [plink2, r]
       r_conda: [r-tidyverse, r-viridis]
     admixture:
-      tools: [admixture]
+      tools: [admixture, plink2]
       r-conda: [r-tidyverse, r-viridis]
     dstats:
       tools: [admixtools, r]

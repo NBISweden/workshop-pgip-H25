@@ -133,6 +133,8 @@ exercises/variant_calling:
     - __yellow_recal_bam__
     - __red_gvcf__
     - __yellow_gvcf__
+    - allsites.vcf.gz: monkeyflower/tiny/gatk-genotype-gvcf-bqsr/redyellow.allsites.vcf.gz
+    - allsites.vcf.gz.tbi: monkeyflower/tiny/gatk-genotype-gvcf-bqsr/redyellow.allsites.vcf.gz.tbi
     - __reference__
     - __sampleinfo__
     - workflow/Snakefile: monkeyflower/snakemake/variantcalling.smk
@@ -159,12 +161,12 @@ exercises/variant_filtering:
     - bam/PUN-Y-PCT.bai: monkeyflower/tiny/gatk-bqsr/PUN-Y-PCT.bai
     - bam/PUN-Y-POTR.bam: monkeyflower/tiny/gatk-bqsr/PUN-Y-POTR.bam
     - bam/PUN-Y-POTR.bai: monkeyflower/tiny/gatk-bqsr/PUN-Y-POTR.bai
-    - __reference__
-    - __sampleinfo__
     - variantsites.vcf.gz: monkeyflower/small/gatk-genotype-gvcf-bqsr/redyellow.variantsites.vcf.gz
     - variantsites.vcf.gz.tbi: monkeyflower/small/gatk-genotype-gvcf-bqsr/redyellow.variantsites.vcf.gz.tbi
     - allsites.vcf.gz: monkeyflower/tiny/gatk-genotype-gvcf-bqsr/redyellow.allsites.vcf.gz
     - allsites.vcf.gz.tbi: monkeyflower/tiny/gatk-genotype-gvcf-bqsr/redyellow.allsites.vcf.gz.tbi
+    - __reference__
+    - __sampleinfo__
 
 exercises/genetic_diversity:
   content:
