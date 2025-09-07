@@ -66,7 +66,7 @@ library(tibble)
 library(admixtools)
 
 VCF <- "variants.vcf.gz"
-PREFIX <- "monkeyflower_dstats"
+DATAPFX <- "monkeyflower_dstats"
 ```
 
 ```{r }
@@ -75,7 +75,7 @@ PREFIX <- "monkeyflower_dstats"
 #| eval: true
 Sys.setenv(
     "VCF" = "variants.vcf.gz",
-    "PREFIX" = "monkeyflower_dstats"
+    "DATAPFX" = "monkeyflower_dstats"
 )
 ```
 
@@ -88,7 +88,7 @@ sampleinfo <- read.csv("sampleinfo.csv") %>% rename(sample=SampleAlias) %>%
   mutate(species = as.factor(gsub(", ", "_", species))) %>%
   select(sample, species) %>%
   as_tibble
-write.table(sampleinfo, file=paste0(PREFIX, ".pop"),
+write.table(sampleinfo, file=paste0(DATAPFX, ".pop"),
             row.names=FALSE, col.names=FALSE,
             sep="\t", quote=FALSE)
 ```
@@ -100,23 +100,23 @@ write.table(sampleinfo, file=paste0(PREFIX, ".pop"),
 #| echo: true
 #| eval: true
 for i in {3..4}; do echo -e "LG${i} ${i}"; done > chrmap.txt
-bcftools annotate --rename-chrs chrmap.txt $VCF -o ${PREFIX}.vcf.gz -O z -W tbi
+bcftools annotate --rename-chrs chrmap.txt $VCF -o ${DATAPFX}.vcf.gz -O z -W tbi
 ```
 
 ```{bash }
 #| label: plink2-vcf-to-ind
 #| echo: true
 #| eval: true
-plink2 --vcf ${PREFIX}.vcf.gz --allow-extra-chr \
+plink2 --vcf ${DATAPFX}.vcf.gz --allow-extra-chr \
        --set-missing-var-ids @:# \
        --make-bed \
-       --out ${PREFIX} > /dev/null 2>&1
-mv ${PREFIX}.fam ${PREFIX}.orig.fam
-csvtk join -H -t ${PREFIX}.orig.fam ${PREFIX}.pop -f "2;1" |
+       --out ${DATAPFX} > /dev/null 2>&1
+mv ${DATAPFX}.fam ${DATAPFX}.orig.fam
+csvtk join -H -t ${DATAPFX}.orig.fam ${DATAPFX}.pop -f "2;1" |
     csvtk cut -t -f 7,2,3,4,5,6 |
-    csvtk replace -H -t -f 6 -r 1 > ${PREFIX}.fam
-plink2 --bfile ${PREFIX} --recode 12 ped \
-       --out ${PREFIX} > /dev/null 2>&1
+    csvtk replace -H -t -f 6 -r 1 > ${DATAPFX}.fam
+plink2 --bfile ${DATAPFX} --recode 12 ped \
+       --out ${DATAPFX} > /dev/null 2>&1
 ```
 
 ## Convert VCF to eigenstrat
@@ -140,17 +140,17 @@ EOF
 #| label: convert-vcf-to-eigenstrat
 #| echo: true
 #| eval: true
-convertf -p par.PED.EIGENSTRAT > ${PREFIX}.convertf.log 2>&1
+convertf -p par.PED.EIGENSTRAT > ${DATAPFX}.convertf.log 2>&1
 ```
 
 ```{bash }
 #| label: join-ind-with-population
 #| echo: true
 #| eval: true
-csvtk space2tab ${PREFIX}.orig.ind |
+csvtk space2tab ${DATAPFX}.orig.ind |
     csvtk cut -t -H -f 1,2,1 |
     csvtk replace -t -H -f 1 -p "^.*:" |
-    csvtk replace -t -H -f 3 -p ":.*" > ${PREFIX}.ind
+    csvtk replace -t -H -f 3 -p ":.*" > ${DATAPFX}.ind
 ```
 
 ## Admixtools
@@ -164,7 +164,7 @@ Finally we can get started with the analyses.
 #| echo: true
 #| eval: true
 fst_dir <- "fst"
-extract_f2(PREFIX, fst_dir, verbose=FALSE, overwrite=TRUE)
+extract_f2(DATAPFX, fst_dir, verbose=FALSE, overwrite=TRUE)
 f2_blocks <- f2_from_precomp(fst_dir, verbose=FALSE)
 ```
 

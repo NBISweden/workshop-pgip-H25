@@ -55,7 +55,7 @@ In this exercise we...
 #| eval: true
 VCF=variants.vcf.gz
 PRUNE_IN=monkeyflower_pca.prune.in
-PREFIX=monkeyflower_adm
+DATAPFX=monkeyflower_adm
 ```
 
 ```{r }
@@ -64,7 +64,7 @@ PREFIX=monkeyflower_adm
 #| eval: true
 Sys.setenv(
     "VCF" = "variants.vcf.gz",
-    "PREFIX" = "monkeyflower_adm",
+    "DATAPFX" = "monkeyflower_adm",
     "PRUNE_IN" = "monkeyflower_adm.prune.in"
 )
 ```
@@ -79,7 +79,7 @@ library(dplyr)
 library(tibble)
 library(RColorBrewer)
 
-PREFIX <- "monkeyflower_adm"
+DATAPFX <- "monkeyflower_adm"
 ```
 
 ## Admixture
@@ -91,21 +91,21 @@ PREFIX <- "monkeyflower_adm"
 plink2 --vcf $VCF --allow-extra-chr \
        --set-missing-var-ids @:# \
        --make-bed \
-       --out ${PREFIX} > /dev/null 2>&1
+       --out ${DATAPFX} > /dev/null 2>&1
 ```
 
 ```{bash }
 #| label: sed-change-chromosome-name
 #| echo: true
 #| eval: true
-sed -i -e "s/^\([A-Z0-9][A-Z0-9]*\)/0/g" ${PREFIX}.bim
+sed -i -e "s/^\([A-Z0-9][A-Z0-9]*\)/0/g" ${DATAPFX}.bim
 ```
 
 ```{bash }
 #| label: admixture-k-2
 #| echo: true
 #| eval: false
-admixture --cv ${PREFIX}.bed 2 > ${PREFIX}.2.log
+admixture --cv ${DATAPFX}.bed 2 > ${DATAPFX}.2.log
 ```
 
 ```{bash }
@@ -114,7 +114,7 @@ admixture --cv ${PREFIX}.bed 2 > ${PREFIX}.2.log
 #| eval: false
 for k in {3..10}
 do
-    admixture --cv ${PREFIX}.bed $k > ${PREFIX}.${k}.log
+    admixture --cv ${DATAPFX}.bed $k > ${DATAPFX}.${k}.log
 done
 ```
 
@@ -122,21 +122,21 @@ done
 #| label: extract-cv-error
 #| echo: true
 #| eval: true
-grep CV *log | cut -d " " -f 3,4 | sed -e "s/[()K=:]//g" > ${PREFIX}.cv.err
+grep CV *log | cut -d " " -f 3,4 | sed -e "s/[()K=:]//g" > ${DATAPFX}.cv.err
 ```
 
 ```{r }
 #| label: set-hidden-prefix
 #| echo: false
 #| eval: true
-PREFIX <- "monkeyflower_adm.save"
+DATAPFX <- "monkeyflower_adm.save"
 ```
 
 ```{r }
 #| label: plot-cv-error
 #| echo: true
 #| eval: true
-df <- read.table(paste0(PREFIX, ".cv.err"))
+df <- read.table(paste0(DATAPFX, ".cv.err"))
 colnames(df) <- c("K", "CV")
 ggplot(df, aes(x=K, y=CV)) + geom_point() + ylab("CV error")
 ```
@@ -145,7 +145,7 @@ ggplot(df, aes(x=K, y=CV)) + geom_point() + ylab("CV error")
 #| label: reset-hidden-prefix
 #| echo: false
 #| eval: true
-PREFIX <- "monkeyflower_adm"
+DATAPFX <- "monkeyflower_adm"
 ```
 
 ```{r }
@@ -156,7 +156,7 @@ sampleinfo <- read.csv("sampleinfo.csv") %>% rename(sample=SampleAlias) %>%
   mutate(species = as.factor(gsub("ssp. ", "", Taxon))) %>%
   select(sample, ScientificName, Taxon, Latitude, Longitude, species) %>%
   as_tibble
-fam <- read.table(paste0(PREFIX, ".fam")) %>% select(2) %>%
+fam <- read.table(paste0(DATAPFX, ".fam")) %>% select(2) %>%
   rename(sample=V2) %>% right_join(sampleinfo) %>% as_tibble
 ```
 
@@ -164,7 +164,7 @@ fam <- read.table(paste0(PREFIX, ".fam")) %>% select(2) %>%
 #| label: set-hidden-prefix2
 #| echo: false
 #| eval: true
-PREFIX <- "monkeyflower_adm.save"
+DATAPFX <- "monkeyflower_adm.save"
 ```
 
 ```{r }
@@ -201,8 +201,8 @@ plot_admixture <- function(filename, fam) {
 #| eval: true
 #| warning: false
 #| fig-width: 16
-plot_admixture(paste0(PREFIX, ".2.Q"), fam)
-plot_admixture(paste0(PREFIX, ".8.Q"), fam)
+plot_admixture(paste0(DATAPFX, ".2.Q"), fam)
+plot_admixture(paste0(DATAPFX, ".8.Q"), fam)
 ```
 
 ## Further analyses
