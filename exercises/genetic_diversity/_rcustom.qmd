@@ -10,6 +10,7 @@
 library(readxl)
 library(curl)
 library(stringr)
+library(dplyr)
 ```
 
 <!-- markdownlint-enable MD041 -->

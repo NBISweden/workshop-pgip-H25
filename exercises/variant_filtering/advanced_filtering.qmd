@@ -7,7 +7,7 @@ format:
 author:
   - Per Unneberg
 execute:
-  cache: false
+  cache: true
 exercise:
   dir: variant-filtering
   venv: e-variant-filtering

@@ -36,7 +36,7 @@ def safe_link(src, dst, dir_fd):
 
 
 def safe_copy(src, dst, session_d):
-    logging.debug(f"Copy {dst} -> {src}")
+    logging.debug(f"Copy {src} -> {dst}")
     if not os.path.exists(src):
         raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), src)
     try:
