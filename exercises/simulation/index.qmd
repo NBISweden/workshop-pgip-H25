@@ -1,5 +1,5 @@
 ---
-title: Simulation
+title: Simulation index
 description: List of  exercises
 format:
   nbis-course-html:

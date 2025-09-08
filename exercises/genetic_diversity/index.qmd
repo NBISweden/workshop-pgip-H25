@@ -1,5 +1,5 @@
 ---
-title: Index
+title: Genetic diversity index
 description: List of exercises
 format:
   nbis-course-html:

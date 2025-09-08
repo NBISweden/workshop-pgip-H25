@@ -1,5 +1,5 @@
 ---
-title: Index
+title: Population structure index
 description: List of exercises
 format:
   nbis-course-html:

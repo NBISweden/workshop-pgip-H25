@@ -1,5 +1,5 @@
 ---
-title: Index
+title: Variant filtering index
 description: List of exercises
 format:
   nbis-course-html:

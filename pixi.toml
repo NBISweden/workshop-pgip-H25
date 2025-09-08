@@ -10,6 +10,8 @@ requires-pixi = ">=0.45"
 [tasks]
 qpv = "pixi r -e build preview"
 qrd = "pixi r -e build render"
+lint = "pixi r -e lint lint"
+lintall = "pixi r -e lint lintall"
 
 [dependencies]
 python = "3.11.*"
