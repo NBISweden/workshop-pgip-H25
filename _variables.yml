@@ -13,7 +13,7 @@ recipes:
 
 # Compute account information
 naissproject: pg_pgip_2025
-pdc_time_allocation: edu25.pgip
+pdc_time_allocation: naiss2025-22-825
 pg_pgip_dir: /cfs/klemming/projects/supr/pgip_2025
 pg_pgip_dir_user: /cfs/klemming/projects/supr/pgip_2025/users/USERNAME
 naiss_max_cores: 10
@@ -26,6 +26,9 @@ pgip_data:
 
 # Exercises - data, tools
 datasets:
+  baseurl:
+    pdc: /cfs/klemming/projects/supr/pgip_2025/data
+    url: https://export.uppmax.uu.se/uppstore2017171/pgip/data
   variant_calling:
     pdc: /cfs/klemming/projects/supr/pgip_2025/data/monkeyflower/variant-calling
     url: https://export.uppmax.uu.se/uppstore2017171/pgip/data/monkeyflower/variant-calling

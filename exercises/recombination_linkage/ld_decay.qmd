@@ -12,6 +12,7 @@ execute:
 exercise:
   dir: recombination-linkage
   venv: e-recombination-linkage
+  data: monkeyflower/selection/large/vcftools-filter-bqsr/
 ---
 
 <!-- markdownlint-disable MD041 -->
@@ -35,7 +36,10 @@ obj <- exercise_tools$recombination_linkage$ld_decay
 
 ## About
 
-FIXME: In this exercise we...
+In this exercise we will use `plink2` to calculate the linkage
+disequilibrium (LD) decay from a VCF. Among other things, the LD
+structure informs us about the choice appropriate marker density for
+SNP chips or window size in genome scans.
 
 {{< include /exercises/_subset.qmd >}}
 
@@ -50,14 +54,45 @@ FIXME: In this exercise we...
 
 {{< include /exercises/_tools.qmd >}}
 
-## Linkage disequilibrium decay
+{{< include /exercises/_datasetup.qmd >}}
 
-- recombination and linkage are opposing forces
+## Linkage disequilibrium decay[^speciation]
 
-Rules of thumb (human, [@pritchard_OwnerGuideHuman_]):
+Genetic markers in close proximity are often inherited together; we
+say that the markers are *linked*. [Genetic
+linkage](https://en.wikipedia.org/wiki/Genetic_linkage) creates
+haplotypes and haplotype structures that contain information about
+inheritance patterns and evolutionary processes. Linkage can be
+thought of as a force that keeps markers together. Recombination, on
+the other hand, breaks down linkage and therefore acts as an opposing
+force that generates new haplotypes as new combinations of alleles.
+The farther apart two markers are, the more likely a recombination
+event between them is.
 
-- d < 0.01 - 0.1 cM: linkage > recombination
-- d > 0.1 cM: recombination > linkage
+The distance between two markers is often measured as a genetic
+distance. It is measured in
+[centiMorgan](https://en.wikipedia.org/wiki/Centimorgan) (cM), defined
+as the average number of crossovers (recombination events) per hundred
+between the markers. For instance, two markers 10cM apart is
+equivalent to 0.1 crossovers in meiosis on average. For short
+distances, this can be interpreted as the percent probability of
+crossover.
+
+The genetic distance can be related to physical distance as expressed
+in base pair distance through the *recombination rate*, measured in
+cM/Mb. This metric can be interpreted as the probability of crossover
+per Mb. For instance, in human the recombination rate is 1.2cM/Mb on
+average, meaning there is a 1.2% probability of crossover per Mb.
+
+Consequently, for longer distances recombination tends to be the
+dominating force, whereas linkage is stronger for shorter distances.
+For humans, as a rule of thumb LD is stronger for SNPs ~0.01-0.1 cM
+apart, whereas recombination dominates linkage for distances > ~0.1cM
+[@pritchard_OwnerGuideHuman_, chapter 2.3]. Exactly where the
+transition occurs depends on the strength of recombination.
+@fig-plot-ld shows the theoretical breakdown of LD for different
+recombination rates. This is the type of plot that we will generate
+next.
 
 :::{.column-margin}
 
@@ -130,13 +165,27 @@ Sys.setenv(
 
 :::{.callout-hint}
 
+Use `bcftools query -l` to list samples, `bcftools stats` to summarize
+variants, and `bcftools view -h` to view the header.
+
 :::
 
 :::{.callout-answer}
 
+```{bash }
+#| label: bcftools-exercise
+#| echo: true
+#| eval: true
+bcftools query -l ${VCF} | wc -l
+bcftools stats ${VCF} | grep "number of SNPs:"
+bcftools view -h ${VCF} | grep contig
+```
+
 :::
 
 :::
+
+In `R`, we load libraries for plotting and data manipulation
 
 ```{r }
 #| label: r-libraries
@@ -145,6 +194,81 @@ Sys.setenv(
 {{< include /exercises/_rlibs.R >}}
 library(dplyr)
 ```
+
+## Calculate LD with plink2
+
+Finally we can start crunching the numbers! We will use `plink2` to
+generate the desired raw output. There are quite a few options
+involved and we detail them below.[^plink2_help]
+
+:::{.callout-note}
+
+For larger datasets, to reduce output size, you may have to reduce the
+magnitude of the `--thin` option.
+
+:::
+
+```{bash }
+#| label: calc-ld-with-plink2
+#| echo: true
+#| eval: true
+# Set thin to a lower value to start with
+plink2 --vcf $VCF --double-id --allow-extra-chr \
+  --set-missing-var-ids @:# \
+  --thin 0.2 --r2-unphased zs --ld-window 999999 --ld-window-kb 100 \
+  --mac 3 --geno 0.1 --mind 0.5 \
+  --ld-window-r2 0 \
+  --make-bed --out monkeyflower_ld 2>&1 > /dev/null
+```
+
+Let's look at these options.
+
+- `--vcf` -- the name of the VCF
+- `--double-id` -- set both individual ID and family ID to the input
+  (sample) ID as some analyses need pedigree information (not relevant
+  here)
+- `--allow-extra-chr` -- permit chromosome names other than those
+  expected for human (1-22,X)
+- `--set-missing-var-ids` -- assign chromosome and bp-based IDs to
+  unnamed variants according to format `CHROM:BP`. Necessary since
+  model organisms often have annotated variant names
+- `--thin` -- randomly remove variants with probability *p*. You may
+  need to tweak this variable to get the proper output (and reduce
+  output size!)
+- `--r2-unphased` -- emulate `plink` `--r2` option; calculate the
+  squared correlation coefficient $r^2$ for unphased data between
+  markers. This is the output that is used for the plots below. The
+  `zs` argument tells `plink2` to compress output in
+  [zs](https://zs.readthedocs.io/en/latest/) format
+- `--ld-window` -- limit the number of variants between which `r2` is
+  calculated (NB: differs from `plink`!)
+- `--ld-window-kb` -- max distance in kb between markers for which
+  `r2` is calculated
+- `--mac` -- filter variants on minor allele count. Try out different
+  settings for this parameter and note the difference in output.
+- `--geno` -- exclude variants with missing call frequencies greater
+  than threshold
+- `--mind` -- exclude samples with missing call frequencies greater
+  than threshold
+- `-ld-window-r2` -- by default this sets a filter on the final output
+  but we want to keep everything
+- `--make-bed` -- create the (old `plink`-style) binary output dataset
+- `--out` -- prefix for output data
+- `2>&1 > /dev/null` -- redirects errors and output to the electronic
+  wastebin. If the command fails, remove this statement to see what is
+  going on
+
+Phew! That's a lot of options! The results will be written to a file
+with file extension `.vcor.zst` which we will analyse in the next
+step.
+
+## Calculate average LD
+
+In the previous step, we have calculated pairwise LD between
+individual marker pairs. However, in order to make a nice looking LD
+decay plot, we want **average** LD binned by distance. To facilitate
+this calculation, below you'll find an `R` function that does just
+that!
 
 ```{r }
 #| label: r-ld-functions
@@ -173,31 +297,22 @@ calc_ld <- function(filename, max_bin=1e5) {
 }
 ```
 
-## Calculate LD with plink2
-
-NB: need maf 0.2, thin 0.2 for large dataset - here we crank up thin
-to get desired shape
-
-```{bash }
-#| label: calc-ld-with-plink2
-#| echo: true
-#| eval: true
-plink2 --vcf $VCF --double-id --allow-extra-chr \
-  --set-missing-var-ids @:# \
-  --thin 0.2 --r2-unphased zs --ld-window 999999 --ld-window-kb 100 \
-  --mac 3 --geno 0.1 --mind 0.5 \
-  --ld-window-r2 0 \
-  --make-bed --out monkeyflower_ld 2>&1 > /dev/null
-```
-
-## Calculate average LD
+Copy-paste the function into your R session and run it on the output
+file:
 
 ```{r }
 #| label: calculate-average-ld
 #| echo: true
 #| eval: true
 ld2r <- calc_ld("monkeyflower_ld.vcor.zst")
+head(ld2r, 3)
 ```
+
+We use `head` to view the contents of the output
+[tibble](https://tibble.tidyverse.org/). Each row corresponds to an
+interval (`distc` column) along with mean/median $r^2$ values, number
+of data points in interval, and a column containing the interval
+endpoint. We plot the mean against the endpoint below:
 
 ```{r }
 #| label: plot-ld2
@@ -206,16 +321,27 @@ ld2r <- calc_ld("monkeyflower_ld.vcor.zst")
 ggplot(ld2r, aes(x=dist, y=mean)) + geom_point() + xlim(0, 100000)
 ```
 
+In this particular figure, we see that for short distances, LD is
+high, but that it decays towards the background value at around
+20-25kb. That gives us a rule of thumb for how large windows to choose
+for genome scans, for instance. That's it!
+
 ## Additional things to try
 
-- ld is sensitive to small sample sizes
-- try different parameter settings
-- conclusion: fine-tuning often needed
+Calculating LD is very sensitive to small sample
+sizes[^ld_sample_size]. Try different parameter settings (in
+particular `--thin` and `--mac`) and remake the plots to see what
+happens. The take-home message is that some fine-tuning of parameters
+may be needed to capture the signal from the noise.
 
-:::{.callout-exercise}
+## References
 
-#### LD and small sample sizes
+[^speciation]: This exercise is inspired by and based <https://speciationgenomics.github.io/ld_decay/>]
 
-As we have seen above, LD is
+[^plink2_help]: You can always type `plink2 --help` followed by the
+option you want more information about (e.g., `plink2 --help
+--set-missing-var-ids`)
 
-:::
+[^ld_sample_size]: In fact, `plink2` warns that the sample size is too
+small, which you can see if you remove the redirect statement (`2>&1 >
+/dev/null`) above.

@@ -1,0 +1,52 @@
+<!-- markdownlint-disable MD041 -->
+
+:::{.callout-note collapse=true}
+
+## Data setup
+
+:::{.panel-tabset}
+
+#### {{< fa server >}} PDC
+
+Make an analysis directory `{{< meta exercise.dir >}}` and cd to it:
+
+```bash
+mkdir -p {{< meta exercise.dir >}} && cd {{< meta exercise.dir >}}
+```
+
+##### Using rsync
+
+Use rsync to sync data to your analysis directory (hint: first use
+options `-anv` to run the command without actually copying data):
+
+```bash
+# Run rsync -anv first time
+rsync -av {{< var datasets.baseurl.pdc >}}/{{< meta exercise.data >}} .
+```
+
+##### Using pgip client
+
+```bash
+pgip exercises setup {{< meta exercise.venv >}}
+```
+
+#### {{< fa laptop >}} Local
+
+Make an analysis directory `{{< meta exercise.dir >}}` and cd to it:
+
+```bash
+mkdir -p {{< meta exercise.dir >}} && cd {{< meta exercise.dir >}}
+```
+
+Then use rsync to sync data to analysis directory.
+
+```bash
+# Run rsync -anv first time
+rsync -av {{< var datasets.baseurl.url >}}/{{< meta exercise.data >}} .
+```
+
+:::
+
+:::
+
+<!-- markdownlint-enable MD041 -->

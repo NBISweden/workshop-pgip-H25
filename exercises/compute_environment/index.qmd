@@ -24,7 +24,7 @@ before proceeding with the exercises.
 
 ::: {.callout-important collapse=true}
 
-#### Prerequisite: SUPR account
+### Prerequisite: SUPR account
 
 If you want to run the exercises on the Dardel HPC you need an
 account. Follow the instructions at the [precourse
@@ -38,7 +38,7 @@ center
 to run exercises. Course material will be hosted in a dedicated course
 project directory `{{< var pg_pgip_dir >}}`.
 
-#### Working directory setup
+### Working directory setup
 
 We recommend you setup a working directory based on your username in
 `{{< var pg_pgip_dir >}}/users` in which to run your exercises:
@@ -48,7 +48,7 @@ mkdir -p {{< var pg_pgip_dir >}}/users/YOURUSERNAME
 cd {{< var pg_pgip_dir >}}/users/YOURUSERNAME
 ```
 
-#### pixi environments and pgip CLI
+### pixi environments and pgip CLI
 
 :::{.callout-warning}
 
@@ -60,11 +60,11 @@ This feature is experimental and may not work as intended.
 
 In order to improve reproducibility and facilitate package setup, we
 have grouped exercise tools in [pixi virtual
-environments](https://pixi.sh/dev/workspace/environment/)^[[pixi](https://pixi.sh)
-is a fast package management tool, similar to
-[conda](https://anaconda.org/anaconda/conda).] Exercise environments
-are named `e-EXERCISE-NAME` and can be activated with a custom command
-line (CLI) tool called `pgip`. To activate the CLI, do the following steps:
+environments]^[[pixi](https://pixi.sh) is a fast package management
+tool, similar to [conda](https://anaconda.org/anaconda/conda).]
+Exercise environments are named `e-EXERCISE-NAME` and can be activated
+with a custom command line (CLI) tool called `pgip`. To activate the
+CLI, do the following steps:
 
 ```bash
 source {{< var pg_pgip_dir >}}/init.sh
@@ -73,11 +73,34 @@ pgip_activate
 
 Now you should have access to `pgip`, which among other things lets
 you setup exercise data and launch notebooks. In addition, there are
-two functions `pgip_elist` and `pgip_shell` and `pgip`.
-`pgip_elist` lists available environments; to activate a given
-environment type `pgip_shell e-EXERCISE-NAME`.
+two commands `pgip_elist` and `pgip_shell`. `pgip_elist` lists
+available environments and `pgip_shell ENVIRONMENT_NAME` starts a
+shell with the environment activated.
 
-#### Interactive jobs
+:::{.callout-important}
+
+###### Run pgip_activate before pgip_shell
+
+It is important that you run `pgip_activate` first as exiting would
+terminate your session. Exiting from the shell will pop you back to
+the activated default environment.
+
+:::
+
+### ThinLinc {#sec-thinlinc}
+
+KTH provides a remote desktop program called [ThinLinc] which lets you
+connect to a remote server and access programs via a virtual desktop.
+To use, you first need to download the ThinLinc client (tlclient). To
+connect, launch tlclient and authenticate with either Kerberos or SSH.
+See the PDC documentation for more documentation.
+
+#### Launching graphical applications
+
+The is a launcher located in the menu bar that should let you start
+graphical applications. If that doesn't work, you can always
+
+### Interactive jobs
 
 ::: {.callout-important collapse=true}
 
@@ -91,7 +114,7 @@ students will experience long waiting times.
 
 ::: {.callout-important}
 
-#### Make sure to login to a compute node before running any heavy commands
+#### Make sure to login to a compute node before running any compute-intensive commands
 
 :::
 
@@ -119,7 +142,10 @@ use `ssh` to access it.
 ssh node_id
 ```
 
-#### Accessing notebooks on compute nodes
+### Accessing notebooks on compute nodes
+
+See [ThinLinc](#sec-thinlinc) for a potentially easier way to
+access compute nodes and resources.
 
 Notebooks are run in browser sessions, but if run on compute nodes
 they are not directly accessible from the client. The trick is to set
@@ -273,3 +299,6 @@ fastqc = ">=0.12.1,<0.13"
 :::
 
 ## References
+
+[pixi virtual environments]: https://pixi.sh/dev/workspace/environment/
+[ThinLinc]: https://support.pdc.kth.se/doc/login/interactive_hpc/#what-is-thinlinc
