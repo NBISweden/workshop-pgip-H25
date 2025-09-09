@@ -6,13 +6,11 @@ format:
     number-sections: false
 author:
   - Per Unneberg
-execute:
-  cache: false
-  warning: false
 exercise:
   dir: recombination-linkage
   venv: e-recombination-linkage
   data: monkeyflower/selection/large/vcftools-filter-bqsr/
+  wget_opts: \-\-accept-regex all.variantsites.vcf* \-\-cut-dirs=7
 ---
 
 <!-- markdownlint-disable MD041 -->

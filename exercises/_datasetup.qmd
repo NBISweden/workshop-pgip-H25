@@ -38,11 +38,11 @@ Make an analysis directory `{{< meta exercise.dir >}}` and cd to it:
 mkdir -p {{< meta exercise.dir >}} && cd {{< meta exercise.dir >}}
 ```
 
-Then use rsync to sync data to analysis directory.
+Then use wget to retrieve data to analysis directory.
 
 ```bash
-# Run rsync -anv first time
-rsync -av {{< var datasets.baseurl.url >}}/{{< meta exercise.data >}} .
+wget -r -np -nH -N {{< meta exercise.wget_opts >}} \
+     {{< var datasets.baseurl.url >}}/{{< meta exercise.data >}}
 ```
 
 :::

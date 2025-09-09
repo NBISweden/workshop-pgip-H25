@@ -6,8 +6,9 @@ format:
     number-sections: false
 author:
   - Per Unneberg
-execute:
-  cache: false
+exercise:
+  dir: variant-calling
+  venv: e-variant-calling
 ---
 
 ## About
@@ -55,7 +56,7 @@ and run the exercise setup command:
 #| label: setup-exercise
 #| echo: true
 #| eval: false
-pgip exercises setup {{< var exercises.variant_calling.dir >}} -v
+pgip exercises setup {{< meta exercise.dir >}} -v
 ```
 
 #### {{< fa laptop >}} Local

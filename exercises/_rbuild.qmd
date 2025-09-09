@@ -95,6 +95,7 @@ format_pixi <- function(obj, ename) {
       output, "[workspace]\n",
       "channels = [\"conda-forge\", \"bioconda\"]\n",
       "name = \"", ename, "\"\n",
+      "platforms = [\"linux-64\", \"osx-64\"]\n",
       "\n[dependencies]\n"
   )
   for (n in tool_list) {
