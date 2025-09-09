@@ -6,6 +6,9 @@ dxy: $d_{\mathrm{XY}}$
 dx: $d_{\mathrm{X}}$
 dy: $d_{\mathrm{Y}}$
 
+# Methods
+admixture: "[ADMIXTURE]{.smallcaps}"
+
 recipes:
   base: /recipes/index.html
   slides: /recipes/slides/index.html

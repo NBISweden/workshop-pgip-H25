@@ -25,8 +25,6 @@ listing:
     - ancestral_recombination_graphs/index.qmd
 toc: false
 sidebar: false
-execute:
-  freeze: false
 ---
 
 ## Information

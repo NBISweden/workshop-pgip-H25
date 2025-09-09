@@ -80,8 +80,10 @@ an informative post on various definitions of PCA, see
 shown that the projection of samples onto principal components relate
 directly to average coalescent times
 [@mcvean_GenealogicalInterpretationPrincipal_2009]. Here, we will
-think of a PCA as a clustering algorithm in which clusters relate to
-population labels in some way.
+think of a PCA as a *dimensionality reduction* technique that projects
+a high-dimensional dataset (samples $\times$ variants) onto a
+two-dimensional space, in which samples may cluster in groups related
+to population labels in some way.
 
 ## Linkage disequilibrium pruning
 
@@ -327,11 +329,16 @@ but at least we get a general picture of the population structure.
 
 ## Things to try
 
+If you have time over, here are some additional things you may want to
+try.
+
 - Try plotting more combinations of PCs. Do the results align with
   your expectations (compare with
   [@stankowski_WidespreadSelectionGene_2019, Fig. 1])?
 - Change LD pruning settings, or even run a PCA without pruning. Do
   you see any changes?
+- At the pruning stage, use `--mac` to filter input data on minor
+  allele count.
 - Exclude *M.clevelandii* from the PCA (you can use the `--remove`
   option to remove samples).
 
