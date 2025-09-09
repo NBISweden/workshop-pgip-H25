@@ -185,6 +185,7 @@ export REF=ref/M_aurantiacus_v1.fasta
 #| label: set-sample-envvars
 #| echo: false
 #| eval: true
+#| cache: false
 Sys.setenv(SRR = "SRR9309790", SAMPLE = "PUN-Y-INJ", REF = "ref/M_aurantiacus_v1.fasta")
 ```
 

@@ -6,9 +6,6 @@ dxy: $d_{\mathrm{XY}}$
 dx: $d_{\mathrm{X}}$
 dy: $d_{\mathrm{Y}}$
 
-# Methods
-admixture: "[ADMIXTURE]{.smallcaps}"
-
 recipes:
   base: /recipes/index.html
   slides: /recipes/slides/index.html
@@ -59,7 +56,7 @@ exercises:
           bcftools,
           bwa,
           fastqc,
-          gatk,
+          gatk4,
           multiqc,
           picard,
           qualimap,
@@ -67,7 +64,7 @@ exercises:
           snakemake,
         ]
     variant_calling_long:
-      tools: [bcftools, bwa, fastqc, gatk, multiqc, picard, qualimap, samtools]
+      tools: [bcftools, bwa, fastqc, gatk4, multiqc, picard, qualimap, samtools]
       r_conda: [r-dplyr]
   variant_filtering:
     basic_filtering:
@@ -86,10 +83,106 @@ exercises:
       tools: [plink2, r]
       r_conda: [r-tidyverse, r-viridis]
     admixture:
-      tools: [admixture, plink2]
-      r-conda: [r-tidyverse, r-viridis]
+      tools: [admixture, plink2, r]
+      r_conda: [r-tidyverse, r-viridis]
     dstats:
-      tools: [admixtools, r]
-      r-conda: [r-tidyverse, r-devtools, r-plotly]
+      tools: [r, plink2, bcftools]
+      r_conda: [r-tidyverse, r-devtools, r-plotly]
+      r_dev: [admixtools2]
     treemix:
       tools: []
+
+# Tool listing
+tools:
+  admixtools:
+    url: https://github.com/DReichLab/AdmixTools
+    ref: patterson_AncientAdmixtureHuman_2012
+    fmt: "[`admixtools`]{}"
+  admixtools2:
+    url: https://uqrmaie1.github.io/admixtools/
+    ref: maier_LimitsFittingComplex_2023
+    rdev: uqrmaie1/admixtools
+    fmt: "[`admixtools2`]{}"
+  admixture:
+    url: https://dalexander.github.io/admixture/index.html
+    ref: alexander_FastModelbasedEstimation_2009
+    pdc: ADMIXTURE/1.3.0
+    bioinfo_tools: true
+    fmt: "[`ADMIXTURE`]{.smallcaps}"
+  bcftools:
+    url: https://samtools.github.io/bcftools/bcftools.html
+    ref: danecek_TwelveYearsSAMtools_2021
+    pdc: bcftools/1.20
+    fmt: "[`bcftools`]{}"
+  bedtools:
+    url: https://bedtools.readthedocs.io/en/latest/index.html
+    ref: quinlan_BEDToolsFlexibleSuite_2010
+    pdc: bedtools/2.31.0
+  bwa:
+    url: https://github.com/lh3/bwa
+    ref: li_AligningSequenceReads_2013
+    pdc: bwa/0.7.18
+  csvtk:
+    url: https://bioinf.shenwei.me/csvtk
+  fastqc:
+    url: https://www.bioinformatics.babraham.ac.uk/projects/fastqc
+    pdc: fastqc/0.12.1
+  gatk4:
+    name: Genome Analysis ToolKit (GATK)
+    url: https://gatk.broadinstitute.org/hc/en-us
+    ref: depristo_FrameworkVariationDiscovery_2011
+    pdc: gatk/4.5.0.0
+  mosdepth:
+    url: https://github.com/brentp/mosdepth
+    ref: pedersen_MosdepthQuickCoverage_2018
+    pdc: mosdepth/0.3.3
+    bioinfo_tools: true
+  multiqc:
+    url: https://multiqc.info/
+    ref: ewels_MultiQCSummarizeAnalysis_2016
+    pdc: multiqc/1.30
+  picard:
+    url: https://github.com/broadinstitute/picard
+    ref: Picard2019toolkit
+    pdc: picard/3.3.0
+  pixy:
+    url: https://github.com/ksamuk/pixy.git
+    ref: korunes_PixyUnbiasedEstimation_2021
+    pdc: pixy/1.2.5.beta1
+  plink:
+    fmt: "[`plink`]{}"
+  plink2:
+    url: https://www.cog-genomics.org/plink/2.0
+    ref: chang_SecondgenerationPLINKRising_2015
+    pdc: plink/2.00a5.14
+    fmt: "[`plink2`]{}"
+  qualimap:
+    url: http://qualimap.conesalab.org
+    ref: okonechnikov_QualimapAdvancedMultisample_2016
+    pdc: QualiMap/2.2.1
+  r:
+    url: https://www.r-project.org/
+    pdc: PDC/24.11 R/4.4.2-cpeGNU-24.11
+    fmt: "[`R`]{}"
+  samtools:
+    url: https://github.com/samtools/samtools
+    ref: danecek_TwelveYearsSAMtools_2021
+    pdc: samtools/1.20
+  seqkit:
+    url: https://bioinf.shenwei.me/seqkit/
+    ref: shen_SeqKitCrossPlatformUltrafast_2016
+    pdc: SeqKit/2.4.0
+    bioinfo_tools: true
+  snakemake:
+    url: https://snakemake.readthedocs.io/en/stable/index.html
+    ref: molder_SustainableDataAnalysis_2021
+    pdc: snakemake/9.9.0
+  vcflib:
+    url: https://github.com/vcflib/vcflib
+    ref: garrison_SpectrumFreeSoftware_2022
+    pdc: vcflib/2017-04-04
+    bioinfo-tools: true
+  vcftools:
+    url: https://vcftools.github.io
+    ref: danecek_VariantCallFormat_2011
+    pdc: vcftools/0.1.16

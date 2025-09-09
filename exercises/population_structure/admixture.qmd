@@ -33,8 +33,8 @@ obj <- exercise_tools$population_structure$admixture
 
 Admixture models model the ancestry components of a set of samples,
 where the ancestry components consist of a pre-defined number of
-(source) populations. In this exercise, we will use the method {{< var
-admixture >}} [@alexander_FastModelbasedEstimation_2009] to model
+(source) populations. In this exercise, we will use the software {{<
+var tools.admixture.fmt >}} [@alexander_FastModelbasedEstimation_2009] to model
 ancestry.
 
 {{< include /exercises/_subset.qmd >}}
@@ -43,7 +43,7 @@ ancestry.
 
 ## Intended learning outcomes
 
-- run {{< var admixture >}} to infer population structure and
+- run {{< var tools.admixture.fmt >}} to infer population structure and
   individual ancestries
 
 :::
@@ -53,6 +53,8 @@ ancestry.
 {{< include /exercises/_datasetup.qmd >}}
 
 ## Admixture
+
+FIXME!
 
 - admixture model: we have recent ancestry from multiple source populations
 - individual allele frequency P: mixture (Q) of source population P's
@@ -65,7 +67,7 @@ ancestry.
 - [PCA](pca.qmd) clusters individuals but says little about the
   composition of genomes
 
-- {{< var admixture >}} is a method to estimate ancestry components
+- {{< var tools.admixture.fmt >}} is a method to estimate ancestry components
   from genotypes
 - maximum likelihood
 - motivation behind development: population stratification confounding
@@ -98,7 +100,7 @@ rl/.style={node distance=2.5ex, font=\tiny\sffamily}
 
 ## Data setup
 
-We start by defining some variables. Note that {{< var admixture >}}
+We start by defining some variables. Note that {{< var tools.admixture.fmt >}}
 assumes indpendence among markers, which means we must first perform
 LD pruning. Follow the steps in the [PCA](pca.qmd) to generate the
 input file `monkeyflower_pca.prune.in` defined below.
@@ -125,10 +127,10 @@ Sys.setenv(
 )
 ```
 
-## Running {{< var admixture >}}
+## Running {{< var tools.admixture.fmt >}}
 
-Given an appropriate input file, running {{< var admixture >}} can be
-done in a few steps. {{< var admixture >}} takes as input a [plink bed
+Given an appropriate input file, running {{< var tools.admixture.fmt >}} can be
+done in a few steps. {{< var tools.admixture.fmt >}} takes as input a [plink bed
 (binary biallelic genotype table)
 file](https://www.cog-genomics.org/plink/1.9/formats#bed), which we
 generate with the option `--make-bed`:
@@ -152,7 +154,7 @@ This command will generate three output files:
   markers, their positions, and the alleles
 - `monkeyflower_adm.fam` -- a sample information file
 
-Before running {{< var admixture >}}, we need to modify the map file
+Before running {{< var tools.admixture.fmt >}}, we need to modify the map file
 such that chromosome names are integers and not as now prefixed with
 `LG`.
 
@@ -164,7 +166,7 @@ such that chromosome names are integers and not as now prefixed with
 sed -i -e "s/^\([A-Z0-9][A-Z0-9]*\)/0/g" ${DATAPFX}.bim
 ```
 
-That is all we have to do! We next run {{< var admixture >}} with
+That is all we have to do! We next run {{< var tools.admixture.fmt >}} with
 cross-validation (default is 5-fold CV) and set the number of
 populations `K=2`:
 
@@ -322,7 +324,7 @@ demographic histories can lead to the same result. The plots are good
 for detecting recent hybrid events, but fall short for inference of
 more complex demographic histories.
 
-Also remember that different runs of {{< var admixture >}} will
+Also remember that different runs of {{< var tools.admixture.fmt >}} will
 generate different results because the initial mixing parameters are
 chosen at random. There are several methods for evaluating the
 robustness of the results, including Pong

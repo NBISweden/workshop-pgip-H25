@@ -8,6 +8,8 @@ format:
 exercise:
   dir: population-structure
   venv: e-population-structure
+  data: monkeyflower/selection/large/vcftools-filter-bqsr/
+  wget_opts: \-\-accept-regex all.variantsites* \-\-cut-dirs=7
 ---
 
 <!-- markdownlint-disable MD041 -->
@@ -22,6 +24,7 @@ exercise:
 #| label: r-init-vars
 #| echo: false
 #| eval: true
+#| cache: false
 obj <- exercise_tools$population_structure$dstats
 ```
 
@@ -29,7 +32,12 @@ obj <- exercise_tools$population_structure$dstats
 
 ## About
 
-In this exercise we will cluster...
+Populations that diverge often exchange migrants during the splitting
+process. Populations may also come into secondary contact and
+hybridize after being separated over long times. In this exercise, we
+look at f- and D-statistics to detect patterns of hybridization and
+migration (introgression), as implemented in the package {{< var
+tools.admixtools2.fmt >}}.
 
 {{< include /exercises/_subset.qmd >}}
 
@@ -43,15 +51,55 @@ In this exercise we will cluster...
 
 {{< include /exercises/_tools.qmd >}}
 
-## R libraries and data setup
+{{< include /exercises/_datasetup.qmd >}}
+
+## On D-stastitics and f-statistics
+
+FIXME!
+
+- multiple-population histories in which migration/hybridization takes
+  place form *reticulate* networks as opposed to *bifurcating* trees
+- D-statistics (ABBA-BABA) tests infer signs of introgression
+- f-statistics were developed to detect admixture from data
+  - $f_2$ measures the total branch length between populations
+  - $f_3$ tests whether P1 is an admixture of P2 and P3
+  - $f_4$ tests for independence between P1, P2 and P3, P4
+
+The aforementioned statistics and tests have previously been
+implemented in {{< var tools.admixtools.fmt >}}.
+
+in the
+computationally effective package {{< var tools.admixtools2.fmt >}}.
+The package is very comprehensive, and we will in this exercise only
+scratch the surface of its capabilities. For a more thorough overview,
+see [the admixtools
+tutorial](https://uqrmaie1.github.io/admixtools/articles/admixtools.html).
+
+## Data setup
+
+First initialize some variables.
+
+```{bash }
+#| label: setup-datavars
+#| echo: true
+#| eval: true
+VCF="variants.vcf.gz"
+DATAPFX="monkeyflower_dstats"
+```
 
 ```{r }
-#| label: install-admixtools
-#| echo: true
-#| eval: false
-library(devtools)
-devtools::install_github("uqrmaie1/admixtools")
+#| label: r-set-envvars
+#| echo: false
+#| eval: true
+#| cache: false
+Sys.setenv(
+    "VCF" = "variants.vcf.gz",
+    "DATAPFX" = "monkeyflower_dstats"
+)
 ```
+
+Here we need to invoke {{< var tools.r.fmt >}} from the get-go. Load
+relevant libraries and register the variables.
 
 ```{r }
 #| label: r-load-libraries
@@ -62,19 +110,13 @@ library(dplyr)
 library(tibble)
 library(admixtools)
 
-VCF <- "variants.vcf.gz"
-DATAPFX <- "monkeyflower_dstats"
+VCF <- Sys.getenv("VCF")
+DATAPFX <- Sys.getenv("DATAPFX")
 ```
 
-```{r }
-#| label: r-set-envvars
-#| echo: false
-#| eval: true
-Sys.setenv(
-    "VCF" = "variants.vcf.gz",
-    "DATAPFX" = "monkeyflower_dstats"
-)
-```
+{{< var tools.admixtools2.fmt >}} needs a population input file consisting of
+two columns and is picky with regards to the format. Therefore, we
+need to refactor the sampleinfo file and select relevant columns.
 
 ```{r }
 #| label: make-population-file
@@ -90,7 +132,20 @@ write.table(sampleinfo, file=paste0(DATAPFX, ".pop"),
             sep="\t", quote=FALSE)
 ```
 
-## Convert VCF to plink ped format
+## Preparing {{< var tools.admixtools2.fmt >}} input files
+
+We need to convert our input VCF to a {{< var tools.plink.fmt >}} bed
+file. Some of the steps are a bit fiddly and it can be tricky to infer
+what the file formats look like from the documentation alone. Lucky
+for you, we have prepared a template sequence of commands so you don't
+have to look up the details. Fasten your seatbelt and read on!
+
+### Convert VCF to plink ped format
+
+To start with, {{< var tools.admixtools2.fmt >}} requires
+integer-based chromosome names. We therefore reannotate the input VCF
+with {{< var tools.bcftools.fmt >}}. Here, `chrmap.txt` is a tabular
+file that maps old to new chromosome names.
 
 ```{bash }
 #| label: bcftools-rename-chrom
@@ -100,6 +155,8 @@ for i in {3..4}; do echo -e "LG${i} ${i}"; done > chrmap.txt
 bcftools annotate --rename-chrs chrmap.txt $VCF -o ${DATAPFX}.vcf.gz -O z -W tbi
 ```
 
+We then convert the updated VCF to bed format.
+
 ```{bash }
 #| label: plink2-vcf-to-ind
 #| echo: true
@@ -108,15 +165,50 @@ plink2 --vcf ${DATAPFX}.vcf.gz --allow-extra-chr \
        --set-missing-var-ids @:# \
        --make-bed \
        --out ${DATAPFX} > /dev/null 2>&1
+```
+
+Next, we make use of the `.pop` file we generated at the beginning to
+add population information to the first column of the `.fam` file, as
+well as modify the last column (phenotype) from `-9` (missing data) to
+`1` (control); the latter needs to be set, else the sample is ignored.
+
+```{bash }
+#| label: csvtk-update-fam
+#| echo: true
+#| eval: true
 mv ${DATAPFX}.fam ${DATAPFX}.orig.fam
 csvtk join -H -t ${DATAPFX}.orig.fam ${DATAPFX}.pop -f "2;1" |
     csvtk cut -t -f 7,2,3,4,5,6 |
     csvtk replace -H -t -f 6 -r 1 > ${DATAPFX}.fam
+head -n 3 ${DATAPFX}.fam
+```
+
+Next, we convert bed to ped format, which is the required input for
+the EIGENSOFT package
+[@patterson_PopulationStructureEigenanalysis_2006] in the next
+section.
+
+```{bash }
+#| label: plink2-recode-bed-to-ped
+#| echo: true
+#| eval: true
 plink2 --bfile ${DATAPFX} --recode 12 ped \
        --out ${DATAPFX} > /dev/null 2>&1
 ```
 
-## Convert VCF to eigenstrat
+Here, `--bfile` specifies a set of files with suffixes `.bed`, `.bim`
+and `.fam`, whereas `--recode` recodes nucleotides to numbers. Now you
+should have a ped file, which is the required format for the next
+step.
+
+### Convert PED to EIGENSTRAT
+
+The EIGENSOFT package
+[@patterson_PopulationStructureEigenanalysis_2006] is a collection of
+tools for performing eigenanalysis of population data. The `convertf`
+program converts between different file formats. We here want to
+convert from ped to EIGENSTRAT and thefore need to write a control
+parameter file:
 
 ```{bash }
 #| label: make-parameter-file
@@ -133,37 +225,62 @@ indivoutname:    monkeyflower_dstats.orig.ind
 EOF
 ```
 
+The top three lines correspond to input files, whereas the bottom
+three are output files. Note that we add an `.orig` tag to the
+`indivoutname` as we (again) want to slightly modify the output later
+on. With this parameter file, convertf is run as
+
 ```{bash }
-#| label: convert-vcf-to-eigenstrat
+#| label: convert-ped-to-eigenstrat
 #| echo: true
 #| eval: true
 convertf -p par.PED.EIGENSTRAT > ${DATAPFX}.convertf.log 2>&1
 ```
 
+We reformat the individual file to produce a desired output consisting
+of sample, gender (unknown) and population group label ^[For more
+information about the EIGENSOFT file formats, see
+<https://github.com/DReichLab/EIG/tree/master/CONVERTF>].
+
 ```{bash }
-#| label: join-ind-with-population
+#| label: massage-ind-file
 #| echo: true
 #| eval: true
 csvtk space2tab ${DATAPFX}.orig.ind |
     csvtk cut -t -H -f 1,2,1 |
     csvtk replace -t -H -f 1 -p "^.*:" |
     csvtk replace -t -H -f 3 -p ":.*" > ${DATAPFX}.ind
+head -n 3 ${DATAPFX}.ind
 ```
 
-## Admixtools
+## Analyse data with {{< var tools.admixtools2.fmt >}}
 
-Finally we can get started with the analyses.
+Finally, after all the data juggling, we can start with the analyses!
 
-### Fst
+### Prepare f2_blocks
+
+The speedup of {{< var tools.admixtools2.fmt >}} compared with its
+predecessor owes much to the efficient use made of $f_2$-statistics.
+So much so in fact that it can be worthwhile to pre-calculate and
+store $f_2$-statistics, as we do below.
 
 ```{r }
-#| label: admixtools-save-fst
+#| label: admixtools2-save-f2-blocks
 #| echo: true
 #| eval: true
-fst_dir <- "fst"
-extract_f2(DATAPFX, fst_dir, verbose=FALSE, overwrite=TRUE)
-f2_blocks <- f2_from_precomp(fst_dir, verbose=FALSE)
+f2_dir <- "f2"
+extract_f2(DATAPFX, f2_dir, verbose=FALSE, overwrite=TRUE)
+f2_blocks <- f2_from_precomp(f2_dir, verbose=FALSE)
 ```
+
+`extract_f2` will compute and store blocked f2 statistics, where the
+size of each block is 0.05cM by default.
+
+### Plot average $f_2$-statistics
+
+$f_2$-statistics measure the amount of genetic drift between two
+populations (i.e., the total branch length). We can quickly summarize
+the average $f_2$ over all blocks and make a plot:
 
 ```{r }
 #| label: plot-matrix
@@ -176,25 +293,53 @@ apply(f2_blocks, 1:2, mean) %>% as_tibble %>%
   scale_fill_viridis()
 ```
 
-### f3 statistics
+The structure of the plot could be improved by clustering on rows and
+columns, but clearly population comparisons including *clevelandii*
+have the highest values, as would be expected.
 
-### f4 statistics
+### Calculate {{< var fst >}}
 
-- according to paper there are 48 possible pairs of 4-taxon tests - I
-  don't get this; there should be choose(8, 3)=56!
+$f_2$-statistics is mathematically related to {{< var fst >}}, and we
+can easily obtain {{< var fst >}} estimates with the `fst` function
+and plot the outcome, obtaining a plot similar to the one above:
 
 ```{r }
-#| label: f4-statistics
+#| label: fst-from-f2
+#| echo: true
+#| eval: true
+fst(f2_blocks) %>%
+  ggplot(aes(x=pop1, y=pop2, fill=est)) + geom_tile() +
+  scale_fill_viridis()
+```
+
+### f3 statistics
+
+FIXME!
+
+### f4 statistics (qpdstat)
+
+The $f_4$ statistic compares four populations P1, P2, P3, P4 and tests
+for independence (no admixture) between P1, P2 and P3, P4. Here we
+generate all 56 possible pairs of 4-taxon tests, setting *clevelandii*
+as the outgroup (P4).
+
+```{r }
+#| label: fig-f4-statistics
 #| echo: true
 #| eval: true
 #| fig-width: 14
 #| fig-height: 8
+#| fig-cap:
+#|   Genome-wide estimates of Patterson’s f4-statistic (this is similar
+#|   to the D-statistic or ABBA-BABA test) for all possible pairs of
+#|   4-taxon tests. The statistics have been sorted in ascending
+#|   order.
 allpops <- c("clevelandii", "grandiflorus", "aridus", "parviflorus",
              "longiflorus", "calycinus", "aurantiacus", "puniceus_yellow",
              "puniceus_red")
 pops <- matrix(allpops[2:9][combn(8, 3)], , ncol=3, byrow=TRUE)[, 3:1]
 pops <- cbind(pops, "clevelandii")
-# f4 is synonym
+# f4 is synonym to qpdstat
 res <- qpdstat(f2_blocks, pops)
 res %>%  mutate(taxa=paste(pop1, pop2, pop3, sep=",")) %>%
   as_tibble %>% arrange(est) %>%
@@ -203,9 +348,12 @@ res %>%  mutate(taxa=paste(pop1, pop2, pop3, sep=",")) %>%
     ylab("D-statistic (P1, P2; P3, O)")
 ```
 
-- qpGraph - assesses goodness-of-fit between data and *proposed*
-  admixture graph (where from? phylogenetic tree could be starting
-  point; could sketch from paper)
+If no permutations have $f_4=0$, then there is no unadmixed tree that
+can explain the data.
+
+### qpgraph
+
+FIXME!
 
 ```{r }
 #| label: define-graph-wo-admixture
@@ -235,4 +383,7 @@ g <- matrix(c(
 plot_graph(g)
 ```
 
-- fit model to graph?
+## Conclusions
+
+That was a long exercise, but now you should have a feeling for how
+you can apply f-statistics to your data. Well done!

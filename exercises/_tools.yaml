@@ -1,5 +1,9 @@
 # -*- yaml -*-
 # Missing on PDC: csvtk
+admixtools2:
+  url: https://uqrmaie1.github.io/admixtools/
+  ref: maier_LimitsFittingComplex_2023
+  rdev: uqrmaie1/admixtools
 admixture:
   url: https://dalexander.github.io/admixture/index.html
   ref: alexander_FastModelbasedEstimation_2009
@@ -22,7 +26,7 @@ csvtk:
 fastqc:
   url: https://www.bioinformatics.babraham.ac.uk/projects/fastqc
   pdc: fastqc/0.12.1
-gatk:
+gatk4:
   name: Genome Analysis ToolKit (GATK)
   url: https://gatk.broadinstitute.org/hc/en-us
   ref: depristo_FrameworkVariationDiscovery_2011

@@ -202,6 +202,7 @@ VCF=variantsites.subset.vcf.gz
 #| label: set-vcf-envvars
 #| echo: false
 #| eval: true
+#| cache: false
 Sys.setenv(
     OUT = "vcftools/variantsites.subset",
     VCF = "variantsites.subset.vcf.gz",

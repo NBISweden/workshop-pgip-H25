@@ -6,6 +6,7 @@ knitr:
   opts_chunk:
     collapse: true
     code-fold: true
+    tidy: false
 ---
 
 # SLiM recipes {#sec-slim-recipes}
