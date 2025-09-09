@@ -26,8 +26,6 @@ format:
   nbis-course-html:
     number-sections: false
     page-layout: full
-execute:
-  freeze: false
 ---
 
 ### A note on usage

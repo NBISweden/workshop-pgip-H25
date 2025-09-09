@@ -8,6 +8,8 @@ format:
 exercise:
   dir: population-structure
   venv: e-population-structure
+  data: monkeyflower/selection/large/vcftools-filter-bqsr/
+  wget_opts: \-\-accept-regex all.variantsites* \-\-cut-dirs=7
 ---
 
 <!-- markdownlint-disable MD041 -->
@@ -29,7 +31,11 @@ obj <- exercise_tools$population_structure$admixture
 
 # About
 
-In this exercise we...
+Admixture models model the ancestry components of a set of samples,
+where the ancestry components consist of a pre-defined number of
+(source) populations. In this exercise, we will use the method {{< var
+admixture >}} [@alexander_FastModelbasedEstimation_2009] to model
+ancestry.
 
 {{< include /exercises/_subset.qmd >}}
 
@@ -37,19 +43,71 @@ In this exercise we...
 
 ## Intended learning outcomes
 
-- run `admixture` to infer population structure and individual
-  ancestries
+- run {{< var admixture >}} to infer population structure and
+  individual ancestries
 
 :::
 
 {{< include /exercises/_tools.qmd >}}
 
-## R libraries and data setup
+{{< include /exercises/_datasetup.qmd >}}
+
+## Admixture
+
+- admixture model: we have recent ancestry from multiple source populations
+- individual allele frequency P: mixture (Q) of source population P's
+- first approach: estimate P from *known* populations
+- STRUCTURE: estimate directly from G, Bayesian
+  [@pritchard_InferencePopulationStructure_2000]
+
+- ancestry: how much of a genome is from a set of defined groups or
+  populations
+- [PCA](pca.qmd) clusters individuals but says little about the
+  composition of genomes
+
+- {{< var admixture >}} is a method to estimate ancestry components
+  from genotypes
+- maximum likelihood
+- motivation behind development: population stratification confounding
+  factor in association studies
+
+```{r, engine="tikz", fig.ext="svg" }
+#| label: fig-genotype-matrix
+#| echo: false
+#| eval: true
+#| out-width: "50%"
+\begin{tikzpicture}
+\tikzset{%
+table/.style={matrix of math nodes,nodes in empty cells,
+left delimiter={[}, right delimiter={]}},
+highlight/.style={rectangle,fill=red!30,rounded corners=1mm,inner sep=0mm,outer sep=0mm,opacity=0.5},
+ll/.style={node distance=4.5ex, outer sep=0mm, inner sep=0mm,font=\tiny\sffamily},
+rl/.style={node distance=2.5ex, font=\tiny\sffamily}
+}
+ \matrix (m) [table]
+  {
+    a_8 & a_1 & a_6\\
+    a_3 & a_5 & a_7\\
+    a_4 & a_9 & a_2\\
+  };
+  \node[highlight, fit={(m-1-1.north west) (m-3-3.south east)}]{};
+\node [ll, left of=m-1-1] {1};
+\node [rl, above of=m-1-1] {1};
+\end{tikzpicture}
+```
+
+## Data setup
+
+We start by defining some variables. Note that {{< var admixture >}}
+assumes indpendence among markers, which means we must first perform
+LD pruning. Follow the steps in the [PCA](pca.qmd) to generate the
+input file `monkeyflower_pca.prune.in` defined below.
 
 ```{bash }
 #| label: pca-set-envvars
 #| echo: true
 #| eval: true
+#| cache: false
 VCF=variants.vcf.gz
 PRUNE_IN=monkeyflower_pca.prune.in
 DATAPFX=monkeyflower_adm
@@ -59,12 +117,94 @@ DATAPFX=monkeyflower_adm
 #| label: setenv
 #| echo: false
 #| eval: true
+#| cache: false
 Sys.setenv(
     "VCF" = "variants.vcf.gz",
     "DATAPFX" = "monkeyflower_adm",
     "PRUNE_IN" = "monkeyflower_adm.prune.in"
 )
 ```
+
+## Running {{< var admixture >}}
+
+Given an appropriate input file, running {{< var admixture >}} can be
+done in a few steps. {{< var admixture >}} takes as input a [plink bed
+(binary biallelic genotype table)
+file](https://www.cog-genomics.org/plink/1.9/formats#bed), which we
+generate with the option `--make-bed`:
+
+```{bash }
+#| label: run-plink-to-bed
+#| echo: true
+#| eval: true
+plink2 --vcf $VCF --allow-extra-chr \
+       --extract ${PRUNE_IN} \
+       --set-missing-var-ids @:# \
+       --make-bed \
+       --out ${DATAPFX} > /dev/null 2>&1
+```
+
+This command will generate three output files:
+
+- `monkeyflower_adm.bed` -- file containing representation of genotype
+  calls at biallelic variants
+- `monkeyflower_adm.bim` -- a map file which is a table of the
+  markers, their positions, and the alleles
+- `monkeyflower_adm.fam` -- a sample information file
+
+Before running {{< var admixture >}}, we need to modify the map file
+such that chromosome names are integers and not as now prefixed with
+`LG`.
+
+```{bash }
+#| label: sed-change-chromosome-name
+#| echo: true
+#| eval: true
+# ADMIXTURE only accepts integer chromosome names
+sed -i -e "s/^\([A-Z0-9][A-Z0-9]*\)/0/g" ${DATAPFX}.bim
+```
+
+That is all we have to do! We next run {{< var admixture >}} with
+cross-validation (default is 5-fold CV) and set the number of
+populations `K=2`:
+
+```{bash }
+#| label: admixture-k-2
+#| echo: true
+#| eval: false
+admixture --cv ${DATAPFX}.bed 2 > ${DATAPFX}.2.log
+```
+
+The output is two files: `.Q` consists of two columns with cluster
+assignments for each individual, whereas `.P` is the population allele
+frequencies. We want to compare models with different settings for the
+number of populations `K` so we run a for loop from 3 to 10:
+
+```{bash }
+#| label: admixture-k-loop
+#| echo: true
+#| eval: false
+for k in {3..10}
+do
+    admixture --cv ${DATAPFX}.bed $k > ${DATAPFX}.${k}.log
+done
+```
+
+Each run has generated a cross validation error. We want to select the
+model with the smallest error and therefore extract and save the CV
+errors into an output file:
+
+```{bash }
+#| label: extract-cv-error
+#| echo: true
+#| eval: true
+grep CV *log | cut -d " " -f 3,4 | sed -e "s/[()K=:]//g" > ${DATAPFX}.cv.err
+```
+
+## R analyses
+
+Now that we have the output data we turn to plotting the results in R.
+First load the necessary packages:
 
 ```{r }
 #| label: r-library-init
@@ -79,55 +219,14 @@ library(RColorBrewer)
 DATAPFX <- "monkeyflower_adm"
 ```
 
-## Admixture
-
-```{bash }
-#| label: run-plink-to-bed
-#| echo: true
-#| eval: true
-plink2 --vcf $VCF --allow-extra-chr \
-       --set-missing-var-ids @:# \
-       --make-bed \
-       --out ${DATAPFX} > /dev/null 2>&1
-```
-
-```{bash }
-#| label: sed-change-chromosome-name
-#| echo: true
-#| eval: true
-sed -i -e "s/^\([A-Z0-9][A-Z0-9]*\)/0/g" ${DATAPFX}.bim
-```
-
-```{bash }
-#| label: admixture-k-2
-#| echo: true
-#| eval: false
-admixture --cv ${DATAPFX}.bed 2 > ${DATAPFX}.2.log
-```
-
-```{bash }
-#| label: admixture-k-loop
-#| echo: true
-#| eval: false
-for k in {3..10}
-do
-    admixture --cv ${DATAPFX}.bed $k > ${DATAPFX}.${k}.log
-done
-```
-
-```{bash }
-#| label: extract-cv-error
-#| echo: true
-#| eval: true
-grep CV *log | cut -d " " -f 3,4 | sed -e "s/[()K=:]//g" > ${DATAPFX}.cv.err
-```
-
 ```{r }
 #| label: set-hidden-prefix
 #| echo: false
 #| eval: true
 DATAPFX <- "monkeyflower_adm.save"
 ```
+
+Next, we plot the CV errors.
 
 ```{r }
 #| label: plot-cv-error
@@ -138,12 +237,20 @@ colnames(df) <- c("K", "CV")
 ggplot(df, aes(x=K, y=CV)) + geom_point() + ylab("CV error")
 ```
 
+Here, we look for the lowest value of `K`, which for this example is 4
+(NB: this may differ from your results since this is based on a
+smaller dataset!).
+
 ```{r }
 #| label: reset-hidden-prefix
 #| echo: false
 #| eval: true
 DATAPFX <- "monkeyflower_adm"
 ```
+
+Now we can plot the admixture proportions. Before doing so, we add
+sample population information to the plink sample information file
+(`.fam`):
 
 ```{r }
 #| label: load-sampleinfo-join-fam
@@ -155,6 +262,7 @@ sampleinfo <- read.csv("sampleinfo.csv") %>% rename(sample=SampleAlias) %>%
   as_tibble
 fam <- read.table(paste0(DATAPFX, ".fam")) %>% select(2) %>%
   rename(sample=V2) %>% right_join(sampleinfo) %>% as_tibble
+head(fam)
 ```
 
 ```{r }
@@ -163,6 +271,10 @@ fam <- read.table(paste0(DATAPFX, ".fam")) %>% select(2) %>%
 #| eval: true
 DATAPFX <- "monkeyflower_adm.save"
 ```
+
+Finally, we define a function to plot the admixture proportions.
+Without going into too much detail, the code below groups samples by
+populations in a "facet_grid" to facilitate interpretation.
 
 ```{r }
 #| label: plot-admixture-function
@@ -192,6 +304,8 @@ plot_admixture <- function(filename, fam) {
 }
 ```
 
+We here include admixture plots for `K=2` and `K=4`.
+
 ```{r }
 #| label: plot-admixture
 #| echo: true
@@ -199,10 +313,26 @@ plot_admixture <- function(filename, fam) {
 #| warning: false
 #| fig-width: 16
 plot_admixture(paste0(DATAPFX, ".2.Q"), fam)
-plot_admixture(paste0(DATAPFX, ".8.Q"), fam)
+plot_admixture(paste0(DATAPFX, ".4.Q"), fam)
 ```
 
-## Further analyses
+It is important not to overinterpret admixture plots
+[@lawson_TutorialHowNot_2018], mainly due to the fact that different
+demographic histories can lead to the same result. The plots are good
+for detecting recent hybrid events, but fall short for inference of
+more complex demographic histories.
 
-- PONG
-- Clumpak
+Also remember that different runs of {{< var admixture >}} will
+generate different results because the initial mixing parameters are
+chosen at random. There are several methods for evaluating the
+robustness of the results, including Pong
+[@behr_PongFastAnalysis_2016], Clumpak
+[@kopelman_ClumpakProgramIdentifying_2015] and evaladmix
+[@garcia-erill_EvaluationModelFit_2020].
+
+## Things to try
+
+If you have more time over, make some more plots with different values
+of `K`. Do the results make sense?
+
+## References
