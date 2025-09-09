@@ -3,11 +3,11 @@ title: Read mapping and duplicate removal
 author:
   - Per Unneberg
 format: nbis-course-html
-execute:
-  cache: false
 exercise:
   dir: variant-calling
   venv: e-variant-calling
+  data: monkeyflower/variant-calling/
+  wget_opts: \-\-cut-dirs=5
 ---
 
 {{< include /exercises/_knitr.qmd >}}
@@ -36,6 +36,8 @@ bioinfo_tools <- TRUE
 :::
 
 {{< include /exercises/_tools.qmd >}}
+
+{{< include /exercises/_datasetup.qmd >}}
 
 ## Read mapping
 

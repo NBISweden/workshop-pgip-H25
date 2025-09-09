@@ -52,7 +52,7 @@ project:
     # Recipes
     - recipes/index.qmd
     - recipes/slides/index.qmd
-    - recipes/simulation/index.qmd
+    - recipes/slim/index.qmd
     # Exclude
     - "!fixme.qmd"
     - "*.ipynb"

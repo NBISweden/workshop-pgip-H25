@@ -8,6 +8,8 @@ execute:
 exercise:
   dir: variant-calling
   venv: e-variant-calling
+  data: monkeyflower/variant-calling/
+  wget_opts: \-\-cut-dirs=5
 ---
 
 <!-- markdownlint-disable MD041 -->
@@ -52,6 +54,8 @@ biology as on getting programs to run and interpreting the output.
 :::
 
 {{< include /exercises/_tools.qmd >}}
+
+{{< include /exercises/_datasetup.qmd >}}
 
 ## Preparation: reference sequence index and read QC
 

@@ -6,6 +6,8 @@ author:
 exercise:
   dir: variant-calling
   venv: e-variant-calling
+  data: monkeyflower/variant-calling/
+  wget_opts: \-\-cut-dirs=5
 ---
 
 <!-- markdownlint-disable MD041 -->
@@ -35,6 +37,8 @@ obj <- exercise_tools$variant_calling$introduction
 :::
 
 {{< include /exercises/_tools.qmd >}}
+
+{{< include /exercises/_datasetup.qmd >}}
 
 ## Variant calling
 

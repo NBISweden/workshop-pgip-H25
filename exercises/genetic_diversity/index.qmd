@@ -14,20 +14,6 @@ execute:
 
 ## Exercises
 
-:::{.callout-note collapse=true}
-
-## Data setup
-
-:::{.panel-tabset}
-
-#### {{< fa server >}} PDC
-
-#### {{< fa laptop >}} Local
-
-:::
-
-:::
-
 [Genetic diversity landscapes](landscape.qmd)
 
 : Introduction to calculating genetic diversity landscapes.
