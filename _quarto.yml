@@ -89,6 +89,16 @@ format:
     fig-align: center
     fig-cap-location: top
 
+execute:
+  cache: true
+  freeze: true
+  echo: true
+  warning: false
+  include: true
+  autodep: true
+  eval: true
+  error: false
+
 filters:
   - quarto-ext/fontawesome
   - percyfal/nbis-course

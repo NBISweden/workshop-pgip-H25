@@ -5,9 +5,6 @@ author:
 format:
   nbis-course-html:
     number-sections: false
-execute:
-  cache: false
-  warning: false
 exercise:
   dir: population-structure
   venv: e-population-structure

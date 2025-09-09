@@ -95,11 +95,13 @@ r-ggrepel = ">=0.9.6,<0.10"
 admixtools = ">=8.0.2,<9"
 r-plotly = ">=4.11.0,<5"
 conda = ">=25.7.0,<26"
+jupyter-cache = ">=1.0.1,<2"
 
 [feature.build.tasks]
 rpgip = "R -e \"library(devtools); devtools::install_local('src/R/pgip', upgrade=F)\""
 radmixr = "R -e \"library(devtools); devtools::install_github('bodkan/admixr', upgrade=F)\""
 radmixtools2 = "R -e \"library(devtools); devtools::install_github('uqrmaie1/admixtools', upgrade=F)\""
+rsetup = { depends-on = ["rpgip", "radmixr", "radmixtools2"] }
 preview = "quarto preview"
 render = "quarto render"
 

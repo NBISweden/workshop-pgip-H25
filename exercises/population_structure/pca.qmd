@@ -5,13 +5,11 @@ author:
 format:
   nbis-course-html:
     number-sections: false
-execute:
-  cache: false
-  warning: false
 exercise:
   dir: population-structure
   venv: e-population-structure
-  init_show: true
+  data: monkeyflower/selection/large/vcftools-filter-bqsr/
+  wget_opts: \-\-accept-regex all.variantsites* \-\-cut-dirs=7
 ---
 
 <!-- markdownlint-disable MD041 -->
@@ -33,7 +31,10 @@ obj <- exercise_tools$population_structure$pca
 
 ## About
 
-In this exercise we will cluster...
+In the analysis of population structure, one of the first algorithms
+employed is often principal component analysis (PCA). Here we will use
+`plink2` to generate principal component eigenvalues and eigenvectors
+and plot the results to assess whether there is structure in our data.
 
 {{< include /exercises/_subset.qmd >}}
 
@@ -41,14 +42,56 @@ In this exercise we will cluster...
 
 ## Intended learning outcomes
 
-- cluster data with a Principal component analysis to detect
+- cluster data with a Principal component analysis (PCA) to detect
   population structure
+- plot output and color samples by population assignments
 
 :::
 
 {{< include /exercises/_tools.qmd >}}
 
-## R libraries and data setup
+{{< include /exercises/_datasetup.qmd >}}
+
+## Principal component analysis
+
+Principal component analysis (PCA) can be used to highlight population
+structure, often in relation to geography (@fig-novembre-pca) or
+ethnicity [@mcvean_GenealogicalInterpretationPrincipal_2009]. It is a
+common first analysis to make as it is fairly easy to perform. In
+addition to shedding light on population structure, it can be used for
+quality control, for instance to identify mislabelled samples.
+
+:::{.column-margin}
+
+<!-- markdownlint-disable MD013 -->
+
+![Population structure within Europe
+[@novembre_GenesMirrorGeography_2008, Fig.
+1]](https://media.springernature.com/full/springer-static/image/art%3A10.1038%2Fnature07331/MediaObjects/41586_2008_Article_BFnature07331_Fig1_HTML.jpg?as=webp){#fig-novembre-pca fig-align=center}
+
+<!-- markdownlint-enable MD013 -->
+
+:::
+
+However, despite its widespread use, it is not clear that you would
+get a consistent description of what a PCA is if you asked around^[For
+an informative post on various definitions of PCA, see
+@pachter_WhatPrincipalComponent_2014]. For neutral SNPs, it can be
+shown that the projection of samples onto principal components relate
+directly to average coalescent times
+[@mcvean_GenealogicalInterpretationPrincipal_2009]. Here, we will
+think of a PCA as a clustering algorithm in which clusters relate to
+population labels in some way.
+
+## Linkage disequilibrium pruning
+
+One of the core assumptions of PCA is that markers are independent. In
+practice, this means we want unlinked markers. Therefore, the first
+thing we need to do is to prune our markers based on linkage
+disequilibrium (LD).
+
+To save typing, we set an environment variable to point to the input
+VCF.
 
 ```{bash }
 #| label: pca-set-envvars
@@ -61,16 +104,13 @@ VCF=variants.vcf.gz
 #| label: setenv
 #| echo: false
 #| eval: true
+#| cache: false
 Sys.setenv(
     "VCF" = "variants.vcf.gz"
 )
 ```
 
-## LD pruning
-
-- want independent markers
-
-Show that <50 is not really optimal!
+We then run `plink2` on the input VCF and explain the options below.[^plink2_help]
 
 ```{bash }
 #| label: plink2-ld-prune
@@ -83,7 +123,30 @@ plink2 --vcf $VCF --double-id --allow-extra-chr \
        --out monkeyflower_pca > /dev/null
 ```
 
-Proceed anyway, keeping this in mind
+Here, we made use of the following options:
+
+- `--vcf` -- the name of the VCF
+- `--double-id` -- set both individual ID and family ID to the input
+  (sample) ID as some analyses need pedigree information (not relevant
+  here)
+- `--allow-extra-chr` -- permit chromosome names other than those
+  expected for human (1-22,X)
+- `--set-missing-var-ids` -- assign chromosome and bp-based IDs to
+  unnamed variants according to format `CHROM:BP`. Necessary since
+  model organisms often have annotated variant names
+- `--indep-pairwise` -- this will generate a list of variants in
+  approximate linkage disequilibrium. The first argument is the window
+  size (kb), the second the step size, and the last the $r^2$
+  threshold. Each window is screened for markers with $r^2$ larger
+  than the threshold, after which the window is pruned such that only
+  one marker remains.
+- `--out` -- prefix for output data
+
+As you can see, the program throws an error message, saying that
+linkage disequilibrium should not be estimated for less than 50
+samples. However, a suggested option is provided (`--bad-ld`), so we
+apply it, keeping in mind the caveats of calculation of LD for small
+sample sizes is noisy!
 
 ```{bash }
 #| label: plink-ld-prune-bad
@@ -96,7 +159,33 @@ plink2 --vcf $VCF --double-id --allow-extra-chr \
        --out monkeyflower_pca > /dev/null 2>&1
 ```
 
+This command has generated two output files,
+`monkeyflower_pca.prune.out` and `monkeyflower_pca.prune.in`. These
+files list the markers to keep (`.in`) or remove (`.out`).
+
 ## Make a PCA
+
+Now we are ready to generate PCAs. We will apply some new options that
+we detail here before running the command:
+
+- `--extract` -- remove any variants not present in the provided file
+- `--pca` -- extract top (default=10) principal components
+
+```{bash }
+#| label: plink2-run-pca-naive
+#| echo: true
+#| eval: true
+#| error: true
+plink2 --vcf $VCF --double-id --allow-extra-chr \
+       --set-missing-var-ids @:# \
+       --extract monkeyflower_pca.prune.in \
+       --pca \
+       --out monkeyflower_pca > /dev/null
+```
+
+The command fails, once again pointing out that the sample size is
+small, but also provides a solution. We calculate allele frequencies
+(`--freq` option, `zs` tells `plink2` to compres output)
 
 ```{bash }
 #| label: plink2-make-allele-frequencies
@@ -105,6 +194,8 @@ plink2 --vcf $VCF --double-id --allow-extra-chr \
 plink2 --vcf $VCF --freq zs --out monkeyflower_pca > /dev/null 2>&1
 ```
 
+and use the generated allele frequencies as input to the pca command:
+
 ```{bash }
 #| label: plink2-make-pca
 #| echo: true
@@ -112,11 +203,18 @@ plink2 --vcf $VCF --freq zs --out monkeyflower_pca > /dev/null 2>&1
 plink2 --vcf $VCF --double-id --allow-extra-chr \
        --set-missing-var-ids @:# \
        --extract monkeyflower_pca.prune.in \
-       --make-bed --pca --read-freq monkeyflower_pca.afreq.zst \
+       --pca --read-freq monkeyflower_pca.afreq.zst \
        --out monkeyflower_pca > /dev/null 2>&1
 ```
 
+This will generate `monkeyflower_pca.eigenval` that holds the
+eigenvalues and `monkeyflower_pca.eigenvec` that holds the
+eigenvectors, or directions, of the principal components (PCs).
+
 ## Plotting the PCA
+
+Now we turn to plotting the results in `R`. We first load necessary
+libraries for plotting and data manipulation.
 
 ```{r }
 #| label: load-r-tibble-dplyr
@@ -127,18 +225,30 @@ library(dplyr)
 library(tibble)
 ```
 
+We then load the eigenvectors and eigenvalues and use dplyr magic to
+transform the data frames into a format suitable for subsequent
+analyses.
+
 ```{r }
 #| label: read-pca-data
 #| echo: true
 #| eval: true
 eigenvec <- read.table("monkeyflower_pca.eigenvec") %>%
   select(-V1) %>% rename(sample=V2) %>%
-  rename_with(~ paste0("PC", 1:10), -sample)
+  rename_with(~ paste0("PC", 1:10), -sample) %>% as_tibble
 eigenval <- read.table("monkeyflower_pca.eigenval") %>%
   rename(value=V1) %>% mutate(pve=value/sum(value) * 100) %>%
   mutate(PC=factor(paste0("PC", row_number()), levels=paste0("PC", row_number()))) %>%
   as_tibble
+# Print tibbles to check contents
+head(eigenvec, n=3)
+head(eigenval, n=3)
 ```
+
+Note how we add a new column `pve` to the eigenvalues that corresponds
+to the relative fraction of an eigenvalue in %. The eigenvectors are
+labelled by sample name, but we would like to add population labels.
+The following code does just that:
 
 ```{r }
 #| label: join-eigenval-sampleinfo
@@ -148,18 +258,31 @@ pca <- read.csv("sampleinfo.csv") %>% rename(sample=SampleAlias) %>%
   mutate(species = as.factor(gsub("ssp. ", "", Taxon))) %>%
   select(sample, ScientificName, Taxon, Latitude, Longitude, species) %>%
   left_join(eigenvec) %>% as_tibble
-pca
+head(pca, n=3)
 ```
 
+Now we have a `pca` object that for each sample has an assigned
+species column.
+
+We begin by plotting the eigenvalues of the PCs. Basically, the
+eigenvalues tell us how much of the variation is explained by a given
+PC.
+
 ```{r }
-#| label: r-plot-eigenvals
+#| label: fig-r-plot-eigenvals
 #| echo: true
 #| eval: true
+#| fig-cap:
+#|   Loadings for the 10 first principal components (PCs) expressed as
+#|   variance explained in percent.
 ggplot(eigenval, aes(x=PC, y=pve)) +
   geom_point() +
   scale_y_continuous(limits = c(0, 25), expand = c(0, 0)) +
   ylab("Variance explained (%)")
 ```
+
+If we cumulatively sum the percentage variance explained, we see that
+the total sum is 100%, as expected, and that PC1-3 explains ~44%.
 
 ```{r }
 #| label: r-cumsum-pve
@@ -167,6 +290,10 @@ ggplot(eigenval, aes(x=PC, y=pve)) +
 #| eval: true
 cumsum(eigenval$pve)
 ```
+
+Before we proceed to plotting the eigenvectors we define colors for
+our population labels. Here, we use the same color scheme as in
+@stankowski_WidespreadSelectionGene_2019 for easier comparison.
 
 ```{r }
 #| label: r-species-colors
@@ -180,22 +307,36 @@ species <- as_tibble(data.frame(
 ))
 ```
 
+With coloring scheme in place, we can finally plot some of the
+principal components:
+
 ```{r }
 #| label: r-plot-pca
 #| echo: true
 #| eval: true
-ggplot(pca, aes(PC1, PC3, color=species)) +
+ggplot(pca, aes(PC1, PC2, color=species)) +
   geom_point(size=3, alpha=0.8) +
   scale_color_manual(values=species$color)
 ```
 
-## Questions
-
-- does it align with your expectations (look and compare with tree)
+In this particular example, we see that the outgroup *M. clevelandii*
+separates from the other species, both in PC 1 and 2. Also,
+*grandiflorus* separates from two other clusters that consist of
+multiple species. Interpreting the principal components can be tricky
+but at least we get a general picture of the population structure.
 
 ## Things to try
 
-- exclude M.clevelandii
-- plot more principal components to see structure
-- change LD pruning settings (even run without)
-- change MAC/MAF cutoff
+- Try plotting more combinations of PCs. Do the results align with
+  your expectations (compare with
+  [@stankowski_WidespreadSelectionGene_2019, Fig. 1])?
+- Change LD pruning settings, or even run a PCA without pruning. Do
+  you see any changes?
+- Exclude *M.clevelandii* from the PCA (you can use the `--remove`
+  option to remove samples).
+
+## References
+
+[^plink2_help]: You can always type `plink2 --help` followed by the
+option you want more information about (e.g., `plink2 --help
+--set-missing-var-ids`)
