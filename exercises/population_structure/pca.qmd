@@ -82,8 +82,8 @@ directly to average coalescent times
 [@mcvean_GenealogicalInterpretationPrincipal_2009]. Here, we will
 think of a PCA as a *dimensionality reduction* technique that projects
 a high-dimensional dataset (samples $\times$ variants) onto a
-two-dimensional space, in which samples may cluster in groups related
-to population labels in some way.
+two-dimensional space, in which samples genetically cluster in groups
+related to population labels / geographic structure.
 
 ## Linkage disequilibrium pruning
 
@@ -341,6 +341,13 @@ try.
   allele count.
 - Exclude *M.clevelandii* from the PCA (you can use the `--remove`
   option to remove samples).
+
+## PCA caveats
+
+- not model-based - gives no information about the underlying
+  demographic process [@novembre_InterpretingPrincipalComponent_2008]
+- sensitive to unequal sampling
+  [@mcvean_GenealogicalInterpretationPrincipal_2009]
 
 ## References
 

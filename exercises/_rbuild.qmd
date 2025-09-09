@@ -20,13 +20,15 @@ library(here)
 library(yaml)
 pixi <- blogdown::read_toml(here("pixi.toml"))$feature$build$dependencies
 x <- yaml::read_yaml(here("exercises", "_tools.yaml"))
-tools <- lapply(names(pixi), function(n){
+pixitools <- lapply(names(pixi), function(n){
   y <- list(pixi=pixi[[n]])
   if(!is.null(x[[n]]))
     y <- c(y, x[[n]])
   y
 })
-names(tools) <- names(pixi)
+names(pixitools) <- names(pixi)
+othertools <- x[setdiff(names(x), names(pixi))]
+
 exercise_tools <- yaml::read_yaml(here("_variables.yml"))$exercises
 ```
 
@@ -36,11 +38,36 @@ exercise_tools <- yaml::read_yaml(here("_variables.yml"))$exercises
 #| eval: true
 #| warning: false
 #| cache: false
+format_rdev <- function(obj, ename) {
+  if (is.null(obj$`r-dev`))
+    return(NULL)
+  tool_list <- obj$r_dev
+  output <- paste0("\n##### Additional R packages\n\n")
+  output <- paste0(output,
+      "<div class=\"sourceCode cell-code\">",
+      "<pre class=\"sourceCode r code-with-copy\">",
+      "<code class=\"sourceCode r\">"
+      )
+  output <- paste0(output, "library(devtools)\n")
+  for (n in tool_list) {
+    tool <- othertools[[n]]
+    if (!is.null(tool$rdev)) {
+      entry <- paste0("devtools::install_github(\"",
+                      tool$rdev, "\")")
+      output <- paste0(output, entry, "\n")
+    }
+  }
+  output <- paste0(output, "\n</code></pre></div>\n")
+  return(output)
+}
 format_listing <- function(obj) {
   tool_list <- obj$tools
   output <- ""
+  alltools <- c(pixitools, othertools)
+  if (!is.null(obj$r_dev))
+    tool_list <- c(tool_list, obj$r_dev)
   for (n in tool_list) {
-    tool <- tools[[n]]
+    tool <- alltools[[n]]
     if (!is.null(tool$name))
       n <- tool$name
     entry <- paste0("- [", n, "](", tool$url, ")")
@@ -58,7 +85,7 @@ format_modules <- function(obj, bioinfo_tools=FALSE) {
   missing <- c()
   count <- 0
   for (n in tool_list) {
-    tool <- tools[[n]]
+    tool <- pixitools[[n]]
     if (!is.null(tool$pdc)) {
       if ((count %% 3) == 0)
         msg <- paste0(msg, " \\ \n   ")
@@ -80,6 +107,11 @@ format_modules <- function(obj, bioinfo_tools=FALSE) {
       output <- paste0(output, "# - ", n, "\n")
   }
   output <- paste0(output, msg, "\n</code></pre></div>\n")
+  if (!is.null(obj$r_dev)) {
+    rdev <- format_rdev(obj, ename)
+    if (!is.null(rdev))
+      output <- paste(output, rdev, "\n")
+  }
   return(output)
 }
 format_pixi <- function(obj, ename) {
@@ -99,13 +131,16 @@ format_pixi <- function(obj, ename) {
       "\n[dependencies]\n"
   )
   for (n in tool_list) {
-    tool <- tools[[n]]
+    tool <- pixitools[[n]]
     if (!is.null(tool$pixi)) {
       entry <- paste0(n, " = \"", tool$pixi, "\"")
       output <- paste0(output, entry, "\n")
     }
   }
   output <- paste0(output, "\n</code></pre></div>\n")
+  rdev <- format_rdev(obj, ename)
+  if (!is.null(rdev))
+    output <- paste(output, rdev, "\n")
   return(output)
 }
 ```

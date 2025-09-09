@@ -152,6 +152,7 @@ VCF=all.variantsites.snp.biallelic.vcf.gz
 #| label: set-ld-envvars
 #| echo: false
 #| eval: true
+#| cache: false
 Sys.setenv(
     VCF = "all.variantsites.snp.biallelic.vcf.gz"
 )

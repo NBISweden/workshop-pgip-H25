@@ -12,6 +12,7 @@
 #| label: tool-listing
 #| echo: false
 #| eval: true
+#| cache: false
 #| output: asis
 cat(format_listing(obj))
 ```
@@ -29,6 +30,7 @@ Execute the following command to load modules:
 #| label: r-pdc-load-modules
 #| echo: false
 #| eval: true
+#| cache: false
 #| output: asis
 cat(format_modules(obj, bioinfo_tools=bioinfo_tools))
 ```
@@ -60,6 +62,7 @@ environment with `pixi shell`:
 #| label: r-pixi-manifest
 #| echo: false
 #| eval: true
+#| cache: false
 #| output: asis
 cat(format_pixi(obj, "{{< meta exercise.dir >}}"))
 ```
