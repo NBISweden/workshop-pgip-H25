@@ -19,10 +19,10 @@ posting an issue at
 ## Slides
 
 Collection of recipes to generate data and figures for lecture notes.
-For full listing, see [slides/index.html](slides/index.qmd).
+For full listing, see [slides/index.html](/recipes/slides/index.qmd).
 
 ## SLiM recipes
 
 Collection of SLiM recipes [@hallerben_MesserLabSLiM_2016] used to
-generate figures and examples. See [slim/index.html](slim/index.qmd)
-for full listing.
+generate figures and examples. See
+[slim/index.html](/recipes/slim/index.qmd) for full listing.

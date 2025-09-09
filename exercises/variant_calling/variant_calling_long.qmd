@@ -8,6 +8,8 @@ execute:
 exercise:
   dir: variant-calling
   venv: e-variant-calling
+  data: monkeyflower/variant-calling/
+  wget_opts: \-\-cut-dirs=5
 ---
 
 <!-- markdownlint-disable MD041 -->

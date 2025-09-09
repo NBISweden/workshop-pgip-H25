@@ -38,6 +38,8 @@ bioinfo_tools <- TRUE
 
 <!-- markdownlint-enable MD041 -->
 
+## About
+
 In this exercise we will look at ways of filtering variant data. We
 will begin by applying filters to the variant file containing variant
 sites only, followed by an approach that filters on sequencing depth

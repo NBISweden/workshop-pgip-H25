@@ -11,6 +11,8 @@ execute:
 exercise:
   dir: variant-filtering
   venv: e-variant-filtering
+  data: monkeyflower/variant-filtering/
+  wget_opts: \-\-cut-dirs=5
 ---
 
 <!-- markdownlint-disable MD041 -->
@@ -31,6 +33,8 @@ bioinfo_tools <- TRUE
 
 <!-- markdownlint-enable MD041 -->
 
+## About
+
 In this exercise we will look at ways of filtering variant data. We
 will begin by applying filters to the variant file containing variant
 sites only, followed by an approach that filters on sequencing depth
@@ -50,6 +54,8 @@ filters from BAM files.
 :::
 
 {{< include /exercises/_tools.qmd >}}
+
+{{< include /exercises/_datasetup.qmd >}}
 
 ## Background
 

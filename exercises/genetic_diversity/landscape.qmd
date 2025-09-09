@@ -11,6 +11,8 @@ execute:
 exercise:
   dir: genetic-diversity
   venv: e-genetic-diversity
+  data: monkeyflower/selection/large/vcftools-filter-bqsr/
+  wget_opts: \-\-accept-regex all* \-\-cut-dirs=7
 ---
 
 <!-- markdownlint-disable MD041 -->
@@ -32,6 +34,8 @@ bioinfo_tools <- TRUE
 ```
 
 <!-- markdownlint-enable MD041 -->
+
+## About
 
 In this exercise we will look at measures that describe variation and
 compile statistics along a sequence. By scanning variation in windows
@@ -55,6 +59,8 @@ We will use the Monkeyflower system to generate a diversity landscape.
 :::
 
 {{< include /exercises/_tools.qmd >}}
+
+{{< include /exercises/_datasetup.qmd >}}
 
 ```{bash }
 #| label: variant-filter-setup

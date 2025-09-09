@@ -8,6 +8,11 @@ author:
   - Per Unneberg
 execute:
   cache: false
+exercise:
+  dir: variant-filtering
+  venv: e-variant-filtering
+  data: monkeyflower/variant-filtering/
+  wget_opts: \-\-cut-dirs=5
 ---
 
 <!-- markdownlint-disable MD041 -->
@@ -18,67 +23,7 @@ execute:
 
 <!-- markdownlint-enable MD041 -->
 
-## About
-
 ## Exercises
-
-:::{.callout-note collapse=true}
-
-## Data setup
-
-:::{.panel-tabset}
-
-#### {{< fa server >}} PDC
-
-Source the initialization script {{< var pg_pgip_dir >}}/init.sh
-
-```bash
-source {{< var pg_pgip_dir >}}/init.sh
-```
-
-and run the exercise setup command:
-
-```{bash }
-#| label: setup-exercise
-#| echo: true
-#| eval: false
-pgip exercises setup {{< var exercises.variant_filtering.dir >}} -v
-```
-
-#### {{< fa laptop >}} Local
-
-Create an exercise directory called `{{< var
-exercises.variant_filtering.dir >}}` and `cd` to it:
-
-```{bash }
-#| label: create-exercises-directory-local
-#| echo: true
-#| eval: false
-mkdir -p {{< var exercises.variant_filtering.dir >}}
-cd {{< var exercises.variant_filtering.dir >}}
-```
-
-Retrieve the data `{{< var datasets.variant_filtering.url >}}` with
-`rsync`:
-
-```bash
-rsync -av {{< var datasets.variant_filtering.url >}} .
-```
-
-or `wget`:
-
-```bash
-wget --recursive --accept='*.*' \
-     --reject='*.gif','index*' \
-     --no-parent --no-directories \
-     --no-clobber \
-     --directory-prefix=. \
-     {{< var datasets.variant_filtering.url >}}
-```
-
-:::
-
-:::
 
 [Introduction to variant filtering](basic_filtering.qmd)
 
