@@ -101,7 +101,7 @@ jupyter-cache = ">=1.0.1,<2"
 rpgip = "R -e \"library(devtools); devtools::install_local('src/R/pgip', upgrade=F)\""
 radmixr = "R -e \"library(devtools); devtools::install_github('bodkan/admixr', upgrade=F)\""
 radmixtools2 = "R -e \"library(devtools); devtools::install_github('uqrmaie1/admixtools', upgrade=F)\""
-rsetup = { depends-on = ["rpgip", "radmixr", "radmixtools2"] }
+rsetup = { depends-on = ["rpgip", "radmixtools2"] }
 preview = "quarto preview"
 render = "quarto render"
 
