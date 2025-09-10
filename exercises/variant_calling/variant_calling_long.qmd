@@ -112,10 +112,10 @@ Retrieve the data with `rsync`. You can use the `--dry-run` option to
 see what is going to happen; just remove it when you are content:
 
 ```bash
-rsync --dry-run -av {{< var datasets.monkeyflower.dir >}}
+rsync --dry-run -av {{< var datasets.baseurl.url >}}/{{< meta exercise.data >}}
 # Remove the dry run option to actually retrieve data. The dot is
 # important!
-rsync -av  {{< var datasets.monkeyflower.dir >}}
+rsync -av {{< var datasets.baseurl.url >}}/{{< meta exercise.data >}}
 ```
 
 #### {{< fa laptop >}} Local

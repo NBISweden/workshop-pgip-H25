@@ -13,17 +13,3 @@ execute:
 ## About
 
 ## Exercises
-
-:::{.callout-note collapse=true}
-
-## Data setup
-
-:::{.panel-tabset}
-
-#### {{< fa server >}} PDC
-
-#### {{< fa laptop >}} Local
-
-:::
-
-:::

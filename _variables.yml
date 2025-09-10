@@ -91,6 +91,13 @@ exercises:
       r_dev: [admixtools2]
     treemix:
       tools: []
+  simulation:
+    HOWTO:
+      tools: [jupyterlab, jupyterquiz]
+    stdpopsim:
+      tools: [jupyterlab, jupyterquiz, stdpopsim]
+    coalescent:
+      tools: []
 
 # Tool listing
 tools:

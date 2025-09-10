@@ -8,13 +8,9 @@ version = "0.1.0"
 requires-pixi = ">=0.45"
 
 [tasks]
-qpv = "pixi r -e build preview"
-qrd = "pixi r -e build render"
-lint = "pixi r -e lint lint"
-lintall = "pixi r -e lint lintall"
 
 [dependencies]
-python = "3.11.*"
+python = "*"
 
 [feature.lint.dependencies]
 pre-commit = ">=4.2.0,<5"
@@ -68,10 +64,11 @@ mosdepth = ">=0.3.11,<0.4"
 msprime = ">=1.3.4,<2"
 multiqc = ">=1.30,<2"
 picard = ">=3.4.0,<4"
-pixy = ">=2.0.0.beta8,<3"
 plink = ">=1.90b7.7,<2"
 plink2 = ">=2.0.0a.6.9,<3"
+python = "3.12.*"
 qualimap = ">=2.3,<3"
+quarto = ">=1.7.33,<2"
 r = ">=4.3,<4.5"
 r-ape = ">=5.8_1,<6"
 r-blogdown = ">=1.21,<2"
@@ -91,6 +88,7 @@ r-kableextra = ">=1.4.0,<2"
 r-latex2exp = ">=0.9.6,<0.10"
 r-lobstr = ">=1.1.2,<2"
 r-magrittr = ">=2.0.3,<3"
+r-pak = ">=0.9.0,<0.10"
 r-patchwork = ">=1.3.1,<2"
 r-plotly = ">=4.11.0,<5"
 r-quadprog = ">=1.5_8,<2"
@@ -109,25 +107,31 @@ stdpopsim = ">=0.3.0,<0.4"
 tskit = ">=0.6.4,<0.7"
 vcflib = ">=1.0.12,<2"
 vcftools = ">=0.1.17,<0.2"
+zarr = "<3"
 
 [feature.build.tasks]
 rpgip = "R -e \"library(devtools); devtools::install_local('src/R/pgip', upgrade=F)\""
 radmixr = "R -e \"library(devtools); devtools::install_github('bodkan/admixr', upgrade=F)\""
 radmixtools2 = "R -e \"library(devtools); devtools::install_github('uqrmaie1/admixtools', upgrade=F)\""
 rsetup = { depends-on = ["rpgip", "radmixtools2"] }
-preview = "quarto preview"
-render = "quarto render"
 
-[feature.ci.dependencies]
-quarto = ">=1.7.31"
-python = ">=3.11.13,<3.12"
-r-pak = ">=0.9.0,<0.10"
+[feature.build.tasks.jlab]
+args = [{ "arg" = "port", default = "8899" }]
+cmd = "jupyter lab --port {{port}}"
+description = "Run Jupyter lab."
 
-[feature.ci.tasks]
-rpgip = "R -e \"library(pak); pak::pkg_install('src/R/pgip')\""
-radmixtools2 = "R -e \"library(pak); pak::pkg_install('uqrmaie1/admixtools')\""
-rsetup = { depends-on = ["rpgip", "radmixtools2"] }
+[feature.build.tasks.pv]
+args = [{ "arg" = "port", default = "8889" }]
+cmd = "quarto preview --port {{port}}"
 
+[feature.build.tasks.rd]
+cmd = "quarto render"
+
+[feature.build.tasks.prod]
+cmd = "quarto render --profile production"
+
+[feature.build.pypi-dependencies]
+tseda = { git = "https://github.com/percyfal/tseda.git", rev = "pgip" }
 
 [feature.bioconductor.dependencies]
 r-biocmanager = "*"
@@ -136,8 +140,12 @@ bioconductor-data-packages = "*"
 bioconductor-biomart = "*"
 r-ggplot2 = "*"
 
+[feature.pixy.dependencies]
+python = "3.11.*"
+pixy = "*"
+
 [environments]
 lint = { features = ["lint"], solve-group = "prod" }
 build = { features = ["build"], solve-group = "prod" }
-ci = { features = ["build", "ci"], solve-group = "prod" }
 bioconductor = { features = ["bioconductor"], solve-group = "prod" }
+pixy = ["pixy"]

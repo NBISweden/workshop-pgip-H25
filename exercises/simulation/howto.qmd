@@ -20,7 +20,7 @@ jupyter:
     name: python3
 ---
 
-# HOWTO
+# About
 
 This document describes the intended use of the
 [Jupyter](https://jupyter.org/) notebooks (we will also call them

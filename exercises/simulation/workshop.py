@@ -190,6 +190,11 @@ class Stdpopsim(Workbook):
         super().__init__()
 
 
+class StdpopsimII(Workbook):
+    def __init__(self):
+        super().__init__()
+
+
 class ARGInference(Workbook):
     def __init__(self):
         super().__init__()

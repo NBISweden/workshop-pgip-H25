@@ -66,6 +66,9 @@ website:
             contents:
               - exercises/simulation/index.qmd
               - exercises/simulation/howto.qmd
+              - exercises/simulation/stdpopsim_lab.qmd
+              - exercises/simulation/stdpopsim_lab_II.qmd
+              - exercises/simulation/simulation.qmd
               - exercises/ancestral_recombination_graphs/index.qmd
       - section: Code recipes
         contents:
