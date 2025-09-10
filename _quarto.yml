@@ -48,6 +48,7 @@ project:
     - exercises/demography/index.qmd
     - exercises/selection/index.qmd
     - exercises/simulation/index.qmd
+    - exercises/simulation/howto.qmd
     - exercises/ancestral_recombination_graphs/index.qmd
     # Recipes
     - recipes/index.qmd

@@ -1,0 +1,93 @@
+---
+title: HOWTO
+format:
+  nbis-course-html:
+    number-sections: false
+author: Per Unneberg
+execute:
+  eval: false
+jupyter:
+  jupytext:
+    formats: ipynb,qmd:quarto
+    text_representation:
+      extension: .qmd
+      format_name: quarto
+      format_version: '1.0'
+      jupytext_version: 1.17.3
+  kernelspec:
+    display_name: Python 3 (ipykernel)
+    language: python
+    name: python3
+---
+
+# HOWTO
+
+This document describes the intended use of the
+[Jupyter](https://jupyter.org/) notebooks (we will also call them
+*workbooks*) that we will be using during the exercises. Common to all
+workbooks is that you will need to initialize them by executing code
+before proceeding with the actual exercises. Cells are executed by
+selecting Run->"Run selected cell" or by pressing the triangular
+"play" button in the menubar. A shortcut for either of these is to
+press keys `<shift>`+`<return>`.
+
+## Setup
+
+Provided that you have setup / activated the proper virtual
+environment, all you need to do is get a copy of the notebook along
+with the `workshop` module file and the `quiz.yaml` file. In some
+cases you will also be provided with datasets to work on.
+
+## Workbook initialization
+
+Common to all workbooks is that you will need to initialize them by
+executing code before proceeding with the actual exercises. A code
+block like the following one will be present at the top of a workbook;
+make sure to execute it with `<shift>`+`<return>`. For the cell below,
+this should print "Your notebook is ready to go!".
+
+```{python}
+#| eval: true
+import workshop  # If running locally, make sure that
+workbook = workshop.HOWTO()
+display(workbook.setup)
+```
+
+## Notebook contents
+
+The notebooks consist of cells that are either descriptive text
+written in markdown format, or code blocks consisting of Python code.
+Importantly, the code blocks can usually be executed via the keyboard
+shortcut `<shift>`+`<return>`. The Python code blocks can be edited so you
+can try out different parameter settings, or even modify code. This
+will be necessary to complete some of the excercises that are
+scattered throughout the documents and formatted like this:
+
+<dl class="exercise">
+<dt>Exercise 1</dt>
+<dd>Read through this document before proceeding with the notebooks</dd>
+</dl>
+
+Some exercises also have associated questions to test your
+understanding. They consist of code blocks that have to be executed.
+
+There are two types of questions: multiple choice and value input. The
+options to multiple choice questions are displayed as buttons below
+the question:
+
+```{python}
+#| eval: true
+# Execute code block with <shift>+Return to display question; press on
+# one of the buttons to answer
+workbook.question("distro")
+```
+
+For value input questions, each question is accompanied by a box.
+Enter a numeric value in the box and press return to check the answer:
+
+```{python}
+#| eval: true
+# Execute this cell to see the question: enter a value in the box and
+# press return to check the answer
+workbook.question("day")
+```

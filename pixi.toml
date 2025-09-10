@@ -104,6 +104,8 @@ snakemake = ">=9.9.0,<10"
 tskit = ">=0.6.4,<0.7"
 vcflib = ">=1.0.12,<2"
 vcftools = ">=0.1.17,<0.2"
+jupyterquiz = ">=2.9.6.2,<3"
+jupyter_console = ">=6.6.3,<7"
 
 [feature.build.tasks]
 rpgip = "R -e \"library(devtools); devtools::install_local('src/R/pgip', upgrade=F)\""
