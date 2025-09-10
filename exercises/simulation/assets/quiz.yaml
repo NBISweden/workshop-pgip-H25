@@ -1,0 +1,25 @@
+# -*- yaml -*-
+HOWTO:
+  distro:
+    - question: >-
+        What is the name of the Python notebook engine?
+      type: many_choice
+      answers:
+        - answer: PythonBrowser
+          correct: false
+          feedback: >-
+            Hint: reread the text!
+        - answer: Jupyter
+          correct: true
+  day:
+    - question: What calendar day is it?
+      type: numeric
+      answers:
+        - type: value
+          correct: true
+          feedback: correct
+        - type: range
+          correct: false
+          range: [0, 31]
+          feedback: >-
+            Try again (hint: look at your calendar :-))
