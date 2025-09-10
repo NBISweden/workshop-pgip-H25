@@ -70,12 +70,15 @@ jobs:
         run: |
           pixi run -e ci rsetup
 
+      - name: "Set environment variables"
+        run: |
+          echo "TEXINPUTS=$TEXINPUTS:$GITHUB_WORKSPACE/src/latex" >> $GITHUB_ENV
+
       - name: Render project without publishing
         env:
           QUARTO_PRINT_STACK: true
         if: ${{ github.event_name == 'pull_request' }}
         run: |
-          echo "TEXINPUTS=$TEXINPUTS:$GITHUB_WORKSPACE/src/latex" >> $GITHUB_ENV
           quarto render .
           echo "QUARTO_OUTPUT=_site" >> $GITHUB_ENV
         shell: pixi run -e ci bash -e {0}
