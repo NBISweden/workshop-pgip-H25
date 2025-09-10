@@ -64,9 +64,9 @@ jobs:
           cache: true
           cache-write: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
 
-      - name: Add rpgip package
+      - name: Add rpgip package and admixtools2
         run: |
-          pixi run -e ci rpgip
+          pixi run -e ci rsetup
 
       - name: Render project without publishing
         env:
