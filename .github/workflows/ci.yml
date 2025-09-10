@@ -64,6 +64,11 @@ jobs:
           cache: true
           cache-write: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
 
+      - name: Install TeXLive
+        run: |
+          sudo apt-get update
+          sudo apt-get install texlive texlive-latex-extra
+
       - name: Add rpgip package and admixtools2
         env:
           GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
