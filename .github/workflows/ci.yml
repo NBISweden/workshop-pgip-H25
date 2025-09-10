@@ -65,6 +65,8 @@ jobs:
           cache-write: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
 
       - name: Add rpgip package and admixtools2
+        env:
+          GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
         run: |
           pixi run -e ci rsetup
 
