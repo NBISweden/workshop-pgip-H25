@@ -8,22 +8,18 @@ author:
   - Per Unneberg
 execute:
   cache: false
+exercise:
+  dir: simulation
+  venv: e-simulation
+  data: monkeyflower/simulation/
+  wget_opts: \-\-cut-dirs=5
 ---
 
 ## About
 
+Collection of exercises related to simulation.
+
 ## Exercises
 
-:::{.callout-note collapse=true}
-
-## Data setup
-
-:::{.panel-tabset}
-
-#### {{< fa server >}} PDC
-
-#### {{< fa laptop >}} Local
-
-:::
-
-:::
+[HOWTO](howto.qmd)
+: Start here: introduction to notebook setup.

@@ -1,0 +1,731 @@
+---
+title: Introduction to simulation with msprime
+author: Per Unneberg
+format:
+  nbis-course-html:
+    number-sections: false
+exercise:
+  dir: simulation
+  venv: e-simulation
+execute:
+  eval: true
+jupyter:
+  jupytext:
+    formats: ipynb,qmd:quarto
+    text_representation:
+      extension: .qmd
+      format_name: quarto
+      format_version: '1.0'
+      jupytext_version: 1.17.3
+  kernelspec:
+    display_name: Python 3 (ipykernel)
+    language: python
+    name: python3
+---
+
+## Setup
+
+To access material for this workbook please execute the notebook cell
+immediately below (e.g. use the shortcut `+`). The cell should print
+out "Your notebook is ready to go!"
+
+```{python}
+#| eval: true
+import sys
+import tskit
+import msprime
+import pandas as pd
+import numpy as np
+
+import workshop
+workbook = workshop.Simulation()
+display(workbook.setup)
+```
+
+## Using this workbook
+
+This workbook is intended to be used by executing each cell as you go
+along. Code cells (like those above) can be modified and re-executed
+to perform different behaviour or additional analysis. You can use
+this to complete various programming exercises, some of which have
+associated questions to test your understanding. Exercises are marked
+like this:
+
+<dl class="exercise">
+<dt>Exercise XXX</dt>
+<dd>
+Here is an exercise: normally there will be a code cell below this box for you to work in
+</dd>
+</dl>
+
+## Simulations with msprime
+
+In this exercise we will acquaint ourselves with the extremely
+efficient and versatile coalescent simulator
+[msprime](https://tskit.dev/msprime/docs/stable/intro.html). It ows
+much of its efficiency to the [tskit](https://tskit.dev/) (tree
+sequence kit) format to efficiently store and process genetic and
+phylogenetic data. Together with other software that use this file
+format, it makes up an ecosystem of high performant population genetic
+tools.
+
+We will start by reproducing simulations similar to those in the
+previous exercise, after which we move on to more advanced examples.
+Many of the examples here are taken from the [msprime
+quickstart](https://tskit.dev/msprime/docs/stable/quickstart.html) and
+documentation. The idea is to familiarise yourself with the basic
+commands and inform you on how to find more information about
+functions and attributes.
+
+## The tskit data model
+
+Before starting the simulations, a brief review of the tskit data
+model is in place. The tskit storage format basically consists of a
+set of tables that describe the relationships between samples (nodes
+and edges), together with tables that describe variation (mutations
+and sites). The figure below ([Baumdicker et
+al](https://academic.oup.com/genetics/article/220/3/iyab229/6460344?login=false),
+Figure 2)) shows a concise summary of the stored information.
+
+![The tskit data model](data/msprime-model.webp)
+
+Here, a *node* corresponds to a current (time=0.0) or *ancestral*
+(time > 0.0) genome (sequence), and is stored with a unique `ID` in
+the `Nodes` table. An *edge* describes the relationship between two
+nodes (*parent* and *child*) and corresponds to our branches from the
+previous exercise. For instance, the first edge connects the node 0
+(child) with its parent, node 4. Edges are stored in the `Edges` table
+and can be referenced by the nodes that they connect.
+
+A *site* is a *genomic position* with a known *ancestral state* that
+is referenced by a unique `ID` and stored in the `Sites` table. Note
+that usually non-variant genomic positions (e.g., genomic positions 1
+and 3) are not tracked in order to save space. A *mutation* is
+referenced by a unique `ID`, has a *derived* state, is placed on a
+site (corresponding to a genomic position) on a given edge (referenced
+by the *node* id) and stored in the `Mutations` table. Note that,
+somewhat confusingly perhaps, in the figure above, not all sites have
+associated mutations. All `ID`s are integers starting from 0.
+
+Together, the site and mutation tables describe the genetic variation
+among the samples. The genotype matrix and the tree topologies have
+been *derived* from the tables.
+
+Finally, in the example above, the sample variation is described by
+two different trees, one for (genome) position 0-10, another for
+position 10-20. This is a consequence of *recombination* having
+induced different genealogical histories to the left and right of the
+recombination breakpoint at position 10. In essence, the effect of
+recombination is to break sequences up into mosaics of non-recombining
+units, each with different (but closely related) genealogical
+histories, or trees. The genealogical history of a recombining
+chromosome can therefore be described as a *sequence of trees*, or
+*tree sequence*. Hence the name of `tskit`: tree sequence kit, a
+toolkit to process tree sequences.
+
+Consult the figure when you start working with the msprime output in
+the exercises that follow to help you understand the concepts as we
+introduce them.
+
+## Basic simulations
+
+Briefly, coalescent simulations in msprime are done by calling two
+functions in succession which are called `sim_ancestry` and
+`sim_mutations`. In other words, we first generate genealogies, upon
+which we then "throw" a number of mutations, where the probability
+that a mutation ends up on a given branch is proportional to the
+relative length of that branch with respect to the total tree branch
+length.
+
+### Getting to know the tree sequence object
+
+Let's first simulate the
+[ancestry](https://tskit.dev/msprime/docs/stable/ancestry.html#) of 5
+samples. The call to
+[msprime.sim_ancestry](https://tskit.dev/msprime/docs/stable/api.html#msprime.sim_ancestry)
+will return a so-called [tree sequence](https://tskit.dev/learn/),
+which we will call `ts`.
+
+```{python}
+ts = msprime.sim_ancestry(samples=5, ploidy=1, random_seed=123456)
+```
+
+By default, `msprime` assumes a ploidy of 2, which is why we have to
+manually pass the `ploidy` parameter to emulate haploid simulations.
+In addition, by setting the `random_seed`, we make sure simulation
+output can be reproduced. Let's print the output object:
+
+```{python}
+ts
+```
+
+The `ts` object is an instance of the [Tree
+Sequence](https://tskit.dev/tskit/docs/latest/python-api.html#the-treesequence-class)
+class (you can also click on the link in the representation to access
+the help pages). If this sounds unfamiliar, think of a *class* as a
+definition ("recipe") of a *data structure* that holds data, together
+with *attributes* that access the data and *functions* that process
+the data. A class is an abstract definition, so to make use of it we
+need to be populate it with data (*instantiation*). An *object* is
+therefore an actual concrete realization (*instance*) of a given
+class, like the `ts` object above. Looking closer at `ts` will
+hopefully make things clearer.
+
+Briefly, `ts` consists of metadata, such as the `Sequence Length` or
+`Time Units`, and a number of tables, such as the `Edges` (equivalent
+to tree `branches`), `Nodes`, and `Mutations`. The metadata and table
+entries can be accessed with identically-named properties or functions
+on `ts` (in lowercase and where spaces have been replaced by
+underscores), e.g.,
+
+```{python}
+print(ts.sequence_length)
+print(ts.time_units)
+for ind in ts.individuals():
+    print(ind)
+```
+
+So, an individual carries an `id`, a unique number that identifies the
+individual. This is a common feature of the `tskit` data structures in
+that all objects carry a unique numeric identifier `id` that starts
+from `0`. Furthermore, there are references to an individual's
+`parents`, which is a list of integers corresponding to parent ids,
+and similarly for `nodes`, the nodes of the tree. Finally, there is
+additional information such as a `metadata` slot.
+
+The `ts.individuals()` function accesses individuals from the
+`Individuals` table, one by one. As we here have simulated a small
+genealogy, you can also print the table directly (but don't do it for
+large simulations!):
+
+```{python}
+ts.tables.individuals
+```
+
+In addition to the properties and functions that map to the metadata
+and table names, there are a number of convenience functions that
+provide shortcut access to quantities of interest, e.g.,
+`ts.num_individuals` and `ts.num_populations`:
+
+```{python}
+#| scrolled: true
+ts.num_individuals, ts.num_populations
+```
+
+You can find all properties and functions defined on `ts` by using the
+Python builtin `dir`:
+
+```{python}
+#| eval: false
+dir(ts)
+```
+
+There (of course) exists functionality to easily plot a genealogy. The
+`ts` object has several `draw_` functions, on of which produces svg
+output:
+
+```{python}
+ts.draw_svg()
+```
+
+Apart from showing the genealogy, there is a genome coordinate system,
+showing the simulations assume a sequence of length 1 nucleotide by default.
+
+### Adding mutations
+
+Now that we have a genealogy, we add mutations with a `sim_mutations`
+function,
+[msprime.sim_mutations](https://tskit.dev/msprime/docs/stable/api.html#msprime.sim_mutations):
+
+```{python}
+mutated_ts = msprime.sim_mutations(ts, rate=0.5, random_seed=54321)
+```
+
+Here, we specify the mutation rate via the `rate` parameter, which
+according to the docs is "The rate of mutation per unit of sequence
+length per unit time" (try varying this parameter and see how it
+affects the illustrated genealogy below):
+
+```{python}
+mutated_ts.draw_svg(size=(500, 300))
+```
+
+Here we increase the size of the plot to see the details better. To
+begin with, a mutation is indicated with a red `x`. In addition, the
+mutations are numbered, such that the ordering along a genetic
+sequence is explicit. Finally, at genome position 0 you see
+<em>&or;</em> marks that indicate the position of a mutation.
+
+The latter point can also be illustrated by printing all the
+mutations, as follows (note the information in `site`):
+
+```{python}
+#| scrolled: false
+for mut in mutated_ts.mutations():
+    print(mut)
+```
+
+As before, there are shorthand functions and properties to access
+quantities of interest, e.g.,
+
+```{python}
+workbook.question("mutation_site")
+```
+
+```{python}
+mutated_ts.tables.sites
+```
+
+### Summary statistics
+
+There is support for calculating a variety of summary statistics on
+tree sequences. For instance, to calculate the diversity of
+`mutated_ts` you can run
+
+```{python}
+mutated_ts.diversity()
+```
+
+## More realistic simulations
+
+So far we have basically demonstrated how our homemade simulations
+look in msprime. However, the msprime versions of
+[sim_ancestry](https://tskit.dev/msprime/docs/stable/api.html#msprime.sim_ancestry)
+and
+[sim_mutations](https://tskit.dev/msprime/docs/stable/api.html#msprime.sim_mutations)
+provide many more options than our functions, and simulations can
+accomodate much more complex and realistic scenarios, such as
+*recombination*, *migration*, *demographic changes*, in some cases
+*selection*, and more. Briefly skim the API documentation by following
+the links above to get an overview of what these functions can do.
+
+### Diploid simulations
+
+Until now, we have focused on haploid individuals. In order to
+introduce recombination, we shift to diploids, which is in fact the
+[default setting in
+msprime](https://tskit.dev/msprime/docs/stable/ancestry.html#ploidy).
+Begin by simulating a small tree consisting of two samples.
+
+```{python}
+ts = msprime.sim_ancestry(samples=2, random_seed=23423)
+ts.draw_svg(size=(500, 300))
+```
+
+As the tree shows, we have four terminal nodes (leaves) with ids 0-3,
+but we only specified two samples. Why? Recall that a node corresponds
+to a chromosome. Since we are simulating diploid individuals, there
+are two chromosome per individual, i.e., two nodes per individual. The
+`sim_ancestry` documentation states that samples indeed correspond to
+individuals, and consequently the number of terminal nodes will be the
+sample size times the ploidy.
+
+The relationship between nodes and individuals can at first be
+confusing. The tskit documentation section [Nodes, genomes or
+individuals?](https://tskit.dev/tskit/docs/latest/glossary.html#nodes-genomes-or-individuals)
+briefly discusses the distinction between these entities.
+
+```{python}
+workbook.question("individual_node")
+```
+
+### Sequence length
+
+By default sequences in `msprime` correspond to nucleotides. Let's
+specify a 10kb sequence with the parameter `sequence_length`. Note how
+the genome coordinates change in the resulting plot. Note also that by
+using the same random seed as above, the genealogy remains unchanged.
+
+```{python}
+ts = msprime.sim_ancestry(samples=2,
+                          sequence_length=10_000,
+                          random_seed=23423)
+ts.draw_svg(size=(500, 300))
+```
+
+### Recombination
+
+Sofar the tree sequence consists of one tree, which corresponds to a
+non-recombining sequence. We can set the `recombination_rate`
+parameter to add recombination. Note how we now have three trees, one
+for each non-recombining sequence.
+
+```{python}
+ts = msprime.sim_ancestry(samples=2,
+                          sequence_length=10_000,
+                          recombination_rate=1e-5, # set a high rate
+                          random_seed=12353
+                         )
+ts.draw_svg(size=(600, 300))
+```
+
+```{python}
+workbook.question("recombination")
+```
+
+### Population size
+
+Sofar, we have not mentioned population size in our simulations, but
+this is something we would like to do since this parameter affects the
+dynamics of the system. We can set the population size with the
+`population_size` option, which corresponds to the *effective
+population size* $N_e$. Note that we decrease the sequence length and
+recombination rate to speed up simulation:
+
+```{python}
+ts_small = msprime.sim_ancestry(
+    samples=2,
+    sequence_length=1_000,
+    recombination_rate=1e-8,
+    population_size=20_000, # similar to human Ne
+    random_seed=12123
+)
+ts_small.draw_svg()
+```
+
+<dl class="exercise"><dt>Exercise 2</dt> <dd>To demonstrate the speed
+    of msprime, simulate a large tree sequence of 20,000 diploid
+    individuals with 1Mbp genomes and a recombination rate of 1e-8.
+    Use the random seed 42, save the output to a variable
+    <tt>large_ts</tt> and print the table.
+
+<div class="alert alert-block alert-info"><b>Tip:</b> Make sure you
+    DON'T display the SVG trees! Each tree is huge, and there are a
+    lot of them.</div> </dd> </dl>
+
+```{python}
+# Exercise 2: Set `large_ts` to a new large tree sequence, generated
+# using msprime.sim_ancestry() with specific parameters
+# (random_seed=42, etc.), then output the tree sequence summary table
+# to screen.
+```
+
+```{python}
+workbook.question("large_ancestry")
+```
+
+### Adding mutations
+
+Now we add mutations to the simulated ancestry. Note that there are
+more mutations than sites.
+
+```{python}
+mts_small = msprime.sim_mutations(
+    ts_small, # Use the small tree so we can visualize mutations
+    rate=1e-7, # set a high mutation rate
+    random_seed=22
+)
+```
+
+```{python}
+mts_small.draw_svg(size=(600, 300))
+```
+
+<dl class="exercise"><dt>Exercise</dt>
+
+Print out the mutations table of the <code>mts_small</code> object.
+
+</dd>
+</dl>
+
+```{python}
+workbook.question("mutation_id")
+```
+
+We'll now add mutations to the large ancestry simulated previously.
+Recall that we have a sample size of 20,000, corresponding to 40,000
+chromosomes. A 1Mbp sequence may contain in the order of 10,000
+variant positions, which in a [Variant Call
+Format](https://en.wikipedia.org/wiki/Variant_Call_Format) (vcf) file
+would constitute a 40,000 by 10,000 matrix, requiring ca 700 Mb
+(uncompressed) storage. The resulting tree sequence, however, only
+requires 8Mb.
+
+<dl class="exercise"><dt>Exercise 4</dt>
+    <dd>
+
+Add mutations to the `large_ts` tree sequence simulated previously.
+    Use a random seed 276 and mutation rate 1e-8. </dd> </dl>
+
+```{python}
+# Exercise 4: add mutations to large_ts with random seed 276 and
+# mutation rate 1e-8
+%time # Time the command
+```
+
+```{python}
+#| scrolled: true
+workbook.question("large_mutation")
+```
+
+Note that it only takes a second or two two generate this reasonably
+large data set which fits handily on a laptop. With the efficient
+storage that the [tskit](https://tskit.dev) library provide, together
+with efficient simulators like `msprime`, it is now possible to
+simulate data for realistically large populations and genome sizes
+
+## Simulating monkeyflower demography
+
+We end by demonstrating one of the practical uses of simulation (apart
+from the pedagogical utility). We will in upcoming exercises work on
+[monkeyflowers](https://nbisweden.github.io/workshop-pgip/exercises/datasets/monkeyflowers.html)
+to describe observed patterns of variation and diversity. The goal is
+to build a model that explains how the observed variation has been
+shaped by a combination of demographic history, selection, migration,
+and other processes. Whatever the methodology may be, the unifying
+principle is that trees are estimated together with a mutation process
+that explains the variation. This is true even if tree estimation is
+not always explicitly mentioned, since all summary statistics can be
+[rephrased in the context of
+trees](https://doi.org/10.1534/genetics.120.303253).
+
+In the study [Widespread selection and gene flow shape the genomic
+landscape during a radiation of
+monkeyflowers](https://journals.plos.org/plosbiology/article?id=10.1371/journal.pbio.3000391),
+the authors use SLiM to simulate a parental population of size
+N=10,000, that after 10N generations split into 2 daughter
+populations, each of size N, that continued evolving 10N generations.
+They simulated a 21Mbp chromosome with a recombination rate of $1.5
+\times 10^{-8}$ and a mutation rate of $10^{-8}$, both per base pair
+and per generation.
+
+### Define the demographic model
+
+We will make a slightly smaller simulation here in the case of a
+neutrally evolving population; coalescent simulations cannot be used
+to model but the simplest models of selections (e.g., sweeps). Since
+we will look at a 3Mbp, let's simulate a region of this size. In order
+to model the demography, we need to make use of the
+[msprime.Demography](https://tskit.dev/msprime/docs/stable/api.html#msprime.Demography)
+class. The parameter and function names should be self-explanatory in
+the example below.
+
+```{python}
+N = 10_000
+# Instantiate an empty msprime.Demography object
+demography = msprime.Demography()
+# Add populations with reasonable names
+demography.add_population(name="ancestral", initial_size=N)
+demography.add_population(name="red", initial_size=N)
+demography.add_population(name="yellow", initial_size=N)
+# Add time of population split where we define derived and ancestral populations
+demography.add_population_split(time=10*N, derived=["red", "yellow"],
+                                ancestral="ancestral")
+```
+
+We can print information about the demography with the `demography.debug` function:
+
+```{python}
+# Print information about the demography
+demography.debug()
+```
+
+Briefly, the printed information shows we have two *epochs*, that are
+printed in reverse chronological order (most recent epoch first). The
+first epoch (index 0) goes from current time (0) to 1e+05 generations
+ago, the second from 1e+05 generations ago back in time towards
+infinity (when all lineages have coalesced). At generation 1e+05 (time
+ago) there was a population split from the ancestral population to the
+red and yellow populations.
+
+An alternative, and perhaps more instructive way to summarize the
+demography, is to use the nifty
+[demesdraw](https://grahamgower.github.io/demesdraw/latest/quickstart.html)
+to plot it:
+
+```{python}
+import demesdraw
+import matplotlib.pyplot as plt
+
+graph = msprime.Demography.to_demes(demography)
+fig, ax = plt.subplots()
+demesdraw.tubes(graph, ax=ax, seed=1)
+plt.show()
+```
+
+### Simulate the ancestry and add mutations
+
+Now that we have defined the demographic model, we can simulate the
+ancestry on top of this model by passing the `demography` option. In
+addition, we specify the number of samples *by population* by passing
+a Python
+[dictionary](https://docs.python.org/3/tutorial/datastructures.html#dictionaries);
+briefly, this is a "key":value mapping enclosed in curly brackets.
+
+```{python}
+#| scrolled: true
+ts = msprime.sim_ancestry(
+    samples={"red": 5, "yellow": 5},
+    demography=demography, random_seed=12,
+    sequence_length=3_000_000,
+    recombination_rate=1.5e-8,
+)
+ts
+```
+
+Finally, we add mutations as before:
+
+```{python}
+mut_ts = msprime.sim_mutations(ts, rate=1e-8, random_seed=12)
+```
+
+### Map individuals to populations
+
+Before we start calculating summary statistics, we need to define
+so-called sample sets which group samples in populations. Intuitively,
+on may want to assign individual ids to sample sets, but if you look
+at the `populations` and `individuals` tables, you will note that
+there is no direct link between individuals and populations. The
+mapping we really need is from *nodes* to populations. We look
+directly at the nodes table, recalling that ancestral nodes map to
+individuals with id -1:
+
+```{python}
+# Subset the nodes table (6746 rows!) to leaf nodes
+ts.tables.nodes[ts.tables.nodes.individual > -1]
+```
+
+As one would expect, node ids 0-9 map to population id=1 (red),
+whereas node ids 10-19 map to population id=2 (yellow). We use this
+information to define the sample sets (basically, we assign individual
+ids to different groupings). Although we could do it by listing all
+the node ids, there is a more convenient way of defining the sample
+sets:
+
+```{python}
+sample_sets = [mut_ts.samples(population=1), mut_ts.samples(population=2)]
+sample_sets
+```
+
+The `sample_sets` variable is a list of lists, where each sublist is a
+list of node ids. Note that although this particular grouping is based
+on population labels, we could partition the nodes in any way we want,
+e.g., by geographic coordinates if they are available, or other
+information that hints at other ways of grouping samples.
+
+### Calculate and plot summary statistics
+
+We end by calculating and plotting some summary statistics for the
+data, both for all samples, and grouped by population, which is easily
+done by passing the `sample_sets` option. Below we show examples for
+diversity ($\pi$), divergence ($d_{XY}$), and $F_{ST}$. For a complete
+list of statistics, see
+<https://tskit.dev/tskit/docs/stable/stats.html#statistics>.
+
+```{python}
+msprime_results = {}
+msprime_results["pi"] = mut_ts.diversity()
+msprime_results["pi0"] = mut_ts.diversity(sample_sets=sample_sets[0])
+msprime_results["pi1"] = mut_ts.diversity(sample_sets=sample_sets[1])
+msprime_results["div"] = mut_ts.divergence(sample_sets=sample_sets)
+msprime_results["fst"] = mut_ts.Fst(sample_sets=sample_sets)
+msprime_results
+```
+
+We can also calculated windowed statistics and plot them along the
+simulated chromosome. Here, we show an example for Fst, where we
+define 100 windows, equivalent to a window size of 30kbp.
+
+```{python}
+num_windows=100
+window_size = mut_ts.sequence_length / num_windows
+# Generate window coordinates from 0 to sequence length
+windows=np.linspace(0, mut_ts.sequence_length, num_windows + 1)
+fst = mut_ts.Fst(sample_sets=sample_sets, windows=windows)
+# Translate window index to genome position
+x = [window_size*x for x in range(len(windows) - 1)]
+plt.plot(x, fst)
+plt.xlabel("Genome position (bp)")
+plt.ylabel("Fst")
+plt.show()
+```
+
+Do these numbers make sense? Let's compare the results with the
+simulations performed by the authors who, as you may recall, used SLiM
+for their simulations. You can download the windowed statistics from
+the original publication like so:
+
+```{python}
+url = "https://raw.githubusercontent.com/mufernando/mimulus_sims/master/data/raw_stats.csv"
+if "pyodide" in sys.modules:
+    from pyodide.http import open_url
+    raw_stats = open_url(url)
+    data = pd.read_csv(raw_stats)
+else:
+    data = pd.read_csv(url)
+```
+
+Each row corresponds to a simulation time point for a given parameter
+setting. We first subset the data to look only at the results from the
+neutral simulation:
+
+```{python}
+#| scrolled: true
+df = data[data.label.str.startswith("Neutral")]
+df
+```
+
+Window statistics are in columns labelled statistic_win_number, where
+the statistics are diversity $\pi$ ("pi0" for population 0, "pi1" for
+population 1), divergence ("div"), and fst ("fst"). The "T" column
+corresponds to time points *indices*; the actual times are expressed
+in terms of population size N as follows (one has to look at the
+jupyter notebook
+[analysis.ipynb](https://github.com/mufernando/mimulus_sims/blob/master/analysis.ipynb)
+in the source code directory that accompanies the publication to see
+this):
+
+```{python}
+T=np.concatenate([np.arange(0,2.2,step=0.4), np.arange(4,11,step=2)])
+T = [float("%.1f"%t) for t in T]
+T
+```
+
+We will only concern ourselves with the last timepoint here (index 9),
+which corresponds to the current time in terms of the simulation:
+
+```{python}
+results = {}
+for stat in ["pi0", "pi1", "div", "fst"]:
+    x = np.mean(df[df["T"] == 9][df.columns[df.columns.str.startswith(stat)]])
+    results[stat] = x
+results, msprime_results
+```
+
+We see that the results are mostly similar to those that we obtained,
+which is reassuring, as msprime and SLiM should not differ under the
+neutral model. However, the exception is $F_{ST}$. This has to do with
+how msprime and SLiM calculate $F_{ST}$. msprime uses the expression
+$F_{ST} = 1 - 2(\pi_0 + \pi_1)/(\pi_0 + 2d_{XY} + \pi_1)$, whereas
+SLiM (seems to) uses the expression $F_{ST} = 1 - \frac{(\pi_0 +
+\pi_1)/2}{d_{XY}}$. Let's check these expressions below.
+
+For msprime we have:
+
+```{python}
+1 - 2 * (msprime_results["pi0"] + msprime_results["pi1"]) /
+(msprime_results["pi0"] + msprime_results["pi1"] +
+ 2*msprime_results["div"])
+```
+
+For SLiM:
+
+```{python}
+1 - ((results["pi0"] + results["pi1"]) / 2) / results["div"]
+```
+
+Comparing these results with those above shows that the discrepancy in
+$F_{ST}$ can be explained by differences in how it is calculated. This
+echoes what Alistair Miles, the author of
+[scikit-allel](https://scikit-allel.readthedocs.io/en/stable/), has to
+[say about
+$F_{ST}$](https://alimanfoo.github.io/2015/09/21/estimating-fst.html):
+
+> FST is a statistic which seems simple at first yet quickly becomes
+> very technical when you start reading the literature
+
+Amen.
+
+We will look into more comparisons to real Monkeyflower data in an
+upcoming exercise, but hopefully this has given you an idea of what
+simulations can be used for in an experiment!

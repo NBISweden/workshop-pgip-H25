@@ -23,3 +23,303 @@ HOWTO:
           range: [0, 31]
           feedback: >-
             Try again (hint: look at your calendar :-))
+
+Stdpopsim:
+  msprime_demography:
+    - question: |
+        What is the growth rate of the Utah population at the time of
+        sampling (time 0)?
+      type: numeric
+      answers:
+        - value: 0.004
+          correct: true
+    - question: |
+        What is the migration rate from the CHB to CEU population at
+        the time of sampling (time 0)?
+      type: numeric
+      answers:
+        - value: 1.9e-05
+          correct: true
+    - question: |
+        What is the migration rate from the YRI to CEU population at
+        time=1000 generations ago?
+      type: numeric
+      answers:
+        - value: 0.00025
+          correct: true
+    - question: |
+        What is the effect of the population parameter change at
+        time=848 generations ago?
+      type: many_choice
+      answers:
+        - answer: the CEU population growth rate is set to 0
+          correct: true
+        - answer: the CHB population growth rate is set to 0
+          correct: false
+        - answer: the YRI population growth rate is set to 0
+          correct: false
+  num_sites:
+    - question: |
+        How many segregating sites have been simulated?
+      type: numeric
+      answers:
+        - value: 34482
+          correct: true
+  divergence:
+    - question: |
+        Which of the following is true?
+      type: many_choice
+      answers:
+        - answer: |
+            The divergence between the European and the African
+            population is higher than the divergence between the Out
+            of Africa populations
+          correct: true
+        - answer: |
+            The divergence between the European and the African
+            population is lower than the divergence between the Out
+            of Africa populations
+          correct: false
+        - answer: |
+            The divergence between the Out of Africa populations is
+            higher than the divergence between the European and the
+            African population
+          correct: false
+  gnn:
+    - question: |
+        What are the GNN proportions of sample 3?
+      type: many_choice
+      answers:
+        - answer: "100% CEU (orange)"
+          correct: false
+        - answer: "100% YRI (blue)"
+          correct: false
+        - answer: "50% CEU (orange), 50% YRI (blue)"
+          correct: true
+          feedback: |
+            Correct! The genealogical nearest neighbors correspond to
+            the *sample* nodes 8 and 19 descending from the nearest
+            parent node, node 25356. Node 16041 is an internal node
+            and does not contribute to the GNN.
+  gnn_summary:
+    - question: |
+        What is the summary of GNN proportions for YRI (blue) and CEU
+        (orange)?
+      type: many_choice
+      answers:
+        - answer: |
+            CEU has 100% YRI, 0% CEU, 0% CHB. YRI has 25% YRI, 75% CEU,
+            0% CHB.
+          correct: true
+          feedback: |
+            Correct! CEU only has one sample (19) which has one YRI
+            neigbour (node 8). YRI node 8 has 100% CEU GNN (node 19)
+            and node 3 has 50/50/0 YRI/CEU/CHB; averaging these
+            numbers gives the 25/75/0 proportion. Note that this means
+            the GNN metric is asymmetrical. In this particular case,
+            CEU has 100% YRI neighbours, whereas YRI has a mix of CEU
+            and YRI.
+        - answer: |
+            CEU has 50% YRI, 50% CEU, 0% CHB. YRI has 50% YRI, 50%
+            CEU, 0% CHB.
+          correct: false
+
+StdpopsimII:
+  msprime_demography:
+    - question: |
+        At what most recent time point is there a mass migration event
+        between the western and central populations?
+      type: numeric
+      answers:
+        - value: 4003
+          correct: true
+    - question: |
+        At what most recent time point is there a mass migration event
+        between the western and central populations?
+      type: numeric
+      answers:
+        - value: 6202
+          correct: true
+  neutral_locus:
+    - question: |
+        The populations roughly form three groups. What is true
+        regarding the branch lengths of bonobo (orange) compared to
+        the other populations?
+      type: many_choice
+      answers:
+        - answer: |
+            They are roughly equal.
+          correct: true
+          feedback: |
+            Correct! Since the locus is evolving neutrally in all
+            populations, all trees should have similar coalescence
+            patterns, reflected by similar branch lengths. There may
+            of course be large variation, but here there is no
+            discernible difference.
+        - answer: |
+            The branch lengths of western and central populations are
+            longer
+          correct: false
+        - answer: |
+            The branch lengths of bonobo are longer
+          correct: false
+  sweep_locus:
+    - question: |
+        At the sweep locus, what is true regarding the branch lengths
+        of bonobo (orange) compared to the other populations?
+      type: many_choice
+      answers:
+        - answer: |
+            They are smaller.
+          correct: true
+          feedback: |
+            Correct! The selective sweep in bonobo means a mutation
+            has spread quickly in the population, leaving the
+            characteristic pattern of rapid coalescence manifested as
+            shorter branch lengths.
+        - answer: |
+            The branch lengths are roughly equal
+          correct: false
+        - answer: |
+            The branch lengths of bonobo are longer
+          correct: false
+
+Simulation:
+  tskit_tables:
+    - question: >-
+        Browse through the output of dir(ts) and see if you can find
+        an attribute that corresponds to node times. What is the age
+        of the most recent common ancestor (MRCA)? Answer with three
+        decimal places.
+      type: numeric
+      answers:
+        - type: value
+          correct: true
+          value: 3.835
+          feedback: >-
+            Correct! You can get the value by typing
+            max(ts.nodes_time) or ts.max_root_time.
+        - type: default
+          feedback: >-
+            Try again! Hint: look for attributes that end with _time.
+  mutation_site:
+    - question: >-
+        What is the ancestral state of the mutation with id=0?
+      type: many_choice
+      answers:
+        - answer: "A"
+          correct: false
+          feedback: >-
+            Hint: print the sites table and look for the site that
+            corresponds to the mutation.
+        - answer: "G"
+          correct: false
+          feedback: >-
+            Hint: print the sites table and look for the site that
+            corresponds to the mutation.
+        - answer: "T"
+          correct: false
+          feedback: >-
+            Hint: print the sites table and look for the site that
+            corresponds to the mutation.
+        - answer: "C"
+          correct: true
+          feedback: >-
+            Correct! Mutation 0 is placed on the site with id=0, so to
+            get the ancestral state, print the sites table
+            (mutated_ts.tables.sites). In fact, all mutations are
+            placed on site 0, for the simple reason that we still
+            haven't told msprime anything about the length of the
+            simulated sequence.
+  individual_node:
+    - question: >-
+        To which individual does node 3 belong?
+      type: numeric
+      answers:
+        - type: value
+          correct: true
+          value: 1
+          feedback: >-
+            Correct! Node 3 (and 2) belong to individual 1.
+        - type: default
+          feedback: >-
+            Try again! Hint: print the nodes table.
+    - question: >-
+        To which individual does node 4 belong?
+      type: numeric
+      answers:
+        - type: value
+          correct: true
+          value: -1
+          feedback: >-
+            Correct! Ancestral nodes belong to individuals with id -1,
+            meaning they are not part of the sampled individuals.
+        - type: default
+          feedback: >-
+            Try again! Hint: print the nodes table.
+  recombination:
+    - question: >-
+        At what position has the second recombination taken place?
+      type: numeric
+      answers:
+        - type: value
+          correct: true
+          value: 9138
+          feedback: >-
+            Correct!
+        - type: default
+          feedback: >-
+            Try again! Hint: look at the coordinates. You could also
+            list the tree sequence breakpoints with
+            <tt>list(ts.breakpoints())</tt>
+  large_ancestry:
+    - question: >-
+        How many trees did the simulation produce?
+      type: numeric
+      answers:
+        - type: value
+          correct: true
+          value: 8333
+          feedback: >-
+            Correct!
+        - type: default
+          feedback: >-
+            Try again! Hint: don't forget to set the effective
+            population size to 20,000!
+  mutation_id:
+    - question: >-
+        Locate the ID of the site with two (recurrent) mutations.
+      type: numeric
+      answers:
+        - type: value
+          correct: true
+          value: 3
+          feedback: Correct!
+        - type:
+          feedback: >-
+            Try again! Hint: you can access the tables via the
+            <tt>mts_small.tables</tt> property.
+  large_mutation:
+    - question: >-
+        How many variable sites are in the tree sequence?
+      type: numeric
+      answers:
+        - type: value
+          correct: true
+          value: 8805
+          feedback: Correct!
+        - type: default
+          feedback: >-
+            Try again!
+    - question: >-
+        What is the size in megabytes (MiB) of the tree sequence file?
+      type: numeric
+      answers:
+        - type: value
+          correct: true
+          value: 7.6
+          feedback: Correct!
+        - type: default
+          feedback: >-
+            Try again! Hint: print the ts object and look for Total
+            Size.

@@ -1225,6 +1225,17 @@ csvtk filter2 --tabs gff/annotation.gff --filter ' $3 == "CDS" ' |\
 head -n 3 bed/CDS.bed
 ```
 
+```{r }
+#| label: set-pixy-env
+#| echo: false
+#| eval: true
+library(here)
+pixy_path <- here(".pixi", "envs", "pixy", "bin")
+Sys.setenv(
+    PATH = paste(Sys.getenv("PATH"), pixy_path, sep=":")
+)
+```
+
 ```{bash }
 #| label: pixy-calculate-by-annotation
 #| echo: true
