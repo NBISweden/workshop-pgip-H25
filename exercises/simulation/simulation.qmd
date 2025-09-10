@@ -703,9 +703,9 @@ SLiM (seems to) uses the expression $F_{ST} = 1 - \frac{(\pi_0 +
 For msprime we have:
 
 ```{python}
-1 - 2 * (msprime_results["pi0"] + msprime_results["pi1"]) /
-(msprime_results["pi0"] + msprime_results["pi1"] +
- 2*msprime_results["div"])
+1 - 2 * (msprime_results["pi0"] + msprime_results["pi1"]) / \
+    (msprime_results["pi0"] + msprime_results["pi1"] + \
+     2*msprime_results["div"])
 ```
 
 For SLiM:
