@@ -96,6 +96,7 @@ admixtools = ">=8.0.2,<9"
 r-plotly = ">=4.11.0,<5"
 conda = ">=25.7.0,<26"
 jupyter-cache = ">=1.0.1,<2"
+jupytext = ">=1.17.3,<2"
 
 [feature.build.tasks]
 rpgip = "R -e \"library(devtools); devtools::install_local('src/R/pgip', upgrade=F)\""
@@ -108,6 +109,13 @@ render = "quarto render"
 [feature.ci.dependencies]
 quarto = ">=1.7.31"
 python = ">=3.11.13,<3.12"
+r-pak = ">=0.9.0,<0.10"
+
+[feature.ci.tasks]
+rpgip = "R -e \"library(pak); pak::pkg_install('src/R/pgip')\""
+radmixtools2 = "R -e \"library(pak); pak::pkg_install('uqrmaie1/admixtools')\""
+rsetup = { depends-on = ["rpgip", "radmixtools2"] }
+
 
 [feature.bioconductor.dependencies]
 r-biocmanager = "*"
