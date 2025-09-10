@@ -111,6 +111,7 @@ vcftools = ">=0.1.17,<0.2"
 zarr = "<3"
 pixy = ">=2.0.0.beta12,<3"
 xyzservices = "==2024.6.0"
+python = "==3.11.9"
 
 [feature.build.tasks]
 rpgip = "R -e \"library(devtools); devtools::install_local('src/R/pgip', upgrade=F)\""
