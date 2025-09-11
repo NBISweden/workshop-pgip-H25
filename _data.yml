@@ -104,7 +104,6 @@ __reference__:
 
 __sampleinfo__:
   - monkeyflower/sampleinfo.csv
-  - monkeyflower/sampleinfo.csv
 
 __variants__:
   - vcf/all.allsites.vcf.gz: monkeyflower/tiny/gatk-genotype-gvcf-bqsr/all.allsites.vcf.gz
@@ -215,6 +214,7 @@ slides/variant_calling:
     - vcf/allsites.vcf.gz: monkeyflower/tiny/gatk-genotype-gvcf-bqsr/redyellow.allsites.vcf.gz
     - vcf/allsites.vcf.gz.tbi: monkeyflower/tiny/gatk-genotype-gvcf-bqsr/redyellow.allsites.vcf.gz.tbi
     - __reference__
+    - workflow/Snakefile: monkeyflower/snakemake/variantcalling.smk
 
 slides/variant_filtering:
   content:

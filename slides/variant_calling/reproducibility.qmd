@@ -1,0 +1,307 @@
+---
+title: Variant calling workflows
+subtitle: Making your work reproducible
+description: >-
+  Introduction to variant calling and genotyping using workflow
+  managers.
+author:
+  Per Unneberg
+format:
+  nbis-quarto-revealjs:
+    toc: false
+    footer: Variant calling workflows
+    smaller: false
+    mermaid:
+      theme: forest
+---
+
+## Setup  {.hidden .unnumbered .unlisted visibility="hidden"}
+
+{{< include /slides/_knitr.qmd >}}
+
+{{< include /slides/_rlibs.qmd >}}
+
+## Motivation
+
+### Manual variant calling
+
+::: {.fragment}
+
+```bash
+bwa index ref/M_aurantiacus_v1.fasta
+```
+
+:::
+
+:::{.fragment}
+
+```bash
+samtools faidx ref/M_aurantiacus_v1.fasta
+```
+
+:::
+
+:::{.fragment}
+
+```bash
+bwa mem -R "@RG\tID:SRR9309790\tSM:PUN-Y-INJ\tPL:ILLUMINA" -t 4 -M \
+    ref/M_aurantiacus_v1.fasta \
+    fastq/PUN-Y-INJ_R1.fastq.gz \
+    fastq/PUN-Y-INJ_R2.fastq.gz | \
+    samtools sort - | \
+    samtools view --with-header --output bam/PUN-Y-INJ.bam
+```
+
+:::
+
+:::{.fragment}
+
+This quickly becomes complex - not to mention tedious and boring. With
+larger sample sizes it becomes difficult to keep track which commands
+need updating should input data change.
+
+:::
+
+:::{.fragment .largest}
+
+### Solution
+
+Workflow managers!
+
+:::
+
+## Of inputs and outputs
+
+:::{}
+
+```{r, engine='tikz', fig.ext="svg" }
+#| label: workflow-diagram
+#| echo: false
+#| eval: true
+#| fig-align: center
+#| out-width: "70%"
+\begin{tikzpicture}[>=latex,font=\sffamily,node distance=2cm]
+    \tikzset{ref/.style={draw=black, fill=green!20}};
+    \tikzset{fastq/.style={draw=black, fill=blue!20}};
+    \tikzset{bam/.style={draw=black, fill=red!20}};
+    \node[ref] (ref) {ref/M\_aurantiacus\_V1.fasta};
+    \node[fastq, below of=ref] (fastq1) {fastq/PUN-Y-INJ\_R1.fastq.gz};
+    \node[fastq, below of=fastq1] (fastq2) {fastq/PUN-Y-INJ\_R2.fastq.gz};
+    \node[bam, right of=fastq1, node distance=5cm] (bam) {map/PUN-Y-INJ.bam};
+    \node[bam, right of=bam, node distance=5cm] (bam2) {markdup/PUN-Y-INJ.bam};
+    \draw[->] (ref) -- (bam);
+    \draw[->] (fastq1) -- (bam);
+    \draw[->] (fastq2) -- (bam);
+    \draw[->] (bam) -- (bam2);
+\end{tikzpicture}
+```
+
+:::
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+::: {.incremental}
+
+- **Inputs** are connected to **outputs**
+- Arrows correspond to **dependencies** and
+  **transformation/generation** of new data
+- Workflow managers define **rules** that link inputs to outputs with
+  an action
+
+:::
+
+:::
+
+::: {.column width="50%"}
+
+:::{.fragment}
+
+```text
+rule markdup:
+    input: map/PUN-Y-INJ.bam
+    output: markdup/PUN-Y-INJ.bam
+    action: run picard MarkDuplicates
+```
+
+:::
+
+:::
+
+::::
+
+## Workflow managers
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+![Nextflow](/slides/variant_calling/assets/images/nextflow.svg){height="60px"}\
+
+```{lang=nextflow}
+process GATK4_MARKDUPLICATES {
+
+    input:
+    path  bam
+    path  fasta
+    path  fasta_fai
+
+    output:
+    tuple val(meta), path("*bam"),      emit: bam
+    tuple val(meta), path("*.bai"),     emit: bai
+    tuple val(meta), path("*.metrics"), emit: metrics
+
+    script:
+    -- snip --
+
+    gatk MarkDuplicates $input_list ...
+```
+
+:::{.fragment}
+
+- Groovy syntax
+- becoming a standard in production settings
+
+:::
+
+:::
+
+::: {.column width="50%"}
+
+### ![Snakemake](/slides/variant_calling/assets/images/logo-snake.svg){height="60px"}\ Snakemake
+
+```{lang=snakemake}
+rule mark_duplicates:
+    input:
+        bam = "map/{prefix}.bam",
+        bai = "map/{prefix}.bai",
+        fasta = "ref/M_aurantiacus_v1.fasta"
+    output:
+        bam = "markdup/{prefix}.bam",
+    shell:
+        "gatk MarkDuplicates..."
+```
+
+::: {.fragment}
+
+- Python-like syntax
+
+:::
+
+:::
+
+::::
+
+## nf-core and Sarek
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+![nf-core logo](/slides/variant_calling/assets/images/nf-core-logo.svg){height="100px"}\
+
+:::{.larger}
+
+<https://nf-co.re/>
+
+:::
+
+> A global community effort to collect a curated set of open‑source
+> analysis pipelines built using Nextflow.
+
+:::{.fragment}
+
+- **huge** community base
+- lots of curated workflows
+
+:::
+
+:::
+
+::: {.column width="50%"}
+
+![nf-core sarek logo](/slides/variant_calling/assets/images/nf-core-sarek-light.svg){height="100px"}\
+
+:::{.larger}
+
+<https://nf-co.re/sarek/3.5.1/>
+
+:::
+
+> Analysis pipeline to detect germline or somatic variants
+> (pre-processing, variant calling and annotation) from WGS / targeted
+> sequencing
+
+:::{.fragment}
+
+- focusses on variant calling in human
+- does **not** produce all-sites variant file!
+
+:::
+
+:::
+
+::::
+
+## snpArcher - a Snakemake workflow for nonmodel organisms
+
+:::{}
+
+![snpArcher logotype](/slides/variant_calling/assets/images/snparcher_logo.webp){height="100px"}\
+
+:::
+
+:::{.larger}
+
+<https://github.com/harvardinformatics/snpArcher>
+
+:::
+
+:::{}
+
+> snpArcher is a reproducible workflow optimized for nonmodel
+> organisms and comparisons across datasets, built on the Snakemake
+> workflow management system. It provides a streamlined approach to
+> dataset acquisition, variant calling, quality control, and
+> downstream analysis.
+
+:::
+
+## Our Snakemake workflow
+
+:::: {.columns}
+
+::: {.column width="40%"}
+
+1. raw read QC
+2. read mapping
+   a. mapping QC
+3. duplicate marking
+4. raw variant calling
+5. base quality score recalibration (bqsr)
+6. bqsr variant calling
+7. genotyping
+   a. variant statistics
+8. QC report generation
+
+:::
+
+::: {.column width="60%"}
+
+```{bash }
+#| label: snakemake-workflow
+#| echo: false
+#| eval: true
+#| output: asis
+#| fig-format: svg
+#| fig-align: center
+snakemake --rulegraph 2>&1 | grep -v "Building" | \
+    dot -T svg | \
+    grep -v "<!DOCTYPE" | grep -v "dtd" | \
+    sed -e "s/scale(1 1)/scale(0.5 0.5)/g"
+```
+
+:::
+
+::::

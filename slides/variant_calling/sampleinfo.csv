@@ -1,0 +1,3 @@
+Sample,Run,ScientificName,SampleName,AuthorSample,SampleAlias,Taxon,Latitude,Longitude,% Reads aligned,Seq. Depth
+SRS4979261,SRR9309791,Diplacus puniceus,PUN-ELF11-2016,ELF,PUN-R-ELF,"ssp. puniceus, red",33.086,-117.1453,93,18.2
+SRS4979263,SRR9309790,Diplacus puniceus,PUN-INJ10-2016,INJ,PUN-Y-INJ,"ssp. puniceus, yellow",33.0979,-116.6643,93.1,18.83
