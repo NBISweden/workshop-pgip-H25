@@ -1,0 +1,15 @@
+---
+title: Ancestral recombination graphs
+description: List of exercises
+format:
+  nbis-course-html:
+    number-sections: false
+author:
+  - Per Unneberg
+execute:
+  cache: false
+---
+
+## About
+
+## Exercises

@@ -1,0 +1,49 @@
+---
+format:
+  nbis-course-html:
+    fontsize: 0.8em
+
+number-sections: true
+knitr:
+  opts_chunk:
+    collapse: true
+    code-fold: true
+---
+
+
+# Recipes in slides {#sec-recipe-slides}
+
+## Foundations
+
+### Hardy-Weinberg Equilibrium {#sec-recipe-slides-hwe}
+
+Code to generate Hardy-Weinberg equilibrium plot.
+
+```{bash}
+#| label: recipe-slides-hwe-bash
+#| echo: true
+#| eval: false
+#| code-summary: "hwe.sh: bash script to download data from 1000 genomes"
+#| file: foundations/hwe.sh
+```
+
+```{r }
+#| label: recipe-slides-hwe-r
+#| echo: true
+#| eval: false
+#| code-summary: "hwe.R: R code to plot HWE proportions"
+#| file: foundations/hwe.R
+```
+
+## Genetic diversity
+
+### Trees {#sec-recipe-diversity-msprime-trees}
+
+```{python }
+#| label: recipe-slides-diversity-msprime-trees
+#| echo: true
+#| eval: false
+#| code-summary: |
+#|     Python code to generate example coalescent trees.
+#| file: genetic_diversity/trees.py
+```

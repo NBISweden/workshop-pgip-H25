@@ -2,22 +2,74 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://NBISweden.github.io/workshop-pgip-H25/recipes/index.html</loc>
-    <lastmod>2025-05-26T21:15:26.562Z</lastmod>
+    <lastmod>2025-09-11T20:01:59.005Z</lastmod>
   </url>
   <url>
-    <loc>https://NBISweden.github.io/workshop-pgip-H25/slides/pgip/index.html</loc>
-    <lastmod>2025-05-26T21:15:26.563Z</lastmod>
+    <loc>https://NBISweden.github.io/workshop-pgip-H25/exercises/variant_calling/read_mapping.html</loc>
+    <lastmod>2025-09-11T20:01:59.001Z</lastmod>
   </url>
   <url>
-    <loc>https://NBISweden.github.io/workshop-pgip-H25/index.html</loc>
-    <lastmod>2025-05-26T21:15:26.559Z</lastmod>
+    <loc>https://NBISweden.github.io/workshop-pgip-H25/exercises/variant_calling/introduction.html</loc>
+    <lastmod>2025-09-11T20:01:59.001Z</lastmod>
   </url>
   <url>
-    <loc>https://NBISweden.github.io/workshop-pgip-H25/slides/index.html</loc>
-    <lastmod>2025-05-26T21:15:26.563Z</lastmod>
+    <loc>https://NBISweden.github.io/workshop-pgip-H25/exercises/datasets/monkeyflowers.html</loc>
+    <lastmod>2025-09-11T20:01:58.996Z</lastmod>
   </url>
   <url>
     <loc>https://NBISweden.github.io/workshop-pgip-H25/exercises/index.html</loc>
-    <lastmod>2025-05-26T21:15:26.559Z</lastmod>
+    <lastmod>2025-09-11T20:01:58.999Z</lastmod>
+  </url>
+  <url>
+    <loc>https://NBISweden.github.io/workshop-pgip-H25/slides/variant_calling/variant_calling.html</loc>
+    <lastmod>2025-09-11T20:01:59.023Z</lastmod>
+  </url>
+  <url>
+    <loc>https://NBISweden.github.io/workshop-pgip-H25/slides/variant_calling/index.html</loc>
+    <lastmod>2025-09-11T20:01:59.022Z</lastmod>
+  </url>
+  <url>
+    <loc>https://NBISweden.github.io/workshop-pgip-H25/slides/foundations/index.html</loc>
+    <lastmod>2025-09-11T20:01:59.013Z</lastmod>
+  </url>
+  <url>
+    <loc>https://NBISweden.github.io/workshop-pgip-H25/slides/index.html</loc>
+    <lastmod>2025-09-11T20:01:59.016Z</lastmod>
+  </url>
+  <url>
+    <loc>https://NBISweden.github.io/workshop-pgip-H25/index.html</loc>
+    <lastmod>2025-09-11T20:01:59.001Z</lastmod>
+  </url>
+  <url>
+    <loc>https://NBISweden.github.io/workshop-pgip-H25/slides/pgip/index.html</loc>
+    <lastmod>2025-09-11T20:01:59.017Z</lastmod>
+  </url>
+  <url>
+    <loc>https://NBISweden.github.io/workshop-pgip-H25/slides/foundations/data.html</loc>
+    <lastmod>2025-09-11T20:01:59.013Z</lastmod>
+  </url>
+  <url>
+    <loc>https://NBISweden.github.io/workshop-pgip-H25/slides/variant_calling/read_mapping.html</loc>
+    <lastmod>2025-09-11T20:01:59.022Z</lastmod>
+  </url>
+  <url>
+    <loc>https://NBISweden.github.io/workshop-pgip-H25/slides/variant_calling/reproducibility.html</loc>
+    <lastmod>2025-09-11T20:01:59.022Z</lastmod>
+  </url>
+  <url>
+    <loc>https://NBISweden.github.io/workshop-pgip-H25/exercises/compute_environment/index.html</loc>
+    <lastmod>2025-09-11T20:01:58.996Z</lastmod>
+  </url>
+  <url>
+    <loc>https://NBISweden.github.io/workshop-pgip-H25/exercises/variant_calling/index.html</loc>
+    <lastmod>2025-09-11T20:01:59.001Z</lastmod>
+  </url>
+  <url>
+    <loc>https://NBISweden.github.io/workshop-pgip-H25/exercises/variant_calling/data_qc.html</loc>
+    <lastmod>2025-09-11T20:01:59.001Z</lastmod>
+  </url>
+  <url>
+    <loc>https://NBISweden.github.io/workshop-pgip-H25/exercises/variant_calling/variant_calling_workflow.html</loc>
+    <lastmod>2025-09-11T20:01:59.001Z</lastmod>
   </url>
 </urlset>

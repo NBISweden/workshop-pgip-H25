@@ -6,9 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="description" content="List of all presentations">
+<meta name="author" content="Per Unneberg">
+<meta name="description" content="List of exercises">
 
-<title>Slides – Population Genomics in Practice 2025</title>
+<title>Variant calling index – Population Genomics in Practice 2025</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -24,28 +25,26 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="../site_libs/quarto-nav/headroom.min.js"></script>
-<script src="../site_libs/clipboard/clipboard.min.js"></script>
-<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="../site_libs/quarto-search/fuse.min.js"></script>
-<script src="../site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="../">
-<link href="../assets/logos/nbislogo-green.svg" rel="icon" type="image/svg+xml">
-<script src="../site_libs/quarto-listing/list.min.js"></script>
-<script src="../site_libs/quarto-listing/quarto-listing.js"></script>
-<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../site_libs/quarto-html/popper.min.js"></script>
-<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="../site_libs/quarto-html/anchor.min.js"></script>
-<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-e0fa960b084fe2c1b9e2a0a843ce9846.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-c99def4582b0a787bea15946fe8e6d6f.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/quarto-contrib/fontawesome6-1.2.0/all.min.css" rel="stylesheet">
-<link href="../site_libs/quarto-contrib/fontawesome6-1.2.0/latex-fontsize.css" rel="stylesheet">
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../assets/logos/nbislogo-green.svg" rel="icon" type="image/svg+xml">
+<script src="../../site_libs/quarto-listing/list.min.js"></script>
+<script src="../../site_libs/quarto-listing/quarto-listing.js"></script>
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-e0fa960b084fe2c1b9e2a0a843ce9846.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-c99def4582b0a787bea15946fe8e6d6f.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -76,20 +75,20 @@ ul.task-list li input[type="checkbox"] {
 <script>
 
   window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-slide-listings .list');
+    const listingTargetEl = window.document.querySelector('#listing-vc-listing .list');
     if (!listingTargetEl) {
       // No listing discovered, do not attach.
       return; 
     }
 
     const options = {
-      valueNames: ['listing-title','listing-subtitle','listing-author',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
+      valueNames: ['listing-title','listing-author',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-title-sort'] }],
       
-      searchColumns: ["listing-title","listing-author","listing-image","listing-description"],
+      searchColumns: ["listing-title","listing-author"],
     };
 
     window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-slide-listings'] = new List('listing-slide-listings', options);
+    window['quarto-listings']['listing-vc-listing'] = new List('listing-vc-listing', options);
 
     if (window['quarto-listing-loaded']) {
       window['quarto-listing-loaded']();
@@ -135,17 +134,17 @@ window.Quarto = {
 
 </head>
 
-<body class="nav-fixed quarto-light">
+<body class="nav-sidebar floating nav-fixed quarto-light">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a href="../index.html" class="navbar-brand navbar-brand-logo">
-    <img src="../assets/logos/nbislogo-green.svg" alt="" class="navbar-logo">
+    <a href="../../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../../assets/logos/nbislogo-green.svg" alt="" class="navbar-logo">
     </a>
-    <a class="navbar-brand" href="../index.html">
+    <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">Population Genomics in Practice 2025</span>
     </a>
   </div>
@@ -156,15 +155,15 @@ window.Quarto = {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link active" href="../slides/index.html" aria-current="page"> 
+    <a class="nav-link active" href="../../slides/index.html" aria-current="page"> 
 <span class="menu-text">Slides</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../exercises/index.html"> 
+    <a class="nav-link" href="../../exercises/index.html"> 
 <span class="menu-text">Exercises</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../recipes/index.html"> 
+    <a class="nav-link" href="../../recipes/index.html"> 
 <span class="menu-text">Code recipes</span></a>
   </li>  
 </ul>
@@ -173,31 +172,238 @@ window.Quarto = {
 </div>
       </div> <!-- /container-fluid -->
     </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../exercises/variant_calling/index.html">Variant calling</a></li><li class="breadcrumb-item"><a href="../../exercises/variant_calling/index.html">Variant calling index</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
 </header>
 <!-- content -->
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
 <!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Slides</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../slides/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Slides</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../slides/pgip/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Population genomics in practice</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../slides/foundations/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Population genetics foundations</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../slides/foundations/data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data and definitions</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../slides/variant_calling/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Variant calling</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+ <span class="menu-text">slides/variant_calling/dna_sequencing.qmd</span>
+  </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../slides/variant_calling/read_mapping.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Read mapping</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../slides/variant_calling/variant_calling.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Variant calling and genotyping</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../slides/variant_calling/reproducibility.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Variant calling workflows</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Exercises</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../exercises/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Exercises</span></a>
+  </div>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false">
+ <span class="menu-text">Data</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../exercises/compute_environment/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Compute environment</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../exercises/datasets/monkeyflowers.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Monkeyflowers dataset</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Variant calling</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../exercises/variant_calling/index.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Variant calling index</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../exercises/variant_calling/introduction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Variant calling introduction</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../exercises/variant_calling/data_qc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data quality control</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../exercises/variant_calling/read_mapping.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Read mapping and duplicate removal</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../exercises/variant_calling/variant_calling_workflow.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Variant calling workflow</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Code recipes</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../recipes/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Code recipes</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#about" id="toc-about" class="nav-link active" data-scroll-target="#about">About</a></li>
+  <li><a href="#intended-learning-outcomes" id="toc-intended-learning-outcomes" class="nav-link" data-scroll-target="#intended-learning-outcomes">Intended learning outcomes</a></li>
+  <li><a href="#listing" id="toc-listing" class="nav-link" data-scroll-target="#listing">Listing</a></li>
+  <li><a href="#additional-material" id="toc-additional-material" class="nav-link" data-scroll-target="#additional-material">Additional material</a></li>
+  </ul>
+</nav>
+    </div>
 <!-- main -->
-<main class="content column-page" id="quarto-document-content">
+<main class="content column-body" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../slides/index.html">Slides</a></li><li class="breadcrumb-item"><a href="../slides/index.html">Slides</a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../exercises/variant_calling/index.html">Variant calling</a></li><li class="breadcrumb-item"><a href="../../exercises/variant_calling/index.html">Variant calling index</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">Slides</h1>
-<p class="subtitle lead">PGIP 2025 • Population Genomics in Practice</p>
+<h1 class="title">Variant calling index</h1>
 </div>
 
 <div>
   <div class="description">
-    List of all presentations
+    List of exercises
   </div>
 </div>
 
 
-<div class="quarto-title-meta column-page">
+<div class="quarto-title-meta column-body">
 
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Per Unneberg </p>
+          </div>
+  </div>
     
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">11-Sep-2025</p>
+    </div>
+  </div>
   
     
   </div>
@@ -207,65 +413,122 @@ window.Quarto = {
 </header>
 
 
-<section id="a-note-on-usage" class="level3">
-<h3 class="anchored" data-anchor-id="a-note-on-usage">A note on usage</h3>
-<p>Html slides have been authored using <a href="https://revealjs.com/">revealjs</a> and can be viewed directly in the browser. In some cases, there are accompanying speaker notes that can be viewed by pressing <code>s</code>. Whenever there is a <a href="../recipes/index.html"><i class="fa-solid fa-rectangle-list" aria-label="rectangle-list"></i></a> symbol, it links to a recipe that is related to the figure or content on the active slide.</p>
+<section id="about" class="level2">
+<h2 class="anchored" data-anchor-id="about">About</h2>
+<p>A generic variant calling workflow consists of the following basic steps:</p>
+<ol type="1">
+<li>read quality control and filtering</li>
+<li>read mapping</li>
+<li>removal / marking of duplicate reads</li>
+<li>joint / sample-based variant calling and genotyping</li>
+</ol>
+<p>There are different tweaks and additions to each of these steps, depending on application and method. The variant calling exercises here present the basic steps to go from raw data to variant calls.</p>
+<p>The exercises are based on the <a href="../../exercises/datasets/monkeyflowers.html">Monkeyflowers dataset</a>. Make sure to read the dataset document before running any commands as it will give you the biological background and general information about where to find and how to setup the data. We will focus on the <em>red</em> and <em>yellow</em> ecotypes in what follows.</p>
 </section>
-<section id="slides" class="level3">
-<h3 class="anchored" data-anchor-id="slides">Slides</h3>
-<div id="listing-slide-listings" class="quarto-listing quarto-listing-container-grid">
-<div class="list grid quarto-listing-cols-4">
-<div class="g-col-1" data-index="0" data-listing-file-modified-sort="1757620919017" data-listing-reading-time-sort="14" data-listing-word-count-sort="2735">
-<a href="../slides/pgip/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Population genomics in practice
-</h5>
-<div class="card-subtitle listing-subtitle">
-What is population genomics?
+<section id="intended-learning-outcomes" class="level2">
+<h2 class="anchored" data-anchor-id="intended-learning-outcomes">Intended learning outcomes</h2>
+<ul>
+<li>Perform qc on sequencing reads and interpret results</li>
+<li>Prepare reference for read mapping</li>
+<li>Map reads to reference</li>
+<li>Mark duplicates</li>
+<li>Perform raw variant calling to generate a set of sites to exclude from recalibration</li>
+<li>Perform base quality score recalibration</li>
+<li>Perform variant calling on base recalibrated data</li>
+<li>Do genotyping on all samples and combine results to a raw variant call set</li>
+</ul>
+</section>
+<section id="listing" class="level2">
+<h2 class="anchored" data-anchor-id="listing">Listing</h2>
+<div id="listing-vc-listing" class="quarto-listing quarto-listing-container-table">
+<div class="listing-actions-group">
+   <div class="input-group input-group-sm quarto-listing-sort">
+    <span class="input-group-text"><i class="bi bi-sort-down"></i></span>
+    <select id="listing-vc-listing-sort" class="form-select" aria-label="Order By" onchange="window['quarto-listings']['listing-vc-listing'].sort(this.options[this.selectedIndex].value, { order: this.options[this.selectedIndex].getAttribute('data-direction')})">
+      <option value="" disabled="" selected="" hidden="">Order By</option>
+      <option value="index" data-direction="asc">Default</option>
+      <option value="listing-title-sort" data-direction="asc">
+        Title
+      </option>
+      <option value="listing-author" data-direction="asc">
+        Author
+      </option>
+    </select>
+  </div>
+    <div class="input-group input-group-sm quarto-listing-filter">
+      <span class="input-group-text"><i class="bi bi-search"></i></span>
+      <input type="text" class="search form-control" placeholder="Filter">
+    </div>
 </div>
-<div class="card-attribution card-text-small start">
-<div class="listing-author">
-Per Unneberg
-</div>
-</div>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="1" data-listing-file-modified-sort="1757620919013" data-listing-reading-time-sort="1" data-listing-word-count-sort="11">
-<a href="../slides/foundations/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Population genetics foundations
-</h5>
-<div class="card-attribution card-text-small start">
-<div class="listing-author">
-Per Unneberg
-</div>
-</div>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="2" data-listing-file-modified-sort="1757620919022" data-listing-reading-time-sort="1" data-listing-word-count-sort="10">
-<a href="../slides/variant_calling/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Variant calling
-</h5>
-<div class="card-attribution card-text-small start">
-<div class="listing-author">
-Per Unneberg
-</div>
-</div>
-</div>
-</div></a>
-</div>
-</div>
+<table class="quarto-listing-table table">
+<thead>
+<tr>
+
+<th>
+<a class="sort" data-sort="listing-title-sort" onclick="if (this.classList.contains('sort-asc')) { this.classList.add('sort-desc'); this.classList.remove('sort-asc') } else { this.classList.add('sort-asc'); this.classList.remove('sort-desc')} return false;">Title</a>
+</th>
+
+<th>
+<a class="sort" data-sort="listing-author" onclick="if (this.classList.contains('sort-asc')) { this.classList.add('sort-desc'); this.classList.remove('sort-asc') } else { this.classList.add('sort-asc'); this.classList.remove('sort-desc')} return false;">Author</a>
+</th>
+
+</tr>
+</thead>
+<tbody class="list">
+
+<tr data-index="0" data-listing-file-modified-sort="1757620919001" data-listing-reading-time-sort="2" data-listing-word-count-sort="283" data-listing-title-sort="Data quality control" data-listing-filename-sort="data_qc.qmd">
+<td>
+<a href="../../exercises/variant_calling/data_qc.html" class="title listing-title">Data quality control</a>
+</td>
+<td>
+<span class="listing-author">Per Unneberg</span>
+</td>
+
+</tr>
+
+<tr data-index="1" data-listing-file-modified-sort="1757620919001" data-listing-reading-time-sort="5" data-listing-word-count-sort="977" data-listing-title-sort="Read mapping and duplicate removal" data-listing-filename-sort="read_mapping.qmd">
+<td>
+<a href="../../exercises/variant_calling/read_mapping.html" class="title listing-title">Read mapping and duplicate removal</a>
+</td>
+<td>
+<span class="listing-author">Per Unneberg</span>
+</td>
+
+</tr>
+
+<tr data-index="2" data-listing-file-modified-sort="1757620919001" data-listing-reading-time-sort="6" data-listing-word-count-sort="1052" data-listing-title-sort="Variant calling introduction" data-listing-filename-sort="introduction.qmd">
+<td>
+<a href="../../exercises/variant_calling/introduction.html" class="title listing-title">Variant calling introduction</a>
+</td>
+<td>
+<span class="listing-author">Per Unneberg</span>
+</td>
+
+</tr>
+
+<tr data-index="3" data-listing-file-modified-sort="1757620919001" data-listing-reading-time-sort="5" data-listing-word-count-sort="858" data-listing-title-sort="Variant calling workflow" data-listing-filename-sort="variant_calling_workflow.qmd">
+<td>
+<a href="../../exercises/variant_calling/variant_calling_workflow.html" class="title listing-title">Variant calling workflow</a>
+</td>
+<td>
+<span class="listing-author">Per Unneberg</span>
+</td>
+
+</tr>
+
+</tbody>
+</table>
 <div class="listing-no-matching d-none">No matching items</div>
 </div>
+</section>
+<section id="additional-material" class="level2">
+<h2 class="anchored" data-anchor-id="additional-material">Additional material</h2>
+<dl>
+<dt><a href="https://nbisweden.github.io/workshop-pgip-H23/exercises/variant_calling/index.html">Variant calling, long description</a></dt>
+<dd>
+<p>Describes all steps of a standard variant calling workflow from data preparation to final summary QC. All commands are run manually without the aid of a workflow manager. From earlier course round.</p>
+</dd>
+</dl>
 
 
 

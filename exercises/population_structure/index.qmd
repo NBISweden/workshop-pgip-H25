@@ -1,0 +1,42 @@
+---
+title: Population structure index
+description: List of exercises
+format:
+  nbis-course-html:
+    number-sections: false
+author:
+  - Per Unneberg
+execute:
+  cache: false
+---
+
+## About
+
+## Exercises
+
+:::{.callout-note collapse=true}
+
+## Data setup
+
+:::{.panel-tabset}
+
+#### {{< fa server >}} PDC
+
+#### {{< fa laptop >}} Local
+
+:::
+
+:::
+
+[Principal component analysis (PCA)](pca.qmd)
+
+: Generate a PCA plot of data to get an overview of population
+  structure
+
+[Admixture analysis](admixture.qmd)
+
+: Infer populations and individual ancestries
+
+[D-stastitics](dstats.qmd)
+
+: Infer introgression and hybridization with D-statistics

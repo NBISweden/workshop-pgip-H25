@@ -2,10 +2,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.31">
+<meta name="generator" content="quarto-1.7.33">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="description" content="List of all exercises">
 
 <title>Exercises – Population Genomics in Practice 2025</title>
 <style>
@@ -31,16 +32,20 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
 <link href="../assets/logos/nbislogo-green.svg" rel="icon" type="image/svg+xml">
+<script src="../site_libs/quarto-listing/list.min.js"></script>
+<script src="../site_libs/quarto-listing/quarto-listing.js"></script>
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-d2a7938fc36e5ab138567e221a24d928.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-e0fa960b084fe2c1b9e2a0a843ce9846.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-bf962bffe71532dd65167b69bdd3e294.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-c99def4582b0a787bea15946fe8e6d6f.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/quarto-contrib/fontawesome6-1.2.0/all.min.css" rel="stylesheet">
+<link href="../site_libs/quarto-contrib/fontawesome6-1.2.0/latex-fontsize.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -68,7 +73,65 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
+<script>
 
+  window.document.addEventListener("DOMContentLoaded", function (_event) {
+    const listingTargetEl = window.document.querySelector('#listing-exercise-listings .list');
+    if (!listingTargetEl) {
+      // No listing discovered, do not attach.
+      return; 
+    }
+
+    const options = {
+      valueNames: ['listing-title','listing-subtitle','listing-author',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
+      
+      searchColumns: ["listing-title","listing-author","listing-image","listing-description"],
+    };
+
+    window['quarto-listings'] = window['quarto-listings'] || {};
+    window['quarto-listings']['listing-exercise-listings'] = new List('listing-exercise-listings', options);
+
+    if (window['quarto-listing-loaded']) {
+      window['quarto-listing-loaded']();
+    }
+  });
+
+  window.addEventListener('hashchange',() => {
+    if (window['quarto-listing-loaded']) {
+      window['quarto-listing-loaded']();
+    }
+  })
+  </script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -112,30 +175,33 @@ ul.task-list li input[type="checkbox"] {
     </nav>
 </header>
 <!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
-    </div>
+    
 <!-- main -->
-<main class="content" id="quarto-document-content">
+<main class="content column-page" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default">
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../exercises/index.html">Exercises</a></li><li class="breadcrumb-item"><a href="../exercises/index.html">Exercises</a></li></ol></nav>
 <div class="quarto-title">
 <h1 class="title">Exercises</h1>
 <p class="subtitle lead">PGIP 2025 • Population Genomics in Practice</p>
 </div>
 
+<div>
+  <div class="description">
+    List of all exercises
+  </div>
+</div>
 
 
-<div class="quarto-title-meta">
+<div class="quarto-title-meta column-page">
 
     
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">26-May-2025</p>
+      <p class="date">11-Sep-2025</p>
     </div>
   </div>
   
@@ -147,10 +213,248 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
+<section id="information" class="level2">
+<h2 class="anchored" data-anchor-id="information">Information</h2>
+<p>All exercise pages start with a callout block that provides information on how to setup the relevant <a href="../exercises/compute_environment/index.html">Compute environment</a>. The callout blocks are labelled with icons that indicate the type of environment (<i class="fa-solid fa-server" aria-label="server"></i> PDC resource; <i class="fa-solid fa-laptop" aria-label="laptop"></i> local compute environment; <i class="fa-brands fa-firefox" aria-label="firefox"></i> online browser-based resource). Make sure to read these instructions before proceeding with the exercise itself. Some of the documents include a link to an external URL that hosts the actual exercise instructions.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<i class="fa-solid fa-server" aria-label="server"></i> Compute environment setup
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Before proceeding, make sure to read <a href="../exercises/compute_environment/index.html">Compute environment</a> for information on how to prepare your working directory.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="on-self-assessment-exercise-blocks" class="level2">
+<h2 class="anchored" data-anchor-id="on-self-assessment-exercise-blocks">On self-assessment exercise blocks</h2>
+<p>Scattered throughout the documents are exercise blocks, with hidden answers, and, in some cases, hints. The exercises are for self-assessment of your understanding, but they are not mandatory.</p>
+<p>Some of the exercises (labelled with the Linux penguin <i class="fa-brands fa-linux" aria-label="linux"></i>) are related to the usage of the command line interfaces (CLI), and how to obtain information about what a program does. This is an essential skill when working in Linux/UNIX environments! These exercises can be skipped if you are an experienced Linux/UNIX user.</p>
+<p>An example exercise is provided here:</p>
+<div class="callout callout-style-default callout-exercise callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Example exercise block
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-4" class="callout-4-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div>
+<div class="callout-exercise">
+<p><i class="fa-brands fa-linux" aria-label="linux"></i> The <code>ls</code> command is used to list the contents of a directory. What option provides a so-called long listing format?</p>
+<div class="callout callout-style-default callout-hint callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Hint
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div>
+<div class="callout-hint">
+<p>Type <code>ls --help</code> to show the options to <code>ls</code>.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-answer callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Answer
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div>
+<div class="callout-answer">
+<p>The <code>-l</code> option uses the long listing format, i.e., the command to use is <code>ls -l</code>.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="exercises" class="level2">
+<h2 class="anchored" data-anchor-id="exercises">Exercises</h2>
 
 
 
-</main> <!-- /main -->
+</section>
+
+<div class="quarto-listing quarto-listing-container-grid" id="listing-exercise-listings">
+<div class="list grid quarto-listing-cols-4">
+<div class="g-col-1" data-index="0" data-listing-file-modified-sort="1757620918996" data-listing-reading-time-sort="6" data-listing-word-count-sort="1032">
+<a href="../exercises/compute_environment/index.html" class="quarto-grid-link">
+<div class="quarto-grid-item card h-100 card-left">
+<div class="card-body post-contents">
+<h5 class="no-anchor card-title listing-title">
+Compute environment
+</h5>
+<div class="card-attribution card-text-small start">
+<div class="listing-author">
+Per Unneberg
+</div>
+</div>
+</div>
+</div></a>
+</div>
+<div class="g-col-1" data-index="1" data-listing-file-modified-sort="1757620918996" data-listing-reading-time-sort="3" data-listing-word-count-sort="596">
+<a href="../exercises/datasets/monkeyflowers.html" class="quarto-grid-link">
+<div class="quarto-grid-item card h-100 card-left">
+<div class="card-body post-contents">
+<h5 class="no-anchor card-title listing-title">
+Monkeyflowers dataset
+</h5>
+<div class="card-subtitle listing-subtitle">
+Speciation genomics and simulation
+</div>
+<div class="card-attribution card-text-small start">
+<div class="listing-author">
+Per Unneberg
+</div>
+</div>
+</div>
+</div></a>
+</div>
+<div class="g-col-1" data-index="2" data-listing-file-modified-sort="1757620919001" data-listing-reading-time-sort="2" data-listing-word-count-sort="214">
+<a href="../exercises/variant_calling/index.html" class="quarto-grid-link">
+<div class="quarto-grid-item card h-100 card-left">
+<div class="card-body post-contents">
+<h5 class="no-anchor card-title listing-title">
+Variant calling index
+</h5>
+<div class="card-attribution card-text-small start">
+<div class="listing-author">
+Per Unneberg
+</div>
+</div>
+</div>
+</div></a>
+</div>
+<div class="g-col-1" data-index="3" data-listing-file-modified-sort="1757620919001">
+<a href="../exercises/variant_filtering/index.qmd" class="quarto-grid-link">
+<div class="quarto-grid-item card h-100 card-left">
+<div class="card-body post-contents">
+<div class="card-attribution card-text-small start">
+<div class="listing-author">
+
+</div>
+</div>
+</div>
+</div></a>
+</div>
+<div class="g-col-1" data-index="4" data-listing-file-modified-sort="1757620918998">
+<a href="../exercises/genetic_diversity/index.qmd" class="quarto-grid-link">
+<div class="quarto-grid-item card h-100 card-left">
+<div class="card-body post-contents">
+<div class="card-attribution card-text-small start">
+<div class="listing-author">
+
+</div>
+</div>
+</div>
+</div></a>
+</div>
+<div class="g-col-1" data-index="5" data-listing-file-modified-sort="1757620919000">
+<a href="../exercises/recombination_linkage/index.qmd" class="quarto-grid-link">
+<div class="quarto-grid-item card h-100 card-left">
+<div class="card-body post-contents">
+<div class="card-attribution card-text-small start">
+<div class="listing-author">
+
+</div>
+</div>
+</div>
+</div></a>
+</div>
+<div class="g-col-1" data-index="6" data-listing-file-modified-sort="1757620918999">
+<a href="../exercises/population_structure/index.qmd" class="quarto-grid-link">
+<div class="quarto-grid-item card h-100 card-left">
+<div class="card-body post-contents">
+<div class="card-attribution card-text-small start">
+<div class="listing-author">
+
+</div>
+</div>
+</div>
+</div></a>
+</div>
+<div class="g-col-1" data-index="7" data-listing-file-modified-sort="1757620918996">
+<a href="../exercises/demography/index.qmd" class="quarto-grid-link">
+<div class="quarto-grid-item card h-100 card-left">
+<div class="card-body post-contents">
+<div class="card-attribution card-text-small start">
+<div class="listing-author">
+
+</div>
+</div>
+</div>
+</div></a>
+</div>
+<div class="g-col-1" data-index="8" data-listing-file-modified-sort="1757620919000">
+<a href="../exercises/selection/index.qmd" class="quarto-grid-link">
+<div class="quarto-grid-item card h-100 card-left">
+<div class="card-body post-contents">
+<div class="card-attribution card-text-small start">
+<div class="listing-author">
+
+</div>
+</div>
+</div>
+</div></a>
+</div>
+<div class="g-col-1" data-index="9" data-listing-file-modified-sort="1757620919000">
+<a href="../exercises/simulation/index.qmd" class="quarto-grid-link">
+<div class="quarto-grid-item card h-100 card-left">
+<div class="card-body post-contents">
+<div class="card-attribution card-text-small start">
+<div class="listing-author">
+
+</div>
+</div>
+</div>
+</div></a>
+</div>
+<div class="g-col-1" data-index="10" data-listing-file-modified-sort="1757620918996">
+<a href="../exercises/ancestral_recombination_graphs/index.qmd" class="quarto-grid-link">
+<div class="quarto-grid-item card h-100 card-left">
+<div class="card-body post-contents">
+<div class="card-attribution card-text-small start">
+<div class="listing-author">
+
+</div>
+</div>
+</div>
+</div></a>
+</div>
+</div>
+<div class="listing-no-matching d-none">No matching items</div>
+</div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";

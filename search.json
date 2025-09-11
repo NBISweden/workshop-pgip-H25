@@ -1,17 +1,408 @@
 [
   {
-    "objectID": "slides/pgip/index.html#intended-learning-outcomes",
-    "href": "slides/pgip/index.html#intended-learning-outcomes",
-    "title": "Population genomics in practice",
-    "section": "Intended learning outcomes",
-    "text": "Intended learning outcomes\nCourse\n\nPresent minimum toolkit of methods that should be known to anyone starting out in population genomics\nSufficiently small for one-week workshop\n\nLecture\n\nPresent practical example of toolkit as applied in Fuller et al., Science, 369(6501), eaba4674, 2020\nBriefly discuss baseline model Johri et al., PLOS Biology, 20(5), e3001669, 2022\n\n\n\nAim of lecture is to:\n\npresent a practical application of commonly used methods in population genomics\nlink population genomics to population genetics\ndiscuss statistical inference and the need of a baseline model with which to compare observations and conclusions\n\nWhat is population genomics?\nPoints from Hahn, 2019, pp. 249–250:\n\nwhole-genome data instead of single loci - population genomics is population genetics for whole-genome sequences\n\nif only this, not too exciting\n\nmajor promise: enables analyses not possible for single loci or that require genomic context\naddresses interactions between different forces, notably selection and demographic history\n\nSome applications\n\ngenome-wide scans for selection\n\nselection vs demography (p. 251)\n\nmethods for genome-wide scans (p. 258)\n\nCaveats\n\nnon-independence (p. 267)\n\ndifferent statistics rely on similar input\noverlapping peaks from different statistics not independent\n\n\nGeneral points\nHartl & Clark, 1997, pp. 469–470:\n\nmore emphasis on differences within populations\ngoal: understand differences among genomes -&gt; requires complete sequence data from multiple individuals\n\nLi & Durbin, Nature, 475(7357), 493–496, 2011, supplementary notes, p. 6 on the use of PSMC on autosomes:\n“…highly consistent except for the very recent history, demonstrating the power of using whole-genome data.”"
+    "objectID": "recipes/index.html",
+    "href": "recipes/index.html",
+    "title": "Code recipes",
+    "section": "",
+    "text": "Important\n\n\n\nDisclaimer: although the code posted here has at some point been used to generate figures and data, in some cases it may be out of date and not work out of the box. Please report any bugs or inconsistencies by posting an issue at https://github.com/NBISweden/workshop-pgip/issues.\n\n\n\n\nCollection of recipes to generate data and figures for lecture notes. For full listing, see slides/index.html.\n\n\n\nCollection of SLiM recipes (Haller, Ben, 2016) used to generate figures and examples. See slim/index.html for full listing.",
+    "crumbs": [
+      "Slides",
+      "Code recipes",
+      "Code recipes"
+    ]
   },
   {
-    "objectID": "slides/pgip/index.html#bibliography",
-    "href": "slides/pgip/index.html#bibliography",
-    "title": "Population genomics in practice",
+    "objectID": "recipes/index.html#slides",
+    "href": "recipes/index.html#slides",
+    "title": "Code recipes",
+    "section": "",
+    "text": "Collection of recipes to generate data and figures for lecture notes. For full listing, see slides/index.html.",
+    "crumbs": [
+      "Slides",
+      "Code recipes",
+      "Code recipes"
+    ]
+  },
+  {
+    "objectID": "recipes/index.html#slim-recipes",
+    "href": "recipes/index.html#slim-recipes",
+    "title": "Code recipes",
+    "section": "",
+    "text": "Collection of SLiM recipes (Haller, Ben, 2016) used to generate figures and examples. See slim/index.html for full listing.",
+    "crumbs": [
+      "Slides",
+      "Code recipes",
+      "Code recipes"
+    ]
+  },
+  {
+    "objectID": "exercises/variant_calling/read_mapping.html",
+    "href": "exercises/variant_calling/read_mapping.html",
+    "title": "Read mapping and duplicate removal",
+    "section": "",
+    "text": "Intended learning outcomes\n\n\n\n\n\n\nMap reads to a reference genome\nMark duplicate read mappings",
+    "crumbs": [
+      "Slides",
+      "Variant calling",
+      "Read mapping and duplicate removal"
+    ]
+  },
+  {
+    "objectID": "exercises/variant_calling/read_mapping.html#read-mapping",
+    "href": "exercises/variant_calling/read_mapping.html#read-mapping",
+    "title": "Read mapping and duplicate removal",
+    "section": "Read mapping",
+    "text": "Read mapping\nWe will start by mapping FASTQ read pairs to the reference. We will use the bwa read mapper together with samtools to process the resulting output.\nRead group information identifies sequence sets\nSome of the downstream processes require that reads have been assigned read groups (“Read Groups,” 2023), which is a compact string representation of a set of reads that originate from a sequencing unit and sample. Assigning read groups becomes particularly important for multiplexing protocols, or when a sample has been sequenced on different lanes or platform units, as it allows for the identification of sequence batch issues (e.g., poor sequence quality). Here, we want to assign a unique ID, the sample id (SM), and the sequencing platform (PL), where the latter informs the algorithms on what error model to apply. The read group is formatted as @RG\\tID:uniqueid\\tSM:sampleid\\tPU:platform, where \\t is the tab character. More fields can be added; see the SAM specification, section 1.3 (HTS Format Specifications, 2023) for a complete list.\nSample information is available in the sampleinfo.csv file:\n\nhead -n 3 sampleinfo.csv\n\nSample,Run,ScientificName,SampleName,AuthorSample,SampleAlias,Taxon,Latitude,Longitude,% Reads aligned,Seq. Depth\nSRS4979271,SRR9309782,Diplacus longiflorus,LON-T33_1,T33,LON-T33,ssp. longiflorus,34.3438,-118.5099,94.6,18.87\nSRS4979267,SRR9309785,Diplacus longiflorus,LON-T8_8,T8,LON-T8,ssp. longiflorus,34.1347,-118.6452,82.6,25.11\n\n\nThe sample information is a combination of the run information obtained from the SRA (BioProject PRJNA549183) and the sample sheet provided with the article. An additional column SampleAlias has been added that names samples using a three-letter abbreviation for population hyphenated with the sample identifier. For the ssp. puniceus, an additional one-letter character denoting the color ecotype is inserted between population and sample id. PUN-Y-BCRD then is a sample from the puniceus subspecies with the yellow ecotype. We will use the Run column as unique ID, SampleAlias as the sample id SM, and ILLUMINA as the platform PL.\nRead mapping with bwa and conversion to BAM format with samtools\nLet’s map the FASTQ files corresponding to sample PUN-Y-BCRD:\n\nbwa mem -R \"@RG\\tID:SRR9309788\\tSM:PUN-Y-BCRD\\tPL:ILLUMINA\" -t 4 \\\n    -M ref/M_aurantiacus_v1.fasta \\\n    fastq/PUN-Y-BCRD_R1.fastq.gz \\\n    fastq/PUN-Y-BCRD_R2.fastq.gz | \\\n    samtools sort - | \\\n    samtools view --with-header --output bam/PUN-Y-BCRD.bam\n\nThere’s a lot to unpack here. First, the -R flag to bwa mem passes the read group information to the mapper. -t sets the number of threads, and -M marks shorter split hits as secondary, which is for Picard compatibility1. The first positional argument is the reference sequence, followed by the FASTQ files for read 1 and 2, respectively.\nThe output would be printed on the screen (try running the bwa mem command alone!), but we pipe the output to samtools sort to sort the mappings (by default by coordinate). The - simply means “read from the pipe”.\nFinally, samtools view converts the text output to binary format (default), including the header information (short option -h). You can use the same command to view the resulting output on your screen:\n\nsamtools view bam/PUN-Y-BCRD.bam | head -n 2\n\nSRR9309788.7313829  129 LG4 29  60  103M2I46M   =   83824   83796   GTCAATTTCATGTTTGACTTTTAGATTTTTAATTAATTATATATTTTTTGCAATTTGTAACCTCTTTAACCTTTATTTAATTTTTTGAATTTCTTTTTTATTTTATTTTCAAATACAATTCACCCCAATTAATTATTTTAATTATAACAAT AAFFFJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJFJJJJJJJJJJJJJAFJJFJJJF&lt;JJJJJJJJ&lt;AJJJJJJJJJ-FFJJAJJJJA-7-7----&lt;A---7&lt;-)7AAA-AA7-&lt;-7--&lt;A---7---7 NM:i:6  MD:Z:107T25A1C6A6   MC:Z:88M8D63M   MQ:i:60 AS:i:121    XS:i:80 RG:Z:SRR9309788\nSRR9309788.9554822  99  LG4 58  60  74M2I75M    =   256 321 TAATTAATTATATATTTTTTGCAATTTGTAACCTCTTTAACCTTTATTTAATTTTTTGAATTTCTTTTTTATTTTATTTTCAAATACAATTCACCCCAATTAATTAATCTAATTAAAACAATTAAATAATCAACCCGAATGATTAACCAAT AAFFFJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJFAAJJJJJJJJFJJJFJJ&lt;FJJAJJJFJJJJ&lt; NM:i:5  MD:Z:78T54G0C14 MC:Z:21S82M2I9M5I32M    MQ:i:60 AS:i:126    XS:i:81 RG:Z:SRR9309788\n\n\n\n\n\n\n\n\nExercise\n\n\n\n\n\n\n\nLook at the header information of the output BAM file. What does the @SQ tag stand for, and what does the information on that line tell you?\n\n\n\n\n\n\nHint\n\n\n\n\n\n\n\nTo get a list of options, type samtools view. The -H or --header-only option views the header only.\n\n\n\n\n\n\n\n\n\n\n\nAnswer\n\n\n\n\n\n\n\n\nsamtools view -H bam/PUN-Y-BCRD.bam\n\n@HD VN:1.5  SO:coordinate\n@SQ SN:LG4  LN:100000\n@RG ID:SRR9309788   SM:PUN-Y-BCRD   PL:ILLUMINA\n@PG ID:bwa  PN:bwa  VN:0.7.19-r1273 CL:bwa mem -R @RG\\tID:SRR9309788\\tSM:PUN-Y-BCRD\\tPL:ILLUMINA -t 4 -M ref/M_aurantiacus_v1.fasta fastq/PUN-Y-BCRD_R1.fastq.gz fastq/PUN-Y-BCRD_R2.fastq.gz\n@PG ID:samtools PN:samtools PP:bwa  VN:1.22.1   CL:samtools sort -\n@PG ID:samtools.1   PN:samtools PP:samtools VN:1.22.1   CL:samtools view --with-header --output bam/PUN-Y-BCRD.bam\n@PG ID:samtools.2   PN:samtools PP:samtools.1   VN:1.22.1   CL:samtools view -H bam/PUN-Y-BCRD.bam\n\n\nAlthough you can probably figure it out by looking at the data, do have a glance at the SAM format specification mentioned above. The @SQ tag corresponds to the reference sequence dictionary and tells you what region you are looking at (chromosome LG4, which has a length LN 100000 bases; the example reference sequence was created by extracting the region on LG4 from position 12000000 to 12100000).\n\n\n\n\n\n\n\n\n\n\nMark duplicate reads with Picard MarkDuplicates\nOnce mapping is completed, we must find and mark duplicate reads as these can distort the results of downstream analyses, such as variant calling. We here use Picard MarkDuplicates.\nTo facilitate downstream processing, we will from now on make use of environment variables2 to refer to a sample and the reference sequence. Retrieve the SRR id from the sampleinfo file.\n\nexport SRR=SRR9309790\nexport SAMPLE=PUN-Y-INJ\nexport REF=ref/M_aurantiacus_v1.fasta\n\n\npicard MarkDuplicates --INPUT bam/${SAMPLE}.bam \\\n    --METRICS_FILE md/${SAMPLE}.dup_metrics.txt \\\n    --OUTPUT md/${SAMPLE}.bam\n\nThe metrics output file contains information on the rate of duplication. We will include the output in the final MultiQC report.\nAn additional mapping quality metric of interest is percentage mapped reads and average read depth. We can use qualimap bamqc to collect mapping statistics from a BAM file:\n\nqualimap bamqc -bam bam/${SAMPLE}.bam -outdir qualimap/${SAMPLE}_stats\n\nA summary of the results is exported to qualimap/${SAMPLE}_stats/genome_results.txt; we show percent mapping and average coverage below as examples:\n\ngrep \"number of mapped reads\" qualimap/${SAMPLE}_stats/genome_results.txt\ngrep \"mean coverageData\" qualimap/${SAMPLE}_stats/genome_results.txt\n\n     number of mapped reads = 7,643 (96.94%)\n     mean coverageData = 11.0246X",
+    "crumbs": [
+      "Slides",
+      "Variant calling",
+      "Read mapping and duplicate removal"
+    ]
+  },
+  {
+    "objectID": "exercises/variant_calling/read_mapping.html#moving-on",
+    "href": "exercises/variant_calling/read_mapping.html#moving-on",
+    "title": "Read mapping and duplicate removal",
+    "section": "Moving on",
+    "text": "Moving on\nBy now it should become clear that it quickly becomes tedious to manually write commands for each and every step. We would like to speed things up, and in the interest of time, the following exercise will introduce a workflow manager (e.g., Wratten et al. (2021)). However, we stress that you should not blindly run workflows without understanding the programs and their options. The only way to investigate the effects of parameters and settings is to manually run the programs. Hopefully, you have gained some insight into how this is done with this exercise.",
+    "crumbs": [
+      "Slides",
+      "Variant calling",
+      "Read mapping and duplicate removal"
+    ]
+  },
+  {
+    "objectID": "exercises/variant_calling/read_mapping.html#footnotes",
+    "href": "exercises/variant_calling/read_mapping.html#footnotes",
+    "title": "Read mapping and duplicate removal",
+    "section": "Footnotes",
+    "text": "Footnotes\n\nbwa consistently uses short option names. Also, there is no --help option. To get a list of options, at the command line simply type bwa mem, or man bwa mem for general help and a complete list of options.↩︎\nBriefly, environment variables are a great way to generalise commands. To reuse the command, one only needs to modify the value of the variable.↩︎",
+    "crumbs": [
+      "Slides",
+      "Variant calling",
+      "Read mapping and duplicate removal"
+    ]
+  },
+  {
+    "objectID": "exercises/variant_calling/introduction.html",
+    "href": "exercises/variant_calling/introduction.html",
+    "title": "Variant calling introduction",
+    "section": "",
+    "text": "Intendend learning outcomes\n\n\n\n\n\n\nNavigate directory tree\nLook at FASTQ sequence file",
+    "crumbs": [
+      "Slides",
+      "Variant calling",
+      "Variant calling introduction"
+    ]
+  },
+  {
+    "objectID": "exercises/variant_calling/introduction.html#variant-calling",
+    "href": "exercises/variant_calling/introduction.html#variant-calling",
+    "title": "Variant calling introduction",
+    "section": "Variant calling",
+    "text": "Variant calling\nA generic variant calling workflow consists of the following basic steps:\n\nread quality control and filtering\nread mapping\nremoval / marking of duplicate reads\njoint / sample-based variant calling and genotyping\n\nThere are different tweaks and additions to each of these steps, depending on application and method.\n1. Read quality control\n\n\n\n\n\n\n\n\nFigure 1: Per base quality scores, read 1 (upper) and read 2 (lower panel), obtained from the FastQC program. Quality values are on the \\(y\\)-axis, base position in sequence read on \\(x\\)-axis.\n\n\nDNA sequencers score the quality of each sequenced base as phred quality scores, which is equivalent to the probability \\(P\\) that the call is incorrect. The base quality scores, denoted \\(Q\\), are defined as\n\\[\nQ = -10 \\log_{10} P\n\\]\nwhich for \\(P=0.01\\) gives \\(Q=20\\). Converting from quality to probability is done by solving for \\(P\\):\n\\[\nP = 10^{-Q/10}\n\\]\nHence, a base quality score \\(Q=20\\) (somtimes written Q20) corresponds to a 1% probability that the call is incorrect, Q30 a 0.1% probability, and so on, where the higher the quality score, the better. Bases with low quality scores are usually discarded from downstream analyses, but what is a good threshold? The human genome has approximately 1 SNP per 1,000 bp, which means sequencing errors will be ten times as probable in a single read for Q20 base calls. A reasonable threshold is therefore around Q20-Q30 for many purposes.\nThe base qualities typically drop towards the end of the reads (Figure 1). Prior to mapping it may therefore be prudent to remove reads that display too high drop in quality, too low mean quality, or on some other quality metric reported by the qc software.\nThe quality scores are encoded using ASCII codes. An example of a FASTQ sequence is given below. The code snippet shows an example of shell commands1 that are separated by a so-called pipe (|) character which takes the output from one process and sends it as input to the next2.\nNote that we use the long option names to clarify commands, and we aim to do so consistently when a new command is introduced. Once you feel confident you know what a command does, you will probably want to switch to short option names, and we may do so in the instructions for some commonly used commands (e.g., head -n) without warning. Remember to use --help to examine command options.\n\n# Command using long (-- prefix) option names\nzcat fastq/PUN-Y-INJ_R1.fastq.gz | head --lines 4 | cut --characters -30\n# Equivalent command using short (single -, single character) option names\n# zcat fastq/PUN-Y-INJ_R1.fastq.gz | head -n 4 | cut -c -30\n\n@SRR9309790.10003134\nTAAATCGATTCGTTTTTGCTATCTTCGTCT\n+\nAAFFFJJJJJJJFJJJJJJJJJJJJJJJJJ\n\n\nConsequently, a FASTQ entry consists of four lines:\n\nsequence id (prefixed by @)\nDNA sequence\nseparator (+)\nphred base quality scores\n\n\n\n\n\n\n\nExercise\n\n\n\n\n\n\n\n Use the command wc to determine how many sequences are in fastq/PUN-Y-INJ_R1.fastq.gz.\n\n\n\n\n\n\nHint\n\n\n\n\n\n\n\nUse the --help option to show documentation for the wc command (wc --help). This will show that wc prints newline, word and byte counts for a file, where newline is what we’re after. We can restrict the output to newline characters with the --lines option. Use zcat to print the contents of fastq/PUN-Y-INJ_R1.fastq.gz to the screen, piping (|) the output to wc --lines.\n\n\n\n\n\n\n\n\n\n\n\nAnswer\n\n\n\n\n\n\n\n\nzcat fastq/PUN-Y-INJ_R1.fastq.gz | wc --lines\n\nSince there are four lines per sequence (id, sequence, + separator, qualities) you need to divide the final number by four (622744 / 4).\n\n\n\n\n\n\n\n\n\n\n2. Read mapping\nRead mapping consists of aligning sequence reads, typically from individuals in a population (a.k.a. resequencing) to a reference sequence. The choice of read mapper depends, partly on preference, but mostly on the sequencing read length and application. For short reads, a common choice is bwa-mem, and for longer reads minimap2.\nIn what follows, we will assume that the sequencing protocol generates paired-end short reads (e.g., from Illumina). In practice, this means a DNA fragment has been sequenced from both ends, where fragment sizes have been selected such that reads do not overlap (i.e., there is unsequenced DNA between the reads of a given insert size).\nThe final output of read mapping is an alignment file in binary alignment map (BAM) format or variants thereof.\n3. Removal / marking of duplicate reads\nDuring sample preparation or DNA amplification with PCR, it may happen that a single DNA fragment is present in multiple copies and therefore produces redundant sequencing reads. This shows up as alignments with identical start and stop coordinates. These so-called duplicate reads should be marked prior to any downstream analyses. The most commonly used tools for this purpose are samtools markdup and picard MarkDuplicates.\n4. Variant calling and genotyping\nOnce BAM files have been produced, it is time for variant calling, which is the process of identifying sites where there sequence variation. There are many different variant callers, of which we will mention four.\nbcftools is a toolkit to process variant call files, but also has a variant caller command. We will use bcftools to look at and summarize the variant files.\nfreebayes uses a Bayesian model to call variants. It may be time-consuming in high-coverage regions, and one therefore may have to mask repetitive and other low-complexity regions.\nANGSD is optimized for low-coverage data. Genotypes aren’t called directly; rather, genotype likelihoods form the basis for all downstream analyses, such as calculation of diversity or other statistics.\nFinally, GATK HaplotypeCaller performs local realignment around variant candidates, which avoids the need to run the legacy GATK IndelRealigner. Realignment improves results but requires more time to run. GATK is optimized for human data. For instance, performance drops dramatically if the reference sequence consists of many short scaffolds/contigs, and there is a size limit to how large the chromosomes can be. It also requires some parameter optimization and has a fairly complicated workflow (Hansen, 2016).\nGATK best practice variant calling\nWe will base our work on the GATK Germline short variant discovery workflow. In addition to the steps outlined above, there is a step where quality scores are recalibrated in an attempt to correct errors produced by the base calling procedure itself.\nGATK comes with a large set of tools. For a complete list and documentation, see the “Tool Documentation Index” (2024).",
+    "crumbs": [
+      "Slides",
+      "Variant calling",
+      "Variant calling introduction"
+    ]
+  },
+  {
+    "objectID": "exercises/variant_calling/introduction.html#footnotes",
+    "href": "exercises/variant_calling/introduction.html#footnotes",
+    "title": "Variant calling introduction",
+    "section": "Footnotes",
+    "text": "Footnotes\n\nFor any shell command, use the option --help to print information about the commands and its options. zcat is a variant of the cat command that prints the contents of a file on the terminal; the z prefix shows the command works on compressed files, a common naming convention. head views the first lines of a file, and cut can be used to cut out columns from a tab-delimited file, or in this case, cut the longest strings to 30 characters width.↩︎\nFor more information, see unix pipelines↩︎",
+    "crumbs": [
+      "Slides",
+      "Variant calling",
+      "Variant calling introduction"
+    ]
+  },
+  {
+    "objectID": "exercises/datasets/monkeyflowers.html#sec-monkeyflower-model-system",
+    "href": "exercises/datasets/monkeyflowers.html#sec-monkeyflower-model-system",
+    "title": "Monkeyflowers dataset",
+    "section": "The monkeyflower model system",
+    "text": "The monkeyflower model system\nMonkeyflowers (Mimulus) have recently become a key model in evolution and plant biology (Pennisi, 2019). The monkeyflower system consists of 160–200 species that display an amazing phenotypic variation. The genome is small, only 207Mbp, which makes it an ideal candidate for genomics - and for computer exercises!",
+    "crumbs": [
+      "Slides",
+      "Exercises",
+      "Data",
+      "Monkeyflowers dataset"
+    ]
+  },
+  {
+    "objectID": "exercises/datasets/monkeyflowers.html#the-monkeyflower-genomic-landscape",
+    "href": "exercises/datasets/monkeyflowers.html#the-monkeyflower-genomic-landscape",
+    "title": "Monkeyflowers dataset",
+    "section": "The monkeyflower genomic landscape",
+    "text": "The monkeyflower genomic landscape\nRecently, Stankowski et al. (2019) used the monkeyflower system to investigate what forces affect the genomic landscape. Burri (2017) has suggested that background selection (BGS) is one of the main causes for correlations between genomic landscapes, and that one way to study this phenomenon is to look at closely related taxa. This is one of the objectives of the Stankowski et al. (2019) paper.\nThey performed whole-genome resequencing of 37 individuals from 7 subspecies and 2 ecotypes of Mimulus aurantiacus and its sister taxon M. clevelandii (Figure 1), all sampled in California (Figure 2).\n\n\n\n\n\nFigure 1: Evolutionary relationships across the radiation\n\n\n\n\n\n\n\n\n\nFigure 2: Sampling locations\n\n\nGenomewide statistics, such as diversity (\\(\\pi\\)), divergence (\\(d_{XY}\\)) and differentiation \\(F_{ST}\\), were calculated within and between taxa to generate genomic diversity landscapes. The landscapes were highly similar across taxa, and local variation in genomic features, such as gene density and recombination rate, was predictive of variation in landscape patterns. These features suggest the influence of selection, in particular BGS.\nAlthough many characteristics were predicted by a model where BGS is one of the main causes, there were deviations. Therefore, the authors performed simulations in SLiM (Haller & Messer, 2019) with alternative models to see whether other factors could explain the observed patterns.\nIn all, six scenarios were studied:\n\nneutral evolution\nBGS (non-neutral mutations are deleterious)\nBateson-Dobzhansky-Muller incompatibility (BDMI); after split, a fraction variants deleterious in one population, neutral in other\npositive selection\nBGS and positive selection\nlocal adaptation; as 4 but also after split some variants are beneficial in one population, neutral in other\n\nFigure 3 shows typical results of the simulations.\n\n\n\n\n\nFigure 3: Genomic landscapes simulated under different divergence histories.\n\n\nIn conclusion, the authors found that although BGS plays a role, it does not sufficiently explain all observations, and that other aspects of natural selection (such as rapid adaptation) are responsible for the similarities between genomic landscapes.\nA locus that previously had been associated with differentiation of red and yellow ecotypes was investigated in more detail. The locus is located on linkage group 4 (LG4), and we will be using both a 3Mbp region of interest (ROI) surronding the locus, and the whole linkage group, for different exercises.",
+    "crumbs": [
+      "Slides",
+      "Exercises",
+      "Data",
+      "Monkeyflowers dataset"
+    ]
+  },
+  {
+    "objectID": "exercises/datasets/monkeyflowers.html#data",
+    "href": "exercises/datasets/monkeyflowers.html#data",
+    "title": "Monkeyflowers dataset",
+    "section": "Data",
+    "text": "Data\nThe dataset consists of 37 samples (see Table 1 for example information). Raw sequence reads were downloaded from Sequence Read Archive (SRA), bioproject PRJNA549183 and mapped to the reference sequence M_aurantiacus_v1_splitline_ordered.fasta. Reads that mapped to the ROI were extracted and constitute the sequence data that will be used during the exercises.\n\n\n\nTable 1: Example of monkeyflower samples. See file sampleinfo.csv in data repository for full listing.\n\n\n\n\n\nSample\nRun\nScientificName\nSampleName\nTaxon\nLatitude\nLongitude\n\n\n\nSRS4979271\nSRR9309782\nDiplacus longiflorus\nLON-T33_1\nssp. longiflorus\n34.3438\n-118.5099\n\n\nSRS4979267\nSRR9309785\nDiplacus longiflorus\nLON-T8_8\nssp. longiflorus\n34.1347\n-118.6452\n\n\nSRS4979269\nSRR9309784\nErythranthe parviflora\nPAR-KK161\nssp. parviflorus\n34.0180\n-119.6730\n\n\nSRS4979266\nSRR9309787\nErythranthe parviflora\nPAR-KK168\nssp. parviflorus\n34.0180\n-119.6730\n\n\nSRS4979268\nSRR9309786\nErythranthe parviflora\nPAR-KK180\nssp. parviflorus\n34.0180\n-119.6730\n\n\nSRS4979265\nSRR9309789\nErythranthe parviflora\nPAR-KK182\nssp. parviflorus\n34.0193\n-119.6802\n\n\n\n\n\n\n\n\n\nPDC data storage\nThe monkeyflower dataset is located in PDC project pg_pgip_2025 at /cfs/klemming/projects/supr/pgip_2025/data/monkeyflower.\nOnline access\nIn addition, a pre-compiled dataset consisting of the files relevant for exercises is available from https://export.uppmax.uu.se/uppstore2017171/pgip/data/monkeyflower.\nGithub\nThe github repository pgip-data contains reference sequence and read data for 37 monkeyflower individuals for the region LG4:12,000,000-12,100,000. The data resides in the data/monkeyflower/tiny subdirectory. This data set is used as input data to render the website.\nThe repository hosts a Snakemake workflow to generate all data needed for the exercises.",
+    "crumbs": [
+      "Slides",
+      "Exercises",
+      "Data",
+      "Monkeyflowers dataset"
+    ]
+  },
+  {
+    "objectID": "exercises/index.html",
+    "href": "exercises/index.html",
+    "title": "Exercises",
+    "section": "",
+    "text": "All exercise pages start with a callout block that provides information on how to setup the relevant Compute environment. The callout blocks are labelled with icons that indicate the type of environment ( PDC resource;  local compute environment;  online browser-based resource). Make sure to read these instructions before proceeding with the exercise itself. Some of the documents include a link to an external URL that hosts the actual exercise instructions.\n\n\n\n\n\n\n Compute environment setup\n\n\n\n\n\nBefore proceeding, make sure to read Compute environment for information on how to prepare your working directory.",
+    "crumbs": [
+      "Slides",
+      "Exercises",
+      "Exercises"
+    ]
+  },
+  {
+    "objectID": "exercises/index.html#information",
+    "href": "exercises/index.html#information",
+    "title": "Exercises",
+    "section": "",
+    "text": "All exercise pages start with a callout block that provides information on how to setup the relevant Compute environment. The callout blocks are labelled with icons that indicate the type of environment ( PDC resource;  local compute environment;  online browser-based resource). Make sure to read these instructions before proceeding with the exercise itself. Some of the documents include a link to an external URL that hosts the actual exercise instructions.\n\n\n\n\n\n\n Compute environment setup\n\n\n\n\n\nBefore proceeding, make sure to read Compute environment for information on how to prepare your working directory.",
+    "crumbs": [
+      "Slides",
+      "Exercises",
+      "Exercises"
+    ]
+  },
+  {
+    "objectID": "exercises/index.html#on-self-assessment-exercise-blocks",
+    "href": "exercises/index.html#on-self-assessment-exercise-blocks",
+    "title": "Exercises",
+    "section": "On self-assessment exercise blocks",
+    "text": "On self-assessment exercise blocks\nScattered throughout the documents are exercise blocks, with hidden answers, and, in some cases, hints. The exercises are for self-assessment of your understanding, but they are not mandatory.\nSome of the exercises (labelled with the Linux penguin ) are related to the usage of the command line interfaces (CLI), and how to obtain information about what a program does. This is an essential skill when working in Linux/UNIX environments! These exercises can be skipped if you are an experienced Linux/UNIX user.\nAn example exercise is provided here:\n\n\n\n\n\n\nExample exercise block\n\n\n\n\n\n\n\n The ls command is used to list the contents of a directory. What option provides a so-called long listing format?\n\n\n\n\n\n\nHint\n\n\n\n\n\n\n\nType ls --help to show the options to ls.\n\n\n\n\n\n\n\n\n\n\n\nAnswer\n\n\n\n\n\n\n\nThe -l option uses the long listing format, i.e., the command to use is ls -l.",
+    "crumbs": [
+      "Slides",
+      "Exercises",
+      "Exercises"
+    ]
+  },
+  {
+    "objectID": "exercises/index.html#exercises",
+    "href": "exercises/index.html#exercises",
+    "title": "Exercises",
+    "section": "Exercises",
+    "text": "Exercises",
+    "crumbs": [
+      "Slides",
+      "Exercises",
+      "Exercises"
+    ]
+  },
+  {
+    "objectID": "slides/variant_calling/variant_calling.html#variant-and-genotype-calling",
+    "href": "slides/variant_calling/variant_calling.html#variant-and-genotype-calling",
+    "title": "Variant calling and genotyping",
+    "section": "Variant and genotype calling",
+    "text": "Variant and genotype calling\n\n\n\n\n\n\n\n\n\n\nNielsen et al. (2011)\n\n\n\nSNP calling\n\nIdentification of polymorphic sites (&gt;1% allele frequency)\n\nVariant calling\n\nIdentification of variant sites (sufficient that any allele differs); single nucleotide variant (SNV)\n\nGenotype calling\n\nDetermine the allele combination for each individual (aa, aA, or AA for bi-allelic variants)\n\n\n\nKnowing variant sites informs us of possible genotypes and improves genotyping.\nExample: knowing a site has A or C limits possible genotype calls to AA, AC, or CC\n\n\n\nFigure caption from (Nielsen et al., 2011):\n\nPre-processing steps (shown in yellow) transform the raw data from next-generation sequencing technology into a set of aligned reads that have a measure of confidence, or quality score, associated with the bases of each read. The per-base quality scores produced by base-calling algorithms may need to be recalibrated to accurately reflect the true error rates. Depending on the number of samples and the depth of coverage, either a multi-sample calling procedure (green) or a single-sample calling procedure (orange) may then be applied to obtain SNP or genotype calls and associated quality scores. Note that the multi-sample procedure may include a linkage-based analysis, which can substantially improve the accuracy of SNP or genotype calls. Finally, post-processing (purple) uses both known data and simple heuristics to filter the set of SNPs and/or improve the associated quality scores. Optional, although recommended, steps are shown in dashed lines.",
+    "crumbs": [
+      "Slides",
+      "Variant calling and genotyping"
+    ]
+  },
+  {
+    "objectID": "slides/variant_calling/variant_calling.html#variants-show-up-in-pileup-alignments",
+    "href": "slides/variant_calling/variant_calling.html#variants-show-up-in-pileup-alignments",
+    "title": "Variant calling and genotyping",
+    "section": "Variants show up in pileup alignments",
+    "text": "Variants show up in pileup alignments\n\n\n\nSample PUN-Y-INJ\n\n\n\n\nLG4:30430\n\n\n\n\n\n\nLG4:30430\n\n 30431     30441     30451     30461     30471              CATTGGCAATGGCATCAGTTGAGCATCTTAGTACGAACTAAAAGCTGCGAAAAAATATTT...............M...........................................................A...                               ,,,,,,,,,,...............A.................                 ,,,,,,,,,,..............................................      ,,,,,,,,..............................................              ..............................................              ...............A...........................................................A............................................,,,,,,,,,,,,a,,a,,,,,,,,,,,,,,,,,,,,,,,,,,,,a,,a,,,,,,,,,,,,,,,,,,,,,,,,,,,a,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,a,,,,,,,,,,,,,,,,,,,,,,a,,,,,aa,a,,,,,,,,,,,,,,,,,,,,,,,,,,,a,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,  ,,,,,,,,,,,,,a,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,\n\n\n\n\n\n\n\nSample PUN-R-ELF\n\n\n\n\nLG4:30430\n\n\n\n\n\n\nLG4:30430\n\n 30431     30441     30451     30461     30471              CATTGGCAATGGCATCAGTTGAGCATCTTAGTACGAACTAAAAGCTGCGAAAAAATATTT...............A............................................,,,,,,,                           .........................................A.....                  ....................................A...A....               ....................................A.........                                   ...............A...........C.............                   ,,,,,,,,,,,,,,,a,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,a,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,...............A............................................,,,,,,,,,,,,,,,a,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,a,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,a,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,a,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,...............A............................................,,,g,,,,,,,a,,,a,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,  .............A............................................\n\n\n\n\n\n\n\nPotential variants show up as multiple mismatches in a column. Two questions arise:\n\nhow do we detect variant sites?\nhow do we distinguish variants from sequencing error?\n\n\n\n\nSimple approach: filter bases on quality (e.g., Q20), call heterozygous if 20-80% bases non-reference.\nIssues: undercalls heterozygotes, no measure of uncertainty\n\n\nSolution: probabilistic methods!\n\n(Nielsen et al., 2011)\n\n\n\n\nPotential variants show up as multiple mismatches in a column. Left sample has three reads that match the reference so is probably heterozygote. For the right sample no read matches reference so most likely call is homozygote alternate.",
+    "crumbs": [
+      "Slides",
+      "Variant calling and genotyping"
+    ]
+  },
+  {
+    "objectID": "slides/variant_calling/variant_calling.html#we-can-calculate-likelihoods-of-observed-data",
+    "href": "slides/variant_calling/variant_calling.html#we-can-calculate-likelihoods-of-observed-data",
+    "title": "Variant calling and genotyping",
+    "section": "We can calculate likelihoods of observed data",
+    "text": "We can calculate likelihoods of observed data\nExample (excluding sequencing error!)\n\n\n\n\n\n\n\n\n\n\n\n\n\n   TGC.K....,,,.T..T....,,,,t,\n\n\n\n\n\n\nGoal: calculate likelihood of observing X=G,g,T,T,G,g,t from a genotype G. Denote by X_i the observation at each position i of X. We further assume each observation X_i can be treated independently. We restrict possible genotypes to the observed alleles (i.e., G, T). Some observations:\n\nProb(X_1=G assuming genotype G=T,T) = P(X_1=G|T,T) = 0\n\n\nProb(X_1=G assuming genotype G,G) = P(X_1=G|G,G) = 1\n\n\nProb(X_1=G assuming genotype G,T) = P(X_1=G|G,T) = 0.5\n\n\nTo get total likelihood P(X|G) assuming a genotype G (here G,T), we can multiply over all observations (reads):\n\n\\begin{align}\n    P(X|\\mathsf{G,T}) & = P(X_1=\\mathsf{G}|\\mathsf{G,T})%%\nP(X_2=\\mathsf{g}|\\mathsf{G,T})%%\nP(X_3=\\mathsf{T}|\\mathsf{G,T})%%\nP(X_4=\\mathsf{T}|\\mathsf{G,T}) \\\\\n    & P(X_5=\\mathsf{G}|\\mathsf{G,T})%%\n    P(X_6=\\mathsf{g}|\\mathsf{G,T})%%\n    P(X_7=\\mathsf{t}|\\mathsf{G,T}) = 0.5^7\n\\end{align}\n\n\n\n\nWe restrict the possible genotypes to the observed alleles at a site (here G and T). If there are more than two observed alleles, a common procedure is to pick the two with highest frequencies, under the assumption that the rarest observation is a sequencing error.\nIn reality, we also need to take into account sequencing error. There are different ways of doing this (e.g. Maruki & Lynch (2017), DePristo et al. (2011)), but we leave the details to the interested reader.",
+    "crumbs": [
+      "Slides",
+      "Variant calling and genotyping"
+    ]
+  },
+  {
+    "objectID": "slides/variant_calling/variant_calling.html#we-can-use-bayes-theorem-to-genotype",
+    "href": "slides/variant_calling/variant_calling.html#we-can-use-bayes-theorem-to-genotype",
+    "title": "Variant calling and genotyping",
+    "section": "We can use Bayes’ theorem to genotype",
+    "text": "We can use Bayes’ theorem to genotype\nExample\n\n\n\n\n\n\n\n\n\n\n\n\n\n   TGC.K....,,,.T..T....,,,,t,\n\n\n\n\n\n\nFor a given site, we have a number of observations X. We have shown we can calculate the likelihood of observing X given a genotype G, P(X|G).\n\nHowever; what we really want to know is the most likely genotype G given the data X, or P(G|X).\n\n\nApply Bayes’ theorem:\n\n\nP(G|X) \\sim P(X|G)\\cdot P(G)\n\n\n\n\n\n\\text{posterior} \\sim \\text{likelihood} \\cdot \\text{prior}\n\n\n\nConsequently we need to set a prior on G. If allele frequencies are known, we can constrain the frequencies; for example, if A is known to be low (\\sim1%) AA genotype is very unlikely. Otherwise, could set all equal (flat prior).\n\n\n\ncf https://gatk.broadinstitute.org/hc/en-us/articles/360035890511\nR. Li et al. (2009), Table 1, shows a nice numerical example of one way of setting priors. The authors assume a specific allele, G, in the reference sequence:\n–G–\nThey start by calculating the frequency of haploid genotypes. They first determine p_G by assuming a heterozygous SNP rate f=0.001, which means 1 in a 1000 sites has G/G genotype mutated to G/X, where X is one of {A,C,T}. They assume a transition to transversion (ts/tv) ratio of 4, meaning X=A four times as often as C or T (there is an error in the text where C is taken to be the transition; the numbers in the table are correct however). This gives the following haploid genotype frequencies:\n\\begin{align}\np_G & = 1-f = 0.999 \\\\\np_A & = 4f/6 = 6.67\\times10^{-4} \\\\\np_C & = f/6 = 1.67\\times10^{-4}\\\\\np_T & = f/6 =1.67\\times10^{-4}\n\\end{align}\nTo get the diploid genotypes, we simply multiply the corresponding entries, e.g., p_{AC} = p_Ap_C. For homozygote ALT, we need to account for the homozygous SNP rate r = 0.0005, where G/G mutates to X/X, for X one of {A,C,T}:\n\\begin{align}\np_{AA} & = p_Ap_A + 4r/6 = 3.33\\times10^{-4} \\\\\np_{AC} & = p_Ap_C = 1.11\\times10^{-7}\\\\\np_{AT} & = p_Ap_T = 1.11\\times10^{-7}\\\\\np_{CC} & = p_Cp_C + r/6 = 8.34\\times10^{-5} \\\\\np_{CG} & = p_Cp_G = 1.67\\times10^{-4}\\\\\np_{CT} & = p_Cp_T = 2.78\\times10^{-8}\\\\\np_{GG} & = 1 - f - r = 0.9985 \\\\\np_{GT} & = p_Gp_T = 1.67\\times10^{-4}\\\\\np_{TT} & = p_Tp_T + r = 8.34\\times10^{-5}\\\\\n\\end{align}",
+    "crumbs": [
+      "Slides",
+      "Variant calling and genotyping"
+    ]
+  },
+  {
+    "objectID": "slides/variant_calling/variant_calling.html#genotype-likelihoods",
+    "href": "slides/variant_calling/variant_calling.html#genotype-likelihoods",
+    "title": "Variant calling and genotyping",
+    "section": "Genotype likelihoods",
+    "text": "Genotype likelihoods\nWe have outlined a probabilistic approach to variant calling where we obtain a posterior probability of observing a genotype G given data X:\n\nP(G|X) \\sim P(X|G)P(G)\n\n\nAssuming a bi-allelic site, and letting H_1, H_2 denote the two alleles, we have three possible genotype likelihoods P(H_1H_1|X), P(H_1H_2|X), and P(H_2H_2|X).\n\n\nThe highest posterior probability is typically chosen as the genotype call, with a measure confidence represented by the genotype probability or ratio between the two most probable calls.\n\n\nGenotype likelihoods are often represented as Phred-scaled likelihoods (again!):\n\n\\text{QUAL} = -10 \\log_{10} P(G|X)",
+    "crumbs": [
+      "Slides",
+      "Variant calling and genotyping"
+    ]
+  },
+  {
+    "objectID": "slides/variant_calling/variant_calling.html#variant-call-format-vcf---header",
+    "href": "slides/variant_calling/variant_calling.html#variant-call-format-vcf---header",
+    "title": "Variant calling and genotyping",
+    "section": "Variant Call Format (VCF) - header",
+    "text": "Variant Call Format (VCF) - header\n\n\nbcftools view --header-only vcf/allsites.vcf.gz | head --lines 1\nbcftools view --header-only vcf/allsites.vcf.gz | grep \"##FILTER\"\nbcftools view -h vcf/allsites.vcf.gz | grep \"##INFO\" | head -n 4\nbcftools view -h vcf/allsites.vcf.gz | grep \"##FORMAT\" | head -n 8\n\n##fileformat=VCFv4.2\n##FILTER=&lt;ID=PASS,Description=\"All filters passed\"&gt;\n##FILTER=&lt;ID=LowQual,Description=\"Low quality\"&gt;\n##INFO=&lt;ID=AC,Number=A,Type=Integer,Description=\"Allele count in genotypes, for each ALT allele, in the same order as listed\"&gt;\n##INFO=&lt;ID=AF,Number=A,Type=Float,Description=\"Allele Frequency, for each ALT allele, in the same order as listed\"&gt;\n##INFO=&lt;ID=AN,Number=1,Type=Integer,Description=\"Total number of alleles in called genotypes\"&gt;\n##INFO=&lt;ID=BaseQRankSum,Number=1,Type=Float,Description=\"Z-score from Wilcoxon rank sum test of Alt Vs. Ref base qualities\"&gt;\n##FORMAT=&lt;ID=AD,Number=R,Type=Integer,Description=\"Allelic depths for the ref and alt alleles in the order listed\"&gt;\n##FORMAT=&lt;ID=DP,Number=1,Type=Integer,Description=\"Approximate read depth (reads with MQ=255 or with bad mates are filtered)\"&gt;\n##FORMAT=&lt;ID=GQ,Number=1,Type=Integer,Description=\"Genotype Quality\"&gt;\n##FORMAT=&lt;ID=GT,Number=1,Type=String,Description=\"Genotype\"&gt;\n##FORMAT=&lt;ID=MIN_DP,Number=1,Type=Integer,Description=\"Minimum DP observed within the GVCF block\"&gt;\n##FORMAT=&lt;ID=PGT,Number=1,Type=String,Description=\"Physical phasing haplotype information, describing how the alternate alleles are phased in relation to one another; will always be heterozygous and is not intended to describe called alleles\"&gt;\n##FORMAT=&lt;ID=PID,Number=1,Type=String,Description=\"Physical phasing ID information, where each unique ID within a given sample (but not across samples) connects records within a phasing group\"&gt;\n##FORMAT=&lt;ID=PL,Number=G,Type=Integer,Description=\"Normalized, Phred-scaled likelihoods for genotypes as defined in the VCF specification\"&gt;\n\n\nFILTER defines applied filters , INFO fields provide additional information to genotypes, FORMAT specification fields define genotype entries, and more. NB: PL format definition.\n\n\nhttps://samtools.github.io/hts-specs/VCFv4.4.pdf",
+    "crumbs": [
+      "Slides",
+      "Variant calling and genotyping"
+    ]
+  },
+  {
+    "objectID": "slides/variant_calling/variant_calling.html#variant-call-format-vcf---data",
+    "href": "slides/variant_calling/variant_calling.html#variant-call-format-vcf---data",
+    "title": "Variant calling and genotyping",
+    "section": "Variant Call Format (VCF) - data",
+    "text": "Variant Call Format (VCF) - data\n\nbcftools view --header-only --samples PUN-R-ELF,PUN-Y-INJ vcf/allsites.vcf.gz |\\\n tail --lines 1\nbcftools view --no-header  --samples PUN-R-ELF,PUN-Y-INJ vcf/allsites.vcf.gz LG4:6886\n\n#CHROM  POS ID  REF ALT QUAL    FILTER  INFO    FORMAT  PUN-R-ELF   PUN-Y-INJ\nLG4 6886    .   C   T   804.48  .   AC=2;AF=0.222;AN=4;BaseQRankSum=0;DP=82;ExcessHet=1.8123;FS=1.309;MLEAC=4;MLEAF=0.222;MQ=60;MQRankSum=0;QD=20.63;ReadPosRankSum=0.577;SOR=0.44  GT:AD:DP:GQ:PGT:PID:PL:PS   0/1:3,8:11:89:.:.:293,0,89:.    0/1:2,2:4:35:.:.:35,0,35:.\n\n\n\nQUAL: Phred-scaled quality score for Prob(ALT is wrong): 722.43 (p=10^{-Q/10}=5.7e-73)\nINFO field summarizes data for all samples. For instance:\n\nallele count 2 (AC=2)\nallele frequency minor allele 0.222 (AF=0.222)\n\n\n\nhttps://samtools.github.io/hts-specs/VCFv4.4.pdf",
+    "crumbs": [
+      "Slides",
+      "Variant calling and genotyping"
+    ]
+  },
+  {
+    "objectID": "slides/variant_calling/variant_calling.html#variant-call-format-vcf---data-1",
+    "href": "slides/variant_calling/variant_calling.html#variant-call-format-vcf---data-1",
+    "title": "Variant calling and genotyping",
+    "section": "Variant Call Format (VCF) - data",
+    "text": "Variant Call Format (VCF) - data\n\n\n#CHROM  POS ID  REF ALT QUAL    FILTER  INFO    FORMAT  PUN-R-ELF   PUN-Y-INJ\nLG4 6886    .   C   T   804.48  .   AC=2;AF=0.222;AN=4;BaseQRankSum=0;DP=82;ExcessHet=1.8123;FS=1.309;MLEAC=4;MLEAF=0.222;MQ=60;MQRankSum=0;QD=20.63;ReadPosRankSum=0.577;SOR=0.44  GT:AD:DP:GQ:PGT:PID:PL:PS   0/1:3,8:11:89:.:.:293,0,89:.    0/1:2,2:4:35:.:.:35,0,35:.\n\n\n\n\n\nGenotypes (GT:AD:DP:GQ:PGT:PID:PL:PS)\n\nPUN-R-ELF: 0/1:3,8:11:50:.:.:189,0,50:.\nGT=0/1, AD=3,8 =&gt; 3 REF, 8 ALT, DP=11 =&gt; sequence depth = 11, PL=189,0,50\nPUN-Y-INJ: 0/1:2,2:4:45:.:.:45,0,45:.\nGT=0/1, AD=2,2 =&gt; 2 REF, 2 ALT, DP=4 =&gt; sequence depth = 4, PL=45,0,45\n\n\nRelative genotype probabilities\n\nCan convert Phred-scaled quality scores to probabilities as\n\np = 10^{-Q/10}\n\nFor PUN-R-ELF the relative probabilities are 10^{-189/10}\\approx1.26e-9, 10^{0}=1, 10^{50}=10^{-5}.\nInterpretation: 0/1 10,000 times more likely than 1/1 (1/10^{-5})\n\n\n\n\n\n\n\nELF\n\n\n\n\n\n\nELF\n\n   TCT.Y..T.....T.,,,.T.,,,.T..........,t,,t,,t,,t,\n\n\n\n\n\n\n\nINJ\n\n\n\n\n\n\nINJ\n\n   TCT.Y..T....,,,,,,,,,.T.\n\n\n\n\n\nQUAL: Phred-scaled quality score for the assertion made in ALT. i.e. -10log_{10} prob(call in ALT is wrong)",
+    "crumbs": [
+      "Slides",
+      "Variant calling and genotyping"
+    ]
+  },
+  {
+    "objectID": "slides/variant_calling/variant_calling.html#gatk-best-practice",
+    "href": "slides/variant_calling/variant_calling.html#gatk-best-practice",
+    "title": "Variant calling and genotyping",
+    "section": "GATK best practice",
+    "text": "GATK best practice\n\n\n\n\n\n\n\n\nhttps://gatk.broadinstitute.org/hc/en-us/articles/360035535932-Germline-short-variant-discovery-SNPs-Indels-\n\n\n\nPros\n\n\nBest practices\nLarge documentation\nVariant quality score recalibration\n\n\nCons\n\n\nHuman-centric - very slow runtime on genomes with many sequences\nComplicated setup",
+    "crumbs": [
+      "Slides",
+      "Variant calling and genotyping"
+    ]
+  },
+  {
+    "objectID": "slides/variant_calling/variant_calling.html#alternative-variant-callers",
+    "href": "slides/variant_calling/variant_calling.html#alternative-variant-callers",
+    "title": "Variant calling and genotyping",
+    "section": "Alternative variant callers",
+    "text": "Alternative variant callers\n\n\nfreebayes\nBayesian genetic variant detector. Simpler setup.\nMay struggle in high-coverage regions.\n\n(Garrison & Marth, 2012)\n\n\nbcftools\nUtilities for variant calling and manipulating VCFs and BCFs.\n\n(Danecek et al., 2021)\n\n\nANGSD\nFor low-coverage sequencing. Doesn’t do explicit genotyping; most methods take genotype uncertainty into account.\n\n(Korneliussen et al., 2014)\n\n\n\nReference bias: plot no. hets vs coverage for real data, e.g., conifer\n\n\nNB: samtools and GATK may actually produce different genotypes despite having identical GLs. Samtools applies prior 10^{-3} to het call, GATK has no prior (H. Li, 2014)",
+    "crumbs": [
+      "Slides",
+      "Variant calling and genotyping"
+    ]
+  },
+  {
+    "objectID": "slides/variant_calling/variant_calling.html#bibliography",
+    "href": "slides/variant_calling/variant_calling.html#bibliography",
+    "title": "Variant calling and genotyping",
     "section": "Bibliography",
-    "text": "Bibliography\n\n\nFuller, Z. L., Mocellin, V. J. L., Morris, L. A., Cantin, N., Shepherd, J., Sarre, L., Peng, J., Liao, Y., Pickrell, J., Andolfatto, P., Matz, M., Bay, L. K., & Przeworski, M. (2020). Population genetics of the coral Acropora millepora: Toward genomic prediction of bleaching. Science, 369(6501), eaba4674. https://doi.org/10.1126/science.aba4674\n\n\nHahn, M. (2019). Molecular Population Genetics (First). Oxford University Press.\n\n\nHartl, D. L., & Clark, A. G. (1997). Principles of population genetics. Sinauer Associates.\n\n\nJohri, P., Aquadro, C. F., Beaumont, M., Charlesworth, B., Excoffier, L., Eyre-Walker, A., Keightley, P. D., Lynch, M., McVean, G., Payseur, B. A., Pfeifer, S. P., Stephan, W., & Jensen, J. D. (2022). Recommendations for improving statistical inference in population genomics. PLOS Biology, 20(5), e3001669. https://doi.org/10.1371/journal.pbio.3001669\n\n\nLi, H., & Durbin, R. (2011). Inference of human population history from individual whole-genome sequences. Nature, 475(7357), 493–496. https://doi.org/10.1038/nature10231"
+    "text": "Bibliography\n\n\n\n\n\n\n\n\n\n\n\n\nDanecek, P., Bonfield, J. K., Liddle, J., Marshall, J., Ohan, V., Pollard, M. O., Whitwham, A., Keane, T., McCarthy, S. A., Davies, R. M., & Li, H. (2021). Twelve years of SAMtools and BCFtools. GigaScience, 10(2), giab008. https://doi.org/10.1093/gigascience/giab008\n\n\nDePristo, M. A., Banks, E., Poplin, R., Garimella, K. V., Maguire, J. R., Hartl, C., Philippakis, A. A., del Angel, G., Rivas, M. A., Hanna, M., McKenna, A., Fennell, T. J., Kernytsky, A. M., Sivachenko, A. Y., Cibulskis, K., Gabriel, S. B., Altshuler, D., & Daly, M. J. (2011). A framework for variation discovery and genotyping using next-generation DNA sequencing data. Nature Genetics, 43(5), 491–498. https://doi.org/10.1038/ng.806\n\n\nGarrison, E., & Marth, G. (2012). Haplotype-based variant detection from short-read sequencing. arXiv:1207.3907 [q-Bio]. http://arxiv.org/abs/1207.3907\n\n\nKorneliussen, T. S., Albrechtsen, A., & Nielsen, R. (2014). ANGSD: Analysis of Next Generation Sequencing Data. BMC Bioinformatics, 15(1), 356. https://doi.org/10.1186/s12859-014-0356-4\n\n\nLi, H. (2014). Toward better understanding of artifacts in variant calling from high-coverage samples. Bioinformatics, 30(20), 2843–2851. https://doi.org/10.1093/bioinformatics/btu356\n\n\nLi, R., Li, Y., Fang, X., Yang, H., Wang, J., Kristiansen, K., & Wang, J. (2009). SNP detection for massively parallel whole-genome resequencing. Genome Research, 19(6), 1124–1132. https://doi.org/10.1101/gr.088013.108\n\n\nMaruki, T., & Lynch, M. (2017). Genotype Calling from Population-Genomic Sequencing Data. G3 Genes|Genomes|Genetics, 7(5), 1393–1404. https://doi.org/10.1534/g3.117.039008\n\n\nNielsen, R., Paul, J. S., Albrechtsen, A., & Song, Y. S. (2011). Genotype and SNP calling from next-generation sequencing data. Nature Reviews Genetics, 12(6), 443–451. https://doi.org/10.1038/nrg2986",
+    "crumbs": [
+      "Slides",
+      "Variant calling and genotyping"
+    ]
+  },
+  {
+    "objectID": "slides/variant_calling/index.html",
+    "href": "slides/variant_calling/index.html",
+    "title": "Variant calling",
+    "section": "",
+    "text": "Collection of presentations on DNA sequencing and variant calling.",
+    "crumbs": [
+      "Slides",
+      "Variant calling"
+    ]
+  },
+  {
+    "objectID": "slides/variant_calling/index.html#about",
+    "href": "slides/variant_calling/index.html#about",
+    "title": "Variant calling",
+    "section": "",
+    "text": "Collection of presentations on DNA sequencing and variant calling.",
+    "crumbs": [
+      "Slides",
+      "Variant calling"
+    ]
+  },
+  {
+    "objectID": "slides/variant_calling/index.html#listing",
+    "href": "slides/variant_calling/index.html#listing",
+    "title": "Variant calling",
+    "section": "Listing",
+    "text": "Listing\n\n\n   \n    \n    \n      Order By\n      Default\n      \n        Title\n      \n      \n        Author\n      \n    \n  \n    \n      \n      \n    \n\n\n\n\n\n\nTitle\n\n\n\nAuthor\n\n\n\n\n\n\n\n\nRead mapping\n\n\nPer Unneberg\n\n\n\n\n\n\nVariant calling and genotyping\n\n\nPer Unneberg\n\n\n\n\n\n\nVariant calling workflows\n\n\nPer Unneberg\n\n\n\n\n\n\nNo matching items",
+    "crumbs": [
+      "Slides",
+      "Variant calling"
+    ]
+  },
+  {
+    "objectID": "slides/foundations/index.html",
+    "href": "slides/foundations/index.html",
+    "title": "Population genetics foundations",
+    "section": "",
+    "text": "Collection of short presentations on population genetic theory and foundations",
+    "crumbs": [
+      "Slides",
+      "Population genetics foundations"
+    ]
+  },
+  {
+    "objectID": "slides/foundations/index.html#about",
+    "href": "slides/foundations/index.html#about",
+    "title": "Population genetics foundations",
+    "section": "",
+    "text": "Collection of short presentations on population genetic theory and foundations",
+    "crumbs": [
+      "Slides",
+      "Population genetics foundations"
+    ]
+  },
+  {
+    "objectID": "slides/foundations/index.html#listing",
+    "href": "slides/foundations/index.html#listing",
+    "title": "Population genetics foundations",
+    "section": "Listing",
+    "text": "Listing\n\n\n   \n    \n    \n      Order By\n      Default\n      \n        Title\n      \n      \n        Author\n      \n    \n  \n    \n      \n      \n    \n\n\n\n\n\n\nTitle\n\n\n\nAuthor\n\n\n\n\n\n\n\n\nData and definitions\n\n\nPer Unneberg\n\n\n\n\n\n\nNo matching items",
+    "crumbs": [
+      "Slides",
+      "Population genetics foundations"
+    ]
+  },
+  {
+    "objectID": "slides/index.html",
+    "href": "slides/index.html",
+    "title": "Slides",
+    "section": "",
+    "text": "A note on usage\nHtml slides have been authored using revealjs and can be viewed directly in the browser. In some cases, there are accompanying speaker notes that can be viewed by pressing s. Whenever there is a  symbol, it links to a recipe that is related to the figure or content on the active slide.\n\n\nSlides\n\n\n\n\n\n\n\nPopulation genomics in practice\n\n\nWhat is population genomics?\n\n\n\nPer Unneberg\n\n\n\n\n\n\n\n\n\n\nPopulation genetics foundations\n\n\n\nPer Unneberg\n\n\n\n\n\n\n\n\n\n\nVariant calling\n\n\n\nPer Unneberg\n\n\n\n\n\n\nNo matching items",
+    "crumbs": [
+      "Slides",
+      "Slides"
+    ]
   },
   {
     "objectID": "index.html",
@@ -21,10 +412,587 @@
     "text": "Important\n\n\n\nThis website is work in progress."
   },
   {
-    "objectID": "slides/index.html",
-    "href": "slides/index.html",
-    "title": "Slides",
+    "objectID": "slides/pgip/index.html#intended-learning-outcomes",
+    "href": "slides/pgip/index.html#intended-learning-outcomes",
+    "title": "Population genomics in practice",
+    "section": "Intended learning outcomes",
+    "text": "Intended learning outcomes\nCourse\n\nPresent minimum toolkit of methods that should be known to anyone starting out in population genomics\nSufficiently small for one-week workshop\n\nLecture\n\nPresent practical example of toolkit as applied in (Fuller et al., 2020)\nBriefly discuss baseline model (Johri et al., 2022)\n\n\nAim of lecture is to:\n\npresent a practical application of commonly used methods in population genomics\nlink population genomics to population genetics\ndiscuss statistical inference and the need of a baseline model with which to compare observations and conclusions\n\nWhat is population genomics?\nPoints from (Hahn, 2019, pp. 249–250):\n\nwhole-genome data instead of single loci - population genomics is population genetics for whole-genome sequences\n\nif only this, not too exciting\n\nmajor promise: enables analyses not possible for single loci or that require genomic context\naddresses interactions between different forces, notably selection and demographic history\n\nSome applications\n\ngenome-wide scans for selection\n\nselection vs demography (p. 251)\n\nmethods for genome-wide scans (p. 258)\n\nCaveats\n\nnon-independence (p. 267)\n\ndifferent statistics rely on similar input\noverlapping peaks from different statistics not independent\n\n\nGeneral points\n(Hartl & Clark, 1997, pp. 469–470):\n\nmore emphasis on differences within populations\ngoal: understand differences among genomes -&gt; requires complete sequence data from multiple individuals\n\n(Li & Durbin, 2011, supplementary notes, p. 6) on the use of PSMC on autosomes:\n“…highly consistent except for the very recent history, demonstrating the power of using whole-genome data.”",
+    "crumbs": [
+      "Slides",
+      "Population genomics in practice"
+    ]
+  },
+  {
+    "objectID": "slides/pgip/index.html#example-population-genetics-of-the-coral-acropora-millepora",
+    "href": "slides/pgip/index.html#example-population-genetics-of-the-coral-acropora-millepora",
+    "title": "Population genomics in practice",
+    "section": "Example: Population genetics of the coral Acropora millepora",
+    "text": "Example: Population genetics of the coral Acropora millepora\n\n\nMotivation: corals are facing hard times and to prevent future losses of coral cover a better understanding of genetics is warranted.\n\nGenome assembly and sampling\nMotivation: most analyses require a reference sequence with which to compare resequenced samples\n\nAssemble high-quality reference genome\nChoice of populations, sampling locations\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nFigure 1: Genome assembly by hybrid sequencing (A) 253 individuals from 12 reefs (B) PCA with environmental and spatial variables (C) phenotype distributions (D)\n\n\n\n\nFuller et al. (2020)\n\n\n\n\n(Fuller et al., 2020) is an example of a population genomics study that applies methods that could be seen as a basic foundation of population genomics. We believe these present a minimum toolkit of methods that should be known to anyone starting out in population genomics, and that is sufficiently small to be presented in a one-week workshop. At the end of this lecture, we will discuss some more advanced applications in population genomics.\nFigure caption:\n\nGenome assembly and sample collection for A. millepora. (A) A de novo assembly for the A. millepora genome was constructed by using a hybrid sequencing approach. The alignment of reads generated from two pools of aposymbiotic larvae was used to filter out symbiont contigs (fig. S3). Assembled coral contigs were aligned to previously published linkage maps (19, 80) to create a chromosome-scale assembly. (B) A total of 253 individuals were collected from across 12 reefs on the GBR in 2017. The size of the circles represents the number of individuals collected at each site, and the circles are colored according to the bleaching severity at each reef. The maximum degree heating weeks (DHW) is shown across the region from which samples were collected (and across the GBR in the inset). The spatial layer of DHW represents interpolated maximum values from the National Oceanic and Atmospheric Administration Coral Reef Watch (CRW) v3.1 satellite product at a resolution of 5 km. Each reef label is colored arbitrarily but consistent with labels presented in other figures. AN, Arlington Reef; FY, Fitzroy Reef; RL, Russell Island; CS, Coates Reef; FR, Feather Reef; NB, North Barnard Islands; TR, Taylor Reef; DK, Dunk Island; RB, Rib Reef; PA, Pandora Reef; JB, John Brewer Reef; HH, Havannah Island. (C) A PCA was performed for 40 environmental and spatial variables for each reef, with abbreviations in bold representing their location. The component loads for each environmental variable projected on the first two principal components are depicted with arrows. (D) The distribution of visual scores, chlorophyll abundance standardized by host coral protein content, and standardized symbiont cell densities among the collected individuals for which phenotype measurement was possible. A visual score of 1 indicates severe bleaching, whereas a score of 6 represents full pigmentation.at a resolution of 5 km. Each reef label is colored arbitrarily but consistent with labels presented in other figures. AN, Arlington Reef; FY, Fitzroy Reef; RL, Russell Island; CS, Coates Reef; FR, Feather Reef; NB, North Barnard Islands; TR, Taylor Reef; DK, Dunk Island; RB, Rib Reef; PA, Pandora Reef; JB, John Brewer Reef; HH, Havannah Island. (C) A PCA was performed for 40 environmental and spatial variables for each reef, with abbreviations in bold representing their location. The component loads for each environmental variable projected on the first two principal components are depicted with arrows. (D) The distribution of visual scores, chlorophyll abundance standardized by host coral protein content, and standardized symbiont cell densities among the collected individuals for which phenotype measurement was possible. A visual score of 1 indicates severe bleaching, whereas a score of 6 represents full pigmentation.\n\nGenome assembly and sampling\nWhy: most analyses require a reference sequence with which to compare resequenced samples\nPoints to consider:\n\nchoice of reference individual\nthe number of populations\nthe number of samples (more sites better than many samples per population)\nthe geographical distribution of samples\nsequencing depth (low-coverage often sufficient)",
+    "crumbs": [
+      "Slides",
+      "Population genomics in practice"
+    ]
+  },
+  {
+    "objectID": "slides/pgip/index.html#example-population-genetics-of-the-coral-acropora-millepora-1",
+    "href": "slides/pgip/index.html#example-population-genetics-of-the-coral-acropora-millepora-1",
+    "title": "Population genomics in practice",
+    "section": "Example: Population genetics of the coral Acropora millepora",
+    "text": "Example: Population genetics of the coral Acropora millepora\n\n\nMotivation: corals are facing hard times and to prevent future losses of coral cover a better understanding of genetics is warranted.\nDescribe genetic structure and demographic history\nMotivation:\n\naddress basic question of why genetic structure looks the way it does\ndemographic history may generate signals similar to selection\n\n\n\n\n\n\n\n\n\nFigure 2: Variation and demographic history inferred from 44 resequenced individuals. LD decay (r^2) from 1% of markers (A) nucleotide diversity (\\pi) in 1kb-windows (B) effective population sizes (\\mathrm{N_e}) estimated with PSMC (C)\n\n\n\n\n\nFuller et al. (2020)\n\n\n\nFigure caption:\n\nProperties of genetic variation and inferred demographic history in sampled A. millepora. (A) The decay of LD, measured as the squared genotypic correlation coefficient (r2), was estimated for a randomly chosen 1% of SNPs by using all sequenced samples. Each point represents the mean r2 in bins of 100 bp. (B) Nucleotide diversity was measured by the average pairwise differences per base pair (p) (86) for SNPs in 1-kb windows, using intergenic regions genome-wide. (C) Effective population sizes (Ne) inferred from 44 sequenced A. millepora genomes by using PSMC (35), assuming a mutation rate m of 4 × 10−9 per base pair per generation (20, 34). Although an error in the estimate of m will lead to a rescaling of both axes, it will not affect the qualitative conclusion of a decline in Ne toward the present. The x axis is scaled in terms of generations. This approach provides very little information about the recent past (here, less than ~104 generations).\n\nVariation and demographic history\nWhy: summarizing diversity provides (indirect) information on population size and more, as does the linkage structure. Estimate demographic history since fluctuating population size may produce signals similar to those of selection\n\nLD decay: important for imputation (e.g., stephens_AccountingDecayLinkage_2005) and setting window size for genome scans, where a common rule of thumb is to set the size larger than the genome background: this ensures windows are, in some sense, independent\n“The extent of LD and its decay with genetic distance are useful parameters for determining the number of markers needed to successfully map a QTL, and the resolution with which the trait can be successfully mapped” [otyama_EvaluationLinkageDisequilibrium_2019]\n0.363% average pi, but large variation.\nmany psmc plots show decline in population size, which could be an effect of bottleneck during pleistocene. Also population divergence (ghost ancestral populations, splits, extinction) can affect population size\nin aDNA studies missingness is common (i.e., heterozygotes are underestimated) and has to be accounted for since coalescence times are affected and may influence estimate of population size",
+    "crumbs": [
+      "Slides",
+      "Population genomics in practice"
+    ]
+  },
+  {
+    "objectID": "slides/pgip/index.html#example-population-genetics-of-the-coral-acropora-millepora-2",
+    "href": "slides/pgip/index.html#example-population-genetics-of-the-coral-acropora-millepora-2",
+    "title": "Population genomics in practice",
+    "section": "Example: Population genetics of the coral Acropora millepora",
+    "text": "Example: Population genetics of the coral Acropora millepora\n\n\nMotivation: corals are facing hard times and to prevent future losses of coral cover a better understanding of genetics is warranted.\nCharacterize population structure\nMotivation:\n\nidentify populations for contrasts in e.g. selection scans\nidentify admixed individuals that should be removed from analyses\nidentify barriers to gene flow etc\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nFigure 3: Characterizing population structure and gene flow across 12 refs. F_{\\mathrm{ST}} measure across geographic distance (A) PCA from LD-pruned genome-wide SNPs for 44 resequenced samples (B) estimation of relative effective migration surface from LD-pruned and common (MAF &gt; 5%) SNPs (C)\n\n\n\n\nFuller et al. (2020)\n\n\n\n\nCharacterizing population structure and gene flow across 12 reefs. (A) There is no discernable relationship between geographic distance and genetic differentiation (measured as FST) across pairwise comparisons of sampled reefs. (B) A PCA by using LD-pruned genome-wide SNPs for the 44 resequenced high-coverage genomes. Each point is color-coded by the reef from which the individual was sampled. (C) EEMS (39) was used to estimate and visualize the relative effective migration surface by using LD-pruned and common (MAF &gt; 5%) genome-wide SNPs for the 44 resequenced high-coverage genomes. The size of the dots reflects the number of individuals sequenced from each reef.\n\nPopulation structure:\nWhy: many reasons: 1) identifying populations for contrasts in e.g. selection scans 2) identify admixed individuals that should be removed from analyses 3) identify barriers to gene flow etc\n\nno discernible relationship between geographic distance and genetic differentiation -&gt; gene flow\n\nfor this reason, Fst between populations is low\n\nEEMS (Estimated Effective Migration Surfaces) models relationship between genetics and geography petkova_VisualizingSpatialPopulation_2016\n\nIndicative of high connectivity among 12 sampled reefs.",
+    "crumbs": [
+      "Slides",
+      "Population genomics in practice"
+    ]
+  },
+  {
+    "objectID": "slides/pgip/index.html#example-population-genetics-of-the-coral-acropora-millepora-3",
+    "href": "slides/pgip/index.html#example-population-genetics-of-the-coral-acropora-millepora-3",
+    "title": "Population genomics in practice",
+    "section": "Example: Population genetics of the coral Acropora millepora",
+    "text": "Example: Population genetics of the coral Acropora millepora\n\n\nMotivation: corals are facing hard times and to prevent future losses of coral cover a better understanding of genetics is warranted.\nGenomic scans for selection\nMotivation: identify loci associated with adaptation / selection\n\nlittle differentiation over reefs, however thermal regimes\ngenomic scan for \\pi (diversity) outliers\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nFigure 4: Genomic scans for local adaptation detect a signal at sacsin. Nucleotide diversity (\\pi) in 1kb-window, values in top 0.01% genome-wide in red (A, top). Close-up view around sacsin gene, with predicted gene structure above (A, bottom). h12 summary statistic showing the frequence of the two most common haplotypes (B). sacsin gene tree (blue) together with random gene trees, indicating deep genealogy at sacsin (C)\n\n\n\n\nFuller et al. (2020)\n\n\n\n\nGenomic scans for local adaptation detect a signal at sacsin. (A) (Top) Values of pairwise nucleotide diversity (π) (86) estimated in sliding windows of 1 kb and a step-size of 500 bp across chromosome 7, with points colored in red indicating regions in the top 0.01% of values genome-wide. A loess-smoothed trend line of π across windows is indicated in purple. The peak with the most extreme values falls in the sacsin gene region. (Bottom) A close-up view of π estimated across a region of chromosome 7 surrounding the sacsin gene, which includes all of the outlier windows indicated in red at top. π per base pair was calculated in sliding windows of 100 bp (gray dots); the loess-smoothed line is shown in blue. The predicted gene structure of sacsin is indicated above, as well as the flanking upstream and downstream genes. The 29 nonsynonymous differences fixed between samples of the two most common haplotypes in sacsin are denoted with green lines. There are also 20 fixed synonymous differences. Gray vertical dashed lines delimit a region that was masked from variant calling because of predicted repetitive elements. (B) The h12 summary statistic (47), which measures the frequency of the two most common haplotypes, is plotted across chromosome 7 (supplementary materials, materials and methods). Red dots represent h12 values in the top 0.01% genome-wide. The peak with the most extreme values falls in the sacsin gene region. (C) A gene tree for the central 1-kb region in sacsin is shown in dark blue; it was constructed for one randomly chosen haplotype from a randomly selected individual from each of the 12 sampled reefs. The gene tree is rooted to aligned sequences from the reference genomes for A. digitifera (87) and A. tenuis (draft assembly from &lt;www.reefgenomics.org&gt;). Shown in gray are gene trees for 1000 randomly sampled 1-kb regions from across the genome for the same individuals. Each gene tree was inferred by using maximum likelihood implemented in dnaml (88).\n\nSelection scan\nWhy: identify loci associated with adaptation / selection, which provides potential mechanisms for adaptation, as well as information that could be important for conservation strategies\nLittle differentiation across reefs -&gt; little population structure over hundreds of kilometers. However, there are environmental differences (thermal regimes). Scan for pi outliers:\n\npoints to sacsin gene\nh12 measures the frequency of the two most common haplotypes; red indicate 0.01% outlier genome-wide\n4C: tree for central 1kb region in sacsin deeper than split from A.digitifera and A.tenuis\n\nvariation in sacsin has been maintained for long time\nco-chaperone for heat-shock protein Hsp70",
+    "crumbs": [
+      "Slides",
+      "Population genomics in practice"
+    ]
+  },
+  {
+    "objectID": "slides/pgip/index.html#example-population-genetics-of-the-coral-acropora-millepora-4",
+    "href": "slides/pgip/index.html#example-population-genetics-of-the-coral-acropora-millepora-4",
+    "title": "Population genomics in practice",
+    "section": "Example: Population genetics of the coral Acropora millepora",
+    "text": "Example: Population genetics of the coral Acropora millepora\nStudy highlights common analyses in population genomics study:\n\nGenome assembly, resequencing, variant calling and filtering\nDescription of variation (e.g., \\pi) and genetic structure (LD)\nDescription of population structure (admixture, PCA)\nModelling of demographic history (PSMC)\nGenome scans for adaptive traits",
+    "crumbs": [
+      "Slides",
+      "Population genomics in practice"
+    ]
+  },
+  {
+    "objectID": "slides/pgip/index.html#population-genetics",
+    "href": "slides/pgip/index.html#population-genetics",
+    "title": "Population genomics in practice",
+    "section": "Population genetics",
+    "text": "Population genetics\n\n\n \n\n\nMutation\n\n\n\nSelection\n\n\n\n \n\n\nRecombination\n\n\n\nDrift\n\n\n\n\n(Fuller et al., 2020) paper has population genetics in title -&gt; population genetics is a key ingredient.\nPopulation genetics focuses on the genetic basis of evolution. It is mainly a theoretical subject, owing to the slow changes of genetic variation. As such, it tries to explain the shape and structure of genetic variation from theoretical predictions and models.",
+    "crumbs": [
+      "Slides",
+      "Population genomics in practice"
+    ]
+  },
+  {
+    "objectID": "slides/pgip/index.html#from-population-genetics-to-population-genomics",
+    "href": "slides/pgip/index.html#from-population-genetics-to-population-genomics",
+    "title": "Population genomics in practice",
+    "section": "From population genetics to population genomics",
+    "text": "From population genetics to population genomics\n\n\n\n\n\n\n\n\n\nThe variable sites at the Drosophila melanogaster ADH locus (Kreitman, 1983)\n\n\n\n\nFirst study of natural population. However, limited to one locus.\n\n\nfrom locus-based studies (e.g., alcohol dehydrogenase in Drosophila (Kreitman, 1983)) to genome-wide (e.g., Drosophila population genomics (Begun et al., 2007)\nnote: studied loci have often not been randomly chosen, which is another argument for whole-genome studies\nenabler: sequencing technology\n\n(Fuller et al., 2020) paper has population genetics in title -&gt; population genetics is a key ingredient.\nRefer to Hahn’s points about learning something about global patterns:\n\nselection acts locally, demography globally\nthe structure of genetic variation and how it depends on\n\nrecombination landscapes and linked selection\ndemographic changes\nidentification of neutral loci\n\n\nSo, not simply about applying 10000 selection tests for multiple loci\nAll of the points above point to the importance of statistics which implies mathematics / computational skills important",
+    "crumbs": [
+      "Slides",
+      "Population genomics in practice"
+    ]
+  },
+  {
+    "objectID": "slides/pgip/index.html#from-population-genetics-to-population-genomics-1",
+    "href": "slides/pgip/index.html#from-population-genetics-to-population-genomics-1",
+    "title": "Population genomics in practice",
+    "section": "From population genetics to population genomics",
+    "text": "From population genetics to population genomics\n\n\n\n\nPatterns of polymorphism and divergence (Begun et al., 2007)\n\n\n\nSame system but genome-wide. Plots represent all chromosomes and the entire genome.\n\nBegun et al. (2007) study: same system (Drosophila) but more individuals and whole genome. All of a sudden possible to ask questions about the general characteristics of diversity, not just limited to single loci.",
+    "crumbs": [
+      "Slides",
+      "Population genomics in practice"
+    ]
+  },
+  {
+    "objectID": "slides/pgip/index.html#from-population-genetics-to-population-genomics-2",
+    "href": "slides/pgip/index.html#from-population-genetics-to-population-genomics-2",
+    "title": "Population genomics in practice",
+    "section": "From population genetics to population genomics",
+    "text": "From population genetics to population genomics\n\n\n\n\n\n\n\n\n\nNumbers of polymorphic and fixed variants (Begun et al., 2007)\n\n\n\n\nNovelty: now possible to do genome-wide characterization of variation in different functional contexts\n\nNovelty: now possible to do genome-wide characterization of variation in different functional contexts",
+    "crumbs": [
+      "Slides",
+      "Population genomics in practice"
+    ]
+  },
+  {
+    "objectID": "slides/pgip/index.html#the-technological-revolution-in-sequencing-and-computing",
+    "href": "slides/pgip/index.html#the-technological-revolution-in-sequencing-and-computing",
+    "title": "Population genomics in practice",
+    "section": "The technological revolution in sequencing and computing",
+    "text": "The technological revolution in sequencing and computing\n\n\n\n\n\n\n\n\n\n\nFigure 5: Sequencing cost ($) per megabase (Wetterstrand, KA)\n\n\n\n\n\n\n\n\n\nMoore’s law",
+    "crumbs": [
+      "Slides",
+      "Population genomics in practice"
+    ]
+  },
+  {
+    "objectID": "slides/pgip/index.html#statistical-inference-in-population-genomics",
+    "href": "slides/pgip/index.html#statistical-inference-in-population-genomics",
+    "title": "Population genomics in practice",
+    "section": "Statistical inference in population genomics",
+    "text": "Statistical inference in population genomics\nThe data deluge requires advanced statistical methods and models to do inference. Today data production outpaces theoretical advances. Therefore, take care not to attach too much faith to a test that explains data well.\n\nA population genomics study should aim at generating a baseline model that takes into account the processes that shape genetic variation (Johri et al., 2022):\n\nmutation\nrecombination\ngene conversion\npurifying selection acting on functional regions and its effects on linked variants (background selection)\ngenetic drift with demographic history and geographic structure\n\n\n\nCaution against adaptationist storytelling; always compare to a baseline model that takes potential confounding factors into account",
+    "crumbs": [
+      "Slides",
+      "Population genomics in practice"
+    ]
+  },
+  {
+    "objectID": "slides/pgip/index.html#applications-of-population-genomics",
+    "href": "slides/pgip/index.html#applications-of-population-genomics",
+    "title": "Population genomics in practice",
+    "section": "Applications of population genomics",
+    "text": "Applications of population genomics\n\n\n\n\n\nConservation genomics (Webster et al., 2023)\n\n\n\n\n\n\n\nSpeciation genomics (Stankowski et al., 2019)\n\n\n\n\n\n\n\ndisentangle forces that create variation (Rodrigues et al., 2024)\n\n\n\n\n\n\n\npaleogenomics (aDNA) (van der Valk et al., 2021)\n\n\n\n\n\n\n\ndomestication (Barrera-Redondo et al., 2020)\n\n\n\n\n\n\n\necology (Unneberg et al., 2024)",
+    "crumbs": [
+      "Slides",
+      "Population genomics in practice"
+    ]
+  },
+  {
+    "objectID": "slides/pgip/index.html#bibliography",
+    "href": "slides/pgip/index.html#bibliography",
+    "title": "Population genomics in practice",
+    "section": "Bibliography",
+    "text": "Bibliography\n\n\nBarrera-Redondo, J., Piñero, D., & Eguiarte, L. E. (2020). Genomic, Transcriptomic and Epigenomic Tools to Study the Domestication of Plants and Animals: A Field Guide for Beginners. Frontiers in Genetics, 11.\n\n\nBegun, D. J., Holloway, A. K., Stevens, K., Hillier, L. W., Poh, Y.-P., Hahn, M. W., Nista, P. M., Jones, C. D., Kern, A. D., Dewey, C. N., Pachter, L., Myers, E., & Langley, C. H. (2007). Population Genomics: Whole-Genome Analysis of Polymorphism and Divergence in Drosophila simulans. PLOS Biology, 5(11), e310. https://doi.org/10.1371/journal.pbio.0050310\n\n\nFuller, Z. L., Mocellin, V. J. L., Morris, L. A., Cantin, N., Shepherd, J., Sarre, L., Peng, J., Liao, Y., Pickrell, J., Andolfatto, P., Matz, M., Bay, L. K., & Przeworski, M. (2020). Population genetics of the coral Acropora millepora: Toward genomic prediction of bleaching. Science, 369(6501), eaba4674. https://doi.org/10.1126/science.aba4674\n\n\nHahn, M. (2019). Molecular Population Genetics (First). Oxford University Press.\n\n\nHartl, D. L., & Clark, A. G. (1997). Principles of population genetics. Sinauer Associates.\n\n\nJohri, P., Aquadro, C. F., Beaumont, M., Charlesworth, B., Excoffier, L., Eyre-Walker, A., Keightley, P. D., Lynch, M., McVean, G., Payseur, B. A., Pfeifer, S. P., Stephan, W., & Jensen, J. D. (2022). Recommendations for improving statistical inference in population genomics. PLOS Biology, 20(5), e3001669. https://doi.org/10.1371/journal.pbio.3001669\n\n\nKreitman, M. (1983). Nucleotide polymorphism at the alcohol dehydrogenase locus of Drosophila melanogaster. Nature, 304(5925), 412. https://doi.org/10.1038/304412a0\n\n\nLi, H., & Durbin, R. (2011). Inference of human population history from individual whole-genome sequences. Nature, 475(7357), 493–496. https://doi.org/10.1038/nature10231\n\n\nRodrigues, M. F., Kern, A. D., & Ralph, P. L. (2024). Shared evolutionary processes shape landscapes of genomic variation in the great apes. Genetics, 226(4), iyae006. https://doi.org/10.1093/genetics/iyae006\n\n\nStankowski, S., Chase, M. A., Fuiten, A. M., Rodrigues, M. F., Ralph, P. L., & Streisfeld, M. A. (2019). Widespread selection and gene flow shape the genomic landscape during a radiation of monkeyflowers. PLOS Biology, 17(7), e3000391. https://doi.org/10.1371/journal.pbio.3000391\n\n\nUnneberg, P., Larsson, M., Olsson, A., Wallerman, O., Petri, A., Bunikis, I., Vinnere Pettersson, O., Papetti, C., Gislason, A., Glenner, H., Cartes, J. E., Blanco-Bercial, L., Eriksen, E., Meyer, B., & Wallberg, A. (2024). Ecological genomics in the Northern krill uncovers loci for local adaptation across ocean basins. Nature Communications, 15(1), 6297. https://doi.org/10.1038/s41467-024-50239-7\n\n\nvan der Valk, T., Pečnerová, P., Díez-del-Molino, D., Bergström, A., Oppenheimer, J., Hartmann, S., Xenikoudakis, G., Thomas, J. A., Dehasque, M., Sağlıcan, E., Fidan, F. R., Barnes, I., Liu, S., Somel, M., Heintzman, P. D., Nikolskiy, P., Shapiro, B., Skoglund, P., Hofreiter, M., … Dalén, L. (2021). Million-year-old DNA sheds light on the genomic history of mammoths. Nature, 591(7849), 265–269. https://doi.org/10.1038/s41586-021-03224-9\n\n\nWebster, M. T., Beaurepaire, A., Neumann, P., & Stolle, E. (2023). Population Genomics for Insect Conservation. Annual Review of Animal Biosciences, 11(1), 115–140. https://doi.org/10.1146/annurev-animal-122221-075025\n\n\nWetterstrand, KA. DNA Sequencing Costs: Data from the NHGRI Genome Sequencing Program (GSP). www.genome.gov/sequencingcostsdata",
+    "crumbs": [
+      "Slides",
+      "Population genomics in practice"
+    ]
+  },
+  {
+    "objectID": "slides/foundations/data.html#dna-variation",
+    "href": "slides/foundations/data.html#dna-variation",
+    "title": "Data and definitions",
+    "section": "DNA variation",
+    "text": "DNA variation\n\n\n\nGoal of section: look at the data that forms the foundation for population genomic analyses\nFrom (Nei & Kumar, 2000, p. 231):\n\nThe main subject of population genetics is to study the generation and maintenance of genetic polymorphism and to understand the mechanisms of evolution at the population level\n\n(Casillas & Barbadilla, 2017, p. 1026):\n\nBig data samples of complete genome sequences of many individuals from natural populations of many species have transformed population genetics inferences on samples of loci to population genomics: the analysis of genome-wide patterns of DNA variation within and between species.\n\n(Gillespie, 2004, p. 1)\n\nPopulation geneticists spend most of their time doing one of two things: describing the genetic structure of populations or theorizing on the evolutionary forces acting on populations. On a good day, these two activities mesh and true insights emerge.",
+    "crumbs": [
+      "Slides",
+      "Data and definitions"
+    ]
+  },
+  {
+    "objectID": "slides/foundations/data.html#dna-variation---monomorphic-sites",
+    "href": "slides/foundations/data.html#dna-variation---monomorphic-sites",
+    "title": "Data and definitions",
+    "section": "DNA variation - monomorphic sites",
+    "text": "DNA variation - monomorphic sites\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n15\n\n\n\n\nT\nT\nA\nC\nA\nA\nT\nC\nC\nG\nA\nT\nC\nG\nT\n\n\nT\nT\nA\nC\nG\nA\nT\nG\nC\nG\nC\nT\nC\nG\nT\n\n\nT\nC\nA\nC\nA\nA\nT\nG\nC\nG\nA\nT\nG\nG\nA\n\n\nT\nT\nA\nC\nG\nA\nT\nG\nC\nG\nC\nT\nC\nG\nT\n\n\n*\n\n*\n*\n\n*\n*\n\n*\n*\n\n*\n\n*\nT\n\n\n\n\nThe alignment has 4 DNA sequences where each sequence has length L=15. A site where all nucleotides (alleles) are identical is called a monomorphic site (indicated with asterisks above). There are 9 monomorphic sites.",
+    "crumbs": [
+      "Slides",
+      "Data and definitions"
+    ]
+  },
+  {
+    "objectID": "slides/foundations/data.html#dna-variation---segregating-sites",
+    "href": "slides/foundations/data.html#dna-variation---segregating-sites",
+    "title": "Data and definitions",
+    "section": "DNA variation - segregating sites",
+    "text": "DNA variation - segregating sites\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n15\n\n\n\n\nT\nT\nA\nC\nA\nA\nT\nC\nC\nG\nA\nT\nC\nG\nT\n\n\nT\nT\nA\nC\nG\nA\nT\nG\nC\nG\nC\nT\nC\nG\nT\n\n\nT\nC\nA\nC\nA\nA\nT\nG\nC\nG\nA\nT\nG\nG\nA\n\n\nT\nT\nA\nC\nG\nA\nT\nG\nC\nG\nC\nT\nC\nG\nT\n\n\n\n*\n\n\n*\n\n\n*\n\n\n*\n\n*\n\n*\n\n\n\n\nA site where there are different nucleotides (alleles) is called a segregating site (indicated with asterisks above), often denoted S. There are S=6 segregating sites.\n\n\n\nAlternative names for segregating site are:\n\n\npolymorphism\nmutation\nsingle nucleotide polymorphism (SNP)\n\n\n\nmutation here and onwards refers to the process that generates new variation and the new variants generated by this process\nIn contrast to mutation which corresponds to within-species variation, a substitution refers to DNA differences between species.",
+    "crumbs": [
+      "Slides",
+      "Data and definitions"
+    ]
+  },
+  {
+    "objectID": "slides/foundations/data.html#dna-variation---major-and-minor-alleles",
+    "href": "slides/foundations/data.html#dna-variation---major-and-minor-alleles",
+    "title": "Data and definitions",
+    "section": "DNA variation - major and minor alleles",
+    "text": "DNA variation - major and minor alleles\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n15\n\n\n\n\nT\nT\nA\nC\nA\nA\nT\nC\nC\nG\nA\nT\nC\nG\nT\n\n\nT\nT\nA\nC\nG\nA\nT\nG\nC\nG\nC\nT\nC\nG\nT\n\n\nT\nC\nA\nC\nA\nA\nT\nG\nC\nG\nA\nT\nG\nG\nA\n\n\nT\nT\nA\nC\nG\nA\nT\nG\nC\nG\nC\nT\nC\nG\nT\n\n\n\n*\n\n\n*\n\n\n*\n\n\n*\n\n*\n\n*\n\n\n\n\nMuch of the nucleotide variation we study consists of bi-allelic SNPs. The most common variant is called the major allele, and the least common the minor allele.\nThe set of alleles found on a single sequence is called haplotype.",
+    "crumbs": [
+      "Slides",
+      "Data and definitions"
+    ]
+  },
+  {
+    "objectID": "slides/foundations/data.html#describing-dna-variation---heterozygosity",
+    "href": "slides/foundations/data.html#describing-dna-variation---heterozygosity",
+    "title": "Data and definitions",
+    "section": "Describing DNA variation - heterozygosity",
+    "text": "Describing DNA variation - heterozygosity\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n15\n\n\n\n\nT\nT\nA\nC\nA\nA\nT\nC\nC\nG\nA\nT\nC\nG\nT\n\n\nT\nT\nA\nC\nG\nA\nT\nG\nC\nG\nC\nT\nC\nG\nT\n\n\nT\nC\nA\nC\nA\nA\nT\nG\nC\nG\nA\nT\nG\nG\nA\n\n\nT\nT\nA\nC\nG\nA\nT\nG\nC\nG\nC\nT\nC\nG\nT\n\n\n\n*\n\n\n*\n\n\n*\n\n\n*\n\n*\n\n*\n\n\n\n\nOnce we have a sample of sequences we want to describe the observed variation. At any position the ith allele has sample frequency p_i, where the sum of all allele frequencies is 1. For instance, at site 1, p_T=1 (and by extension p_A=p_C=p_G=0), and at site 2 p_C=1/4 and p_T=3/4.\n\n\n\n\nHeterozygosity\n\nThe heterozygosity at a site j is given by\n\nh_j = \\frac{n}{n-1}\\left(1 - \\sum_i p_i^2\\right)\n\nwhere the summation is over all alleles and p_i is the frequency of the i-th allele\n\n\n\n\nExercise: calculate the heterozygosity at sites 1, 2 and 5\n\n\n\n\n\n\\begin{align*}\nh_1 & = \\frac{4}{3} \\left(1 - p_T^2 \\right) = 0 \\\\[10pt]\nh_2 & = \\frac{4}{3} \\left(1 - \\left(p_C^2 + p_T^2\\right) \\right) = \\frac{4}{3} \\left( 1 - \\left(\\frac{1}{16} + \\frac{9}{16}\\right)\\right) = \\frac{1}{2}\\\\[10pt]\nh_5 & = \\frac{4}{3} \\left(1 - \\left(p_A^2 + p_G^2\\right) \\right) = \\frac{4}{3} \\left( 1 - \\left(\\frac{1}{4} + \\frac{1}{4}\\right)\\right) = \\frac{2}{3}\n\\end{align*}\n\n\n\n\n\nIn a randomly mating population, the heterozygosity is equal to the frequency of heterozygotes. Note however that the definition of heterozygosity only relies on allele frequencies, which means it can be applied to populations that are not in Hardy-Weinberg equilibrium, or to more general variation, such as protein isoforms. It can also be applied to haploid organisms, like bacteria.",
+    "crumbs": [
+      "Slides",
+      "Data and definitions"
+    ]
+  },
+  {
+    "objectID": "slides/foundations/data.html#describing-dna-variation---nucleotide-diversity",
+    "href": "slides/foundations/data.html#describing-dna-variation---nucleotide-diversity",
+    "title": "Data and definitions",
+    "section": "Describing DNA variation - nucleotide diversity",
+    "text": "Describing DNA variation - nucleotide diversity\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n15\n\n\n\n\nT\nT\nA\nC\nA\nA\nT\nC\nC\nG\nA\nT\nC\nG\nT\n\n\nT\nT\nA\nC\nG\nA\nT\nG\nC\nG\nC\nT\nC\nG\nT\n\n\nT\nC\nA\nC\nA\nA\nT\nG\nC\nG\nA\nT\nG\nG\nA\n\n\nT\nT\nA\nC\nG\nA\nT\nG\nC\nG\nC\nT\nC\nG\nT\n\n\n\n*\n\n\n*\n\n\n*\n\n\n*\n\n*\n\n*\n\n\n\n\n\n\n\n\nNucleotide diversity \\pi\n\nThe nucleotide diversity is the sum of site heterozygosities:\n\n\\pi = \\sum_{j=1}^S h_j\n\nwhere S is the number of segregating sites\n\n\n\n\nCalculate the nucleotide diversity\n\n\n\nObservation: h_i either 1/2 or 2/3 (for sites with p_{major}=p_{minor}).\n\n\n\n\n\\pi = \\frac{1}{2} + \\frac{2}{3} + \\frac{1}{2} + \\frac{2}{3} + \\frac{1}{2} + \\frac{1}{2} = 3\\frac{1}{3}\n\n\n\n\nOften we report \\pi per site:\n\n\\pi = 3.33/15 = 0.222\n\n\n\n\nHahn (2019) implicitly assumes we are looking at DNA polymorphism. The expression actually holds for any genetic variation at a locus, and is sometimes called the gene diversity (Nei & Kumar, 2000, p. 245).\nUnder the infinite sites model, E(\\pi)=\\theta=4N_e\\mu, for which reason \\pi sometimes is called \\theta_\\pi. The measure gives the average number of pairwise nucleotide differences between two sequences, so an alternative expression is\n\n\\pi = \\frac{\\sum_{i&lt;j}k_{ij}}{n(n-1)/2}\n\nThe latter expression is called the nucleotide diversity (Nei & Kumar, 2000, p. 251).",
+    "crumbs": [
+      "Slides",
+      "Data and definitions"
+    ]
+  },
+  {
+    "objectID": "slides/foundations/data.html#the-real-data",
+    "href": "slides/foundations/data.html#the-real-data",
+    "title": "Data and definitions",
+    "section": "The real data",
+    "text": "The real data\n\n\n\n\n@SRR9309790.10003134\nTAAATCGATTCGTTTTTGCTATCTTCGTCT\n+\nAAFFFJJJJJJJFJJJJJJJJJJJJJJJJJ\n@SRR9309790.10003222\nTAAATCGATTCGTTTTTGCTATCTTCGTCT\n+\nAAFFFJJJJJJJJJJJJJJJJJJJJJJJJJ\n\n\n\n\n\n\nLG4:30430\n\n\n\n\n\n\nLG4:30430\n\n 30431     30441     30451     30461           CATTGGCAATGGCATCAGTTGAGCATCTTAGTACGAACTAAAAGCTG...............M..............................................A...                            ...............A.................              .............................................. .............................................. .............................................. ...............A..............................................A...............................,,,,,,,,,,,,a,,a,,,,,,,,,,,,,,,,,,,,,,,,,,,,a,,,,,,,,,,,,,,,,,a,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,a,,,,,,,,,,,,,,,,,,,,,,a,,,,,aa,,,,,,,,,,,,,,,,a,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,  ,,,,,,,,,,,,,a,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,\n\n\n\n\n\nBefore getting to variants and genotypes a lot of processing has to be done, from FASTQ input, to mapped data, to variant and genotype calls.\n\n\nBefore getting to variants and genotypes a lot of processing has to be done, from FASTQ input, to mapped data, to variant and genotype calls.",
+    "crumbs": [
+      "Slides",
+      "Data and definitions"
+    ]
+  },
+  {
+    "objectID": "slides/foundations/data.html#the-process",
+    "href": "slides/foundations/data.html#the-process",
+    "title": "Data and definitions",
+    "section": "The process",
+    "text": "The process",
+    "crumbs": [
+      "Slides",
+      "Data and definitions"
+    ]
+  },
+  {
+    "objectID": "slides/foundations/data.html#bibliography",
+    "href": "slides/foundations/data.html#bibliography",
+    "title": "Data and definitions",
+    "section": "Bibliography",
+    "text": "Bibliography\n\n\nCasillas, S., & Barbadilla, A. (2017). Molecular Population Genetics. Genetics, 205(3), 1003–1035. https://doi.org/10.1534/genetics.116.196493\n\n\nGillespie, J. H. (2004). Population Genetics: A Concise Guide (2nd edition). Johns Hopkins University Press.\n\n\nHahn, M. (2019). Molecular Population Genetics (First). Oxford University Press.\n\n\nKreitman, M. (1983). Nucleotide polymorphism at the alcohol dehydrogenase locus of Drosophila melanogaster. Nature, 304(5925), 412. https://doi.org/10.1038/304412a0\n\n\nNei, M., & Kumar, S. (2000). Molecular Evolution and Phylogenetics. Oxford University Press.",
+    "crumbs": [
+      "Slides",
+      "Data and definitions"
+    ]
+  },
+  {
+    "objectID": "slides/variant_calling/read_mapping.html#sequence-alignment-maps-reads-to-a-reference",
+    "href": "slides/variant_calling/read_mapping.html#sequence-alignment-maps-reads-to-a-reference",
+    "title": "Read mapping",
+    "section": "Sequence alignment maps reads to a reference",
+    "text": "Sequence alignment maps reads to a reference\n\n\n\n\n\n\n\nFigure 1: Screenshot of reference sequence (top) and aligned reads (bottom). Second line with . characters is the consensus sequence. Bases are colored by nucleotide. Letter case indicates forward (upper-case) or reverse (lower-case) alignment. * is placeholder for deleted base.\n\n\n\n\nAim of sequence alignment (read mapping) is to determine source in reference sequence. Some commonly used read mappers for resequencing are\n\n\n\nBWA, BWA-MEM (Li, 2013)\nNovoalign (https://www.novocraft.com/)\nMinimap2 (Li, 2018)\n\n\nFor a recent comprehensive comparison see Donato et al. (2021)",
+    "crumbs": [
+      "Slides",
+      "Read mapping"
+    ]
+  },
+  {
+    "objectID": "slides/variant_calling/read_mapping.html#alignments-are-stored-in-bam-format",
+    "href": "slides/variant_calling/read_mapping.html#alignments-are-stored-in-bam-format",
+    "title": "Read mapping",
+    "section": "Alignments are stored in BAM format",
+    "text": "Alignments are stored in BAM format\n\n\nHeader information\n\n\nsamtools view --header-only bam/PUN-Y-INJ.bam | head --lines 4\n\n@HD VN:1.6  SO:coordinate\n@SQ SN:LG4  LN:100000\n@RG ID:SRR9309790   SM:PUN-Y-INJ    PL:ILLUMINA\n@PG ID:bwa  PN:bwa  VN:0.7.19-r1273 CL:bwa mem -R @RG\\tID:SRR9309790\\tSM:PUN-Y-INJ\\tPL:ILLUMINA -p -t 30 -M tiny/ref/M_aurantiacus_v1_splitline_ordered.fasta -\n\n\nFormat: metadata record types prefixed with @, e.g., @RG is the read group\n\n\n\nAlignments\n\n\nsamtools view bam/PUN-Y-INJ.bam | head --lines 1\n\nSRR9309790.7750070  65  LG4 1   39  45S9M1I96M  =   83782   83781   TGAACTATAGTCGATGGGACGAATACCCCCCTGAACTTGCGAAGGGGACAATTACCCCCCTCTGTTATGTTTCAGTCAATTTCATGTTTGATTTTTAGATTTTTAATTAATTATATATTTTTTGCAATTTGTAACCTCTTTAACCTTTATT AAFFFJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJAJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJFJJJJJJJJJJJFFJFJJJJJJJJJJFJJJJJJJJFJJJJJJJJJAJJJJJJJJJJJJJJJJJFA&lt;FFJJ7FF SA:Z:LG4,83018,+,30M2I28M91S,37,5;  MC:Z:12S10M2I123M4S MD:Z:16C28C59   PG:Z:MarkDuplicates RG:Z:SRR9309790 NM:i:3  MQ:i:50 AS:i:88 XS:i:70 ms:i:5185\n\n\nSome important columns: 1:QUERY, 3:REFERENCE, 4:POSITION, 5:MAPQ, 6:CIGAR. The CIGAR string compiles information on the alignment, such as match (M), soft clipping (S), and insertion to reference (I)\n\n\ncf https://samtools.github.io/hts-specs/SAMv1.pdf\n\n\nFor a complete description, see the specification. Suffice to say that the alignment format consists of a header section, with metadata and provenance data, and an alignment section, which is a column-based format with information pertaining to the query sequence being mapped and the reference sequence to which the query is mapped.",
+    "crumbs": [
+      "Slides",
+      "Read mapping"
+    ]
+  },
+  {
+    "objectID": "slides/variant_calling/read_mapping.html#mapped-alignments-can-be-viewed-with-samtools-tview",
+    "href": "slides/variant_calling/read_mapping.html#mapped-alignments-can-be-viewed-with-samtools-tview",
+    "title": "Read mapping",
+    "section": "Mapped alignments can be viewed with samtools tview",
+    "text": "Mapped alignments can be viewed with samtools tview\n\n\nsamtools tview -p LG4:30430 -d H -w 60 \\\n   bam/PUN-Y-INJ.bam \\\n   ref/M_aurantiacus_v1.fasta\n\n\n\nLG4:30430\n\n\n\n\n\n\nLG4:30430\n\n 30431     30441     30451     30461     30471              CATTGGCAATGGCATCAGTTGAGCATCTTAGTACGAACTAAAAGCTGCGAAAAAATATTT...............M...........................................................A...                               ,,,,,,,,,,...............A.................                 ,,,,,,,,,,..............................................      ,,,,,,,,..............................................              ..............................................              ...............A...........................................................A............................................,,,,,,,,,,,,a,,a,,,,,,,,,,,,,,,,,,,,,,,,,,,,a,,a,,,,,,,,,,,,,,,,,,,,,,,,,,,a,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,a,,,,,,,,,,,,,,,,,,,,,,a,,,,,aa,a,,,,,,,,,,,,,,,,,,,,,,,,,,,a,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,  ,,,,,,,,,,,,,a,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,\n\n\n\n\n\n\nsamtools tview -p LG4:30430 -d H -w 60 \\\n   bam/PUN-R-ELF.bam \\\n   ref/M_aurantiacus_v1.fasta\n\n\n\nLG4:30430\n\n\n\n\n\n\nLG4:30430\n\n 30431     30441     30451     30461     30471              CATTGGCAATGGCATCAGTTGAGCATCTTAGTACGAACTAAAAGCTGCGAAAAAATATTT...............A............................................,,,,,,,                           .........................................A.....                  ....................................A...A....               ....................................A.........                                   ...............A...........C.............                   ,,,,,,,,,,,,,,,a,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,a,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,...............A............................................,,,,,,,,,,,,,,,a,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,a,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,a,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,a,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,...............A............................................,,,g,,,,,,,a,,,a,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,  .............A............................................\n\n\n\n\nAka pileup format. Forward (.) and backward (,) mapping reads. Mismatches shown as letters.\n\nAfter preprocessing, reads are mapped to a reference. Observations:\n\ndifferent coverage\nsequencing error randomly distributed",
+    "crumbs": [
+      "Slides",
+      "Read mapping"
+    ]
+  },
+  {
+    "objectID": "slides/variant_calling/read_mapping.html#potential-error-corrections-and-pitfalls",
+    "href": "slides/variant_calling/read_mapping.html#potential-error-corrections-and-pitfalls",
+    "title": "Read mapping",
+    "section": "Potential error corrections and pitfalls",
+    "text": "Potential error corrections and pitfalls\n\n\nInstrument\n\nPCR duplication\n\nbiased PCR amplification of DNA molecules\nremove with picard MarkDuplicates or samtools rmdup\nshould not be removed for targeted sequencing\n\nsystematic errors from sequencing machine\n\nemploy Base Quality Score Recalibration (BQSR)\ncon: time consuming and inflates file size\n\n\n\nReference\n\nquality of reference sequence!\n\npoor mapping to misassembled / missing reference\n\nrepetitive sequence\n\noften collapsed in assemblies -&gt; inflates read mapping depth",
+    "crumbs": [
+      "Slides",
+      "Read mapping"
+    ]
+  },
+  {
+    "objectID": "slides/variant_calling/read_mapping.html#bibliography",
+    "href": "slides/variant_calling/read_mapping.html#bibliography",
+    "title": "Read mapping",
+    "section": "Bibliography",
+    "text": "Bibliography\n\n\n\n\n\n\n\n\n\n\n\n\nDonato, L., Scimone, C., Rinaldi, C., D’Angelo, R., & Sidoti, A. (2021). New evaluation methods of read mapping by 17 aligners on simulated and empirical NGS data: An updated comparison of DNA- and RNA-Seq data from Illumina and Ion Torrent technologies. Neural Computing and Applications, 33(22), 15669–15692. https://doi.org/10.1007/s00521-021-06188-z\n\n\nLi, H. (2013). Aligning sequence reads, clone sequences and assembly contigs with BWA-MEM. arXiv:1303.3997 [q-Bio]. https://arxiv.org/abs/1303.3997\n\n\nLi, H. (2018). Minimap2: Pairwise alignment for nucleotide sequences. Bioinformatics, 34(18), 3094–3100. https://doi.org/10.1093/bioinformatics/bty191",
+    "crumbs": [
+      "Slides",
+      "Read mapping"
+    ]
+  },
+  {
+    "objectID": "slides/variant_calling/reproducibility.html#motivation",
+    "href": "slides/variant_calling/reproducibility.html#motivation",
+    "title": "Variant calling workflows",
+    "section": "Motivation",
+    "text": "Motivation\nManual variant calling\n\nbwa index ref/M_aurantiacus_v1.fasta\n\n\nsamtools faidx ref/M_aurantiacus_v1.fasta\n\n\nbwa mem -R \"@RG\\tID:SRR9309790\\tSM:PUN-Y-INJ\\tPL:ILLUMINA\" -t 4 -M \\\n    ref/M_aurantiacus_v1.fasta \\\n    fastq/PUN-Y-INJ_R1.fastq.gz \\\n    fastq/PUN-Y-INJ_R2.fastq.gz | \\\n    samtools sort - | \\\n    samtools view --with-header --output bam/PUN-Y-INJ.bam\n\n\nThis quickly becomes complex - not to mention tedious and boring. With larger sample sizes it becomes difficult to keep track which commands need updating should input data change.\n\n\nSolution\nWorkflow managers!",
+    "crumbs": [
+      "Slides",
+      "Variant calling workflows"
+    ]
+  },
+  {
+    "objectID": "slides/variant_calling/reproducibility.html#of-inputs-and-outputs",
+    "href": "slides/variant_calling/reproducibility.html#of-inputs-and-outputs",
+    "title": "Variant calling workflows",
+    "section": "Of inputs and outputs",
+    "text": "Of inputs and outputs\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nInputs are connected to outputs\nArrows correspond to dependencies and transformation/generation of new data\nWorkflow managers define rules that link inputs to outputs with an action\n\n\n\nrule markdup:\n    input: map/PUN-Y-INJ.bam\n    output: markdup/PUN-Y-INJ.bam\n    action: run picard MarkDuplicates",
+    "crumbs": [
+      "Slides",
+      "Variant calling workflows"
+    ]
+  },
+  {
+    "objectID": "slides/variant_calling/reproducibility.html#workflow-managers",
+    "href": "slides/variant_calling/reproducibility.html#workflow-managers",
+    "title": "Variant calling workflows",
+    "section": "Workflow managers",
+    "text": "Workflow managers\n\n\n\n\nprocess GATK4_MARKDUPLICATES {\n\n    input:\n    path  bam\n    path  fasta\n    path  fasta_fai\n\n    output:\n    tuple val(meta), path(\"*bam\"),      emit: bam\n    tuple val(meta), path(\"*.bai\"),     emit: bai\n    tuple val(meta), path(\"*.metrics\"), emit: metrics\n\n    script:\n    -- snip --\n\n    gatk MarkDuplicates $input_list ...\n\n\nGroovy syntax\nbecoming a standard in production settings\n\n\n\n Snakemake\nrule mark_duplicates:\n    input:\n        bam = \"map/{prefix}.bam\",\n        bai = \"map/{prefix}.bai\",\n        fasta = \"ref/M_aurantiacus_v1.fasta\"\n    output:\n        bam = \"markdup/{prefix}.bam\",\n    shell:\n        \"gatk MarkDuplicates...\"\n\n\nPython-like syntax",
+    "crumbs": [
+      "Slides",
+      "Variant calling workflows"
+    ]
+  },
+  {
+    "objectID": "slides/variant_calling/reproducibility.html#nf-core-and-sarek",
+    "href": "slides/variant_calling/reproducibility.html#nf-core-and-sarek",
+    "title": "Variant calling workflows",
+    "section": "nf-core and Sarek",
+    "text": "nf-core and Sarek\n\n\n\n\n\nhttps://nf-co.re/\n\n\nA global community effort to collect a curated set of open‑source analysis pipelines built using Nextflow.\n\n\n\nhuge community base\nlots of curated workflows\n\n\n\n\n\n\nhttps://nf-co.re/sarek/3.5.1/\n\n\nAnalysis pipeline to detect germline or somatic variants (pre-processing, variant calling and annotation) from WGS / targeted sequencing\n\n\n\nfocusses on variant calling in human\ndoes not produce all-sites variant file!",
+    "crumbs": [
+      "Slides",
+      "Variant calling workflows"
+    ]
+  },
+  {
+    "objectID": "slides/variant_calling/reproducibility.html#snparcher---a-snakemake-workflow-for-nonmodel-organisms",
+    "href": "slides/variant_calling/reproducibility.html#snparcher---a-snakemake-workflow-for-nonmodel-organisms",
+    "title": "Variant calling workflows",
+    "section": "snpArcher - a Snakemake workflow for nonmodel organisms",
+    "text": "snpArcher - a Snakemake workflow for nonmodel organisms\n\n\n\n\n\nhttps://github.com/harvardinformatics/snpArcher\n\n\n\nsnpArcher is a reproducible workflow optimized for nonmodel organisms and comparisons across datasets, built on the Snakemake workflow management system. It provides a streamlined approach to dataset acquisition, variant calling, quality control, and downstream analysis.",
+    "crumbs": [
+      "Slides",
+      "Variant calling workflows"
+    ]
+  },
+  {
+    "objectID": "slides/variant_calling/reproducibility.html#our-snakemake-workflow",
+    "href": "slides/variant_calling/reproducibility.html#our-snakemake-workflow",
+    "title": "Variant calling workflows",
+    "section": "Our Snakemake workflow",
+    "text": "Our Snakemake workflow\n\n\n\nraw read QC\nread mapping\n\nmapping QC\n\nduplicate marking\nraw variant calling\nbase quality score recalibration (bqsr)\nbqsr variant calling\ngenotyping\n\nvariant statistics\n\nQC report generation\n\n\n\n\n\n\n\n\n\nsnakemake_dag\n\n  \n\n0\n\n all   \n\n1\n\n multiqc   \n\n1-&gt;0\n\n    \n\n2\n\n fastqc   \n\n2-&gt;1\n\n    \n\n3\n\n bcftools_stats   \n\n3-&gt;1\n\n    \n\n4\n\n gatk_genotype_gvcfs   \n\n4-&gt;3\n\n    \n\n5\n\n gatk_combine_gvcfs   \n\n5-&gt;4\n\n    \n\n6\n\n gatk_haplotypecaller_bqsr   \n\n6-&gt;5\n\n    \n\n7\n\n gatk_apply_bqsr   \n\n7-&gt;6\n\n    \n\n8\n\n picard_mark_duplicates   \n\n8-&gt;1\n\n    \n\n8-&gt;7\n\n    \n\n11\n\n gatk_base_recalibrator   \n\n8-&gt;11\n\n    \n\n12\n\n gatk_haplotypecaller_raw   \n\n8-&gt;12\n\n    \n\n9\n\n bwa_mem   \n\n9-&gt;8\n\n    \n\n15\n\n qualimap_bamqc   \n\n9-&gt;15\n\n    \n\n10\n\n bwa_index   \n\n10-&gt;9\n\n    \n\n11-&gt;7\n\n    \n\n12-&gt;11\n\n    \n\n13\n\n picard_create_sequence_dictionary   \n\n13-&gt;4\n\n    \n\n13-&gt;6\n\n    \n\n13-&gt;12\n\n    \n\n14\n\n samtools_faidx   \n\n14-&gt;4\n\n    \n\n14-&gt;6\n\n    \n\n14-&gt;12\n\n    \n\n15-&gt;1\n\n   \n\n:::\n:::\n::::",
+    "crumbs": [
+      "Slides",
+      "Variant calling workflows"
+    ]
+  },
+  {
+    "objectID": "exercises/compute_environment/index.html",
+    "href": "exercises/compute_environment/index.html",
+    "title": "Compute environment",
     "section": "",
-    "text": "A note on usage\nHtml slides have been authored using revealjs and can be viewed directly in the browser. In some cases, there are accompanying speaker notes that can be viewed by pressing s. Whenever there is a  symbol, it links to a recipe that is related to the figure or content on the active slide.\n\n\nSlides\n\n\n\n\n\n\n\nPopulation genomics in practice\n\n\nWhat is population genomics?\n\n\n\nPer Unneberg\n\n\n\n\n\n\nNo matching items"
+    "text": "This page briefly describes different compute environments that may be used for exercises. We use the following symbols to icons that indicate the type of environment ( HPC resource;  local compute environment;  online browser-based resource). Make sure to read these instructions before proceeding with the exercises.",
+    "crumbs": [
+      "Slides",
+      "Exercises",
+      "Data",
+      "Compute environment"
+    ]
+  },
+  {
+    "objectID": "exercises/compute_environment/index.html#dardel-pdc",
+    "href": "exercises/compute_environment/index.html#dardel-pdc",
+    "title": "Compute environment",
+    "section": "\n Dardel @ PDC",
+    "text": "Dardel @ PDC\n\n\n\n\n\n\nPrerequisite: SUPR account\n\n\n\n\n\nIf you want to run the exercises on the Dardel HPC you need an account. Follow the instructions at the precourse page.\n\n\n\nWe will primarily be using KTH’s high-performance computing (HPC) center Dardel to run exercises. Course material will be hosted in a dedicated course project directory /cfs/klemming/projects/supr/pgip_2025.\nWorking directory setup\nWe recommend you setup a working directory based on your username in /cfs/klemming/projects/supr/pgip_2025/users in which to run your exercises:\nmkdir -p /cfs/klemming/projects/supr/pgip_2025/users/YOURUSERNAME\ncd /cfs/klemming/projects/supr/pgip_2025/users/YOURUSERNAME\npixi environments and pgip CLI\n\n\n\n\n\n\nEXPERIMENTAL\n\n\n\nThis feature is experimental and may not work as intended.\n\n\nIn order to improve reproducibility and facilitate package setup, we have grouped exercise tools in pixi virtual environments1 Exercise environments are named e-EXERCISE-NAME and can be activated with a custom command line (CLI) tool called pgip. To activate the CLI, do the following steps:\nsource /cfs/klemming/projects/supr/pgip_2025/init.sh\npgip_activate\nNow you should have access to pgip, which among other things lets you setup exercise data and launch notebooks. In addition, there are two commands pgip_elist and pgip_shell. pgip_elist lists available environments and pgip_shell ENVIRONMENT_NAME starts a shell with the environment activated.\n\n\n\n\n\n\nRun pgip_activate before pgip_shell\n\n\n\nIt is important that you run pgip_activate first as exiting would terminate your session. Exiting from the shell will pop you back to the activated default environment.\n\n\nThinLinc\nKTH provides a remote desktop program called ThinLinc which lets you connect to a remote server and access programs via a virtual desktop. To use, you first need to download the ThinLinc client (tlclient). To connect, launch tlclient and authenticate with either Kerberos or SSH. See the PDC documentation for more documentation.\nLaunching graphical applications\nThe is a launcher located in the menu bar that should let you start graphical applications. If that doesn’t work, you can always\nInteractive jobs\n\n\n\n\n\n\nPlease do not book more than 10 cores\n\n\n\n\n\nWe have priviliged access to a limited number of nodes. Please do not book more than 10 cores or else your fellow students will experience long waiting times.\n\n\n\n\n\n\n\n\n\nMake sure to login to a compute node before running any compute-intensive commands\n\n\n\n\n\n\nAll computations should be run on a compute node. You can request an interactive session with the salloc command. For example, to request an eight hour job on 10 cores, run\nsalloc -A naiss2025-22-825 -n 10 \\\n   --time 08:00:00 \\\n   --reservation=&lt;name of reservation&gt; \\\n   --no-shell\nwhere &lt;name of reservation&gt; needs to be replaced by the node reservations, which will typically be unique for every day.\nThe --no-shell option will immediately exit the allocated node but keep the Slurm job active. Make a note of the allocated node ID and use ssh to access it.\nssh node_id\nAccessing notebooks on compute nodes\nSee ThinLinc for a potentially easier way to access compute nodes and resources.\nNotebooks are run in browser sessions, but if run on compute nodes they are not directly accessible from the client. The trick is to set up double port forwarding, in which a port is forwarded from the compute node to the login node and on to your client. If you use the pgip CLI to launch a notebook, it will look as follows:\npgip notebook jupyter --port 9999\nINFO:pgip_cli.commands.notebook:notebook\nINFO:pgip_cli.commands.notebook:Running jupyter lab  --no-browser --port=9999\nINFO:pgip_cli.commands.notebook:Jupyter lab running at http://localhost:9999\nINFO:pgip_cli.commands.notebook:To stop Jupyter Notebook, press Ctrl+C\nINFO:pgip_cli.commands.notebook:\nINFO:pgip_cli.commands.notebook:For port forwarding to login node, on login node run:\nINFO:pgip_cli.commands.notebook:ssh -L 9999:localhost:9999 nid002581 -N -f\nINFO:pgip_cli.commands.notebook:\nINFO:pgip_cli.commands.notebook:For port forwarding to client localhost, on client run:\nINFO:pgip_cli.commands.notebook:ssh -L 9999:localhost:9999 dardel.pdc.kth.se -N -f\nINFO:pgip_cli.commands.notebook:\nDo you want to continue? [Y/n]:\nHere, NODEID is the compute node id. To enable port forwarding, you need to run the to ssh -L ... commands, and voilà, you should be able to access the notebook at localhost:9999.\n\n\n\n\n\n\nThe port id must be unique and in the recommended range 1024-49151\n\n\n\n\n\n\nTutorials\nPDC hosts tutorials and user guides at https://support.pdc.kth.se/doc. In particular, https://support.pdc.kth.se/doc/basics/quickstart has information on how to connect to and work on Dardel.",
+    "crumbs": [
+      "Slides",
+      "Exercises",
+      "Data",
+      "Compute environment"
+    ]
+  },
+  {
+    "objectID": "exercises/compute_environment/index.html#jupyter-notebooks",
+    "href": "exercises/compute_environment/index.html#jupyter-notebooks",
+    "title": "Compute environment",
+    "section": "\n Jupyter Notebooks",
+    "text": "Jupyter Notebooks\nJupyter Notebook exercises will be run in local compute environments on your laptop. See the section below on setting up a pgip environment with pixi, which by default installs jupyter and its dependencies.\n\n JupyterLite\nThere are some Jupyter Notebook exercises that are hosted online and run using JupyterLite which is a JupyterLab distribution that runs entirely in the browser. Apart from having a browser, no preparations are necessary. Note that some users have reported issues with Firefox and that Google Chrome may be a better solution.",
+    "crumbs": [
+      "Slides",
+      "Exercises",
+      "Data",
+      "Compute environment"
+    ]
+  },
+  {
+    "objectID": "exercises/compute_environment/index.html#sec-compute-environment-pixi",
+    "href": "exercises/compute_environment/index.html#sec-compute-environment-pixi",
+    "title": "Compute environment",
+    "section": "\n Pixi",
+    "text": "Pixi\nExercises that require local software installation will make use of the pixi package manager to install necessary conda requirements from the package repositories bioconda and conda-forge. This is also the fallback solution in case there are issues with the HPC.\nTo start using pixi, follow the install instructions to install. You can choose to run all exercises on a local computer if you have pixi setup. You would then need to download relevant data, as detailed for each exercise. We have tried to make the exercise data sets small such that you can run the exercises locally.",
+    "crumbs": [
+      "Slides",
+      "Exercises",
+      "Data",
+      "Compute environment"
+    ]
+  },
+  {
+    "objectID": "exercises/compute_environment/index.html#tools",
+    "href": "exercises/compute_environment/index.html#tools",
+    "title": "Compute environment",
+    "section": "Tools",
+    "text": "Tools\nComputer exercise requirements are listed in Tools callout blocks in each exercise. The Tools callout block contains listings of programs, along with package dependencies and specifications for Dardel and pixi, whenever relevant. An example block is shown below.\n\n\n\n\n\n\nTools - example\n\n\n\n\n\nExample Tools block.\n\n\nListing\n PDC\n pixi\n\n\n\nProvides list of packages linked to repository, and citation when available.\n\nfastqc\n\nbwa (Li, 2013)\n\n\n\n\nChoose one of Modules and Virtual environment to access relevant tools.\nModules\nExecute the following command to load modules:\n\nmodule load bwa/0.7.18 fastqc/0.12.1\n\nVirtual environment\nRun the pgip initialization script and activate the pgip default environment:\nsource /cfs/klemming/projects/supr/pgip_2025/init.sh\npgip_activate\nThen activate the &lt;exercise environment&gt; environment:\n# pgip_shell calls pixi shell -e &lt;exercise environment&gt; --as-is\npgip_shell &lt;exercise environment&gt;\n\n\n\nProvides a pixi manifest file that lists dependencies and where to retrieve them.\nCopy the contents to a file pixi.toml in directory exercise-name, cd to directory and activate environment with pixi shell:\n[workspace]\nchannels = [\"conda-forge\", \"bioconda\"]\nname = \"exercise-name\"\nplatforms = [\"linux-64\"]\n\n[dependencies]\nbwa = \"&gt;=0.7.19,&lt;0.8\"\nfastqc = \"&gt;=0.12.1,&lt;0.13\"",
+    "crumbs": [
+      "Slides",
+      "Exercises",
+      "Data",
+      "Compute environment"
+    ]
+  },
+  {
+    "objectID": "exercises/compute_environment/index.html#footnotes",
+    "href": "exercises/compute_environment/index.html#footnotes",
+    "title": "Compute environment",
+    "section": "Footnotes",
+    "text": "Footnotes\n\npixi is a fast package management tool, similar to conda.↩︎",
+    "crumbs": [
+      "Slides",
+      "Exercises",
+      "Data",
+      "Compute environment"
+    ]
+  },
+  {
+    "objectID": "exercises/variant_calling/index.html",
+    "href": "exercises/variant_calling/index.html",
+    "title": "Variant calling index",
+    "section": "",
+    "text": "A generic variant calling workflow consists of the following basic steps:\n\nread quality control and filtering\nread mapping\nremoval / marking of duplicate reads\njoint / sample-based variant calling and genotyping\n\nThere are different tweaks and additions to each of these steps, depending on application and method. The variant calling exercises here present the basic steps to go from raw data to variant calls.\nThe exercises are based on the Monkeyflowers dataset. Make sure to read the dataset document before running any commands as it will give you the biological background and general information about where to find and how to setup the data. We will focus on the red and yellow ecotypes in what follows.",
+    "crumbs": [
+      "Slides",
+      "Variant calling",
+      "Variant calling index"
+    ]
+  },
+  {
+    "objectID": "exercises/variant_calling/index.html#about",
+    "href": "exercises/variant_calling/index.html#about",
+    "title": "Variant calling index",
+    "section": "",
+    "text": "A generic variant calling workflow consists of the following basic steps:\n\nread quality control and filtering\nread mapping\nremoval / marking of duplicate reads\njoint / sample-based variant calling and genotyping\n\nThere are different tweaks and additions to each of these steps, depending on application and method. The variant calling exercises here present the basic steps to go from raw data to variant calls.\nThe exercises are based on the Monkeyflowers dataset. Make sure to read the dataset document before running any commands as it will give you the biological background and general information about where to find and how to setup the data. We will focus on the red and yellow ecotypes in what follows.",
+    "crumbs": [
+      "Slides",
+      "Variant calling",
+      "Variant calling index"
+    ]
+  },
+  {
+    "objectID": "exercises/variant_calling/index.html#intended-learning-outcomes",
+    "href": "exercises/variant_calling/index.html#intended-learning-outcomes",
+    "title": "Variant calling index",
+    "section": "Intended learning outcomes",
+    "text": "Intended learning outcomes\n\nPerform qc on sequencing reads and interpret results\nPrepare reference for read mapping\nMap reads to reference\nMark duplicates\nPerform raw variant calling to generate a set of sites to exclude from recalibration\nPerform base quality score recalibration\nPerform variant calling on base recalibrated data\nDo genotyping on all samples and combine results to a raw variant call set",
+    "crumbs": [
+      "Slides",
+      "Variant calling",
+      "Variant calling index"
+    ]
+  },
+  {
+    "objectID": "exercises/variant_calling/index.html#listing",
+    "href": "exercises/variant_calling/index.html#listing",
+    "title": "Variant calling index",
+    "section": "Listing",
+    "text": "Listing\n\n\n   \n    \n    \n      Order By\n      Default\n      \n        Title\n      \n      \n        Author\n      \n    \n  \n    \n      \n      \n    \n\n\n\n\n\n\nTitle\n\n\n\nAuthor\n\n\n\n\n\n\n\n\nData quality control\n\n\nPer Unneberg\n\n\n\n\n\n\nRead mapping and duplicate removal\n\n\nPer Unneberg\n\n\n\n\n\n\nVariant calling introduction\n\n\nPer Unneberg\n\n\n\n\n\n\nVariant calling workflow\n\n\nPer Unneberg\n\n\n\n\n\n\nNo matching items",
+    "crumbs": [
+      "Slides",
+      "Variant calling",
+      "Variant calling index"
+    ]
+  },
+  {
+    "objectID": "exercises/variant_calling/index.html#additional-material",
+    "href": "exercises/variant_calling/index.html#additional-material",
+    "title": "Variant calling index",
+    "section": "Additional material",
+    "text": "Additional material\n\nVariant calling, long description\n\nDescribes all steps of a standard variant calling workflow from data preparation to final summary QC. All commands are run manually without the aid of a workflow manager. From earlier course round.",
+    "crumbs": [
+      "Slides",
+      "Variant calling",
+      "Variant calling index"
+    ]
+  },
+  {
+    "objectID": "exercises/variant_calling/data_qc.html",
+    "href": "exercises/variant_calling/data_qc.html",
+    "title": "Data quality control",
+    "section": "",
+    "text": "In this exercise we will familiarize ourselves with the command line and compile some basic quality statistics from raw sequence data files.",
+    "crumbs": [
+      "Slides",
+      "Variant calling",
+      "Data quality control"
+    ]
+  },
+  {
+    "objectID": "exercises/variant_calling/data_qc.html#preparation-reference-sequence-index-and-read-qc",
+    "href": "exercises/variant_calling/data_qc.html#preparation-reference-sequence-index-and-read-qc",
+    "title": "Data quality control",
+    "section": "Preparation: reference sequence index and read QC",
+    "text": "Preparation: reference sequence index and read QC\nPrior to mapping we need to create a database index. We also generate a fasta index and a sequence dictionary for use with the picard toolkit.\n\nsamtools faidx ref/M_aurantiacus_v1.fasta\npicard CreateSequenceDictionary --REFERENCE ref/M_aurantiacus_v1.fasta\nbwa index ref/M_aurantiacus_v1.fasta\n\nWith the program fastqc we can generate quality control reports for all input FASTQ files simultaneously, setting the output directory with the -o flag:\n\n# Make fastqc output directory; --parents makes parent directories as\n# needed\nmkdir --parents fastqc\nfastqc --outdir fastqc fastq/*fastq.gz\n\n\n\n\n\n\n\nExercise\n\n\n\n\n\n\n\ncd to the output directory and look at the html reports. Do you notice any difference between read 1 (R1) and read 2 (R2)?\n\n\n\n\n\n\nAnswer\n\n\n\n\n\n\n\n\ncd fastqc\nopen PUN-Y-INJ_R1_fastqc.html\nopen PUN-Y-INJ_R2_fastqc.html\n\nThe traffic light summary indicates whether a given quality metric has passed or not. Typically, read 2 has slightly lower quality and more quality metrics with warnings. Since these reads have been deposited in the Sequence Read Archive (SRA), it is likely they were filtered prior to upload, and we will not take any further action here.\n\n\n\n\n\n\n\n\n\n\nWe will use MultiQC later on to combine the results from several output reports.",
+    "crumbs": [
+      "Slides",
+      "Variant calling",
+      "Data quality control"
+    ]
+  },
+  {
+    "objectID": "exercises/variant_calling/variant_calling_workflow.html",
+    "href": "exercises/variant_calling/variant_calling_workflow.html",
+    "title": "Variant calling workflow",
+    "section": "",
+    "text": "Intended learning outcomes\n\n\n\n\n\n\nLearn how workflow managers can automate complex tasks\nGet familiar with the Snakemake manager",
+    "crumbs": [
+      "Slides",
+      "Variant calling",
+      "Variant calling workflow"
+    ]
+  },
+  {
+    "objectID": "exercises/variant_calling/variant_calling_workflow.html#workflow-managers",
+    "href": "exercises/variant_calling/variant_calling_workflow.html#workflow-managers",
+    "title": "Variant calling workflow",
+    "section": "Workflow managers",
+    "text": "Workflow managers\nThe advent of next-generation sequencing and other high-throughput technologies have contributed to increasing data complexity and data volumes, leading to scalability and reproducibility issues (Wratten et al., 2021). A number of workflow managers have beed developed to meet these needs, including Snakemake (Mölder et al., 2021) and Nextflow (Di Tommaso et al., 2017).\nIn this exercise, we will use Snakemake to run a variant calling workflow from start to end. We urge the reader to briefly skim the Snakefile1, the Snakemake command file. We will briefly describe how Snakemake works in the next section, but going into any details is out of the scope of this exercise. See the Snakemake documentation for more information, and if you want to learn more, there are NBIS courses on reproducible research and Snakemake.\nA very brief overview of a Snakefile\nA Snakemake workflow consists of rules that determine how inputs are connected to outputs. Rules are defined in a so-called Snakefile. Below is an example of a bare minimum rule:\nrule samtools_index:\n    output:\n        \"ref/M_aurantiacus_v1.fasta.fai\"\n    input:\n        \"ref/M_aurantiacus_v1.fasta\"\n    shell:\n        \"samtools faidx {input} -o {output}\"\nThe rule consists of a name (samtools_faidx) and keywords (output, input, shell). The shell keyword defines a shell command to be run (samtools faidx), which will take the input (ref/M_aurantiacus_v1.fasta) and produce an output (ref/M_aurantiacus_v1.fasta.fai). Note here the curly brackets; these are Snakemake wildcards which makes it possible to generalize rules to match file name patterns.\nProvided the input file exists, running snakemake would produce the output, unless the output already exists. This is one neat feature of workflow managers - they are designed to detect whether input files are newer than output files, and only then will they forcefully regenerate the output2.\n\n\n\n\n\n\nExercise\n\n\n\n\n\n\n\nCopy the samtools_index rule to a file called Snakefile and run snakemake --dry-run --printshellcmds --force (alternatively snakemake -n -p). What happens?\n\n\n\n\n\n\nAnswer\n\n\n\n\n\n\n\nSnakemake will output what jobs it will run, the reason, and which shell command.\n\n\n\n\n\n\n\n\n\n\nA workflow is built by connecting outputs from one rule to inputs of another. A rule can depend on multiple inputs, as well as produce multiple outputs.\n\n\n\n\n\n\nExercise\n\n\n\n\n\n\n\nIn the above Snakefile, add a rule count_lines that uses the input ref/M_aurantiacus_v1.fasta.fai to generate the output file wc.txt, and where the shell command is uses wc -l to count lines in the input and redirect (&gt;) to output. Then run the command snakemake wc.txt and look at the contents of the file.\n\n\n\n\n\n\nAnswer\n\n\n\n\n\n\n\nrule samtools_index:\n    output:\n        \"ref/M_aurantiacus_v1.fasta.fai\"\n    input:\n        \"ref/M_aurantiacus_v1.fasta\"\n    shell:\n        \"samtools faidx {input} -o {output}\"\n\nrule count_lines:\n    output: \"wc.txt\"\n    input: \"ref/M_aurantiacus_v1.fasta.fai\"\n    shell: \"wc -l {input} &gt; {output}\"\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nImportant\n\n\n\nMake sure to remove the Snakefile before proceeding as it otherwise will take precedence over the workflow/Snakefile.\n\n\nA look into the variant calling Snakefile\nOpen workflow/Snakefile and look briefly at the contents. The top portion contains code to read the sampleinfo file and defines a variable REFERENCE that can be used throughout3:\n\nimport pandas as pd\n\n# Read sampleinfo and subset to\nsampleinfo = pd.read_csv(\"sampleinfo.csv\")\nsampleinfo = sampleinfo.loc[sampleinfo.SampleAlias.str.startswith(\"PUN\")]\\\n                       .set_index(\"SampleAlias\")\nsamples = sampleinfo.index.values\n\nREFERENCE = \"ref/M_aurantiacus_v1.fasta\"\n\nBy default, Snakemake runs the argument if no filename is provided when running. By convention, the first rule is called all:\n\nrule all:\n    input: \"multiqc_report.html\",\n\nThis is a so-called pseudo-rule which are used to list the final desired output file. The workflow will figure out how to generate necessary inputs.\nThe remainder of the file contain the “regular” rule definitions. They have been kept as simple as possible, but you will notice that we have made use of some additional code constructs not mentioned above. Skim the file, and look at the multiqc rule at the bottom. Notice how it is used to “collect” necessary inputs which all have to be generated before the report is written.\nIt can be difficult to get an overview of the workflow by simply looking at the Snakefile. Therefore, we end by showing a rulegraph of the workflow, which shows how rules are connected:\n\nsnakemake --rulegraph | dot -Tpng | display\n\n\n\nsnakemake_dag\n\n\n0\n\nall\n1\n\nmultiqc\n1-&gt;0\n\n\n2\n\nfastqc\n2-&gt;1\n\n\n3\n\nbcftools_stats\n3-&gt;1\n\n\n4\n\ngatk_genotype_gvcfs\n4-&gt;3\n\n\n5\n\ngatk_combine_gvcfs\n5-&gt;4\n\n\n6\n\ngatk_haplotypecaller_bqsr\n6-&gt;5\n\n\n7\n\ngatk_apply_bqsr\n7-&gt;6\n\n\n8\n\npicard_mark_duplicates\n8-&gt;1\n\n\n8-&gt;7\n\n\n11\n\ngatk_base_recalibrator\n8-&gt;11\n\n\n12\n\ngatk_haplotypecaller_raw\n8-&gt;12\n\n\n9\n\nbwa_mem\n9-&gt;8\n\n\n15\n\nqualimap_bamqc\n9-&gt;15\n\n\n10\n\nbwa_index\n10-&gt;9\n\n\n11-&gt;7\n\n\n12-&gt;11\n\n\n13\n\npicard_create_sequence_dictionary\n13-&gt;4\n\n\n13-&gt;6\n\n\n13-&gt;12\n\n\n14\n\nsamtools_faidx\n14-&gt;4\n\n\n14-&gt;6\n\n\n14-&gt;12\n\n\n15-&gt;1\n\n:::\nRunning the workflow\nNow we turn to actually running the workflow. First use the options snakemake -n -p to check what the actual command flow looks like4. If everything looks ok, launch Snakemake, adding the --cores option to run jobs in parallel:\nsnakemake --cores 10\nThat’s all there is to it! Now you can take a break / listen to the next lecture while the workflow (hopefully) runs to completion without interruptions.\n\n\n\n\n\n\nExercise\n\n\n\n\n\n\n\nOnce the workflow has finished, open and have a look at multiqc_report.html. Also check the output variant files in directory gatk-genotype-gvcfs.",
+    "crumbs": [
+      "Slides",
+      "Variant calling",
+      "Variant calling workflow"
+    ]
+  },
+  {
+    "objectID": "exercises/variant_calling/variant_calling_workflow.html#running-the-workflow",
+    "href": "exercises/variant_calling/variant_calling_workflow.html#running-the-workflow",
+    "title": "Variant calling workflow",
+    "section": "Running the workflow",
+    "text": "Running the workflow\nNow we turn to actually running the workflow. First use the options snakemake -n -p to check what the actual command flow looks like4. If everything looks ok, launch Snakemake, adding the --cores option to run jobs in parallel:\nsnakemake --cores 10\nThat’s all there is to it! Now you can take a break / listen to the next lecture while the workflow (hopefully) runs to completion without interruptions.\n\n\n\n\n\n\nExercise\n\n\n\n\n\n\n\nOnce the workflow has finished, open and have a look at multiqc_report.html. Also check the output variant files in directory gatk-genotype-gvcfs.",
+    "crumbs": [
+      "Slides",
+      "Variant calling",
+      "Variant calling workflow"
+    ]
+  },
+  {
+    "objectID": "exercises/variant_calling/variant_calling_workflow.html#footnotes",
+    "href": "exercises/variant_calling/variant_calling_workflow.html#footnotes",
+    "title": "Variant calling workflow",
+    "section": "Footnotes",
+    "text": "Footnotes\n\nSnakemake borrows much of its terminology and philosophy from Make, which was originally designed to automate software builds.↩︎\nYou can also provide the --force flag to regenerate an output, regardless of whether the input file is younger or not.↩︎\nSnakemake is written in Python. If you’re familiar with Python, you will recognize much of the syntax.↩︎\nYou can also add the flag --forceall/-F to trigger a rerun of all outputs.↩︎",
+    "crumbs": [
+      "Slides",
+      "Variant calling",
+      "Variant calling workflow"
+    ]
   }
 ]

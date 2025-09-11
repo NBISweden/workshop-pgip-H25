@@ -1,0 +1,19 @@
+---
+title: Genetic diversity index
+description: List of exercises
+format:
+  nbis-course-html:
+    number-sections: false
+author:
+  - Per Unneberg
+execute:
+  cache: false
+---
+
+## About
+
+## Exercises
+
+[Genetic diversity landscapes](landscape.qmd)
+
+: Introduction to calculating genetic diversity landscapes.
