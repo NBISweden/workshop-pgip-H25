@@ -35,8 +35,6 @@ jobs:
         with:
           pixi-version: v0.54.2
           cache: true
-          auth-host: prefix.dev
-          auth-token: ${{ secrets.PREFIX_DEV_TOKEN }}
           environments: lint
           manifest-path: pyproject.toml
 
@@ -66,8 +64,6 @@ jobs:
         uses: prefix-dev/setup-pixi@v0.9.0
         with:
           pixi-version: v0.54.2
-          auth-host: prefix.dev
-          auth-token: ${{ secrets.PREFIX_DEV_TOKEN }}
           environments: build
           cache: true
           cache-write: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
