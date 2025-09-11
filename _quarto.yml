@@ -85,7 +85,7 @@ format:
       match: auto
   nbis-quarto-revealjs:
     footer: Population Genomics in Practice
-    header-logo-left-url: https://nbis.se
+    header-logo-left-url: https://nbisweden.github.io/workshop-pgip-H25
     ultitle: true
     theme: ["assets/css/custom.scss"]
     smaller: true
