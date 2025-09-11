@@ -1,0 +1,51 @@
+# -*- yaml -*-
+project:
+  render:
+    - index.qmd
+    # Slides
+    - slides/index.qmd
+    - slides/pgip/index.qmd
+    - slides/foundations/index.qmd
+    - slides/variant_calling/index.qmd
+    - slides/variant_filtering/index.qmd
+    - slides/recombination/index.qmd
+    - slides/recombination/linkage.qmd
+    - slides/genetic_diversity/index.qmd
+    - slides/simulation/index.qmd
+    - slides/scratch/index.qmd
+    # Exercises and datasets
+    - exercises/index.qmd
+    - exercises/compute_environment/index.qmd
+    - exercises/datasets/monkeyflowers.qmd
+    - exercises/variant_calling/index.qmd
+    - exercises/variant_calling/introduction.qmd
+    - exercises/variant_calling/data_qc.qmd
+    - exercises/variant_calling/read_mapping.qmd
+    - exercises/variant_calling/variant_calling_workflow.qmd
+    - exercises/variant_calling/variant_calling_long.qmd
+    - exercises/variant_filtering/index.qmd
+    - exercises/variant_filtering/basic_filtering.qmd
+    - exercises/variant_filtering/advanced_filtering.qmd
+    - exercises/genetic_diversity/index.qmd
+    - exercises/genetic_diversity/landscape.qmd
+    - exercises/recombination_linkage/index.qmd
+    - exercises/recombination_linkage/ld_decay.qmd
+    - exercises/population_structure/index.qmd
+    - exercises/population_structure/pca.qmd
+    - exercises/population_structure/admixture.qmd
+    - exercises/population_structure/dstats.qmd
+    - exercises/demography/index.qmd
+    - exercises/selection/index.qmd
+    - exercises/simulation/index.qmd
+    - exercises/simulation/howto.qmd
+    - exercises/simulation/stdpopsim_lab.qmd
+    - exercises/simulation/stdpopsim_lab_II.qmd
+    - exercises/simulation/simulation.qmd
+    - exercises/ancestral_recombination_graphs/index.qmd
+    # Recipes
+    - recipes/index.qmd
+    - recipes/slides/index.qmd
+    - recipes/slim/index.qmd
+    # Exclude
+    - "!fixme.qmd"
+    - "*.ipynb"
