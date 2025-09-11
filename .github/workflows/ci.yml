@@ -64,45 +64,49 @@ jobs:
           cache: true
           cache-write: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
 
-      - name: Install TeXLive
-        run: |
-          sudo apt-get update
-          sudo apt-get install texlive texlive-latex-extra
+      # - name: Install TeXLive
+      #   run: |
+      #     sudo apt-get update
+      #     sudo apt-get install texlive texlive-latex-extra
 
-      - name: Add rpgip package and admixtools2
-        env:
-          GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          pixi run rsetup
+      # - name: Add rpgip package and admixtools2
+      #   env:
+      #     GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      #   run: |
+      #     pixi run rsetup
 
       - name: "Set environment variables"
         run: |
           echo "TEXINPUTS=$TEXINPUTS:$GITHUB_WORKSPACE/src/latex" >> $GITHUB_ENV
           echo "RETICULATE_PYTHON=$GITHUB_WORKSPACE/.pixi/envs/build/bin/python >> $GITHUB_ENV"
+          echo "QUARTO_PYTHON=$GITHUB_WORKSPACE/.pixi/envs/build/bin/python >> $GITHUB_ENV"
 
       - name: List reticulate setting
         run: |
           R -e "library(reticulate); reticulate::py_config()"
+          which python
+          echo ${QUARTO_PYTON}
+          echo ${RETICULATE_PYTON}
         shell: pixi run -e build bash -e {0}
 
-      - name: Render project without publishing
-        env:
-          QUARTO_PRINT_STACK: true
-        if: ${{ github.event_name == 'pull_request' }}
-        run: |
-          quarto render .
-          echo "QUARTO_OUTPUT=_site" >> $GITHUB_ENV
-        shell: pixi run -e build bash -e {0}
+      # - name: Render project without publishing
+      #   env:
+      #     QUARTO_PRINT_STACK: true
+      #   if: ${{ github.event_name == 'pull_request' }}
+      #   run: |
+      #     quarto render .
+      #     echo "QUARTO_OUTPUT=_site" >> $GITHUB_ENV
+      #   shell: pixi run -e build bash -e {0}
 
-      - name: Publish to GitHub Pages
-        env:
-          GITHUB_EMAIL: quarto-github-actions-publish@example.com
-          GITHUB_USERNAME: gh_action
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          QUARTO_PRINT_STACK: true
-        if: ${{ github.ref_name == 'main' || github.ref_name == 'test-build' }}
-        run: |
-          git config --global user.email "${{ env.GITHUB_EMAIL }}"
-          git config --global user.name "${{ env.GITHUB_USERNAME }}"
-          quarto publish gh-pages --no-browser
-        shell: pixi run -e build bash -e {0}
+      # - name: Publish to GitHub Pages
+      #   env:
+      #     GITHUB_EMAIL: quarto-github-actions-publish@example.com
+      #     GITHUB_USERNAME: gh_action
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #     QUARTO_PRINT_STACK: true
+      #   if: ${{ github.ref_name == 'main' || github.ref_name == 'test-build' }}
+      #   run: |
+      #     git config --global user.email "${{ env.GITHUB_EMAIL }}"
+      #     git config --global user.name "${{ env.GITHUB_USERNAME }}"
+      #     quarto publish gh-pages --no-browser
+      #   shell: pixi run -e build bash -e {0}
