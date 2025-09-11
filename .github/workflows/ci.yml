@@ -80,6 +80,11 @@ jobs:
           echo "TEXINPUTS=$TEXINPUTS:$GITHUB_WORKSPACE/src/latex" >> $GITHUB_ENV
           echo "RETICULATE_PYTHON=$GITHUB_WORKSPACE/.pixi/envs/build/bin/python >> $GITHUB_ENV"
 
+      - name: List reticulate setting
+        run: |
+          R -e "library(reticulate); reticulate::py_config()"
+        shell: pixi run -e build bash -e {0}
+
       - name: Render project without publishing
         env:
           QUARTO_PRINT_STACK: true
