@@ -1,0 +1,660 @@
+---
+title: Variant calling and genotyping
+author:
+  - Per Unneberg
+format:
+  nbis-quarto-revealjs:
+    footer: Variant calling
+---
+
+## Setup {visibility="hidden" .hidden .unnumbered .unlisted}
+
+{{< include /slides/_knitr.qmd >}}
+
+{{< include /slides/_rlibs.qmd >}}
+
+## Variant and genotype calling
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+<!-- markdownlint-disable MD013 -->
+
+![](https://media.springernature.com/full/springer-static/image/art%3A10.1038%2Fnrg2986/MediaObjects/41576_2011_Article_BFnrg2986_Fig1_HTML.jpg?as=webp){width=60% fig-align=center}
+
+<!-- markdownlint-enable MD013 -->
+
+::: {.flushright .smallest .translatey50}
+
+@nielsen_GenotypeSNPCalling_2011
+
+:::
+
+:::
+
+::: {.column width="50%"}
+
+SNP calling
+: Identification of polymorphic sites ($>1$% allele frequency)
+
+Variant calling
+: Identification of variant sites (sufficient that **any** allele
+  differs); single nucleotide variant (**SNV**)
+
+Genotype calling
+: Determine the allele combination for each individual (aa, aA, or AA
+  for bi-allelic variants)
+
+::: {.fragment}
+
+Knowing variant sites informs us of possible genotypes and improves genotyping.
+
+Example: knowing a site has `A` or `C` limits possible genotype calls
+to `AA`, `AC`, or `CC`
+
+:::
+
+:::
+
+::::
+
+::: {.notes}
+
+Figure caption from [@nielsen_GenotypeSNPCalling_2011]:
+
+> Pre-processing steps (shown in yellow) transform the raw data from
+> next-generation sequencing technology into a set of aligned reads
+> that have a measure of confidence, or quality score, associated with
+> the bases of each read. The per-base quality scores produced by
+> base-calling algorithms may need to be recalibrated to accurately
+> reflect the true error rates. Depending on the number of samples and
+> the depth of coverage, either a multi-sample calling procedure
+> (green) or a single-sample calling procedure (orange) may then be
+> applied to obtain SNP or genotype calls and associated quality
+> scores. Note that the multi-sample procedure may include a
+> linkage-based analysis, which can substantially improve the accuracy
+> of SNP or genotype calls. Finally, post-processing (purple) uses
+> both known data and simple heuristics to filter the set of SNPs
+> and/or improve the associated quality scores. Optional, although
+> recommended, steps are shown in dashed lines.
+
+:::
+
+## Variants show up in pileup alignments {.smaller}
+
+:::: {.columns}
+
+::: {.column width="48%" .smallr}
+
+<h5>Sample PUN-Y-INJ</h5>
+
+```{bash }
+#| label: samtools-tview-PUN-Y-2
+#| echo: false
+#| eval: true
+#| results: asis
+samtools tview -p LG4:30430 -d H -w 60 \
+   bam/PUN-Y-INJ.bam \
+   ref/M_aurantiacus_v1.fasta
+```
+
+:::
+
+:::{.column width="4%"}
+
+:::
+
+::: {.column width="48%" .smallr}
+
+<h5>Sample PUN-R-ELF</h5>
+
+```{bash }
+#| label: samtools-tview-PUN-R-2
+#| echo: false
+#| eval: true
+#| results: asis
+samtools tview -p LG4:30430 -d H -w 60 \
+   bam/PUN-R-ELF.bam \
+   ref/M_aurantiacus_v1.fasta
+```
+
+:::
+
+::::
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+:::{}
+
+Potential variants show up as multiple mismatches in a column. Two
+questions arise:
+
+- how do we detect variant sites?
+- how do we distinguish variants from sequencing error?
+
+:::
+
+:::
+
+::: {.column width="50%"}
+
+:::{.fragment}
+
+Simple approach: filter bases on quality (e.g., Q20), call heterozygous if 20-80% bases non-reference.
+
+Issues: undercalls heterozygotes, no measure of uncertainty
+
+:::
+
+::: {.fragment}
+
+Solution: probabilistic methods!
+
+::: {.flushright .smallest}
+
+[@nielsen_GenotypeSNPCalling_2011]
+
+:::
+
+:::
+
+:::
+
+::::
+
+::: {.notes}
+
+Potential variants show up as multiple mismatches in a column. Left
+sample has three reads that match the reference so is probably
+heterozygote. For the right sample no read matches reference so most
+likely call is homozygote alternate.
+
+:::
+
+## We can calculate likelihoods of observed data
+
+### Example (excluding sequencing error!)
+
+:::: {.columns}
+
+::: {.column width="5%"}
+
+```{bash }
+#| label: samtools-tview-view-variant
+#| echo: false
+#| eval: true
+#| results: asis
+samtools tview -p LG4:32011 -d H -w 3 \
+   bam/PUN-Y-INJ.bam \
+   ref/M_aurantiacus_v1.fasta | \
+ sed -e "s/LG4:32011//g"
+```
+
+:::
+
+::: {.column width="5%"}
+
+:::
+
+::: {.column width="90%"}
+
+Goal: calculate likelihood of observing $X=$`G,g,T,T,G,g,t` from a
+genotype $G$. Denote by $X_i$ the observation at each position $i$ of
+$X$. We further assume each observation $X_i$ can be treated
+independently. We restrict possible genotypes to the observed alleles
+(i.e., `G, T`). Some observations:
+
+::: {.fragment}
+
+Prob($X_1=$`G` *assuming* genotype $G$=`T,T`) = P($X_1=$`G`|`T,T`) = $0$
+
+:::
+
+::: {.fragment}
+
+Prob($X_1=$`G` assuming genotype `G,G`) = P($X_1=$`G`|`G,G`) = $1$
+
+:::
+
+::: {.fragment}
+
+Prob($X_1=$`G` assuming genotype `G,T`) = P($X_1=$`G`|`G,T`) = $0.5$
+
+:::
+
+::: {.fragment}
+
+To get total likelihood $P(X|G)$ assuming a genotype $G$ (here `G,T`),
+we can multiply over all observations (reads):
+
+$$
+\begin{align}
+    P(X|\mathsf{G,T}) & = P(X_1=\mathsf{G}|\mathsf{G,T})%%
+P(X_2=\mathsf{g}|\mathsf{G,T})%%
+P(X_3=\mathsf{T}|\mathsf{G,T})%%
+P(X_4=\mathsf{T}|\mathsf{G,T}) \\
+    & P(X_5=\mathsf{G}|\mathsf{G,T})%%
+    P(X_6=\mathsf{g}|\mathsf{G,T})%%
+    P(X_7=\mathsf{t}|\mathsf{G,T}) = 0.5^7
+\end{align}
+$$
+
+:::
+
+:::
+
+::::
+
+::: {.notes}
+
+We restrict the possible genotypes to the observed alleles at a site
+(here G and T). If there are more than two observed alleles, a common
+procedure is to pick the two with highest frequencies, under the
+assumption that the rarest observation is a sequencing error.
+
+In reality, we also need to take into account sequencing error. There
+are different ways of doing this (e.g.
+@maruki_GenotypeCallingPopulationGenomic_2017,
+@depristo_FrameworkVariationDiscovery_2011), but we leave the details
+to the interested reader.
+
+:::
+
+## We can use Bayes' theorem to genotype {.smaller}
+
+### Example
+
+:::: {.columns}
+
+::: {.column width="5%"}
+
+```{bash }
+#| label: samtools-tview-view-variant-2
+#| echo: false
+#| eval: true
+#| results: asis
+samtools tview -p LG4:32011 -d H -w 3 \
+   bam/PUN-Y-INJ.bam \
+   ref/M_aurantiacus_v1.fasta | \
+ sed -e "s/LG4:32011//g"
+```
+
+:::
+
+::: {.column width="5%"}
+
+:::
+
+::: {.column width="90%"}
+
+For a given site, we have a number of observations $X$. We have shown
+we can calculate the likelihood of observing $X$ given a genotype $G$,
+$P(X|G)$.
+
+::: {.fragment}
+
+However; what we really want to know is the most likely genotype $G$
+*given the data* $X$, or $P(G|X)$.
+
+:::
+
+::: {.fragment}
+
+Apply Bayes' theorem:
+
+:::{.large}
+
+$$
+P(G|X) \sim P(X|G)\cdot P(G)
+$$
+
+:::
+
+:::
+
+::: {.fragment .large}
+
+$$
+\text{posterior} \sim \text{likelihood} \cdot \text{prior}
+$$
+
+:::
+
+::: {.fragment}
+
+Consequently we need to set a prior on $G$. If allele frequencies are
+known, we can constrain the frequencies; for example, if A is known to
+be low ($\sim1$%) AA genotype is *very* unlikely. Otherwise, could set
+all equal (flat prior).
+
+:::
+
+:::
+
+::::
+
+::: {.notes}
+
+cf <https://gatk.broadinstitute.org/hc/en-us/articles/360035890511>
+
+@li_SNPDetectionMassively_2009, Table 1, shows a nice numerical
+example of one way of setting priors. The authors assume a specific
+allele, G, in the *reference sequence*:
+
+--G--
+
+They start by calculating the frequency of *haploid* genotypes. They
+first determine $p_G$ by assuming a *heterozygous SNP rate* $f=0.001$,
+which means 1 in a 1000 sites has G/G genotype mutated to G/X, where X
+is one of {A,C,T}. They assume a transition to transversion (ts/tv)
+ratio of 4, meaning X=A four times as often as C or T (there is an
+error in the text where C is taken to be the transition; the numbers
+in the table are correct however). This gives the following haploid
+genotype frequencies:
+
+\begin{align}
+p_G & = 1-f = 0.999 \\
+p_A & = 4f/6 = 6.67\times10^{-4} \\
+p_C & = f/6 = 1.67\times10^{-4}\\
+p_T & = f/6 =1.67\times10^{-4}
+\end{align}
+
+To get the *diploid* genotypes, we simply multiply the corresponding
+entries, e.g., $p_{AC} = p_Ap_C$. For homozygote ALT, we need to
+account for the *homozygous SNP rate* $r = 0.0005$, where G/G mutates
+to X/X, for X one of {A,C,T}:
+
+\begin{align}
+p_{AA} & = p_Ap_A + 4r/6 = 3.33\times10^{-4} \\
+p_{AC} & = p_Ap_C = 1.11\times10^{-7}\\
+p_{AT} & = p_Ap_T = 1.11\times10^{-7}\\
+p_{CC} & = p_Cp_C + r/6 = 8.34\times10^{-5} \\
+p_{CG} & = p_Cp_G = 1.67\times10^{-4}\\
+p_{CT} & = p_Cp_T = 2.78\times10^{-8}\\
+p_{GG} & = 1 - f - r = 0.9985 \\
+p_{GT} & = p_Gp_T = 1.67\times10^{-4}\\
+p_{TT} & = p_Tp_T + r = 8.34\times10^{-5}\\
+\end{align}
+
+:::
+
+## Genotype likelihoods
+
+We have outlined a probabilistic approach to variant calling where we
+obtain a posterior probability of observing a genotype $G$ given data
+$X$:
+
+$$
+P(G|X) \sim P(X|G)P(G)
+$$
+
+::: {.fragment}
+
+Assuming a bi-allelic site, and letting $H_1, H_2$ denote the two
+alleles, we have three possible genotype likelihoods $P(H_1H_1|X)$,
+$P(H_1H_2|X)$, and $P(H_2H_2|X)$.
+
+:::
+
+::: {.fragment}
+
+The *highest* posterior probability is typically chosen as the
+genotype call, with a measure confidence represented by the genotype
+probability or ratio between the two most probable calls.
+
+:::
+
+::: {.fragment}
+
+Genotype likelihoods are often represented as Phred-scaled likelihoods (again!):
+
+$$
+\text{QUAL} = -10 \log_{10} P(G|X)
+$$
+
+:::
+
+## Variant Call Format (VCF) - header {.smaller}
+
+:::{}
+
+```{bash }
+#| label: vcf-format-header
+#| echo: true
+#| eval: true
+bcftools view --header-only vcf/allsites.vcf.gz | head --lines 1
+bcftools view --header-only vcf/allsites.vcf.gz | grep "##FILTER"
+bcftools view -h vcf/allsites.vcf.gz | grep "##INFO" | head -n 4
+bcftools view -h vcf/allsites.vcf.gz | grep "##FORMAT" | head -n 8
+```
+
+`FILTER` defines applied filters , `INFO` fields provide additional
+information to genotypes, `FORMAT` specification fields define
+genotype entries, and more. NB: `PL` format definition.
+
+:::
+
+::: {.flushright .smallr}
+
+<https://samtools.github.io/hts-specs/VCFv4.4.pdf>
+
+:::
+
+## Variant Call Format (VCF) - data
+
+```{bash }
+#| label: vcf-format-data
+#| echo: true
+#| eval: true
+bcftools view --header-only --samples PUN-R-ELF,PUN-Y-INJ vcf/allsites.vcf.gz |\
+ tail --lines 1
+bcftools view --no-header  --samples PUN-R-ELF,PUN-Y-INJ vcf/allsites.vcf.gz LG4:6886
+```
+
+:::{}
+
+`QUAL`: Phred-scaled quality score for Prob(ALT is wrong): $722.43$
+($p=10^{-Q/10}=5.7e-73$)
+
+`INFO` field summarizes data for all samples. For instance:
+
+- allele count 2 (`AC=2`)
+- allele frequency minor allele 0.222 (`AF=0.222`)
+
+:::
+
+::: {.flushright .smallest}
+
+<https://samtools.github.io/hts-specs/VCFv4.4.pdf>
+
+:::
+
+## Variant Call Format (VCF) - data {.smaller}
+
+```{bash }
+#| label: vcf-format-data-2
+#| echo: false
+#| eval: true
+bcftools view --header-only --samples PUN-R-ELF,PUN-Y-INJ vcf/allsites.vcf.gz |\
+ tail --lines 1
+bcftools view --no-header  --samples PUN-R-ELF,PUN-Y-INJ vcf/allsites.vcf.gz LG4:6886
+```
+
+:::: {.columns}
+
+::: {.column width="80%"}
+
+<h5>Genotypes (`GT:AD:DP:GQ:PGT:PID:PL:PS`)</h5>
+
+PUN-R-ELF: `0/1:3,8:11:50:.:.:189,0,50:.`
+
+`GT=0/1`, `AD=3,8` => 3 REF, 8 ALT, `DP=11` => sequence depth = 11, `PL=189,0,50`
+
+PUN-Y-INJ: `0/1:2,2:4:45:.:.:45,0,45:.`
+
+`GT=0/1`, `AD=2,2` => 2 REF, 2 ALT, `DP=4` => sequence depth = 4, `PL=45,0,45`
+
+::: {.fragment fragment-index=2}
+
+<h5>Relative genotype probabilities</h5>
+
+Can convert Phred-scaled quality scores to probabilities as
+
+$$
+p = 10^{-Q/10}
+$$
+
+For PUN-R-ELF the relative probabilities are $10^{-189/10}\approx1.26e-9$, $10^{0}=1$, $10^{50}=10^{-5}$.
+
+Interpretation: `0/1` 10,000 times more likely than `1/1`
+($1/10^{-5}$)
+
+:::
+
+:::
+
+:::{.column width="3%"}
+
+:::
+
+::: {.column width="4%"}
+
+```{bash }
+#| label: samtools-tview-view-R-6885
+#| echo: false
+#| eval: true
+#| results: asis
+samtools tview -p LG4:6885 -d H -w 3 \
+   bam/PUN-R-ELF.bam \
+   ref/M_aurantiacus_v1.fasta | \
+ sed -e "s/LG4:6885/ELF/g"
+```
+
+:::
+
+::: {.column width="4%"}
+
+```{bash }
+#| label: samtools-tview-view-Y-6885
+#| echo: false
+#| eval: true
+#| results: asis
+samtools tview -p LG4:6885 -d H -w 3 \
+   bam/PUN-Y-INJ.bam \
+   ref/M_aurantiacus_v1.fasta | \
+ sed -e "s/LG4:6885/INJ/g"
+```
+
+:::
+
+::::
+
+::: {.notes}
+
+QUAL: Phred-scaled quality score for the assertion made in ALT. i.e.
+$-10log_{10}$ prob(call in ALT is wrong)
+
+:::
+
+## GATK best practice
+
+:::: {.columns}
+
+::: {.column width="70%"}
+
+![](assets/images/gatk-best-practice.webp){width=90% fig-align=center}
+
+::: {.flushright .smallest}
+
+<https://gatk.broadinstitute.org/hc/en-us/articles/360035535932-Germline-short-variant-discovery-SNPs-Indels->
+
+:::
+
+:::
+
+::: {.column width="30%"}
+
+<h5>Pros</h5>
+
+- Best practices
+- Large documentation
+- Variant quality score recalibration
+
+<h5>Cons</h5>
+
+- Human-centric - very slow runtime on genomes with many sequences
+- Complicated setup
+
+:::
+
+::::
+
+## Alternative variant callers
+
+:::: {.columns}
+
+::: {.column width="33%"}
+
+##### [freebayes](https://github.com/freebayes/freebayes)
+
+Bayesian genetic variant detector. Simpler setup.
+
+May struggle in high-coverage regions.
+
+::: {.flushright .smallr}
+
+[@garrison_HaplotypebasedVariantDetection_2012]
+
+:::
+
+:::
+
+::: {.column width="33%"}
+
+##### [bcftools](https://github.com/samtools/bcftools)
+
+Utilities for variant calling and manipulating VCFs and BCFs.
+
+::: {.flushright .smallr}
+
+[@danecek_TwelveYearsSAMtools_2021]
+
+:::
+
+:::
+
+::: {.column width="33%"}
+
+##### [ANGSD](http://www.popgen.dk/angsd/index.php/ANGSD)
+
+For low-coverage sequencing. Doesn't do explicit genotyping; most
+methods take genotype uncertainty into account.
+
+::: {.flushright .smallr}
+
+[@korneliussen_ANGSDAnalysisNext_2014]
+
+:::
+
+:::
+
+::::
+
+:::{.hidden}
+
+Reference bias: plot no. hets vs coverage for real data, e.g., conifer
+
+:::
+
+::: {.notes}
+
+NB: samtools and GATK may actually produce different genotypes despite
+having identical GLs. Samtools applies prior $10^{-3}$ to het call,
+GATK has no prior [@li_BetterUnderstandingArtifacts_2014]
+
+:::
+
+## Bibliography {.smaller}

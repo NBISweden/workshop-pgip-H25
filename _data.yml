@@ -191,6 +191,10 @@ exercises/population_structure:
 slides/foundations:
   content:
     - data/Homo_sapiens: Homo_sapiens
+    - __reference__
+    - bam/PUN-Y-INJ.bam: monkeyflower/tiny/md/PUN-Y-INJ.bam
+    - bam/PUN-Y-INJ.bai: monkeyflower/tiny/md/PUN-Y-INJ.bai
+    - fastq/PUN-Y-INJ_R1.fastq.gz: monkeyflower/tiny/fastq/PUN-Y-INJ_R1.fastq.gz
 
 slides/variant_calling:
   content:

@@ -1,0 +1,164 @@
+---
+title: Read mapping
+author:
+  - "Per Unneberg"
+format:
+  nbis-quarto-revealjs:
+    footer: Read mapping
+---
+
+## Setup {visibility="hidden" .hidden .unnumbered .unlisted}
+
+{{< include /slides/_knitr.qmd >}}
+
+{{< include /slides/_rlibs.qmd >}}
+
+## Sequence alignment maps reads to a reference
+
+:::{}
+
+![Screenshot of reference sequence (top) and aligned reads (bottom).
+Second line with `.` characters is the consensus sequence. Bases are
+colored by nucleotide. Letter case indicates forward (upper-case) or
+reverse (lower-case) alignment. `*` is placeholder for deleted
+base.](assets/images/read-mapping.webp){#fig-read-mapping width=100%}
+
+:::
+
+Aim of sequence alignment (read mapping) is to determine source in
+reference sequence. Some commonly used read mappers for resequencing
+are
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+- BWA, BWA-MEM [@li_AligningSequenceReads_2013]
+- Novoalign (<https://www.novocraft.com/>)
+- Minimap2 [@li_Minimap2PairwiseAlignment_2018]
+
+:::
+
+::: {.column width="50%"}
+
+For a recent comprehensive comparison see @donato_NewEvaluationMethods_2021
+
+:::
+
+::::
+
+## Alignments are stored in BAM format {.smaller}
+
+:::{}
+
+<h5>Header information</h5>
+
+```{bash }
+#| label: bam-format-header
+#| echo: true
+#| eval: true
+samtools view --header-only bam/PUN-Y-INJ.bam | head --lines 4
+```
+
+Format: metadata record types prefixed with `@`, e.g., `@RG` is the *read group*
+
+:::
+
+:::{.fragment}
+
+<h5>Alignments</h5>
+
+```{bash }
+#| label: bam-format-alignment
+#| echo: true
+#| eval: true
+samtools view bam/PUN-Y-INJ.bam | head --lines 1
+```
+
+Some important columns: 1:`QUERY`, 3:`REFERENCE`, 4:`POSITION`,
+5:`MAPQ`, 6:`CIGAR`. The `CIGAR` string compiles information on the
+alignment, such as match (`M`), soft clipping (`S`), and insertion to
+reference (`I`)
+
+:::
+
+::: {.flushright .smallest}
+
+cf <https://samtools.github.io/hts-specs/SAMv1.pdf>
+
+:::
+
+::: {.notes}
+
+For a complete description, see the specification. Suffice to say that
+the alignment format consists of a **header** section, with metadata
+and provenance data, and an **alignment** section, which is a
+column-based format with information pertaining to the query sequence
+being mapped and the reference sequence to which the query is mapped.
+
+:::
+
+## Mapped alignments can be viewed with `samtools tview`
+
+:::: {.columns}
+
+::: {.column width="48%"}
+
+```{bash }
+#| label: samtools-tview-PUN-Y
+#| echo: true
+#| eval: true
+#| results: asis
+samtools tview -p LG4:30430 -d H -w 60 \
+   bam/PUN-Y-INJ.bam \
+   ref/M_aurantiacus_v1.fasta
+```
+
+:::
+
+:::{.column width="4%"}
+
+:::
+
+::: {.column width="48%"}
+
+```{bash }
+#| label: samtools-tview-PUN-R
+#| echo: true
+#| eval: true
+#| results: asis
+samtools tview -p LG4:30430 -d H -w 60 \
+   bam/PUN-R-ELF.bam \
+   ref/M_aurantiacus_v1.fasta
+```
+
+:::
+
+::::
+
+Aka `pileup` format. Forward (`.`) and backward (`,`) mapping reads.
+Mismatches shown as letters.
+
+::: {.notes}
+
+After preprocessing, reads are mapped to a reference. Observations:
+
+1. different coverage
+2. sequencing error randomly distributed
+
+:::
+
+## Potential error corrections and pitfalls
+
+#### Instrument
+
+- PCR duplicates -> MarkDuplicates
+- systematic errors from sequencing machine -> Base Quality Score
+  Recalibration (BQSR)
+
+#### Reference
+
+- quality of reference sequence!
+- repetitive sequence
+
+## Bibliography {.smaller}

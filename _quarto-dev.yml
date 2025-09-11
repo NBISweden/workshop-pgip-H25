@@ -5,14 +5,19 @@ project:
     # Slides
     - slides/index.qmd
     - slides/pgip/index.qmd
-    # - slides/foundations/index.qmd
-    # - slides/variant_calling/index.qmd
-    # - slides/variant_filtering/index.qmd
-    # - slides/recombination/index.qmd
-    # - slides/recombination/linkage.qmd
-    # - slides/genetic_diversity/index.qmd
-    # - slides/simulation/index.qmd
-    # - slides/scratch/index.qmd
+    - slides/foundations/index.qmd
+    - slides/foundations/data.qmd
+    - slides/foundations/foundations.qmd
+    - slides/variant_calling/index.qmd
+    - slides/variant_calling/dna_sequencing.qmd
+    - slides/variant_calling/read_mapping.qmd
+    - slides/variant_calling/variant_calling.qmd
+    - slides/variant_filtering/index.qmd
+    - slides/recombination/index.qmd
+    - slides/recombination/linkage.qmd
+    - slides/genetic_diversity/index.qmd
+    - slides/simulation/index.qmd
+    - slides/scratch/index.qmd
     # Exercises and datasets
     - exercises/index.qmd
     - exercises/compute_environment/index.qmd
@@ -49,3 +54,7 @@ project:
     # Exclude
     - "!fixme.qmd"
     - "*.ipynb"
+
+execute:
+  freeze: false
+  cache: false

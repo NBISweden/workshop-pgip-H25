@@ -1,5 +1,8 @@
 ---
 title: Variant calling workflow
+description: >-
+  Perform variant calling and genotyping. Introduction to workflow
+  manager systems.
 author:
   - Per Unneberg
 format: nbis-course-html
