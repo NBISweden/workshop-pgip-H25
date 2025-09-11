@@ -8,7 +8,7 @@ format:
   nbis-course-html:
     number-sections: false
 listing:
-  id: vc-listings
+  id: vc-listing
   type: table
   contents:
     - dna_sequencing.qmd
@@ -23,5 +23,5 @@ Collection of presentations on DNA sequencing and variant calling.
 
 ## Listing
 
-:::{#vc-listings}
+:::{#vc-listing}
 :::

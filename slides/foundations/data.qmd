@@ -16,12 +16,6 @@ format:
 
 {{< include /slides/_rlibs.qmd >}}
 
-```{r libs}
-#| echo: false
-#| eval: true
-#| cache: false
-```
-
 ## DNA variation
 
 ![The variable sites at the *Drosophila melanogaster* ADH locus

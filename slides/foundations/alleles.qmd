@@ -1,0 +1,695 @@
+---
+title: Alleles and genealogies
+subtitle: More descriptions of genetic data
+author:
+  - Per Unneberg
+format:
+  nbis-quarto-revealjs:
+    toc: false
+    smaller: false
+    footer: Foundations - alleles and genealogies
+---
+
+## Setup  {.hidden .unnumbered .unlisted visibility="hidden"}
+
+{{< include /slides/_knitr.qmd >}}
+
+{{< include /slides/_rlibs.qmd >}}
+
+## Alleles as algebraic entities
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+Recall: **alleles** refer to *different variants* of a sequence at a
+locus (genomic position).
+
+::: {.fragment}
+
+Whatever the underlying molecular nature (gene, chromosome,
+nucleotide, protein), let's represent a locus by a letter, e.g., $A$
+($B$ if two loci, and so on)
+
+:::
+
+::: {.fragment}
+
+If locus has many alleles $1, 2, ...$ , could use indexing $A_1, A_2, ...$.
+
+:::
+
+::: {.fragment}
+
+Will use combination $A$, $a$ for *bi-allelic* loci from now on
+
+:::
+
+:::
+
+::: {.column width="50%"}
+
+::: {.fragment}
+
+::: {.callout-important appearance="simple" icon=false}
+
+### Example: gene coding for flower color
+
+:::::: {.columns}
+
+::::: {.column width="50%"}
+
+[{{< fa solid circle >}}]{style="color: #ff2a2a;"} $A$ red color
+
+{{< fa regular circle >}} $a$ white color
+
+::: {.fragment}
+
+[Punnett square](https://en.wikipedia.org/wiki/Punnett_square)
+
+:::: {style="display: grid; grid-template-columns: auto auto auto;
+grid-row-gap: 0px; grid-column-gap: 0px; text-align: center;
+align-items: center;"}
+
+:::{}
+
+{{< fa venus >}} \\ {{< fa mars >}}
+
+:::
+
+:::{}
+
+A
+
+:::
+
+:::{}
+
+a
+
+:::
+
+:::{}
+
+A
+
+:::
+
+:::{}
+
+![](assets/images/flower-red.svg){width=75}
+
+:::
+
+:::{}
+
+![](assets/images/flower-pink.svg){width=75}
+
+:::
+
+:::{}
+
+a
+
+:::
+
+:::{}
+
+![](assets/images/flower-pink.svg){width=75}
+
+:::
+
+:::{}
+
+![](assets/images/flower-white.svg){width=75}
+
+:::
+
+::::
+
+:::
+
+:::::
+
+:::::{.column width="5%"}
+
+:::::
+
+::::: {.column width="45%" .fragment}
+
+:::: {style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr;
+grid-row-gap: 0px; grid-column-gap: 10px; text-align: center; align-items: center;"}
+
+:::{}
+
+Genotype
+
+:::
+
+:::{}
+
+aa
+
+:::
+
+:::{}
+
+Aa
+
+:::
+
+:::{}
+
+AA
+
+:::
+
+:::{}
+
+Phenotype
+
+:::
+
+:::{}
+
+![](assets/images/flower-white.svg){width=100}
+
+:::
+
+:::{}
+
+![](assets/images/flower-pink.svg){width=100}
+
+:::
+
+:::{}
+
+![](assets/images/flower-red.svg){width=100}
+
+:::
+
+::::
+
+Heterozygote has intermediate color phenotype (pink).
+
+:::::
+
+::::::
+
+:::
+
+:::
+
+:::
+
+::::
+
+::: {.notes}
+
+Until now the examples have been based on nucleotide sequences.
+However, much of population genetic theory was developed before the
+nature of heredity (DNA) was known. In these early days, an allele
+would refer to variant forms of a gene, observed as differences in
+phenotypes. Genes, or loci, would be denoted using alphabetic
+characters, such as $A$, and allelic types could be referenced with
+indices, e.g., $A_1, A_2, ..., A_n$.
+
+To simplify calculations, we often look at one locus and we assume two
+alleles, whereby we skip the indices and denote the allelic pairs $A$
+and $a$ (although note that notations differs from author to author;
+for instance @gillespie_PopulationGeneticsConcise_2004 uses $A_1, A_2$
+for bi-allelic loci). For two-locus systems we simply denote the
+second allele with $B, b$, and so on.
+
+The example shows a hypothetical locus having two alleles $A$ and $a$
+that have phenotypes red and white flower color, and where
+heterozygotes are colored pink. The *Punnett square* shows how gamete
+combinations form genotypes and their corresponding phenotypes.
+
+:::
+
+## Alleles and frequencies
+
+We will be interested in looking at the dynamics of alleles, i.e., how
+their abundances in the population change over time. Therefore we want
+to measure the *frequencies* of alleles $A$ and $a$.
+
+:::::: {.columns}
+
+::::: {.column width="55%"}
+
+::: {.fragment fragment-index=1}
+
+::: {.callout-important appearance="simple" icon=false}
+
+### Example
+
+Assume following population ($n=10$, with $n_{AA}=5$, $n_{Aa}=4$,
+$n_{aa}=1$):
+
+![](assets/images/flower-red.svg){width=50}
+![](assets/images/flower-red.svg){width=50}
+![](assets/images/flower-red.svg){width=50}
+![](assets/images/flower-red.svg){width=50}
+![](assets/images/flower-red.svg){width=50}
+![](assets/images/flower-pink.svg){width=50}
+![](assets/images/flower-pink.svg){width=50}
+![](assets/images/flower-pink.svg){width=50}
+![](assets/images/flower-pink.svg){width=50}
+![](assets/images/flower-white.svg){width=50}
+
+::: {.fragment fragment-index=2}
+
+Let **$p$** be frequency of $A$ alleles, **$q=1-p$** frequency of $a$ alleles; then
+
+5 $AA$ individuals, 4 $Aa$ individuals $\Rightarrow p=\frac{5\cdot2 +
+4\cdot1}{10\cdot2}=\frac{14}{20}=0.7$
+
+and $q=1-p=\frac{6}{20}=0.3$
+
+:::
+
+::: {.fragment fragment-index=3}
+
+Inserting frequencies into **Punnett square** gives expected frequency
+of offspring genotypes.
+
+:::
+
+:::
+
+:::
+
+:::::
+
+::::: {.column width="45%"}
+
+:::: {.fragment fragment-index=4}
+
+:::: {style="display: grid; grid-template-columns: auto auto auto;
+grid-row-gap: 0px; grid-column-gap: 0px; text-align: center;
+align-items: center; font-size: 0.8em;"}
+
+:::{}
+
+{{< fa venus >}} \\ {{< fa mars >}}
+
+:::
+
+:::{}
+
+$A$ ($p=0.7$)
+
+:::
+
+:::{}
+
+$a$ ($q=0.3$)
+
+:::
+
+:::{}
+
+$A$ ($p=0.7$)
+
+:::
+
+:::{}
+
+![](assets/images/flower-red.svg){width=50}
+
+$p\cdot p = 0.49$
+
+:::
+
+:::{}
+
+![](assets/images/flower-pink.svg){width=50}
+
+$p\cdot q = 0.21$
+
+:::
+
+:::{}
+
+$a$ ($q=0.3$)
+
+:::
+
+:::{}
+
+![](assets/images/flower-pink.svg){width=50}
+
+$q\cdot p = 0.21$
+
+:::
+
+:::{}
+
+![](assets/images/flower-white.svg){width=50}
+
+$q\cdot q = 0.09$
+
+:::
+
+::::
+
+::::
+
+::: {.fragment fragment-index=5 .small}
+
+**Expected** allele frequencies after mating: $p=p^2 + pq=0.7$, $q=1-p=0.3$
+
+:::
+
+:::::
+
+::::::
+
+::: {.notes}
+
+Given $n$ diploid individuals, there are $2n$ alleles in the
+population. The frequency of allele $A$ is then the homozygote $AA$
+times two, plus one times the individuals carrying one $A$.
+
+The Punnett square shows that the expected homozygote frequencies are
+$0.49$ and $0.09$ for $AA$ and $aa$, and hence, the frequency of $Aa$
+is $1 - 0.49 - 0.09 = 0.42 = 0.21 + 0.21 = 2pq$
+
+:::
+
+## In absence of evolutionary forces alleles are in equilibrium{.smaller}
+
+### The Hardy-Weinberg equilibrium
+
+For a locus, let $A$ and $a$ be two different alleles and let $p$ be
+the frequency of the $A$ allele and $q=1-p$ the frequency of the $a$
+allele. In the **absence** of **mutation**, **drift**, **migration**,
+and other evolutionary processes, the equilibrium state is given by
+the **Hardy-Weinberg equilibrium** (**HWE**).
+
+:::: {.columns=center}
+
+::: {.column width="45%"}
+
+|           | $A$ ($p$) | $a$ ($q$) |
+|-----------|-----------|-----------|
+| $A$ ($p$) | $p^2$     | $pq$      |
+| $a$ ($q$) | $qp$      | $q^2$     |
+
+:::
+
+::: {.column width="45%"}
+
+|            |          |          |          |
+|------------|----------|----------|----------|
+| Genotype:  | $AA$     | $Aa$     | $aa$     |
+| Frequency: | $p^2$    | $2pq$    | $q^2$    |
+|            | $f_{AA}$ | $f_{Aa}$ | $f_{aa}$ |
+
+:::
+
+::::
+
+Under HWE assumption, neither allele nor genotype frequencies change
+over time.
+
+Importantly, we can calculate allele frequencies from genotype
+frequencies and vice versa:
+
+$$
+p = f_{AA} + \frac{f_{Aa}}{2} = p^2 + pq\\
+q = f_{aa} + \frac{f_{Aa}}{2} = q^2 + pq\\
+$$
+
+::: {.notes }
+
+Segue: apart from describing the variation via e.g., diversity
+measures, we want to model how allele frequencies *change* in time. As
+[@gillespie_PopulationGeneticsConcise_2004, preface p. xi] points out,
+"While genotype frequencies are easily measured, their change is not"
+
+IOW: describing variation fine, but where does it come from and how
+does it change?
+
+If assumptions of HWE hold, we have no change of variation. However,
+we **want** to look at **change** of variation and disentangle the
+forces that impose change
+
+HWE assumption gives us a way to calculate allele frequencies from
+genotype frequencies. How well do these assumptions hold in real data?
+See next slide.
+
+:::
+
+## Natural populations do mate randomly?
+
+:::{}
+
+```{r }
+#| label: fig-hwe-1000genomes
+#| echo: false
+#| eval: true
+#| out-width: 80%
+#| fig-height: 6
+#| fig-width: 14
+#| fig-align: center
+#| fig-cap:
+#|     Hardy-Weinberg proportions in 10,000 SNPs on chromosome
+#|     22 from three populations based on 1000 genomes data.
+#|     For each SNP, genotypes are given as counts (minor/heterozygote/major),
+#|     converted to frequencies and plotted on the y-axis. Allele
+#|     frequencies are obtained from genotype frequencies and
+#|     plotted on the x-axis. Most observations follow HWE proportions.
+#|     Deviations from HWE can indicate sample QC issues, or that
+#|     there is population structure.
+#|     Illustration inspired by @cooplab_PopulationGeneticsCourse_2011.
+#|     [{{< fa rectangle-list >}}]({{< var recipes.slides >}}#sec-recipe-slides-hwe)
+include_graphics("assets/images/hwe-1000genomes.webp")
+```
+
+:::
+
+::: {.notes }
+
+So how do the HWE assumptions hold up in real data? The figure shows
+three human populations from the 1000 genomes data, for which 10,000
+SNPs have been selected. For each SNP, we know the genotype
+frequencies $AA$, $Aa$, $aa$ and can therefore calculate the allele
+frequencies for $A$ and $a$ using the equations on the preceding
+slide (e.g., $p=p_{AA}+p_{Aa}/2$).
+
+Note that 1000 genomes data have sorted genotype frequencies, so to
+produce nice symmetrical plots, half the genotype frequencies have
+been reversed (minor/het/major -> major/het/minor).
+
+<!-- markdownlint-disable MD013 -->
+
+See
+<https://stackoverflow.com/questions/26587940/ggplot2-different-legend-symbols-for-points-and-lines>
+for legend customization.
+
+<!-- markdownlint-enable MD013 -->
+
+:::
+
+## The Wahlund effect and population substructure
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+Population P1
+
+:::{}
+
+![](assets/images/flower-red.svg){width=50}
+![](assets/images/flower-red.svg){width=50}
+![](assets/images/flower-red.svg){width=50}
+![](assets/images/flower-red.svg){width=50}
+![](assets/images/flower-red.svg){width=50}
+
+:::
+
+$p_A = 1 \Rightarrow p_A^2 = 1$, $p_a^2=2p_Ap_a=0$
+
+:::
+
+::: {.column width="50%"}
+
+Population P1
+
+:::{.center}
+
+![](assets/images/flower-white.svg){width=50}
+![](assets/images/flower-white.svg){width=50}
+![](assets/images/flower-white.svg){width=50}
+![](assets/images/flower-white.svg){width=50}
+![](assets/images/flower-white.svg){width=50}
+
+:::
+
+$p_a = 1 \Rightarrow p_a^2 = 1$, $p_A^2=2p_Ap_a=0$
+
+:::
+
+:::{.fragment}
+
+Both subpopulations are in HWE!
+
+:::
+
+::::
+
+:::{.fragment}
+
+Population P1+P2:
+
+$p_A=p_a=0.5$ so we would expect 50% heterozygotes - but there are
+none!
+
+:::
+
+::: {.fragment}
+
+This is known as the **Wahlund effect** where the loss of
+heterozygosity is due to *population substructure*.
+
+:::
+
+## Summarising allele frequencies{.smaller}
+
+Going back to the DNA example let's tabulate the **minor allele
+frequencies** (MAFs):
+
+<!-- markdownlint-disable MD013 -->
+
+::: {.dna }
+
+|     | 1 | 2     | 3 | 4 | 5     | 6 | 7 | 8     | 9 | 10 | 11    | 12 | 13    | 14 | 15    |
+|:---:|:-:|:-----:|:-:|:-:|:-----:|:-:|:-:|:-----:|:-:|:--:|:-----:|:--:|:-----:|:--:|:-----:|
+|     | T | T     | A | C | A     | A | T | **C** | C | G  | A     | T  | C     | G  | T     |
+|     | T | T     | A | C | **G** | A | T | G     | C | G  | **C** | T  | C     | G  | T     |
+|     | T | **C** | A | C | A     | A | T | G     | C | G  | A     | T  | **G** | G  | **A** |
+|     | T | T     | A | C | **G** | A | T | G     | C | G  | **C** | T  | C     | G  | T     |
+| MAF | 0 | 1     | 0 | 0 | 2     | 0 | 0 | 1     | 0 | 0  | 2     | 0  | 1     | 0  | 1     |
+
+: {tbl-colwidths="[10,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5]"}
+
+:::
+
+<!-- markdownlint-enable MD013 -->
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+:::{.fragment}
+
+#### Site-frequency spectrum (SFS)
+
+We can count all the different frequency classes ${x_0, x_1, x_2,
+...}$ and make a frequency table or plot it:
+
+```{r, engine="tikz", fig.ext="svg" }
+#| label: site-frequency-spectrum-graph
+#| echo: false
+#| eval: true
+#| out-width: 50%
+%% https://tex.stackexchange.com/questions/123866/histogram-with-tikz
+\begin{tikzpicture}[ybar interval]
+\tikzstyle{tick}=[font=\scriptsize];
+\tikzstyle{label}=[font=\small];
+  \draw[fill=blue!60!black, draw=blue!60!black]
+plot coordinates{(0,1.8) (1,.8) (2,.4) (3, 0) (4, 0)};
+\draw[->] (-0.2, 0) -- (4.2, 0) node[right] {$x$};
+\draw[->] (0, -0.2) -- (0, 2.2) node[above] {$y$};
+\node[tick] at (0.5, -0.3) {0};
+\node[tick] at (1.5, -0.3) {1};
+\node[tick] at (2.5, -0.3) {2};
+\node[tick] at (3.5, -0.3) {3};
+\node[tick] at (1.5, -0.6) {Allele frequency};
+\node[tick, rotate=90] at (-0.4, .5) {Proportion};
+\end{tikzpicture}
+```
+
+:::
+
+:::
+
+::: {.column width="50%"}
+
+:::{.fragment}
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+#### Genealogies and mutations
+
+Assuming we know how the samples are related and we know the
+**ancestral** sequence, we can plot the mutations (circles) on a
+genealogy.
+
+Note the correspondence between frequency classes in the SFS and
+number of samples below a mutation.
+
+:::
+
+::: {.column width="50%"}
+
+```{r, engine="tikz", fig.ext="svg" }
+#| label: coalescent-tree-dna-variation
+#| echo: false
+#| eval: true
+#| out-width: 70%
+#| fig-align: center
+\begin{tikzpicture}[outer sep=0, inner sep=0, thick,
+                    node distance=5px, every node/.style={font=\ttfamily}]
+\tikzstyle{mut} = [circle, minimum height=0.2cm, fill=gray, draw];
+\draw
+node (1) at (0, 0) {}
+node (2) at (1, 0) {}
+node (3) at (2, 0) {}
+node (4) at (3, 0) {}
+node (5) at ($(1) !.5! (2) + (0, 2)$) {}
+node (6) at ($(1-|5) !.5! (3) + (0, 3)$) {}
+node (7) at ($(1-|6) !.5! (4) + (0, 5)$) {}
+node[above of=7, anchor=south] (rootl) {TAGCCT}
+node[rotate=45, below left of=1, anchor=north east] (1l) {TGGCCT}
+node[rotate=45, below left of=2, anchor=north east] (2l) {TGGCCT}
+node[rotate=45, below left of=3, anchor=north east] (3l) {TACACT}
+node[rotate=45, below left of=4, anchor=north east] (4l) {CAGAGA}
+;
+
+\draw
+(1) -- (5)
+(2) -- (5)
+(5) -- (6)
+(3) -- (6)
+(6) -- (7)
+(4) -- (7)
+node[mut] (m1) at ($(5) !.33! (6)$) {}
+node[mut] (m2) at ($(5) !.67! (6)$) {}
+node[mut] (m3) at ($(3) !.5! (6)$) {}
+node[mut] (m4) at ($(4) !.25! (7)$) {}
+node[mut] (m5) at ($(4) !.5! (7)$) {}
+node[mut] (m6) at ($(4) !.75! (7)$) {}
+;
+\end{tikzpicture}
+```
+
+:::
+
+::::
+
+:::
+
+:::
+
+::::
+
+## Bibliography {.unnumbered .unlisted .smaller}
+
+::: { #refs }
+:::

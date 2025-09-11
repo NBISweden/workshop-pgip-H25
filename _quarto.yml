@@ -16,12 +16,13 @@ project:
     - slides/pgip/index.qmd
     - slides/foundations/index.qmd
     - slides/foundations/data.qmd
+    - slides/foundations/alleles.qmd
     - slides/variant_calling/index.qmd
     - slides/variant_calling/dna_sequencing.qmd
     - slides/variant_calling/read_mapping.qmd
     - slides/variant_calling/variant_calling.qmd
     - slides/variant_calling/reproducibility.qmd
-    # - slides/variant_filtering/index.qmd
+    - slides/variant_filtering/index.qmd
     # - slides/recombination/index.qmd
     # - slides/recombination/linkage.qmd
     # - slides/genetic_diversity/index.qmd
@@ -36,9 +37,9 @@ project:
     - exercises/variant_calling/data_qc.qmd
     - exercises/variant_calling/read_mapping.qmd
     - exercises/variant_calling/variant_calling_workflow.qmd
-    # - exercises/variant_filtering/index.qmd
-    # - exercises/variant_filtering/basic_filtering.qmd
-    # - exercises/variant_filtering/advanced_filtering.qmd
+    - exercises/variant_filtering/index.qmd
+    - exercises/variant_filtering/basic_filtering.qmd
+    - exercises/variant_filtering/depth_filtering.qmd
     # - exercises/genetic_diversity/index.qmd
     # - exercises/genetic_diversity/landscape.qmd
     # - exercises/recombination_linkage/index.qmd
