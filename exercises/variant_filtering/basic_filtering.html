@@ -1,0 +1,1526 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.33">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<meta name="author" content="Per Unneberg">
+<meta name="description" content="Introduction to basic variant filtering using the CLI.">
+<title>Basic variant filtering – Population Genomics in Practice 2025</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../assets/logos/nbislogo-green.svg" rel="icon" type="image/svg+xml">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-e0fa960b084fe2c1b9e2a0a843ce9846.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-c99def4582b0a787bea15946fe8e6d6f.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/quarto-contrib/fontawesome6-1.2.0/all.min.css" rel="stylesheet">
+<link href="../../site_libs/quarto-contrib/fontawesome6-1.2.0/latex-fontsize.css" rel="stylesheet">
+<script src="../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script><script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+</head>
+<body class="nav-sidebar floating nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="navbar navbar-expand-lg " data-bs-theme="dark"><div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../../assets/logos/nbislogo-green.svg" alt="" class="navbar-logo"></a>
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Population Genomics in Practice 2025</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+<li class="nav-item">
+    <a class="nav-link active" href="../../slides/index.html" aria-current="page"> 
+<span class="menu-text">Slides</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../exercises/index.html"> 
+<span class="menu-text">Exercises</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../recipes/index.html"> 
+<span class="menu-text">Code recipes</span></a>
+  </li>  
+</ul>
+</div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../exercises/variant_calling/index.html">Variant calling</a></li><li class="breadcrumb-item"><a href="../../exercises/variant_filtering/index.html">Variant filtering</a></li><li class="breadcrumb-item"><a href="../../exercises/variant_filtering/basic_filtering.html">Basic variant filtering</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+<li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Slides</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../slides/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Slides</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../slides/pgip/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Population genomics in practice</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../slides/foundations/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Population genetics foundations</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../slides/foundations/data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data and definitions</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../slides/foundations/alleles.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Alleles and genealogies</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../slides/variant_calling/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Variant calling</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+ <span class="menu-text">slides/variant_calling/dna_sequencing.qmd</span>
+  </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../slides/variant_calling/read_mapping.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Read mapping</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../slides/variant_calling/variant_calling.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Variant calling and genotyping</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../slides/variant_calling/reproducibility.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Variant calling workflows</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Exercises</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../exercises/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Exercises</span></a>
+  </div>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false">
+ <span class="menu-text">Data</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth2 ">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../exercises/compute_environment/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Compute environment</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../exercises/datasets/monkeyflowers.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Monkeyflowers dataset</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Variant calling</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../exercises/variant_calling/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Variant calling index</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../exercises/variant_calling/introduction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Variant calling introduction</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../exercises/variant_calling/data_qc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data quality control</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../exercises/variant_calling/read_mapping.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Read mapping and duplicate removal</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../exercises/variant_calling/variant_calling_workflow.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Variant calling workflow</span></a>
+  </div>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Variant filtering</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth2 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../exercises/variant_filtering/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Variant filtering index</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../exercises/variant_filtering/basic_filtering.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Basic variant filtering</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../exercises/variant_filtering/depth_filtering.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Depth filtering on invariant sites</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">Code recipes</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../recipes/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Code recipes</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+    </ul>
+</div>
+</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
+   
+  <ul>
+<li><a href="#about" id="toc-about" class="nav-link active" data-scroll-target="#about">About</a></li>
+  <li>
+<a href="#background" id="toc-background" class="nav-link" data-scroll-target="#background">Background</a>
+  <ul class="collapse">
+<li><a href="#some-recommended-data-filters" id="toc-some-recommended-data-filters" class="nav-link" data-scroll-target="#some-recommended-data-filters">Some recommended data filters</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#sec-basic-filtering" id="toc-sec-basic-filtering" class="nav-link" data-scroll-target="#sec-basic-filtering">Basic filtering of a VCF file</a>
+  <ul class="collapse">
+<li><a href="#when-to-remove-complex-variants" id="toc-when-to-remove-complex-variants" class="nav-link" data-scroll-target="#when-to-remove-complex-variants">When to remove complex variants?</a></li>
+  <li><a href="#generate-random-subset-of-variants" id="toc-generate-random-subset-of-variants" class="nav-link" data-scroll-target="#generate-random-subset-of-variants">Generate random subset of variants</a></li>
+  <li><a href="#generate-statistics-for-filters" id="toc-generate-statistics-for-filters" class="nav-link" data-scroll-target="#generate-statistics-for-filters">Generate statistics for filters</a></li>
+  <li><a href="#filtering-the-vcf" id="toc-filtering-the-vcf" class="nav-link" data-scroll-target="#filtering-the-vcf">Filtering the VCF</a></li>
+  </ul>
+</li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  </ul></nav>
+    </div>
+<!-- main -->
+<main class="content column-body" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../exercises/variant_calling/index.html">Variant calling</a></li><li class="breadcrumb-item"><a href="../../exercises/variant_filtering/index.html">Variant filtering</a></li><li class="breadcrumb-item"><a href="../../exercises/variant_filtering/basic_filtering.html">Basic variant filtering</a></li></ol></nav><div class="quarto-title">
+<h1 class="title">Basic variant filtering</h1>
+<p class="subtitle lead">Basic filtering based on information in VCF file</p>
+</div>
+
+<div>
+  <div class="description">
+    Introduction to basic variant filtering using the CLI.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta column-body">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Per Unneberg </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">11-Sep-2025</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header><!-- markdownlint-disable MD041 --><!-- markdownlint-disable MD041 --><!-- markdownlint-enable MD041 --><!-- markdownlint-disable MD041 --><!-- markdownlint-enable MD041 --><!-- markdownlint-disable MD041 --><!-- markdownlint-enable MD041 --><!-- markdownlint-enable MD041 --><section id="about" class="level2"><h2 class="anchored" data-anchor-id="about">About</h2>
+<p>In this exercise we will look at ways of filtering variant data. We will begin by applying filters to the variant file containing variant sites only, followed by an approach that filters on sequencing depth in a variant file containing both variant and invariant sites. The latter methodology can then be generalized to generate depth-based filters from BAM files.</p>
+<!-- markdownlint-disable MD041 -->
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Commands have been run on a subset of the data
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>The commands of this document have been run on a subset (a subregion) of the data. Therefore, although you will use the same commands, your results will differ from those presented here.</p>
+</div>
+</div>
+</div>
+<!-- markdownlint-enable MD041 -->
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Learning objectives
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<ul>
+<li>filter variants by quality, read depth, and other metrics</li>
+<li>apply filters to a VCF file</li>
+</ul>
+</div>
+</div>
+</div>
+<!-- markdownlint-disable MD041 -->
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tools
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist">
+<li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true">Listing</a></li>
+<li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false"><i class="fa-solid fa-server" aria-label="server"></i> PDC</a></li>
+<li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false"><i class="fa-solid fa-laptop" aria-label="laptop"></i> pixi</a></li>
+</ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<ul>
+<li>
+<a href="https://samtools.github.io/bcftools/bcftools.html">bcftools</a> <span class="citation" data-cites="danecek_TwelveYearsSAMtools_2021">(<a href="#ref-danecek_TwelveYearsSAMtools_2021" role="doc-biblioref">Danecek et al., 2021</a>)</span>
+</li>
+<li>
+<a href="https://bedtools.readthedocs.io/en/latest/index.html">bedtools</a> <span class="citation" data-cites="quinlan_BEDToolsFlexibleSuite_2010">(<a href="#ref-quinlan_BEDToolsFlexibleSuite_2010" role="doc-biblioref">Quinlan &amp; Hall, 2010</a>)</span>
+</li>
+<li><a href="https://bioinf.shenwei.me/csvtk">csvtk</a></li>
+<li>
+<a href="https://bioinf.shenwei.me/seqkit/">seqkit</a> <span class="citation" data-cites="shen_SeqKitCrossPlatformUltrafast_2016">(<a href="#ref-shen_SeqKitCrossPlatformUltrafast_2016" role="doc-biblioref">Shen et al., 2016</a>)</span>
+</li>
+<li>
+<a href="https://github.com/vcflib/vcflib">vcflib</a> <span class="citation" data-cites="garrison_SpectrumFreeSoftware_2022">(<a href="#ref-garrison_SpectrumFreeSoftware_2022" role="doc-biblioref">Garrison et al., 2022</a>)</span>
+</li>
+<li>
+<a href="https://vcftools.github.io">vcftools</a> <span class="citation" data-cites="danecek_VariantCallFormat_2011">(<a href="#ref-danecek_VariantCallFormat_2011" role="doc-biblioref">Danecek et al., 2011</a>)</span>
+</li>
+</ul>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<p>Choose <strong>one</strong> of <strong>Modules</strong> and <strong>Virtual environment</strong> to access relevant tools.</p>
+<section id="modules" class="level5"><h5 class="anchored" data-anchor-id="modules">Modules</h5>
+<p>Execute the following command to load modules:</p>
+<div class="sourceCode">
+<pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"># NB: the following tools are not available as modules:
+# - csvtk
+module load bioinfo-tools \ 
+    bcftools/1.20 bedtools/2.31.0 SeqKit/2.4.0 \ 
+    vcflib/2017-04-04 vcftools/0.1.16
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre>
+</div>
+</section><section id="virtual-environment" class="level5"><h5 class="anchored" data-anchor-id="virtual-environment">Virtual environment</h5>
+<p>Run the <code>pgip</code> initialization script and activate the <code>pgip</code> default environment:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> /cfs/klemming/projects/supr/pgip_2025/init.sh</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">pgip_activate</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Then activate the <code>e-variant-filtering</code> environment:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># pgip_shell calls pixi shell -e e-variant-filtering --as-is</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">pgip_shell</span> e-variant-filtering</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+</div>
+<div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
+<p>Copy the contents to a file <code>pixi.toml</code> in directory <code>variant-filtering</code>, <code>cd</code> to directory and activate environment with <code>pixi shell</code>:</p>
+<div class="sourceCode cell-code">
+<pre class="sourceCode toml code-with-copy"><code class="sourceCode toml">[workspace]
+channels = ["conda-forge", "bioconda"]
+name = "variant-filtering"
+platforms = ["linux-64", "osx-64"]
+
+[dependencies]
+bcftools = "&gt;=1.22,&lt;2"
+bedtools = "&gt;=2.31.1,&lt;3"
+csvtk = "&gt;=0.34.0,&lt;0.35"
+seqkit = "&gt;=2.10.1,&lt;3"
+vcflib = "&gt;=1.0.12,&lt;2"
+vcftools = "&gt;=0.1.17,&lt;0.2"
+
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- markdownlint-enable MD041 -->
+<!-- markdownlint-disable MD041 -->
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Data setup
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-4" class="callout-4-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist">
+<li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true"><i class="fa-solid fa-server" aria-label="server"></i> PDC</a></li>
+<li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false"><i class="fa-solid fa-laptop" aria-label="laptop"></i> Local</a></li>
+</ul>
+<div class="tab-content">
+<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
+<p>Make an analysis directory <code>variant-filtering</code> and cd to it:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> variant-filtering <span class="kw">&amp;&amp;</span> <span class="bu">cd</span> variant-filtering</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="using-rsync" class="level5"><h5 class="anchored" data-anchor-id="using-rsync">Using rsync</h5>
+<p>Use rsync to sync data to your analysis directory (hint: first use options <code>-anv</code> to run the command without actually copying data):</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Run rsync -anv first time</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">rsync</span> <span class="at">-av</span> /cfs/klemming/projects/supr/pgip_2025/data/monkeyflower/variant-filtering/ .</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section><section id="using-pgip-client" class="level5"><h5 class="anchored" data-anchor-id="using-pgip-client">Using pgip client</h5>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pgip</span> exercises setup e-variant-filtering</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+</div>
+<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
+<p>Make an analysis directory <code>variant-filtering</code> and cd to it:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> variant-filtering <span class="kw">&amp;&amp;</span> <span class="bu">cd</span> variant-filtering</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Then use wget to retrieve data to analysis directory.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">wget</span> <span class="at">-r</span> <span class="at">-np</span> <span class="at">-nH</span> <span class="at">-N</span> <span class="at">--cut-dirs</span><span class="op">=</span>5 <span class="dt">\</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>     https://export.uppmax.uu.se/uppstore2017171/pgip/data/monkeyflower/variant-filtering/</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- markdownlint-enable MD041 -->
+</section><section id="background" class="level2"><h2 class="anchored" data-anchor-id="background">Background</h2>
+<p>Regardless of how a raw variant call set has been produced, the calls will be of varying quality for a number of reasons. For high-coverage sequencing, the two most common are incompleteness of the reference sequence and misalignments in repetitive regions <span class="citation" data-cites="li_BetterUnderstandingArtifacts_2014">(<a href="#ref-li_BetterUnderstandingArtifacts_2014" role="doc-biblioref">Li, 2014</a>)</span>. Low-coverage sequencing comes with its own biases and issues, with the most important being the difficulty to accurately call genotypes <span class="citation" data-cites="maruki_GenotypeCallingPopulationGenomic_2017">(<a href="#ref-maruki_GenotypeCallingPopulationGenomic_2017" role="doc-biblioref">Maruki &amp; Lynch, 2017</a>)</span>.</p>
+<p>In order to improve the accuracy of downstream inference, a number of analysis-dependent quality control filters should be applied to the raw variant call set (for a concise summary, see <span class="citation" data-cites="lou_BeginnerGuideLowcoverage_2021">Lou et al. (<a href="#ref-lou_BeginnerGuideLowcoverage_2021" role="doc-biblioref">2021</a>)</span>). In this exercise, we will begin by applying filters to the variant file containing variant sites only, followed by a more general approach based on depth filtering of a variant file consisting of all sites, variant as well as invariant.</p>
+<p>It is worthwhile to spend time thinking about filtering. As we will see, there are numerous metrics to filter on, and different applications require different filters. This is not as straightforward as it first may seem, and even experts struggle to get filtering settings right.</p>
+<section id="some-recommended-data-filters" class="level3"><h3 class="anchored" data-anchor-id="some-recommended-data-filters">Some recommended data filters</h3>
+<p>There are many ways to filter data. Choosing the right set of filters is not easy, and choosing appropriate thresholds depends on application, among other things. Below we list some recommended data filters and thresholds that have general applicability and recently have been reviewed <span class="citation" data-cites="lou_BeginnerGuideLowcoverage_2021">(<a href="#ref-lou_BeginnerGuideLowcoverage_2021" role="doc-biblioref">Lou et al., 2021</a>, Table 3)</span>; but see also <span class="citation" data-cites="hemstrom_NextgenerationDataFiltering_2024">(<a href="#ref-hemstrom_NextgenerationDataFiltering_2024" role="doc-biblioref">Hemstrom et al., 2024</a>)</span>:</p>
+<ul>
+<li>
+<strong>depth</strong>: Given the difficulty of accurately genotyping low-coverage sites, it is recommended to set a minimum read depth cutoff to remove false positive calls. It is also recommended to set a maximum depth cutoff as excessive coverage is often due to mappings to repetitive regions. The thresholds will depend on the depth profile over all sites, but is usually chosen as a range around the mean or median depth (e.g.&nbsp;lower threshold 0.8X mean, upper threshold median + 2 standard deviations).</li>
+<li>
+<strong>minimum number of individuals</strong>: To avoid sites with too much missing data across individuals, a common requirement is that a minimum number (fraction) of individuals, say 75%, have sequence coverage (depth-based filter) or genotype calls.</li>
+<li>
+<strong>quality</strong> (<strong><em>p</em>-value</strong>): Most variant calling software provide a Phred-scaled probability score that a genotype is a true genotype. Quality values below 20 (i.e., 1%) should not be trusted, but could be set much higher (i.e., lower <em>p</em>-value) depending on application. Note that if a VCF file includes invariant sites, they have quality values set to 0, which renders quality based filtering inappropriate.</li>
+<li>
+<strong>MAF</strong>: Filter sites based on a minimum minor allele frequency (MAF) threshold. The appropriate choice depends on application. For instance, for PCA or admixture analyses, low-frequency SNPs are uninformative, and a reasonably large cutoff (say, 0.05-0.10) could be set. If an analysis depends on invariant sites, this filter should not be applied.</li>
+</ul>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Important
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For applications where invariant sites should be included, such as genetic diversity calculations, neither quality nor MAF filtering should be applied.</p>
+</div>
+</div>
+</section></section><section id="sec-basic-filtering" class="level2"><h2 class="anchored" data-anchor-id="sec-basic-filtering">Basic filtering of a VCF file<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>
+</h2>
+<p>We will begin by creating filters for a VCF file consisting of variant sites only for <em>red</em> and <em>yellow</em> ecotypes. Before we start, let’s review some statistics for the entire (unfiltered) call set:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">bcftools</span> stats variantsites.vcf.gz <span class="kw">|</span> <span class="fu">grep</span> ^SN</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>SN  0   number of samples:  10
+SN  0   number of records:  127663
+SN  0   number of no-ALTs:  0
+SN  0   number of SNPs: 104774
+SN  0   number of MNPs: 0
+SN  0   number of indels:   23067
+SN  0   number of others:   0
+SN  0   number of multiallelic sites:   10333
+SN  0   number of multiallelic SNP sites:   2066</code></pre>
+</div>
+</div>
+<p>Keep track of these numbers as we will use them to evaluate the effects of filtering.</p>
+<section id="when-to-remove-complex-variants" class="level3"><h3 class="anchored" data-anchor-id="when-to-remove-complex-variants">When to remove complex variants?</h3>
+<p>As you can see, the raw variant data set contains indels as well as multiallelic SNPs. Often we are mainly concerned with SNPs, in particular bi-allelic SNPs, which begs the question: when should we remove indels and multiallelic sites; prior to or after quality filtering? This will depend on the research question, but a general recommendation is to filter on quality measures first, and then remove more complex variants. This is the approach we opt for here.</p>
+</section><section id="generate-random-subset-of-variants" class="level3"><h3 class="anchored" data-anchor-id="generate-random-subset-of-variants">Generate random subset of variants</h3>
+<p>Depending on the size of a study, both in terms of reference sequence and number of samples, the VCF output can become large; a VCF file may in fact contain millions of variants and be several hundred GB! We want to create filters by examining distributions of VCF quality metrics and setting reasonable cutoffs. In order to decrease run time, we will look at a random sample of sites. We use the <code>vcflib</code> program <code>vcfrandomsample</code> to randomly sample approximately 100,000 sites from our VCF file<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Set parameter r = 100000 / total number of variants</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="ex">bcftools</span> view variantsites.vcf.gz <span class="kw">|</span> <span class="ex">vcfrandomsample</span> <span class="at">-r</span> 0.9 <span class="kw">|</span><span class="dt">\</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="ex">bgzip</span> <span class="at">-c</span> <span class="op">&gt;</span> variantsites.subset.vcf.gz</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="ex">bcftools</span> index variantsites.subset.vcf.gz</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="ex">bcftools</span> stats variantsites.subset.vcf.gz <span class="kw">|</span><span class="dt">\</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">grep</span> <span class="st">"number of records:"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>SN  0   number of records:  115011</code></pre>
+</div>
+</div>
+<p>The <code>-r</code> parameter sets the <em>rate</em> of sampling which is why we get <em>approximately</em> 100,000 sites. You will need to adjust this parameter accordingly.</p>
+<p>We will now use <code>vcftools</code> to compile statistics. By default, <code>vcftools</code> outputs results to files with a prefix <code>out.</code> in the current directory. You can read up on settings and options by consulting the man pages with <code>man vcftools</code><a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>. Therefore, we define a variable <code>OUT</code> where we will output our quality metrics, along with a variable referencing our variant subset:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> vcftools</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="va">OUT</span><span class="op">=</span>vcftools/variantsites.subset</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="va">VCF</span><span class="op">=</span>variantsites.subset.vcf.gz</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section><section id="generate-statistics-for-filters" class="level3"><h3 class="anchored" data-anchor-id="generate-statistics-for-filters">Generate statistics for filters</h3>
+<p><code>vcftools</code> can compile many different kinds of statistics. Below we will focus on the ones relevant to our data filters. We will generate metrics and plot results as we go along, with the goal of generating a set of filtering thresholds to apply to the data.</p>
+<section id="total-depth-per-site" class="level4"><h4 class="anchored" data-anchor-id="total-depth-per-site">Total depth per site</h4>
+<p>To get a general overview of depth of coverage, we first generate the average depth per <em>sample</em><a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="ex">vcftools</span> <span class="at">--gzvcf</span> <span class="va">$VCF</span> <span class="at">--depth</span> <span class="at">--out</span> <span class="va">$OUT</span> <span class="dv">2</span><span class="op">&gt;</span>/dev/null</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> <span class="va">${OUT}</span>.idepth</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="ex">csvtk</span> summary <span class="at">-t</span> <span class="at">-f</span> MEAN_DEPTH:mean <span class="va">${OUT}</span>.idepth</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>INDV    N_SITES MEAN_DEPTH
+PUN-R-ELF   111033  8.89908
+PUN-R-JMC   111321  9.86061
+PUN-R-LH    111853  9.7249
+PUN-R-MT    111481  9.75315
+PUN-R-UCSD  111583  9.19033
+PUN-Y-BCRD  110089  10.264
+PUN-Y-INJ   109545  8.75603
+PUN-Y-LO    108397  8.37052
+PUN-Y-PCT   109950  9.48965
+PUN-Y-POTR  110227  8.88243
+MEAN_DEPTH:mean
+9.32</code></pre>
+</div>
+</div>
+<p>The average coverage over all samples is 9.3X. This actually is in the low range for a protocol based on explicitly calling genotypes. At 5X coverage, there may be a high probability that only one of the alleles has been sampled <span class="citation" data-cites="nielsen_GenotypeSNPCalling_2011">(<a href="#ref-nielsen_GenotypeSNPCalling_2011" role="doc-biblioref">Nielsen et al., 2011</a>)</span>, whereby sequencing errors may be mistaken for true variation.</p>
+<p>Then we calculate depth per site to see if we can identify reasonable depth cutoffs:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="ex">vcftools</span> <span class="at">--gzvcf</span> <span class="va">$VCF</span> <span class="at">--site-depth</span> <span class="at">--out</span> <span class="va">$OUT</span> <span class="dv">2</span><span class="op">&gt;</span>/dev/null</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span> <span class="at">-n</span> 3 <span class="va">${OUT}</span>.ldepth</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>CHROM   POS SUM_DEPTH   SUMSQ_DEPTH
+LG4 2105    9   23
+LG4 2130    11  21</code></pre>
+</div>
+</div>
+<p>So, for each position, we have a value (column <code>SUM_DEPTH</code>) for the total depth across all samples.</p>
+<p>We plot the distribution of total depths by counting how many times each depth is observed. This can be done with <code>csvtk summary</code> where we count positions and group (<code>-g</code>) by the <code>SUM_DEPTH</code> value:<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="ex">csvtk</span> summary <span class="at">-t</span> <span class="at">-g</span> SUM_DEPTH <span class="at">-f</span> POS:count <span class="at">-w</span> 0 <span class="va">${OUT}</span>.ldepth <span class="kw">|</span><span class="dt">\</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a> <span class="ex">csvtk</span> sort <span class="at">-t</span> <span class="at">-k</span> 1:n <span class="kw">|</span><span class="dt">\</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a> <span class="ex">csvtk</span> plot line <span class="at">-t</span> <span class="at">-</span> <span class="at">-x</span> SUM_DEPTH <span class="at">-y</span> POS:count <span class="dt">\</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">--point-size</span> 0.01 <span class="at">--xlab</span> <span class="st">"Depth of coverage (X)"</span> <span class="dt">\</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">--ylab</span> <span class="st">"Genome coverage (bp)"</span> <span class="dt">\</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">--width</span> 9.0 <span class="at">--height</span> 3.5 <span class="op">&gt;</span> <span class="va">$OUT</span>.ldepth.png</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="fig-csvtk-plot-vcftools-depth-per-site" class="quarto-float quarto-figure quarto-figure-center anchored" data-attr-output=".details summary=&quot;Output&quot;">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-csvtk-plot-vcftools-depth-per-site-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="vcftools/variantsites.subset.ldepth.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Figure&nbsp;1: Distribution of the total depth per site for all samples."><img src="vcftools/variantsites.subset.ldepth.png" class="img-fluid figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-csvtk-plot-vcftools-depth-per-site-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Distribution of the total depth per site for all samples.
+</figcaption></figure>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+On csvtk as plotting software
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-6" class="callout-6-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>You are of course perfectly welcome to use <code>R</code> or some other software to make these plots. We choose to generate the plots using <code>csvtk</code> to avoid too much context switching, and also because it emulates much of the functionality in <code>R</code>, albeit much less powerful when it comes to plotting.</p>
+</div>
+</div>
+</div>
+<p>As <a href="#fig-csvtk-plot-vcftools-depth-per-site" class="quarto-xref">Figure&nbsp;1</a> shows, most sites fall within a peak, but also that there are sites with very high coverage, up to ten times as high as the depth at the peak maximum. We calculate some range statistics to get an idea of the spread. The following <code>csvtk</code> command will calculate the minimum, first quartile, median, mean, third quartile, and maximum of the third column (<code>SUM_DEPTH</code>):</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="ex">csvtk</span> summary <span class="at">-t</span> <span class="at">-f</span> 3:min,3:q1,3:median,3:mean,3:q3,3:max,3:stdev vcftools/variantsites.subset.ldepth</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>SUM_DEPTH:min   SUM_DEPTH:q1    SUM_DEPTH:median    SUM_DEPTH:mean  SUM_DEPTH:q3    SUM_DEPTH:max   SUM_DEPTH:stdev
+1.00    55.00   72.00   89.60   88.00   34131.00    251.62</code></pre>
+</div>
+</div>
+<p>The range from the first quartile (<code>q1</code>) to the third (<code>q3</code>) is 55-88, showing most sites have a depth between 50-100X. We redraw the plot to zoom in on the peak:</p>
+<div id="fig-csvtk-plot-vcftools-depth-per-site-zoom-in" class="quarto-float quarto-figure quarto-figure-center anchored" data-attr-output=".details summary=&quot;Output&quot;">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-csvtk-plot-vcftools-depth-per-site-zoom-in-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="vcftools/variantsites.subset.ldepth.zoomin.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Figure&nbsp;2: Zoomed in version of Figure&nbsp;1 which was achieved by adding the options --x-min 0 --x-max 140 --y-max 2500 to the plotting call."><img src="vcftools/variantsites.subset.ldepth.zoomin.png" class="img-fluid figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-csvtk-plot-vcftools-depth-per-site-zoom-in-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: Zoomed in version of <a href="#fig-csvtk-plot-vcftools-depth-per-site" class="quarto-xref">Figure&nbsp;1</a> which was achieved by adding the options <code>--x-min 0 --x-max 140 --y-max 2500</code> to the plotting call.
+</figcaption></figure>
+</div>
+<p>We could choose a filter based on the quantile statistics above, or by eye-balling the graph. In this example, we could have chosen the range 50-150X, which equates to 5-15X depth <em>per sample</em>; note that your values will probably be different.</p>
+<p>As an aside, we mention that there is a command to directly get the per-site mean depth, <code>--site-mean-depth</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="ex">vcftools</span> <span class="at">--gzvcf</span> <span class="va">$VCF</span> <span class="at">--site-mean-depth</span> <span class="at">--out</span> <span class="va">$OUT</span> <span class="dv">2</span><span class="op">&gt;</span>/dev/null</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span> <span class="at">-n</span> 3 <span class="va">${OUT}</span>.ldepth.mean</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>CHROM   POS MEAN_DEPTH  VAR_DEPTH
+LG4 2105    2.25    0.916667
+LG4 2130    1.57143 0.619048</code></pre>
+</div>
+</div>
+</section><section id="variant-quality-distribution" class="level4"><h4 class="anchored" data-anchor-id="variant-quality-distribution">Variant quality distribution</h4>
+<p>Another quantity of interest is the variant quality. Recall, variant quality scores are Phred-scaled scores, meaning a value of 10 has a 10% chance of being wrong, 20 a 1% chance, and so on; you typically want to at least filter on 20 or even higher. We extract and plot the quality values below:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="ex">vcftools</span> <span class="at">--gzvcf</span> <span class="va">$VCF</span> <span class="at">--site-quality</span> <span class="at">--out</span> <span class="va">$OUT</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># To improve histogram, filter out extreme quality scores. You</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="co"># may have to fiddle with the exact values</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="ex">csvtk</span> filter <span class="at">-t</span> <span class="at">-f</span> <span class="st">"QUAL&gt;0"</span> <span class="at">-f</span> <span class="st">"QUAL&lt;1000"</span> <span class="va">${OUT}</span>.lqual  <span class="kw">|</span> <span class="dt">\</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a> <span class="ex">csvtk</span> summary <span class="at">-t</span> <span class="at">-g</span> QUAL <span class="at">-f</span> POS:count <span class="at">-w</span> 0 <span class="at">-</span> <span class="kw">|</span><span class="dt">\</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a> <span class="ex">csvtk</span> sort <span class="at">-t</span> <span class="at">-k</span> 1:n <span class="kw">|</span><span class="dt">\</span></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a> <span class="ex">csvtk</span> plot hist <span class="at">-t</span> <span class="at">--bins</span> 100 <span class="at">-</span> <span class="dt">\</span></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>          <span class="at">--xlab</span> <span class="st">"Quality value"</span> <span class="dt">\</span></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">--ylab</span> <span class="st">"Count"</span> <span class="dt">\</span></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">--width</span> 9.0 <span class="at">--height</span> 3.5 <span class="op">&gt;</span> <span class="va">$OUT</span>.lqual.png</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="fig-csvtk-vcftools-site-quality" class="quarto-float quarto-figure quarto-figure-center anchored" data-attr-output=".details summary=&quot;Output&quot;">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-csvtk-vcftools-site-quality-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="vcftools/variantsites.subset.lqual.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3" title="Figure&nbsp;3: Distribution of variant quality scores."><img src="vcftools/variantsites.subset.lqual.png" class="img-fluid figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-csvtk-vcftools-site-quality-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: Distribution of variant quality scores.
+</figcaption></figure>
+</div>
+<p>Clearly most quality scores are above 20-30. For many applications, we <strong>recommend setting 30 as the cutoff</strong>.</p>
+</section><section id="minor-allele-frequency-distribution" class="level4"><h4 class="anchored" data-anchor-id="minor-allele-frequency-distribution">Minor allele frequency distribution</h4>
+<p>Since we are going to calculate nucleotide diversities, we will not filter on the minor allele frequency (MAF) here. Nevertheless, we generate the distribution and plot for discussion purposes. The <code>--freq2</code> will output the frequencies only, adding the option <code>--max-alleles 2</code> to focus only on bi-allelic sites:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="ex">vcftools</span> <span class="at">--gzvcf</span> <span class="va">$VCF</span> <span class="at">--freq2</span> <span class="at">--out</span> <span class="va">$OUT</span> <span class="at">--max-alleles</span> 2 <span class="dv">2</span><span class="op">&gt;</span>/dev/null</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span> <span class="at">-n</span> 3 <span class="va">${OUT}</span>.frq</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>CHROM   POS N_ALLELES   N_CHR   {FREQ}
+LG4 2105    2   4   0   1
+LG4 2130    2   14  0.857143    0.142857</code></pre>
+</div>
+</div>
+<p>The last two columns are frequencies ordered according to the reference allele. Therefore, we need to pick the minimum value to get the MAF. We can use <code>csvtk mutate</code> to create a new column</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="ex">csvtk</span> fix <span class="at">-t</span> <span class="va">${OUT}</span>.frq <span class="dv">2</span><span class="op">&gt;</span>/dev/null <span class="kw">|</span><span class="dt">\</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a> <span class="ex">csvtk</span> mutate2 <span class="at">-t</span> <span class="at">-n</span> maf <span class="at">-e</span> <span class="st">'${5} &gt; ${6} ? "${6}" : "${5}" '</span> <span class="at">-</span> <span class="kw">|</span><span class="dt">\</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a> <span class="ex">csvtk</span> plot hist <span class="at">-t</span> <span class="at">--bins</span> 20 <span class="at">-f</span> maf <span class="at">-</span> <span class="dt">\</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">--xlab</span> <span class="st">"Minor allele frequency"</span> <span class="dt">\</span></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">--ylab</span> <span class="st">"Count"</span> <span class="dt">\</span></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">--width</span> 9.0 <span class="at">--height</span> 3.5 <span class="op">&gt;</span> <span class="va">$OUT</span>.frq.png</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="fig-cvstk-vcftools-minor-allele-frequency" class="quarto-float quarto-figure quarto-figure-center anchored" data-attr-output=".details summary=&quot;Output&quot;">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-cvstk-vcftools-minor-allele-frequency-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="vcftools/variantsites.subset.frq.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4" title="Figure&nbsp;4: Distribution of minor allele frequencies."><img src="vcftools/variantsites.subset.frq.png" class="img-fluid figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cvstk-vcftools-minor-allele-frequency-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4: Distribution of minor allele frequencies.
+</figcaption></figure>
+</div>
+<p>Since our variant file consists of 10 individuals, that is, 20 chromosomes, there are only so many frequencies that we can observe, which is why the histogram looks a bit disconnected<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a>. In fact, given 20 chromosomes, MAF=0.05 corresponds to one alternative allele among all individuals (<em>singleton</em>), MAF=0.1 to two, and so on. The maximum value is 0.5, which is to be expected, as it is a <em>minor</em> allele frequency. We note that there are more sites with a low minor allele frequency, which in practice means there are many singleton variants.</p>
+<p>This is where filtering on MAF can get tricky. Singletons may correspond to sequencing error, but if too hard a filter is applied, the resulting site frequency spectrum (SFS) will be skewed. For statistics that are based on the SFS, this may lead biased estimates. Since we will be applying such a statistic, we do not filter on the MAF here. Note, however, that for other applications, such as population structure, it may be warranted to more stringently (say, MAF&gt;0.1) filter out low-frequency variants.</p>
+</section><section id="missing-data-for-individuals-and-sites" class="level4"><h4 class="anchored" data-anchor-id="missing-data-for-individuals-and-sites">Missing data for individuals and sites</h4>
+<p>The proportion missing data per individual can indicate whether the input DNA was of poor quality, and that the individual should be excluded from analysis. Note that in this case, missing data refers to a missing genotype call and not sequencing depth!</p>
+<p>We can calculate the proportion of missing data</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="ex">vcftools</span> <span class="at">--gzvcf</span> <span class="va">$VCF</span> <span class="at">--missing-indv</span> <span class="at">--out</span> <span class="va">$OUT</span> <span class="dv">2</span><span class="op">&gt;</span>/dev/null</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span> <span class="at">-n</span> 3 <span class="va">${OUT}</span>.imiss</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>INDV    N_DATA  N_GENOTYPES_FILTERED    N_MISS  F_MISS
+PUN-R-ELF   115011  0   16669   0.144934
+PUN-R-JMC   115011  0   14687   0.127701</code></pre>
+</div>
+</div>
+<p>and look at the results, focusing on the <code>F_MISS</code> column (proportion missing sites):</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="ex">csvtk</span> plot hist <span class="at">-t</span> <span class="at">--x-min</span> 0 <span class="at">-f</span> F_MISS <span class="va">${OUT}</span>.imiss <span class="op">&gt;</span> <span class="va">${OUT}</span>.imiss.png</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="fig-cvstk-vcftools-proportion-missing-ind" class="quarto-float quarto-figure quarto-figure-center anchored" data-output=".details summary=&quot;Output&quot;">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-cvstk-vcftools-proportion-missing-ind-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="vcftools/variantsites.subset.imiss.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5" title="Figure&nbsp;5: Distribution of missingness per sample."><img src="vcftools/variantsites.subset.imiss.png" class="img-fluid figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cvstk-vcftools-proportion-missing-ind-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;5: Distribution of missingness per sample.
+</figcaption></figure>
+</div>
+<p>Here, the proportion lies in the range 0.06-0.10 for all samples, which indicates good coverage of all samples and we refrain from taking any action.</p>
+<p>Similarly, we can look at missingness per site. This is related to the filter based on minimum number of individuals suggested by <span class="citation" data-cites="lou_BeginnerGuideLowcoverage_2021">Lou et al. (<a href="#ref-lou_BeginnerGuideLowcoverage_2021" role="doc-biblioref">2021</a>)</span>. We calculate</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="ex">vcftools</span> <span class="at">--gzvcf</span> <span class="va">$VCF</span> <span class="at">--missing-site</span> <span class="at">--out</span> <span class="va">$OUT</span> <span class="dv">2</span><span class="op">&gt;</span>/dev/null</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span> <span class="at">-n</span> 3 <span class="va">${OUT}</span>.lmiss</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>CHR POS N_DATA  N_GENOTYPE_FILTERED N_MISS  F_MISS
+LG4 2105    20  0   16  0.8
+LG4 2130    20  0   6   0.3</code></pre>
+</div>
+</div>
+<p>and plot to get an idea of if there are sites that lack data.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="ex">csvtk</span> plot hist <span class="at">--bins</span> 20 <span class="at">-t</span> <span class="at">-f</span> F_MISS <span class="va">${OUT}</span>.lmiss <span class="op">&gt;</span> <span class="va">${OUT}</span>.lmiss.png</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="fig-cvstk-vcftools-proportion-missing-site" class="quarto-float quarto-figure quarto-figure-center anchored" data-output=".details summary=&quot;Output&quot;">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-cvstk-vcftools-proportion-missing-site-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="vcftools/variantsites.subset.lmiss.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6" title="Figure&nbsp;6: Distribution of missingness among sites."><img src="vcftools/variantsites.subset.lmiss.png" class="img-fluid figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cvstk-vcftools-proportion-missing-site-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6: Distribution of missingness among sites.
+</figcaption></figure>
+</div>
+<p>As <a href="#fig-cvstk-vcftools-proportion-missing-site" class="quarto-xref">Figure&nbsp;6</a> shows, many sites have no or little missing data, but given the low coverage, there is a non-negligible number of sites with higher missingness. We calculate range statistics to get a feeling for a good cutoff:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="ex">csvtk</span> summary <span class="at">-t</span> <span class="at">-f</span> 6:min,6:q1,6:median,6:mean,6:q3,6:max vcftools/variantsites.subset.lmiss</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>F_MISS:min  F_MISS:q1   F_MISS:median   F_MISS:mean F_MISS:q3   F_MISS:max
+0.00    0.00    0.10    0.14    0.20    0.90</code></pre>
+</div>
+</div>
+<p>The mean missingness is 8%, so we can safely use 25% missingness as threshold. Typical values of tolerated missingness lie in the range 5-25%. Note that <code>vcftools</code> interprets this value as 1 - missingness, so it has to be inverted to 75% when filtering!</p>
+</section><section id="heterozygosity" class="level4"><h4 class="anchored" data-anchor-id="heterozygosity">Heterozygosity</h4>
+<p><code>vcftools</code> can calculate the heterozygosity per individual. More specifically, it estimates the <a href="https://en.wikipedia.org/wiki/F-statistics">inbreeding coefficient F</a> for each individual.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="ex">vcftools</span> <span class="at">--gzvcf</span> <span class="va">$VCF</span> <span class="at">--het</span> <span class="at">--out</span> <span class="va">$OUT</span> <span class="dv">2</span><span class="op">&gt;</span>/dev/null</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> <span class="va">${OUT}</span>.het</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>INDV    O(HOM)  E(HOM)  N_SITES F
+PUN-R-ELF   72491   65885.9 89092   0.28463
+PUN-R-JMC   69051   67094.6 90759   0.08267
+PUN-R-LH    71167   66560.3 89954   0.19692
+PUN-R-MT    70303   66476.4 89860   0.16365
+PUN-R-UCSD  75187   66150.1 89583   0.38565
+PUN-Y-BCRD  71343   66729.6 90180   0.19673
+PUN-Y-INJ   72375   65055.4 87686   0.32344
+PUN-Y-LO    74447   64539.3 87492   0.43166
+PUN-Y-PCT   76301   65725.6 89111   0.45222
+PUN-Y-POTR  72023   64898.8 87772   0.31146</code></pre>
+</div>
+</div>
+<p>Here, F is a measure of how much the observed homozygotes <code>O(HOM)</code> differ from the expected (<code>E(HOM)</code>; expected <em>by chance</em> under Hardy-Weinberg equilibrium), and may be negative. <code>vcftools</code> calculates F from the expression <span class="math inline">\(F=(O-E)/(N-E)\)</span><a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a>, which you can verify by substituting the variables in the output.</p>
+<p>If F is positive (<span class="math inline">\(O(HOM) &gt; E(HOM)\)</span>), i.e., there are more observed homozygotes than expected, then there is a deficit of heterozygotes, which could be a sign of inbreeding or signs of allelic dropout in case of low sequencing coverage.</p>
+<p>If F is negative, there are fewer observed homozygotes than expected, or conversely, an excess of heterozygotes. This could be indicative of poor sequence quality (bad mappings) or contamination <span class="citation" data-cites="purcell_PLINKToolSet_2007">(<a href="#ref-purcell_PLINKToolSet_2007" role="doc-biblioref">Purcell et al., 2007</a>)</span>.</p>
+<p>The underlying assumption is HWE, which holds for F=0.</p>
+<p>In this case, we know that the samples are from two different populations, red and yellow. In such cases, we actually expect a deficit of heterozygotes (and consequently, positive F) simply due to something called the <a href="https://en.wikipedia.org/wiki/Wahlund_effect">Wahlund effect</a>.</p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Warning
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The inbreeding coefficient is a population-level statistic and is not reliable for small sample sizes (<span class="math inline">\(n&lt;10\)</span>, say). Therefore, our sample size is in the lower range and the results should be taken with a grain of salt.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-exercise callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-9-contents" aria-controls="callout-9" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Exercise
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-9" class="callout-9-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div>
+<div class="callout-exercise">
+<p>Use <code>bcftools view -s SAMPLENAMES | vcftools --vcf - --het --stdout</code> to calculate the heterozygosity for red and yellow samples. Substitute <code>SAMPLENAMES</code> for a comma-separated list of samples.</p>
+<div class="callout callout-style-default callout-answer callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Answer
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-8" class="callout-8-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div>
+<div class="callout-answer">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="ex">bcftools</span> view <span class="at">-s</span> PUN-R-ELF,PUN-R-JMC,PUN-R-LH,PUN-R-MT,PUN-R-UCSD <span class="va">$VCF</span> <span class="kw">|</span><span class="dt">\</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a> <span class="ex">vcftools</span> <span class="at">--vcf</span> <span class="at">-</span> <span class="at">--het</span> <span class="at">--stdout</span> <span class="dv">2</span><span class="op">&gt;</span>/dev/null</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>INDV    O(HOM)  E(HOM)  N_SITES F
+PUN-R-ELF   41604   37887.3 58205   0.18293
+PUN-R-JMC   37720   38635.2 59428   -0.04401
+PUN-R-LH    39695   38091.4 58482   0.07864
+PUN-R-MT    38859   38060.0 58416   0.03925
+PUN-R-UCSD  43429   37641.7 57825   0.28674</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section></section><section id="filtering-the-vcf" class="level3"><h3 class="anchored" data-anchor-id="filtering-the-vcf">Filtering the VCF</h3>
+<p>Now that we have decided on filters we can apply them to the VCF. We first set the filters as variables:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="va">MISS</span><span class="op">=</span>0.75</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="va">QUAL</span><span class="op">=</span>30</span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a><span class="va">MIN_DEPTH</span><span class="op">=</span>5</span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a><span class="va">MAX_DEPTH</span><span class="op">=</span>15</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>and run <code>vcftools</code> as follows:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="va">OUTVCF</span><span class="op">=</span><span class="va">${VCF</span><span class="op">%</span>.subset.vcf.gz<span class="va">}</span>.filtered.vcf.gz</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="ex">vcftools</span> <span class="at">--gzvcf</span> <span class="va">$VCF</span> <span class="dt">\</span></span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>   <span class="at">--remove-indels</span> <span class="at">--max-missing</span> <span class="va">$MISS</span> <span class="dt">\</span></span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>   <span class="at">--min-meanDP</span> <span class="va">$MIN_DEPTH</span> <span class="at">--max-meanDP</span> <span class="va">$MAX_DEPTH</span> <span class="dt">\</span></span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>   <span class="at">--minDP</span> <span class="va">$MIN_DEPTH</span> <span class="at">--maxDP</span> <span class="va">$MAX_DEPTH</span> <span class="at">--recode</span> <span class="dt">\</span></span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>   <span class="at">--stdout</span> <span class="dv">2</span><span class="op">&gt;</span>/dev/null <span class="kw">|</span></span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a> <span class="fu">gzip</span> <span class="at">-c</span> <span class="op">&gt;</span> <span class="va">$OUTVCF</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Compare the results with the original input:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="ex">bcftools</span> stats <span class="va">$OUTVCF</span> <span class="kw">|</span> <span class="fu">grep</span> <span class="st">"^SN"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>SN  0   number of samples:  10
+SN  0   number of records:  31594
+SN  0   number of no-ALTs:  0
+SN  0   number of SNPs: 31481
+SN  0   number of MNPs: 0
+SN  0   number of indels:   0
+SN  0   number of others:   0
+SN  0   number of multiallelic sites:   1345
+SN  0   number of multiallelic SNP sites:   566</code></pre>
+</div>
+</div>
+<p>Quite a substantial portion variants have in fact been removed, which here can most likely be attributed to the low average sequencing coverage.</p>
+</section></section><section id="conclusion" class="level2"><h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
+<p>Congratulations! You have now gone through a set of tedious and complex steps to generate output files that determine what regions in a reference DNA sequence are amenable to analysis. In the next exercise we will use these files as inputs to different programs that calculate diversity statistics from population genomic data.</p>
+</section><section id="references" class="level2">
+
+
+
+</section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" data-line-spacing="2" role="list">
+<div id="ref-danecek_VariantCallFormat_2011" class="csl-entry" role="listitem">
+Danecek, P., Auton, A., Abecasis, G., Albers, C. A., Banks, E., DePristo, M. A., Handsaker, R. E., Lunter, G., Marth, G. T., Sherry, S. T., McVean, G., &amp; Durbin, R. (2011). The variant call format and <span>VCFtools</span>. <em>Bioinformatics (Oxford, England)</em>, <em>27</em>(15), 2156–2158. <a href="https://doi.org/10.1093/bioinformatics/btr330">https://doi.org/10.1093/bioinformatics/btr330</a>
+</div>
+<div id="ref-danecek_TwelveYearsSAMtools_2021" class="csl-entry" role="listitem">
+Danecek, P., Bonfield, J. K., Liddle, J., Marshall, J., Ohan, V., Pollard, M. O., Whitwham, A., Keane, T., McCarthy, S. A., Davies, R. M., &amp; Li, H. (2021). Twelve years of <span>SAMtools</span> and <span>BCFtools</span>. <em>GigaScience</em>, <em>10</em>(2), giab008. <a href="https://doi.org/10.1093/gigascience/giab008">https://doi.org/10.1093/gigascience/giab008</a>
+</div>
+<div id="ref-garrison_SpectrumFreeSoftware_2022" class="csl-entry" role="listitem">
+Garrison, E., Kronenberg, Z. N., Dawson, E. T., Pedersen, B. S., &amp; Prins, P. (2022). A spectrum of free software tools for processing the <span>VCF</span> variant call format: Vcflib, bio-vcf, Cyvcf2, hts-nim and slivar. <em>PLOS Computational Biology</em>, <em>18</em>(5), e1009123. <a href="https://doi.org/10.1371/journal.pcbi.1009123">https://doi.org/10.1371/journal.pcbi.1009123</a>
+</div>
+<div id="ref-hemstrom_NextgenerationDataFiltering_2024" class="csl-entry" role="listitem">
+Hemstrom, W., Grummer, J. A., Luikart, G., &amp; Christie, M. R. (2024). Next-generation data filtering in the genomics era. <em>Nature Reviews Genetics</em>, 1–18. <a href="https://doi.org/10.1038/s41576-024-00738-6">https://doi.org/10.1038/s41576-024-00738-6</a>
+</div>
+<div id="ref-li_BetterUnderstandingArtifacts_2014" class="csl-entry" role="listitem">
+Li, H. (2014). Toward better understanding of artifacts in variant calling from high-coverage samples. <em>Bioinformatics</em>, <em>30</em>(20), 2843–2851. <a href="https://doi.org/10.1093/bioinformatics/btu356">https://doi.org/10.1093/bioinformatics/btu356</a>
+</div>
+<div id="ref-lou_BeginnerGuideLowcoverage_2021" class="csl-entry" role="listitem">
+Lou, R. N., Jacobs, A., Wilder, A. P., &amp; Therkildsen, N. O. (2021). A beginner’s guide to low-coverage whole genome sequencing for population genomics. <em>Molecular Ecology</em>, <em>30</em>(23), 5966–5993. <a href="https://doi.org/10.1111/mec.16077">https://doi.org/10.1111/mec.16077</a>
+</div>
+<div id="ref-maruki_GenotypeCallingPopulationGenomic_2017" class="csl-entry" role="listitem">
+Maruki, T., &amp; Lynch, M. (2017). Genotype <span>Calling</span> from <span>Population-Genomic Sequencing Data</span>. <em>G3 Genes|Genomes|Genetics</em>, <em>7</em>(5), 1393–1404. <a href="https://doi.org/10.1534/g3.117.039008">https://doi.org/10.1534/g3.117.039008</a>
+</div>
+<div id="ref-nielsen_GenotypeSNPCalling_2011" class="csl-entry" role="listitem">
+Nielsen, R., Paul, J. S., Albrechtsen, A., &amp; Song, Y. S. (2011). Genotype and <span>SNP</span> calling from next-generation sequencing data. <em>Nature Reviews Genetics</em>, <em>12</em>(6), 443–451. <a href="https://doi.org/10.1038/nrg2986">https://doi.org/10.1038/nrg2986</a>
+</div>
+<div id="ref-purcell_PLINKToolSet_2007" class="csl-entry" role="listitem">
+Purcell, S., Neale, B., Todd-Brown, K., Thomas, L., Ferreira, M. A. R., Bender, D., Maller, J., Sklar, P., de Bakker, P. I. W., Daly, M. J., &amp; Sham, P. C. (2007). <span>PLINK</span>: <span>A Tool Set</span> for <span>Whole-Genome Association</span> and <span>Population-Based Linkage Analyses</span>. <em>The American Journal of Human Genetics</em>, <em>81</em>(3), 559–575. <a href="https://doi.org/10.1086/519795">https://doi.org/10.1086/519795</a>
+</div>
+<div id="ref-quinlan_BEDToolsFlexibleSuite_2010" class="csl-entry" role="listitem">
+Quinlan, A. R., &amp; Hall, I. M. (2010). <span>BEDTools</span>: A flexible suite of utilities for comparing genomic features. <em>Bioinformatics</em>, <em>26</em>(6), 841–842. <a href="https://doi.org/10.1093/bioinformatics/btq033">https://doi.org/10.1093/bioinformatics/btq033</a>
+</div>
+<div id="ref-shen_SeqKitCrossPlatformUltrafast_2016" class="csl-entry" role="listitem">
+Shen, W., Le, S., Li, Y., &amp; Hu, F. (2016). <span>SeqKit</span>: <span>A Cross-Platform</span> and <span>Ultrafast Toolkit</span> for <span>FASTA</span>/<span>Q File Manipulation</span>. <em>PLOS ONE</em>, <em>11</em>(10), e0163962. <a href="https://doi.org/10.1371/journal.pone.0163962">https://doi.org/10.1371/journal.pone.0163962</a>
+</div>
+</div></section><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+<ol>
+<li id="fn1"><p>This exercise is inspired by and based on <a href="https://speciationgenomics.github.io/filtering_vcfs/" class="uri">https://speciationgenomics.github.io/filtering_vcfs/</a>]<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>We select a fix number that should contain enough information to generate reliable statistics. This number should not change significantly even when files contain vastly different numbers of sites, which is why we need adjust the parameter <em>r</em> to the number of sites in the file.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p><code>vcftools</code> does <strong>not</strong> have a <code>-h</code> or <code>--help</code> option.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>The <code>2&gt;/dev/null</code> outputs messages from <code>vcftools</code> to a special file <code>/dev/null</code> which is a kind of electronic dustbin.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p>On viewing <code>csvtk</code> plots: either you can <strong>redirect</strong> (<code>&gt;</code>) the results from <code>csvtk</code> to a png output file, or you can <strong>pipe</strong> (<code>|</code>) it to the command <code>display</code> (replace <code>&gt; $OUT.ldepth.png</code> by <code>| display</code>, which should fire up a window with your plot.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6"><p>You can try different values of the <code>--bins</code> option<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn7"><p><span class="citation" data-cites="purcell_PLINKToolSet_2007">Purcell et al. (<a href="#ref-purcell_PLINKToolSet_2007" role="doc-biblioref">2007</a>)</span>, p.&nbsp;565 gives a coherent derivation of this estimator<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol></section></div></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/NBISweden\.github\.io\/workshop-pgip-H25\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer"><div class="nav-footer">
+    <div class="nav-footer-left">
+<p>2025 <a href="https://nbis.se">NBIS</a> | <a href="https://choosealicense.com/licenses/gpl-3.0/">GPL-3 License</a></p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p>Published with <a href="https://quarto.org/">Quarto</a> v<!--?quarto.version ?--></p>
+</div>
+  </div>
+</footer><script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
+
+
+</body></html>

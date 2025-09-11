@@ -75,7 +75,7 @@ ul.task-list li input[type="checkbox"] {
 <script>
 
   window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-vc-listings .list');
+    const listingTargetEl = window.document.querySelector('#listing-vc-listing .list');
     if (!listingTargetEl) {
       // No listing discovered, do not attach.
       return; 
@@ -88,7 +88,7 @@ ul.task-list li input[type="checkbox"] {
     };
 
     window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-vc-listings'] = new List('listing-vc-listings', options);
+    window['quarto-listings']['listing-vc-listing'] = new List('listing-vc-listing', options);
 
     if (window['quarto-listing-loaded']) {
       window['quarto-listing-loaded']();
@@ -232,6 +232,12 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../../slides/foundations/alleles.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Alleles and genealogies</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../../slides/variant_calling/index.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Variant calling</span></a>
   </div>
@@ -338,17 +344,46 @@ window.Quarto = {
  <span class="menu-text">Variant calling workflow</span></a>
   </div>
 </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false">
+ <span class="menu-text">Variant filtering</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../exercises/variant_filtering/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Variant filtering index</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../exercises/variant_filtering/basic_filtering.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Basic variant filtering</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../exercises/variant_filtering/depth_filtering.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Depth filtering on invariant sites</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
  <span class="menu-text">Code recipes</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../recipes/index.html" class="sidebar-item-text sidebar-link">
@@ -417,11 +452,11 @@ window.Quarto = {
 </section>
 <section id="listing" class="level2">
 <h2 class="anchored" data-anchor-id="listing">Listing</h2>
-<div id="listing-vc-listings" class="quarto-listing quarto-listing-container-table">
+<div id="listing-vc-listing" class="quarto-listing quarto-listing-container-table">
 <div class="listing-actions-group">
    <div class="input-group input-group-sm quarto-listing-sort">
     <span class="input-group-text"><i class="bi bi-sort-down"></i></span>
-    <select id="listing-vc-listings-sort" class="form-select" aria-label="Order By" onchange="window['quarto-listings']['listing-vc-listings'].sort(this.options[this.selectedIndex].value, { order: this.options[this.selectedIndex].getAttribute('data-direction')})">
+    <select id="listing-vc-listing-sort" class="form-select" aria-label="Order By" onchange="window['quarto-listings']['listing-vc-listing'].sort(this.options[this.selectedIndex].value, { order: this.options[this.selectedIndex].getAttribute('data-direction')})">
       <option value="" disabled="" selected="" hidden="">Order By</option>
       <option value="index" data-direction="asc">Default</option>
       <option value="listing-title-sort" data-direction="asc">
@@ -453,7 +488,7 @@ window.Quarto = {
 </thead>
 <tbody class="list">
 
-<tr data-index="0" data-listing-file-modified-sort="1757620919022" data-listing-reading-time-sort="2" data-listing-word-count-sort="385" data-listing-title-sort="Read mapping" data-listing-filename-sort="read_mapping.qmd">
+<tr data-index="0" data-listing-file-modified-sort="1757631032072" data-listing-reading-time-sort="2" data-listing-word-count-sort="385" data-listing-title-sort="Read mapping" data-listing-filename-sort="read_mapping.qmd">
 <td>
 <a href="../../slides/variant_calling/read_mapping.html" class="title listing-title">Read mapping</a>
 </td>
@@ -463,7 +498,7 @@ window.Quarto = {
 
 </tr>
 
-<tr data-index="1" data-listing-file-modified-sort="1757620919023" data-listing-reading-time-sort="8" data-listing-word-count-sort="1462" data-listing-title-sort="Variant calling and genotyping" data-listing-filename-sort="variant_calling.qmd">
+<tr data-index="1" data-listing-file-modified-sort="1757631032072" data-listing-reading-time-sort="8" data-listing-word-count-sort="1462" data-listing-title-sort="Variant calling and genotyping" data-listing-filename-sort="variant_calling.qmd">
 <td>
 <a href="../../slides/variant_calling/variant_calling.html" class="title listing-title">Variant calling and genotyping</a>
 </td>
@@ -473,7 +508,7 @@ window.Quarto = {
 
 </tr>
 
-<tr data-index="2" data-listing-file-modified-sort="1757620919022" data-listing-reading-time-sort="3" data-listing-word-count-sort="596" data-listing-title-sort="Variant calling workflows" data-listing-filename-sort="reproducibility.qmd">
+<tr data-index="2" data-listing-file-modified-sort="1757631032072" data-listing-reading-time-sort="3" data-listing-word-count-sort="596" data-listing-title-sort="Variant calling workflows" data-listing-filename-sort="reproducibility.qmd">
 <td>
 <a href="../../slides/variant_calling/reproducibility.html" class="title listing-title">Variant calling workflows</a>
 </td>

@@ -1,10 +1,11 @@
 [
   {
-    "listing": "/exercises/index.html",
+    "listing": "/exercises/variant_calling/index.html",
     "items": [
-      "/exercises/compute_environment/index.html",
-      "/exercises/datasets/monkeyflowers.html",
-      "/exercises/variant_calling/index.html"
+      "/exercises/variant_calling/data_qc.html",
+      "/exercises/variant_calling/read_mapping.html",
+      "/exercises/variant_calling/introduction.html",
+      "/exercises/variant_calling/variant_calling_workflow.html"
     ]
   },
   {
@@ -16,12 +17,6 @@
     ]
   },
   {
-    "listing": "/slides/foundations/index.html",
-    "items": [
-      "/slides/foundations/data.html"
-    ]
-  },
-  {
     "listing": "/slides/index.html",
     "items": [
       "/slides/pgip/index.html",
@@ -30,12 +25,26 @@
     ]
   },
   {
-    "listing": "/exercises/variant_calling/index.html",
+    "listing": "/slides/foundations/index.html",
     "items": [
-      "/exercises/variant_calling/data_qc.html",
-      "/exercises/variant_calling/read_mapping.html",
-      "/exercises/variant_calling/introduction.html",
-      "/exercises/variant_calling/variant_calling_workflow.html"
+      "/slides/foundations/alleles.html",
+      "/slides/foundations/data.html"
+    ]
+  },
+  {
+    "listing": "/exercises/index.html",
+    "items": [
+      "/exercises/compute_environment/index.html",
+      "/exercises/datasets/monkeyflowers.html",
+      "/exercises/variant_calling/index.html",
+      "/exercises/variant_filtering/index.html"
+    ]
+  },
+  {
+    "listing": "/exercises/variant_filtering/index.html",
+    "items": [
+      "/exercises/variant_filtering/basic_filtering.html",
+      "/exercises/variant_filtering/depth_filtering.html"
     ]
   }
 ]
