@@ -1,5 +1,6 @@
 ---
 title: Read mapping
+subtitle: Mapping reads to a reference sequence
 author:
   - "Per Unneberg"
 format:
@@ -150,15 +151,33 @@ After preprocessing, reads are mapped to a reference. Observations:
 
 ## Potential error corrections and pitfalls
 
+:::: {.columns}
+
+::: {.column width="50%"}
+
 #### Instrument
 
-- PCR duplicates -> MarkDuplicates
-- systematic errors from sequencing machine -> Base Quality Score
-  Recalibration (BQSR)
+- PCR duplication
+  - biased PCR amplification of DNA molecules
+  - remove with `picard MarkDuplicates` or `samtools rmdup`
+  - should **not** be removed for targeted sequencing
+- systematic errors from sequencing machine
+  - employ Base Quality Score Recalibration (BQSR)
+  - con: time consuming and inflates file size
+
+:::
+
+::: {.column width="50%"}
 
 #### Reference
 
 - quality of reference sequence!
+  - poor mapping to misassembled / missing reference
 - repetitive sequence
+  - often collapsed in assemblies -> inflates read mapping depth
+
+:::
+
+::::
 
 ## Bibliography {.smaller}

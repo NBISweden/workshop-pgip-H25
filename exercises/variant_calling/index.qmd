@@ -60,8 +60,10 @@ ecotypes in what follows.
 
 ## Additional material
 
-[Variant calling, long description](variant_calling_long.qmd){#variant-calling-long}
+[Variant calling, long description]
 
 : Describes all steps of a standard variant calling workflow from data
   preparation to final summary QC. All commands are run manually
-  without the aid of a workflow manager.
+  without the aid of a workflow manager. From earlier course round.
+
+[Variant calling, long description]: https://nbisweden.github.io/workshop-pgip-H23/exercises/variant_calling/index.html

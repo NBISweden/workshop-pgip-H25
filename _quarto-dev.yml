@@ -7,7 +7,6 @@ project:
     - slides/pgip/index.qmd
     - slides/foundations/index.qmd
     - slides/foundations/data.qmd
-    - slides/foundations/foundations.qmd
     - slides/variant_calling/index.qmd
     - slides/variant_calling/dna_sequencing.qmd
     - slides/variant_calling/read_mapping.qmd
@@ -23,11 +22,11 @@ project:
     - exercises/index.qmd
     - exercises/compute_environment/index.qmd
     - exercises/datasets/monkeyflowers.qmd
-    # - exercises/variant_calling/index.qmd
-    # - exercises/variant_calling/introduction.qmd
-    # - exercises/variant_calling/data_qc.qmd
-    # - exercises/variant_calling/read_mapping.qmd
-    # - exercises/variant_calling/variant_calling_workflow.qmd
+    - exercises/variant_calling/index.qmd
+    - exercises/variant_calling/introduction.qmd
+    - exercises/variant_calling/data_qc.qmd
+    - exercises/variant_calling/read_mapping.qmd
+    - exercises/variant_calling/variant_calling_workflow.qmd
     # - exercises/variant_calling/variant_calling_long.qmd
     # - exercises/variant_filtering/index.qmd
     # - exercises/variant_filtering/basic_filtering.qmd
