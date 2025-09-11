@@ -36,7 +36,6 @@ jobs:
           pixi-version: v0.54.2
           cache: true
           environments: lint
-          manifest-path: pyproject.toml
 
       - name: pre-commit
         run: pixi run pre-commit-run --color=always --show-diff-on-failure
@@ -68,7 +67,6 @@ jobs:
           cache: true
           cache-write: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
           activate-environment: true
-          manifest-path: pyproject.toml
 
       # - name: Install TeXLive
       #   run: |
