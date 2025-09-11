@@ -79,26 +79,23 @@ jobs:
       #   run: |
       #     pixi run rsetup
 
-      - name: "Set environment variables"
-        run: |
-          echo "TEXINPUTS=$TEXINPUTS:$GITHUB_WORKSPACE/src/latex" >> $GITHUB_ENV
-          echo "RETICULATE_PYTHON=$GITHUB_WORKSPACE/.pixi/envs/build/bin/python >> $GITHUB_ENV"
-          echo "QUARTO_PYTHON=$GITHUB_WORKSPACE/.pixi/envs/build/bin/python >> $GITHUB_ENV"
-        shell: bash -l {0}
-
+      - run: echo "TEXINPUTS=$TEXINPUTS:$GITHUB_WORKSPACE/src/latex" >> $GITHUB_ENV
+      - run: echo "RETICULATE_PYTHON=${GITHUB_WORKSPACE}/.pixi/envs/build/bin/python" >> $GITHUB_ENV
+      - run: echo "QUARTO_PYTHON=${GITHUB_WORKSPACE}/.pixi/envs/build/bin/python" >> $GITHUB_ENV
       - run: R -e "library(reticulate); reticulate::py_config()"
       - run: echo "QUARTO_PYTHON ${QUARTO_PYTHON}"
       - run: echo "RETICULATE_PYTHON ${RETICULATE_PYTHON}"
       - run: which python
       - run: echo "PIXI_ENVIRONMENT_NAME ${PIXI_ENVIRONMENT_NAME}"
-      # - name: Render project without publishing
-      #   env:
-      #     QUARTO_PRINT_STACK: true
-      #   if: ${{ github.event_name == 'pull_request' }}
-      #   run: |
-      #     quarto render .
-      #     echo "QUARTO_OUTPUT=_site" >> $GITHUB_ENV
-      #   shell: pixi run -e build bash -e {0}
+
+      - name: Render project without publishing
+        env:
+          QUARTO_PRINT_STACK: true
+        if: ${{ github.event_name == 'pull_request' }}
+        run: |
+          quarto render .
+          echo "QUARTO_OUTPUT=_site" >> $GITHUB_ENV
+        #shell: pixi run -e build bash -e {0}
 
       # - name: Publish to GitHub Pages
       #   env:
