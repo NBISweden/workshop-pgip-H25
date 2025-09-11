@@ -138,6 +138,7 @@ cmd = "quarto render --profile production"
 
 [feature.build.pypi-dependencies]
 tseda = { git = "https://github.com/percyfal/tseda.git", rev = "pgip" }
+dask = { version = "*", extras = ["dataframe"] }
 
 [feature.bioconductor.dependencies]
 r-biocmanager = "*"
