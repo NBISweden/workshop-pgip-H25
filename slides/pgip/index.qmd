@@ -115,11 +115,19 @@ compare *resequenced samples*
 
 ::: {.fragment fragment-index=1}
 
+:::{#fig-corals-assembly}
+
 <!-- markdownlint-disable MD013 -->
 
-![Genome assembly and sample collection.](https://www.science.org/cms/10.1126/science.aba4674/asset/31658ca3-933a-4047-81e1-e900fd9a0bae/assets/graphic/369_aba4674_f1.jpeg){#fig-corals-assembly width=90% fig-align=center}
+![](https://www.science.org/cms/10.1126/science.aba4674/asset/31658ca3-933a-4047-81e1-e900fd9a0bae/assets/graphic/369_aba4674_f1.jpeg){width=75% fig-align=center}
 
 <!-- markdownlint-enable MD013 -->
+
+Genome assembly by hybrid sequencing (A) 253 individuals from 12 reefs
+(B) PCA with environmental and spatial variables (C) phenotype
+distributions (D)
+
+:::
 
 ::: { .flushright .smallest}
 
@@ -142,6 +150,53 @@ toolkit of methods that should be known to anyone starting out in
 population genomics, and that is sufficiently small to be presented in
 a one-week workshop. At the end of this lecture, we will discuss some
 more advanced applications in population genomics.
+
+Figure caption:
+
+> Genome assembly and sample collection for A. millepora. (A) A de
+> novo assembly for the A. millepora genome was constructed by using a
+> hybrid sequencing approach. The alignment of reads generated from
+> two pools of aposymbiotic larvae was used to filter out symbiont
+> contigs (fig. S3). Assembled coral contigs were aligned to
+> previously published linkage maps (19, 80) to create a
+> chromosome-scale assembly. (B) A total of 253 individuals were
+> collected from across 12 reefs on the GBR in 2017. The size of the
+> circles represents the number of individuals collected at each site,
+> and the circles are colored according to the bleaching severity at
+> each reef. The maximum degree heating weeks (DHW) is shown across
+> the region from which samples were collected (and across the GBR in
+> the inset). The spatial layer of DHW represents interpolated maximum
+> values from the National Oceanic and Atmospheric Administration
+> Coral Reef Watch (CRW) v3.1 satellite product at a resolution of 5
+> km. Each reef label is colored arbitrarily but consistent with
+> labels presented in other figures. AN, Arlington Reef; FY, Fitzroy
+> Reef; RL, Russell Island; CS, Coates Reef; FR, Feather Reef; NB,
+> North Barnard Islands; TR, Taylor Reef; DK, Dunk Island; RB, Rib
+> Reef; PA, Pandora Reef; JB, John Brewer Reef; HH, Havannah Island.
+> (C) A PCA was performed for 40 environmental and spatial variables
+> for each reef, with abbreviations in bold representing their
+> location. The component loads for each environmental variable
+> projected on the first two principal components are depicted with
+> arrows. (D) The distribution of visual scores, chlorophyll abundance
+> standardized by host coral protein content, and standardized
+> symbiont cell densities among the collected individuals for which
+> phenotype measurement was possible. A visual score of 1 indicates
+> severe bleaching, whereas a score of 6 represents full
+> pigmentation.at a resolution of 5 km. Each reef label is colored
+> arbitrarily but consistent with labels presented in other figures.
+> AN, Arlington Reef; FY, Fitzroy Reef; RL, Russell Island; CS, Coates
+> Reef; FR, Feather Reef; NB, North Barnard Islands; TR, Taylor Reef;
+> DK, Dunk Island; RB, Rib Reef; PA, Pandora Reef; JB, John Brewer
+> Reef; HH, Havannah Island. (C) A PCA was performed for 40
+> environmental and spatial variables for each reef, with
+> abbreviations in bold representing their location. The component
+> loads for each environmental variable projected on the first two
+> principal components are depicted with arrows. (D) The distribution
+> of visual scores, chlorophyll abundance standardized by host coral
+> protein content, and standardized symbiont cell densities among the
+> collected individuals for which phenotype measurement was possible.
+> A visual score of 1 indicates severe bleaching, whereas a score of 6
+> represents full pigmentation.
 
 **Genome assembly and sampling**
 
@@ -182,9 +237,16 @@ Motivation:
 
 <!-- markdownlint-disable MD013 -->
 
-![Variation and demographic history inferred from 44 resequenced
-individuals.](https://www.science.org/cms/10.1126/science.aba4674/asset/661d50bb-a085-41af-abdb-06c487ed4e63/assets/graphic/369_aba4674_f2.jpeg){#fig-corals-variation
-width=60% fig-align=center}
+:::{#fig-corals-variation}
+
+![](https://www.science.org/cms/10.1126/science.aba4674/asset/661d50bb-a085-41af-abdb-06c487ed4e63/assets/graphic/369_aba4674_f2.jpeg){width=60% fig-align=center}
+
+Variation and demographic history inferred from 44 resequenced
+individuals. LD decay ($r^2$) from 1% of markers (A) nucleotide
+diversity ($\pi$) in 1kb-windows (B) effective population sizes ({{<
+var Ne >}}) estimated with PSMC (C)
+
+:::
 
 <!-- markdownlint-enable MD013 -->
 
@@ -200,6 +262,24 @@ width=60% fig-align=center}
 
 ::: {.notes }
 
+Figure caption:
+
+> Properties of genetic variation and inferred demographic history in
+> sampled A. millepora. (A) The decay of LD, measured as the squared
+> genotypic correlation coefficient (r2), was estimated for a randomly
+> chosen 1% of SNPs by using all sequenced samples. Each point
+> represents the mean r2 in bins of 100 bp. (B) Nucleotide diversity
+> was measured by the average pairwise differences per base pair (p)
+> (86) for SNPs in 1-kb windows, using intergenic regions genome-wide.
+> (C) Effective population sizes (Ne) inferred from 44 sequenced A.
+> millepora genomes by using PSMC (35), assuming a mutation rate m of
+> 4 × 10−9 per base pair per generation (20, 34). Although an error in
+> the estimate of m will lead to a rescaling of both axes, it will not
+> affect the qualitative conclusion of a decline in Ne toward the
+> present. The x axis is scaled in terms of generations. This approach
+> provides very little information about the recent past (here, less
+> than ~104 generations).
+
 **Variation and demographic history**
 
 Why: summarizing *diversity* provides (indirect) information on
@@ -212,10 +292,11 @@ signals similar to those of selection
   genome scans, where a common rule of thumb is to set the size larger
   than the genome background: this ensures windows are, in some sense,
   independent
-- The extent of LD and its decay with genetic distance are useful
+- "The extent of LD and its decay with genetic distance are useful
   parameters for determining the number of markers needed to
   successfully map a QTL, and the resolution with which the trait can
-  be successfully mapped otyama_EvaluationLinkageDisequilibrium_2019
+  be successfully mapped"
+  [otyama_EvaluationLinkageDisequilibrium_2019]
 - 0.363% average pi, but large variation.
 - many psmc plots show decline in population size, which could be an
   effect of bottleneck during pleistocene. Also population divergence
@@ -248,13 +329,21 @@ Motivation:
 
 ::: {.column width="50%"}
 
+:::{#fig-corals-structure}
+
 <!-- markdownlint-disable MD013 -->
 
-![Characterizing population structure and gene flow across 12
-refs](https://www.science.org/cms/10.1126/science.aba4674/asset/4625c5a6-1e71-4b9f-9589-0fed7ab72d3d/assets/graphic/369_aba4674_f3.jpeg){#fig-corals-structure
-width=100% fig-align=center}
+![](https://www.science.org/cms/10.1126/science.aba4674/asset/4625c5a6-1e71-4b9f-9589-0fed7ab72d3d/assets/graphic/369_aba4674_f3.jpeg){width=100% fig-align=center}
 
 <!-- markdownlint-enable MD013 -->
+
+Characterizing population structure and gene flow across 12 refs. {{<
+var fst >}} measure across geographic distance (A) PCA from LD-pruned
+genome-wide SNPs for 44 resequenced samples (B) estimation of relative
+effective migration surface from LD-pruned and common (MAF > 5%) SNPs
+(C)
+
+:::
 
 ::: { .flushright .smallest}
 
@@ -267,6 +356,17 @@ width=100% fig-align=center}
 ::::
 
 ::: {.notes }
+
+> Characterizing population structure and gene flow across 12 reefs.
+> (A) There is no discernable relationship between geographic distance
+> and genetic differentiation (measured as FST) across pairwise
+> comparisons of sampled reefs. (B) A PCA by using LD-pruned genome-wide
+> SNPs for the 44 resequenced high-coverage genomes. Each point is
+> color-coded by the reef from which the individual was sampled. (C)
+> EEMS (39) was used to estimate and visualize the relative effective
+> migration surface by using LD-pruned and common (MAF > 5%) genome-wide
+> SNPs for the 44 resequenced high-coverage genomes. The size of the
+> dots reflects the number of individuals sequenced from each reef.
 
 **Population structure:**
 
@@ -305,12 +405,23 @@ Motivation: identify loci associated with adaptation / selection
 
 ::: {.column width="50%"}
 
+:::{#fig-corals-selection}
+
 <!-- markdownlint-disable MD013 -->
 
-![Genomic scans for local adaptation detect a signal at
-*sacsin*](https://www.science.org/cms/10.1126/science.aba4674/asset/83167ee1-c1f3-4ef8-88b3-d69a0cb93062/assets/graphic/369_aba4674_f4.jpeg){#fig-corals-selection width=100% fig-align=center}
+![](https://www.science.org/cms/10.1126/science.aba4674/asset/83167ee1-c1f3-4ef8-88b3-d69a0cb93062/assets/graphic/369_aba4674_f4.jpeg){width=80% fig-align=center}
 
 <!-- markdownlint-enable MD013 -->
+
+Genomic scans for local adaptation detect a signal at *sacsin*.
+Nucleotide diversity ($\pi$) in 1kb-window, values in top 0.01%
+genome-wide in red (A, top). Close-up view around *sacsin* gene, with
+predicted gene structure above (A, bottom). h12 summary statistic
+showing the frequence of the two most common haplotypes (B). *sacsin*
+gene tree (blue) together with random gene trees, indicating deep
+genealogy at *sacsin* (C)
+
+:::
 
 ::: { .flushright .smallest}
 
@@ -323,6 +434,38 @@ Motivation: identify loci associated with adaptation / selection
 ::::
 
 ::: {.notes }
+
+> Genomic scans for local adaptation detect a signal at sacsin. (A)
+> (Top) Values of pairwise nucleotide diversity (π) (86) estimated in
+> sliding windows of 1 kb and a step-size of 500 bp across chromosome
+> 7, with points colored in red indicating regions in the top 0.01% of
+> values genome-wide. A loess-smoothed trend line of π across windows
+> is indicated in purple. The peak with the most extreme values falls
+> in the sacsin gene region. (Bottom) A close-up view of π estimated
+> across a region of chromosome 7 surrounding the sacsin gene, which
+> includes all of the outlier windows indicated in red at top. π per
+> base pair was calculated in sliding windows of 100 bp (gray dots);
+> the loess-smoothed line is shown in blue. The predicted gene
+> structure of sacsin is indicated above, as well as the flanking
+> upstream and downstream genes. The 29 nonsynonymous differences
+> fixed between samples of the two most common haplotypes in sacsin
+> are denoted with green lines. There are also 20 fixed synonymous
+> differences. Gray vertical dashed lines delimit a region that was
+> masked from variant calling because of predicted repetitive
+> elements. (B) The h12 summary statistic (47), which measures the
+> frequency of the two most common haplotypes, is plotted across
+> chromosome 7 (supplementary materials, materials and methods). Red
+> dots represent h12 values in the top 0.01% genome-wide. The peak
+> with the most extreme values falls in the sacsin gene region. (C) A
+> gene tree for the central 1-kb region in sacsin is shown in dark
+> blue; it was constructed for one randomly chosen haplotype from a
+> randomly selected individual from each of the 12 sampled reefs. The
+> gene tree is rooted to aligned sequences from the reference genomes
+> for A. digitifera (87) and A. tenuis (draft assembly from
+> <www.reefgenomics.org>). Shown in gray are gene trees for 1000
+> randomly sampled 1-kb regions from across the genome for the same
+> individuals. Each gene tree was inferred by using maximum likelihood
+> implemented in dnaml (88).
 
 **Selection scan**
 
@@ -567,56 +710,44 @@ baseline model that takes potential confounding factors into account
 
 ## Applications of population genomics
 
-:::: {style="display: grid; grid-template-columns: 80px 420px 80px 420px;
-grid-row-gap: 0px; grid-column-gap: 30px; align-items: center;"}
+:::: {style="display: grid; width: 100%; grid-template-areas: \"a b c\" \"d e f\";
+grid-row-gap: 10px; grid-column-gap: 30px; align-items: center;"}
 
-:::{}
-![](assets/images/apis-mellifera.png)
+:::{.fragment}
+
+![Conservation genomics [@webster_PopulationGenomicsInsect_2023]](https://www.annualreviews.org/docserver/fulltext/animal/11/1/av110115.f2.gif){height=200px}
+
 :::
 
-:::{}
-conservation genomics [@webster_PopulationGenomicsInsect_2023]
+:::{.fragment}
+
+![Speciation genomics
+[@stankowski_WidespreadSelectionGene_2019]](/exercises/datasets/assets/images/stankowski-2019-fig1A.webp){height=200px}
+
 :::
 
-:::{.fragment fragment-index=1}
-![](assets/images/mimulus.png)
+:::{.fragment}
+
+![disentangle forces that create variation [@rodrigues_SharedEvolutionaryProcesses_2024]](https://oup.silverchair-cdn.com/oup/backfile/Content_public/Journal/genetics/226/4/10.1093_genetics_iyae006/2/m_iyae006f1.jpeg?Expires=1760610839&Signature=nii-RdEtrwqeLzTWwajHQCTXC~YJPndas9Soarpbckb8xbZswk9gmaWJDenpDMXfQc-p6-Pre65c11i6MJFbtuiEkWZyZzt3pE1vONLeGZdU~5RV4Q5UykIsYlfd~pnGiJC5mkTAQOp1OGW3RXkO0EfTbBly-~hMj627Pi9Ms6IipXxCWhVwzpuI9YlRkmqsc0HRNPFwf4cHyQS0SlgcZkCkEgJWbrthl~Ro9LuKB6bKTkIeECPKk3-7vzB2X~4X3ly3H5ce-xsFqZOnhGDCMk23B8d4wkrgBuJc7aeewJaiK~-Y7aGV7y-lNhBR-k~6whfW8l~F4-SYNhPonjr2dg__&Key-Pair-Id=APKAIE5G5CRDK6RD3PGA){height=200px}
+
 :::
 
-:::{.fragment fragment-index=1}
-speciation genomics [@stankowski_WidespreadSelectionGene_2019]
+:::{.fragment}
+
+![paleogenomics (aDNA) [@vandervalk_MillionyearoldDNASheds_2021]](https://media.springernature.com/lw685/springer-static/esm/art%3A10.1038%2Fs41586-021-03224-9/MediaObjects/41586_2021_3224_Fig8_ESM.jpg?){height=200px}
+
 :::
 
-:::{.fragment fragment-index=2}
-![](assets/images/gorilla.png)
+:::{.fragment}
+
+![domestication [@barrera-redondo_GenomicTranscriptomicEpigenomic_2020]](https://www.frontiersin.org/files/Articles/555530/fgene-11-00742-HTML/image_m/fgene-11-00742-g002.jpg){height=200px}
+
 :::
 
-:::{.fragment fragment-index=2}
-disentangle forces that create variation
-[@rodrigues_SharedEvolutionaryProcesses_2023]
-:::
+:::{.fragment}
 
-:::{.fragment fragment-index=3}
-![](assets/images/mammuth.png)
-:::
+![ecology [@unneberg_EcologicalGenomicsNorthern_2024]](https://media.springernature.com/lw685/springer-static/image/art%3A10.1038%2Fs41467-024-50239-7/MediaObjects/41467_2024_50239_Fig1_HTML.png?){height=200px}
 
-:::{.fragment fragment-index=3}
-paleogenomics (aDNA) [@vandervalk_MillionyearoldDNASheds_2021]
-:::
-
-:::{.fragment fragment-index=4}
-![](assets/images/cow.png)
-:::
-
-:::{.fragment fragment-index=4}
-domestication [@barrera-redondo_GenomicTranscriptomicEpigenomic_2020]
-:::
-
-:::{.fragment fragment-index=5}
-![](assets/images/krill.png)
-:::
-
-:::{.fragment fragment-index=5}
-ecology [@hohenlohe_PopulationGenomicsProvides_2019]
 :::
 
 ::::
