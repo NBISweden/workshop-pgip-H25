@@ -13,24 +13,21 @@ exercise:
   venv: e-variant-filtering
   data: monkeyflower/variant-filtering/
   wget_opts: \-\-cut-dirs=5
+listing:
+  id: vf-listing
+  type: table
+  contents:
+    - basic_filtering.qmd
+    - depth_filtering.qmd
 ---
 
-<!-- markdownlint-disable MD041 -->
+## About
 
-{{< include /exercises/_knitr.qmd >}}
+Variant filtering is a necessary step before doing any downstream
+analyses. The exercises will give you a basic introduction to variant
+filtering.
 
-{{< include /exercises/_rlibs.qmd >}}
+## Listing
 
-<!-- markdownlint-enable MD041 -->
-
-## Exercises
-
-[Introduction to variant filtering](basic_filtering.qmd)
-
-: Introduction to basic variant filtering using the CLI.
-
-## Additional material
-
-[Advanced variant filtering](advanced_filtering.qmd)
-
-: Old tutorial on how to summarize BAM coverages using CLI tools.
+:::{#vf-listing}
+:::

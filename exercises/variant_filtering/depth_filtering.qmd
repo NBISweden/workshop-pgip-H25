@@ -1,0 +1,460 @@
+---
+title: Depth filtering on invariant sites
+format:
+  nbis-course-html:
+    number-sections: false
+author:
+  - Per Unneberg
+exercise:
+  dir: variant-filtering
+  venv: e-variant-filtering
+  data: monkeyflower/variant-filtering/
+  wget_opts: \-\-cut-dirs=5
+---
+
+<!-- markdownlint-disable MD041 -->
+{{< include /exercises/_knitr.qmd >}}
+
+{{< include /exercises/_rbuild.qmd >}}
+
+{{< include /exercises/_rlibs.qmd >}}
+
+## Depth filtering of VCF with invariant sites
+
+Now we turn our attention to a VCF file containing variant and
+invariant sites. We will generate depth-based filters, with the
+motivation that they represent portions of the genome that are
+accessible to analysis, regardless of whether they contain variants or
+not. In so doing, we treat filtered sites as *missing data* and do not
+assume that they are invariant, as many software packages do.
+
+```{r, engine='tikz', fig.ext="svg"}
+#| label: fig-coverage-filters
+#| echo: false
+#| eval: true
+#| fig-cap: |
+#|     Coverage distributions for three hypothetical samples along
+#|     with the cumulative coverage for all samples.
+\addcolumnsum{\coveragetable}{A1,A2,A3}{Asum}
+\addthresholdmask{\coveragetable}{A1}{A1mask}
+\addthresholdmask{\coveragetable}{A2}{A2mask}
+\addthresholdmask{\coveragetable}{A3}{A3mask}
+\addthresholdmask{\coveragetable}{Asum}{Asummask}
+
+\let\Aonemask\empty
+\formatmask{\coveragetable}{\Aonemask}{A1mask}
+\let\Atwomask\empty
+\formatmask{\coveragetable}{\Atwomask}{A2mask}
+\let\Athreemask\empty
+\formatmask{\coveragetable}{\Athreemask}{A3mask}
+\let\Asummask\empty
+\formatmask{\coveragetable}{\Asummask}{Asummask}
+
+\begin{tikzpicture}[x=1pt, y=1pt]
+\pic[at={(0, 0)}] (A1) {coverageplot={\coveragetable}{ref}{A1}{Sample 1}{blue}};
+%%\matrix[mask, anchor=west, at={($(A1.south west)+(3pt, -10pt)$)}] (A1mask) {\Aonemask};
+\pic[yshift=-100pt] (A2) {coverageplot={\coveragetable}{ref}{A2}{Sample 2}{blue}};
+%%\matrix[mask, anchor=west, at={($(A2.south west)+(3pt, -10pt)$)}] (A2mask) {\Atwomask};
+
+\pic[yshift=-200pt] (A3) {coverageplot={\coveragetable}{ref}{A3}{Sample 3}{blue}};
+%%\matrix[mask, anchor=west, at={($(A3.south west)+(3pt, -10pt)$)}] (A3mask) {\Athreemask};
+
+\pgfplotsset{covaxis/.append style={ymax=45}}
+\pic[xshift=250pt,yshift=-120pt](Asum){coverageplot={\coveragetable}{ref}{Asum}{All samples}{red}};
+%%\matrix[mask, anchor=west, at={($(Asum.south west)+(3pt, -10pt)$)}] (Asummask) {\Asummask};
+
+\end{tikzpicture}
+```
+
+@fig-coverage-filters illustrates the sequencing coverage of three
+samples. The important thing to note is that the coverage is uneven.
+Some regions lack coverage entirely, e.g., due to random sampling or
+errors in the reference sequence. Other regions have excessive
+coverage, which could be a sign of repeats that have been collapsed in
+the reference. A general coverage filter could then seek to mask out
+sites where a fraction (50%, say) of individuals have too low or
+excessive coverage.
+
+The right panel illustrates the sum of coverages across all samples.
+Minimum and maximum depth filters could be applied to the aggregate
+coverages of all samples, or samples grouped by population, to
+eliminate sites confounding data support.
+
+As mentioned, the VCF in this exercise contains all sites; that is,
+both monomorphic and polymorphic sites are present. Every site
+contains information about depth and other metadata, which makes it
+possible to apply coverage filters directly to the variant file
+itself.
+
+However, it may not always be possible to generate a VCF with all
+sites. Species with large genomes will produce files so large that
+they prevent efficient downstream processing. Under these
+circumstances, *ad hoc* coverage filters can be applied to the BAM
+files to in turn generate sequence masks that can be used in
+conjunction with the variant file. This is the topic for the [advanced
+session](advanced_filtering.qmd).
+
+Regardless of approach, the end result is a set of regions that are
+discarded (masked) for a given analysis. They can be given either as a
+BED file, or a sequence mask, which is a FASTA-like file consisting of
+integer digits (between `0` and `9`) for each position on a
+chromosome. Then, by setting a cutoff, an application can mask
+positions higher than that cutoff. We will generate mask files with
+`0` and `1` digits, an example of which is shown below, where the
+central 10 bases of the reference (top) are masked (bottom).
+
+```{bash }
+#| label: sequence-mask-example
+#| echo: false
+#| eval: true
+REF=ref/M_aurantiacus_v1.fasta
+head -n 2 ${REF} | cut -c -30
+echo
+echo -e "LG4\t10\t20" | \
+ bedtools maskfasta -fi <(echo -e "LG4\t0\t30" | \
+   bedtools maskfasta -fi ${REF} -bed - -fo /dev/stdout -mc 0 | \
+   head -n 2 | cut -c -30) -bed - -fo /dev/stdout -mc 1
+```
+
+### Data summary and subset
+
+We start by summarising the raw data, as before.
+
+```{bash }
+#| label: bcftools-stats-allsites
+#| echo: true
+#| eval: true
+bcftools stats allsites.vcf.gz | grep ^SN
+```
+
+### Data for depth filters
+
+By now you should be familiar with the `vcftools` commands to generate
+relevant data for filters. In particular, we used `--site-depth` to
+generate depth profiles over all sites, and `--missing-site` to
+generate missingness data, based on genotype presence/abscence, for
+every site. Use these same commands again to generate a set of depth
+filters.
+
+::: {.callout-exercise}
+
+Use `vcflib` and `vcftools` to select a subset of variants from which
+to generate data. Use `vcftools` commands `--site-depth` and
+`--missing-site` as before to
+
+1. generate data
+2. (possibly) compute summary statistics with `csvtk`
+3. plot depth distributions
+4. select thresholds for depth-based and missingness filters
+5. filter the input VCF
+
+Call the final output file `allsites.filtered.vcf.gz` and compare your
+output to the input file.
+
+::: {.callout-answer}
+
+#### allsites subset
+
+```{bash }
+#| label: vcflib-random-subsample-all
+#| echo: true
+#| eval: true
+# Set parameter r = 100000 / total number of variants; input file
+# here consists of 100000 entries. Adjust this parameter.
+bcftools view allsites.vcf.gz | vcfrandomsample -r 1.0 |\
+    bgzip -c > allsites.subset.vcf.gz
+bcftools index allsites.subset.vcf.gz
+bcftools stats allsites.subset.vcf.gz |\
+    grep "^SN"
+```
+
+```{bash }
+#| label: vcftools-set-out-prefix-all
+#| echo: true
+#| eval: true
+mkdir -p vcftools
+OUT=vcftools/allsites.subset
+VCF=allsites.subset.vcf.gz
+```
+
+```{r }
+#| label: set-vcf-envvars-all
+#| echo: false
+#| eval: true
+Sys.setenv(
+    OUT = "vcftools/allsites.subset",
+    VCF = "allsites.subset.vcf.gz",
+    OUTVCF = "allsites.filtered.vcf.gz"
+)
+```
+
+#### Depth per site
+
+```{bash }
+#| label: vcftools-depth-per-site-all
+#| echo: true
+#| eval: true
+vcftools --gzvcf $VCF --site-depth --out $OUT 2>/dev/null
+head -n 3 ${OUT}.ldepth
+csvtk summary -t -f 3:min,3:q1,3:median,3:mean,3:q3,3:max,3:stdev ${OUT}.ldepth
+```
+
+```{bash }
+#| label: csvtk-plot-vcftools-depth-per-site-zoom-in-all
+#| echo: false
+#| eval: true
+csvtk summary -t -g SUM_DEPTH -f POS:count -w 0 ${OUT}.ldepth |\
+ csvtk sort -t -k 1:n |\
+ csvtk plot line -t - -x SUM_DEPTH -y POS:count \
+    --point-size 0.01 --xlab "Depth of coverage (X)" \
+    --ylab "Genome coverage (bp)" \
+    --width 9.0 --height 3.5  --x-min 0 --x-max 140 --y-max 2500 > $OUT.ldepth.zoomin.png
+```
+
+::: {#fig-csvtk-plot-vcftools-depth-per-site-zoom-in-all attr-output='.details summary="Output"'}
+
+![](vcftools/allsites.subset.ldepth.zoomin.png)
+
+Zoomed in view of depth distribution for all sites.
+
+:::
+
+#### Missingness
+
+```{bash }
+#| label: vcftools-missing-data-site-allsites
+#| echo: true
+#| eval: true
+vcftools --gzvcf $VCF --missing-site --out $OUT 2>/dev/null
+head -n 3 ${OUT}.lmiss
+csvtk summary -t -f 6:min,6:q1,6:median,6:mean,6:q3,6:max ${OUT}.lmiss
+```
+
+```{bash }
+#| label: cvstk-vcftools-proportion-missing-site-allsites
+#| echo: true
+#| eval: true
+csvtk plot hist --bins 20 -t -f F_MISS ${OUT}.lmiss > ${OUT}.lmiss.png
+```
+
+::: {#fig-cvstk-vcftools-proportion-missing-site-allsites output='.details summary="Output"'}
+
+![](vcftools/allsites.subset.lmiss.png)
+
+Distribution of missingness among all sites.
+
+:::
+
+#### Filter input
+
+Unless there is any strange bias that leads to a difference in
+coverage between variant and invariant sites, the final values should
+be similar to those before. We set filters and generate the output:
+
+```{bash }
+#| label: vcf-filter-variables-allsites
+#| echo: true
+#| eval: true
+MISS=0.75
+MIN_DEPTH=5
+MAX_DEPTH=15
+```
+
+```{r }
+#| label: vcf-filter-variables-save-allsites
+#| echo: false
+#| eval: true
+Sys.setenv(
+    MISS = 0.75,
+    MIN_DEPTH = 5,
+    MAX_DEPTH = 15
+)
+```
+
+```{bash }
+#| label: vcftools-apply-filters-allsites
+#| echo: true
+#| eval: true
+OUTVCF=${VCF%.subset.vcf.gz}.filtered.vcf.gz
+vcftools --gzvcf $VCF \
+   --remove-indels --max-missing $MISS \
+   --min-meanDP $MIN_DEPTH --max-meanDP $MAX_DEPTH \
+   --minDP $MIN_DEPTH --maxDP $MAX_DEPTH --recode \
+   --stdout 2>/dev/null |
+ gzip -c > $OUTVCF
+```
+
+Compare the results with the original input:
+
+```{bash }
+#| label: bcftools-compare-filter-to-original-allsites
+#| echo: true
+#| eval: true
+bcftools stats $OUTVCF | grep "^SN"
+```
+
+:::
+
+:::
+
+### Genotype depth data and BED output
+
+Instead of calculating missing genotypes per site, we can retrieve the
+individual depth for each genotype with `--geno-depth`. Since we know
+cutoffs for mean depth (5-15), we can run this command on the main
+input file (`allsites.vcf.gz`). For reasons that soon will become
+clear, we also rerun `--site-depth-mean`.
+
+```{bash }
+#| label: allsites-geno-depth
+#| echo: true
+#| eval: true
+VCF=allsites.vcf.gz
+OUT=vcftools/allsites
+vcftools --gzvcf  ${VCF} --geno-depth --out $OUT 2>/dev/null
+vcftools --gzvcf  ${VCF} --site-mean-depth --out $OUT 2>/dev/null
+head -n 3 ${OUT}.gdepth
+```
+
+```{r }
+#| label: set-envvars-geno-site-depth
+#| echo: false
+#| eval: true
+Sys.setenv(VCF="allsites.vcf.gz",
+           OUT="vcftools/allsites")
+```
+
+We could then combine these two files and perform filtering as
+follows: for each site check that
+
+1. the mean depth is within the filter range
+2. there is a minimimum number of genotypes with sufficient depth
+3. individual genotype depth does not exceed a maximum depth threshold
+
+If any of the points above fail, the site is discarded. We keep track
+of sites that pass the filters and output positions in [BED
+format](https://genome.ucsc.edu/FAQ/FAQformat.html#format1) (a
+[0-based](https://www.biostars.org/p/84686/) tab-separated format
+consisting of columns `chrom`, `chromStart`, and `chromEnd`).
+
+Here is some code to achieve these goals. Unfortunately `csvtk`
+doesn't seem to have support for calculating column margins out of the
+box, which is why we have to resort to this complicated construct
+using `awk` to count the number of individual genotypes that pass the
+coverage threshold 5.
+
+```{bash }
+#| label: geno-depth-ldepth-coverage-filter
+#| echo: true
+#| eval: true
+BEDOUT=${VCF%.vcf.gz}.keep.bed
+csvtk join -t ${OUT}.ldepth.mean ${OUT}.gdepth -f CHROM,POS |\
+    csvtk filter -t -f "MEAN_DEPTH>=5" |\
+    csvtk filter -t -f "MEAN_DEPTH<=15" |\
+    awk -v FS="\t" -v OFS="\t" \
+        'NR > 1 {count=0; for (i=4; i<=NF; i++)\
+ {if ($i>4) count++ }; if (count>=5) print $1, $2 - 1, $2}'|\
+    bedtools merge > ${BEDOUT}
+head -n 3 $BEDOUT
+```
+
+The BED file contains a list of regions that are accessible to
+analysis.
+
+#### Sequence masks
+
+In addition to the BED output files, we can generate sequence masks.
+First, we set a variable to point to the reference sequence and index
+it.
+
+```{bash }
+#| label: samtools-faidx-genodepth
+#| echo: true
+#| eval: true
+export REF=ref/M_aurantiacus_v1.fasta
+samtools faidx ${REF}
+```
+
+```{r }
+#| label: set-sample-envvars-genodepth
+#| echo: false
+#| eval: true
+Sys.setenv(REF="ref/M_aurantiacus_v1.fasta")
+```
+
+Now, we use the command `bedtools makefasta` to make a sequence mask
+file in FASTA format consisting solely of `1`'s:^[We need to generate
+a BED file representation of the FASTA index unfortuanely as `bedtools
+makefasta` doesn't handle FASTA indices natively.]
+
+```{bash }
+#| label: bedtools-maskfasta-make-genome-mask
+#| echo: true
+#| eval: true
+awk 'BEGIN {OFS="\t"} {print $1, 0, $2}' ${REF}.fai > ${REF}.bed
+bedtools maskfasta -fi ${REF} -mc 1 -fo ${REF}.mask.fa -bed ${REF}.bed
+```
+
+We generate a file where all positions are masked because the BED
+files contain regions that we want to keep. Therefore, we want to
+convert corresponding positions to zeros. This file will be used as a
+template for all mask files.
+
+We then apply `bedtools maskfasta` again to unmask (set to `0`) the
+positions that overlap with the BED coordinates:
+
+```{bash }
+#| label: bedtools-intersect-depth-filter-genodepth
+#| echo: true
+#| eval: true
+bedtools maskfasta -fi ${REF}.mask.fa -mc 0 -fo ${REF}.unmask.fa \
+   -bed allsites.keep.bed
+head -n 3 ${REF}.unmask.fa
+```
+
+We can convince ourselves that this has worked by counting the number
+of unmasked positions in both the BED file (with `bedtools genomecov`)
+and sequence mask:
+
+```{bash }
+#| label: count-unmasked-positions
+#| echo: true
+#| eval: true
+bedtools genomecov -i allsites.keep.bed -g ${REF}.fai | grep genome
+# tr: -d deletes all characters not (-c, complement) in the character
+# set '0'. wc: -m option counts characters
+cat ${REF}.unmask.fa | tr -d -c '0' | wc -m
+```
+
+Note that 0 and 1 in the `bedtools genomecov` output refers to
+coverage (i.e., absence/presence) and not unmask/mask as in the mask
+FASTA file.
+
+#### Example: Using a sequence mask with `vcftools`
+
+The sequence mask file can be used with `vcftools` with the option
+`--mask`. Before we use, however, we need to convert the mask file to
+one sequence per line^[For `vcftools`; unfortunate, but that's the way
+it is]. `seqkit` is a neat tool that allows us to do this without
+hassle. As an example, we then perform a genetic diversity calculation
+with and without mask file to highlight the difference:
+
+```{bash }
+#| label: vcftools-example-mask
+#| echo: true
+#| eval: true
+WIDEMASK=${REF}.unmask.wide.fa
+seqkit seq -w 0 ${REF}.unmask.fa > ${WIDEMASK}
+vcftools --gzvcf allsites.vcf.gz --mask $WIDEMASK \
+         --site-pi --stdout 2>/dev/null |\
+    csvtk summary -t --ignore-non-numbers --decimal-width 4 \
+    --fields PI:count,PI:mean
+vcftools --gzvcf allsites.vcf.gz --site-pi --stdout 2>/dev/null |\
+    csvtk summary -t --ignore-non-numbers --decimal-width 4 \
+    --fields PI:count,PI:mean
+```
+
+Clearly, filtering may have significant impact on the final outcome.
+You must choose your filters wisely!
+
+## References

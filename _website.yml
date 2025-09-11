@@ -19,6 +19,7 @@ website:
           - slides/pgip/index.qmd
           - slides/foundations/index.qmd
           - slides/foundations/data.qmd
+          - slides/foundations/alleles.qmd
           - slides/variant_calling/index.qmd
           - slides/variant_calling/dna_sequencing.qmd
           - slides/variant_calling/read_mapping.qmd
@@ -41,11 +42,11 @@ website:
           - exercises/variant_calling/data_qc.qmd
           - exercises/variant_calling/read_mapping.qmd
           - exercises/variant_calling/variant_calling_workflow.qmd
-          # - section: Variant filtering
-          #   contents:
-          #     - exercises/variant_filtering/index.qmd
-          #     - exercises/variant_filtering/basic_filtering.qmd
-          #     - exercises/variant_filtering/advanced_filtering.qmd
+          - section: Variant filtering
+            contents:
+              - exercises/variant_filtering/index.qmd
+              - exercises/variant_filtering/basic_filtering.qmd
+              - exercises/variant_filtering/depth_filtering.qmd
           # - section: Genetic diversity
           #   contents:
           #     - exercises/genetic_diversity/index.qmd
