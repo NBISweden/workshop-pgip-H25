@@ -122,16 +122,20 @@ radmixtools2 = "R -e \"library(devtools); devtools::install_github('uqrmaie1/adm
 rsetup = { depends-on = ["rpgip", "radmixtools2"] }
 
 [feature.build.tasks.jlab]
-args = [{ "arg" = "port", default = "8899" }]
+args = [{ "arg" = "port", default = "8890" }]
 cmd = "jupyter lab --port {{port}}"
 description = "Run Jupyter lab."
 
 [feature.build.tasks.pv]
-args = [{ "arg" = "port", default = "8889" }]
+args = [{ "arg" = "port", default = "8880" }]
 cmd = "quarto preview --port {{port}}"
 
 [feature.build.tasks.rd]
 cmd = "quarto render"
+
+[feature.build.tasks.dev]
+args = [{ "arg" = "port", default = "8885" }]
+cmd = "quarto preview --port {{port}} --profile dev"
 
 [feature.build.tasks.prod]
 cmd = "quarto render --profile production"
