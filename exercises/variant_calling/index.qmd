@@ -9,6 +9,14 @@ author:
 exercise:
   dir: variant-calling
   venv: e-variant-calling
+listing:
+  id: vc-listing
+  type: table
+  contents:
+    - introduction.qmd
+    - data_qc.qmd
+    - read_mapping.qmd
+    - variant_calling_workflow.qmd
 ---
 
 ## About
@@ -32,28 +40,23 @@ biological background and general information about where to find and
 how to setup the data. We will focus on the *red* and *yellow*
 ecotypes in what follows.
 
-## Exercises
+## Intended learning outcomes
 
-1. [Variant calling workflow introduction](introduction.qmd){#variant-calling-introduction}
+- Perform qc on sequencing reads and interpret results
+- Prepare reference for read mapping
+- Map reads to reference
+- Mark duplicates
+- Perform raw variant calling to generate a set of sites to exclude
+  from recalibration
+- Perform base quality score recalibration
+- Perform variant calling on base recalibrated data
+- Do genotyping on all samples and combine results to a raw variant
+  call set
 
-   A brief overview of variant calling.
+## Listing
 
-2. [Data preparation, quality control and
-   filtering](data_qc.qmd){#variant-calling-data-qc}
-
-   Introduction to the command line interface. Preparation of data,
-   raw data quality control and filtering for downstream analyses.
-
-3. [Read mapping and duplicate
-   marking](read_mapping.qmd){#variant-calling-read-mapping}
-
-   Read mapping to reference sequence and removal of duplicate reads.
-
-4. [Variant calling and genotyping
-   workflow](variant_calling_workflow.qmd){#variant-calling-workflow}
-
-   Perform variant calling and genotyping. Introduction to workflow
-   manager systems.
+:::{#vc-listing}
+:::
 
 ## Additional material
 

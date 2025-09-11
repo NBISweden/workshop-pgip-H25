@@ -1,5 +1,8 @@
 ---
 title: Data quality control
+description: >-
+  Introduction to the command line interface. Preparation of data,
+  raw data quality control and filtering for downstream analyses.
 author:
   - Per Unneberg
 format: nbis-course-html

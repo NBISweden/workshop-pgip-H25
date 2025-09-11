@@ -1,5 +1,7 @@
 ---
 title: Read mapping and duplicate removal
+description: >-
+  Read mapping to reference sequence and removal of duplicate reads.
 author:
   - Per Unneberg
 format: nbis-course-html

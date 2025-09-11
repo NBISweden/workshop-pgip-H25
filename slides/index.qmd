@@ -12,10 +12,10 @@ listing:
     - pgip/index.qmd
     - foundations/index.qmd
     - variant_calling/index.qmd
-    - variant_filtering/index.qmd
-    - genetic_diversity/index.qmd
-    - simulation/index.qmd
-    - scratch/index.qmd
+    # - variant_filtering/index.qmd
+    # - genetic_diversity/index.qmd
+    # - simulation/index.qmd
+    # - scratch/index.qmd
     # - population_structure/index.qmd
     # - demography/index.qmd
     # - selection/index.qmd
