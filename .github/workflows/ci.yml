@@ -84,10 +84,18 @@ jobs:
       - name: List reticulate setting
         run: |
           R -e "library(reticulate); reticulate::py_config()"
-          which python
-          echo ${QUARTO_PYTON}
-          echo ${RETICULATE_PYTON}
+          echo "Which Python: $(which python)"
+          echo "QUARTO_PYTHON: ${QUARTO_PYTHON}"
+          echo "RETICULATE_PYTHON: ${RETICULATE_PYTHON}"
         shell: pixi run -e build bash -e {0}
+
+      - name: List reticulate setting II
+        run: |
+          pixi shell -e build
+          R -e "library(reticulate); reticulate::py_config()"
+          echo "Which Python: $(which python)"
+          echo "QUARTO_PYTHON: ${QUARTO_PYTHON}"
+          echo "RETICULATE_PYTHON: ${RETICULATE_PYTHON}"
 
       # - name: Render project without publishing
       #   env:
