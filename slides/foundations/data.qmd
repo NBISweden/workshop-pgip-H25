@@ -373,6 +373,13 @@ samtools tview -p LG4:30430 -d H -w 47 \
 
 ::::
 
+:::{}
+
+Before getting to variants and genotypes a lot of processing has to be
+done, from FASTQ input, to mapped data, to variant and genotype calls.
+
+:::
+
 ::: {.notes}
 
 Before getting to variants and genotypes a lot of processing has to be
