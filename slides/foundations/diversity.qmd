@@ -1,0 +1,1655 @@
+---
+title: Genetic diversity
+subtitle: The origin and maintenance of genetic diversity
+description: >-
+  Genetic drift, effective population size and the evolution of
+  genetic diversity
+author:
+  - Per Unneberg
+format:
+  nbis-quarto-revealjs:
+    footer: Genetic diversity
+---
+
+## Setup {visibility="hidden" .hidden .unnumbered .unlisted}
+
+{{< include /slides/_knitr.qmd >}}
+
+{{< include /slides/_rlibs.qmd >}}
+
+```{r }
+#| label: custom-libs
+#| echo: false
+#| eval: true
+library(viridisLite)
+library(gganimate)
+library(patchwork)
+library(expm)
+library(gridExtra)
+library(igraph)
+library(ggraph)
+library(tidygraph)
+```
+
+# Origin and change of variation
+
+:::: {style="display: grid; grid-template-columns: 300px 200px 200px;
+grid-row-gap: 0px; grid-column-gap: 100px;"}
+
+<div>&nbsp;</div>
+
+:::{.circular-image}
+
+Mutation
+
+![](/slides/pgip/assets/images/mutation.webp)
+
+:::
+
+:::{.circular-image}
+
+Selection
+
+![](/slides/pgip/assets/images/finches.webp)
+
+:::
+
+<div>&nbsp;</div>
+
+:::{.circular-image}
+
+Recombination
+
+![](/slides/pgip/assets/images/recombination.webp)
+
+:::
+
+:::{.circular-image}
+
+Drift
+
+![](/slides/pgip/assets/images/genetic-drift.webp)
+
+:::
+
+::::
+
+## Wright-Fisher model with alleles {.smaller}
+
+:::: {.columns .compact}
+
+::: {.column width="35%" }
+
+```{r }
+#| label: wright-fisher-drift-0.3-1
+#| echo: false
+#| eval: true
+#| cache: false
+set.seed(1974)
+g <- wright_fisher_pop(n = 10, generations = 16, p0 = 3)
+ggplot_wf(g, fill = allele) + ggtitle("Allele fixation") +
+  scale_fill_manual(values = c("a" = "white", "A" = "black"))
+```
+
+:::
+
+::: {.column width="35%" .fragment}
+
+```{r }
+#| label: wright-fisher-drift-0.3-2
+#| echo: false
+#| eval: true
+#| cache: false
+set.seed(2014)
+g <- wright_fisher_pop(n = 10, generations = 16, p0 = 0.3)
+ggplot_wf(g, fill = allele) + ggtitle("Allele loss") +
+  scale_fill_manual(values = c("a" = "white", "A" = "black"))
+```
+
+:::
+
+:::{.column width=30% .fragment}
+
+Alleles can randomly *fix* or be *lost* through process called
+**genetic drift**
+
+:::
+
+Wright-Fisher model showing the evolution of population of 10 genes
+over 16 generations. Allele variants are shown in white and black.
+Starting frequency black variant is 0.3.
+
+::::
+
+::: {.notes }
+
+(To avoid confusion: previously black was used to indicate parent,
+here black/white will refer to different alleles)
+
+Enter allelic variants; we are looking at two alleles
+
+Important: the fate of any allele under drift is to be **lost** or
+**fixed**, which ultimately means variation is **lost** (decays) with
+drift
+
+:::
+
+## Binomial process models allele sampling {.smaller}
+
+```{r }
+#| label: allele-sampling-model
+#| echo: false
+#| eval: true
+#| cache: false
+#| out-width: 60%
+#| fig-height: 3
+#| fig-width: 12
+#| fig-align: center
+set.seed(901)
+wf <- wright_fisher_pop(n = 20, generations = 2, p0=0.3)
+y_range <- range(V(wf)$y)
+ggplot_wf(wf, fill=allele)
+```
+
+:::: {.columns .fragment}
+
+::: {.column width="50%"}
+
+We assume two alleles $A$, $a$, each with $i$ and $j=2N-i$ copies in
+generation $t$.
+
+:::
+
+::: {.column width="50%"}
+
+:::: {style="display: grid; grid-template-columns: 1fr 1fr;
+grid-row-gap: 0px; grid-column-gap: 0px; align-items: center;"}
+
+:::{}
+
+![](assets/images/flower-red.svg){width=20}
+![](assets/images/flower-red.svg){width=20}
+![](assets/images/flower-red.svg){width=20}
+![](assets/images/flower-red.svg){width=20}
+![](assets/images/flower-white.svg){width=20}
+![](assets/images/flower-white.svg){width=20}
+
+:::
+
+:::{}
+
+$i=8$, $j=2\cdot 6-8=4$
+
+:::
+
+::::
+
+:::
+
+::::
+
+:::: {.columns .fragment}
+
+::: {.column width="50%"}
+
+Let $p_t=i/2N$ be the *frequency* of $A$ in generation $t$, and
+$q_t=1-p_t$ the frequency of $a$.
+
+:::
+
+::: {.column width="50%"}
+
+:::: {style="display: grid; grid-template-columns: 1fr 1fr;
+grid-row-gap: 0px; grid-column-gap: 0px;"}
+
+:::{}
+
+![](assets/images/flower-red.svg){width=20}
+![](assets/images/flower-red.svg){width=20}
+![](assets/images/flower-red.svg){width=20}
+![](assets/images/flower-red.svg){width=20}
+![](assets/images/flower-white.svg){width=20}
+![](assets/images/flower-white.svg){width=20}
+
+$p_t = 8/12$
+
+:::
+
+:::{}
+
+![](assets/images/flower-red.svg){width=20}
+![](assets/images/flower-red.svg){width=20}
+![](assets/images/flower-white.svg){width=20}
+![](assets/images/flower-white.svg){width=20}
+![](assets/images/flower-white.svg){width=20}
+![](assets/images/flower-white.svg){width=20}
+
+$p_{t+1} = 4/12$
+
+:::
+
+::::
+
+:::
+
+::::
+
+::: {.fragment}
+
+Prob($k$ $A$ alleles in next generation) is $\mathsf{Bin}(2N,
+\frac{i}{2N})$
+
+:::
+
+::: {.notes }
+
+A more formal mathematical description goes as follows:
+
+The sampling model for next generation $t+1$, *given* $i$ $A$ alleles
+in generation $t$, is
+
+$$
+p_{t+1} = P(v_A=k) = {2N\choose k}\left( \frac{i}{2N} \right)^k
+\left(1 - \frac{i}{2N} \right)^{(2N - k)} = \mathsf{Bin}(2N, \frac{i}{2N})
+$$
+
+NB: we here slightly change notation, with $p_{t+1} = P(X=k)$. Also,
+we have omitted an index $i$ in the expressions of $p$. The
+probability of observing $k$ $A$ alleles in generation $t+1$ will of
+course depend on the number $i$ $A$ alleles in the previous
+generation.
+
+:::
+
+## Genetic drift
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+To capture dynamics, follow allele frequency trajectory ($p_t$) as
+function of time.
+
+::: {.smallr}
+
+```{r code=readLines("../../src/R/pgip/R/wright_fisher.R")}
+#| label: wright-fisher-source
+#| echo: true
+#| eval: false
+```
+
+```{r }
+#| label: wright-fisher-plot
+#| echo: true
+#| eval: false
+# Example simulation and plot
+set.seed(1223)
+generations <- 100
+n <- 100 # NB: haploid population size!
+plot(1:generations,
+     wright_fisher(0.5, n, generations),
+     type="l", ylab="frequency",
+     xlab="generation", ylim=c(0, 1))
+```
+
+:::
+
+:::
+
+::: {.column width="50%"}
+
+::: {.fragment}
+
+```{r }
+#| label: genetic-drift-example
+#| echo: false
+#| eval: true
+#| cache: false
+set.seed(1223)
+n_reps <- 50
+n_gen <- 100
+conditions <- 4
+p0 <- rep(c(0.01, 0.1, 0.5, 0.8), each = conditions)
+N <- rep(c(50, 100, 1000, 5000), conditions)
+sample <- rep(seq(1, n_reps), length(N))
+p0_long <- rep(p0, each = n_reps)
+N_long <- rep(N, each = n_reps)
+
+wf <- mapply(wright_fisher, p0_long, N_long, n_gen, SIMPLIFY = FALSE)
+wf <- data.frame(
+  frequency = unlist(wf), N = rep(N_long, each = n_gen),
+  generation = seq(1, n_gen), sample = rep(sample, each = n_gen),
+  p0 = rep(p0_long, each = n_gen)
+)
+wf$N <- factor(wf$N)
+wf$sample <- factor(wf$sample)
+```
+
+```{r }
+#| label: fig-genetic-drift-N-10
+#| echo: false
+#| eval: true
+#| fig-show: animate
+#| fig-format: png
+#| fig-keep: all
+#| out-width: 80%
+#| fig-height: 6
+#| fig-width: 6
+#| fig-cap:
+#|    Genetic drift for different haploid(!) population sizes,
+#|    starting frequency $p_0$=0.5. Note dependency of variance
+#|    on population size N.
+ggplot(
+  subset(wf, wf$sample == 1 & wf$p0 == 0.5),
+  aes(x = generation, y = frequency)
+) +
+  geom_line(size = 1) +
+  xlim(1, 100) +
+  ylim(0, 1) +
+  facet_wrap(. ~ N) +
+  transition_reveal(generation)
+```
+
+:::
+
+:::
+
+::::
+
+::: {.notes }
+
+Mention *neutral* here as this is how alleles behave under
+drift: like gas particle diffusing up and down. Allele is eventually either fixed or lost.
+
+:::
+
+## Genetic drift
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+<!-- markdownlint-disable MD013 -->
+
+```{r }
+#| label: fig-genetic-drift-many-repetitions
+#| echo: false
+#| eval: true
+#| fig-height: 8
+#| fig-width: 12
+#| out-height: "380"
+#| out-width: "560"
+#| fig-cap: |
+#|   Genetic drift for different combinations of starting
+#|   frequency and population size for n=50 repetitions per parameter
+#|   combination. Note how variation and time to fixation depends on
+#|   population size and starting frequency.
+ggplot(wf, aes(x = generation, y = frequency, group = sample)) +
+  geom_line() +
+  xlim(1, 100) +
+  ylim(0, 1) +
+  facet_grid(N ~ p0)
+```
+
+<!-- markdownlint-enable MD013 -->
+
+:::
+
+::: {.column width="50%"}
+
+::: {.incremental}
+
+- fate of allele: fixation or loss $\rightarrow$ eventually loss of
+  variation
+- **probability of fixation $\pi(p)=p$**, where $p$ is the *current*
+  frequency
+- rate of drift (loss of variation) $\propto \frac{1}{2N}$
+
+:::
+
+::: {.fragment}
+
+::: {.center}
+
+```{r, engine='tikz', fig.ext="svg" }
+#| label: gas-particle-drift
+#| echo: false
+#| eval: true
+#| out-height: "200"
+#| fig-align: center
+\begin{tikzpicture}
+\node[circle, fill=black] (n) {};
+\node[above of=n] (drift_up) {};
+\node[below of=n] (drift_down) {};
+\draw[->, >=latex] (n) -- node[right] {drift} (drift_down);
+\draw[->, >=latex] (n) -- node[right] {drift} (drift_up);
+\end{tikzpicture}
+```
+
+:::
+
+:::
+
+:::
+
+::::
+
+::: {.notes }
+
+Simplifying assumptions -> rate of drift $\propto \frac{1}{N}$
+($\frac{1}{2N}$ in our treatment) [@leffler_RevisitingOldRiddle_2012]
+
+In reality population fluctuates and therefore Ne is substituted for
+N. Larger Ne -> smaller fluctuation in allele frequency (as evidenced
+in plots) -> maintain larger genetic diversity
+
+Drift can be thought of as a force acting on a buoyant gas particle
+floating up and down at random.
+
+:::
+
+## Allele frequency distribution for N=1 {.smaller}
+
+Instead of looking at frequencies let's switch to distributions of
+alleles for **one** individual, one locus. Then there are three
+possible genotypes (**states**) $aa$, $aA$, and $AA$. Let $n=0,1,2$ be
+an integer corresponding to each genotype (i.e., it counts the number
+of $A$ alleles).
+
+Assume individual mates with itself at random(!) starting in either of
+the three states. How does distribution evolve?
+
+:::: {.columns .fragment fragment-index=1}
+
+::: {.column width="10%"}
+
+t=0
+
+:::
+
+::: {.column width="30%"}
+
+```{r, engine='tikz', fig.ext="svg"}
+#| label: tikz-afd-aa
+#| echo: false
+#| eval: true
+#| out-width: 200px
+\begin{tikzpicture}[ybar interval]
+\tikzstyle{tick}=[font=\scriptsize];
+\tikzstyle{label}=[font=\small];
+  \draw[fill=black, draw=black]
+plot coordinates{(0,1) (1,0) (2, 0) (3, 0)};
+\node[label] (aa) at (0.5, 1.8) {aa};
+\node[label] (Aa) at (1.5, 1.8) {Aa};
+\node[label] (AA) at (2.5, 1.8) {AA};
+\node[label] (0) at (0.5, 1.4) {0};
+\node[label] (1) at (1.5, 1.4) {1};
+\node[label] (2) at (2.5, 1.4) {2};
+ \draw[->] (0, -0.2) -- (0, 1.2);
+\draw (-0.1, 1) -- (0.1, 1);
+\draw (-0.1, 0) -- (0.1, 0);
+\node[tick] at (-0.4, 1) {1};
+\node[tick] at (-0.4, 0) {0};
+\end{tikzpicture}
+```
+
+:::
+
+::: {.column width="30%"}
+
+```{r, engine='tikz', fig.ext="svg"}
+#| label: tikz-afd-aA
+#| echo: false
+#| eval: true
+#| out-width: 200px
+\begin{tikzpicture}[ybar interval]
+\tikzstyle{tick}=[font=\scriptsize];
+\tikzstyle{label}=[font=\small];
+  \draw[fill=black, draw=black]
+plot coordinates{(0,0) (1,1) (2, 0) (3, 0)};
+\node[label] (aa) at (0.5, 1.8) {aa};
+\node[label] (aA) at (1.5, 1.8) {aA};
+\node[label] (AA) at (2.5, 1.8) {AA};
+\node[label] (0) at (0.5, 1.4) {0};
+\node[label] (1) at (1.5, 1.4) {1};
+\node[label] (2) at (2.5, 1.4) {2};
+ \draw[->] (0, -0.2) -- (0, 1.2);
+\draw (-0.1, 1) -- (0.1, 1);
+\draw (-0.1, 0) -- (0.1, 0);
+\node[tick] at (-0.4, 1) {1};
+\node[tick] at (-0.4, 0) {0};
+\end{tikzpicture}
+```
+
+:::
+
+::: {.column width="30%"}
+
+```{r, engine='tikz', fig.ext="svg"}
+#| label: tikz-afd-AA
+#| echo: false
+#| eval: true
+#| out-width: 200px
+\begin{tikzpicture}[ybar interval]
+\tikzstyle{tick}=[font=\scriptsize];
+\tikzstyle{label}=[font=\small];
+  \draw[fill=black, draw=black]
+plot coordinates{(0,0) (1,0) (2, 1) (3, 1)};
+\node[label] (aa) at (0.5, 1.8) {aa};
+\node[label] (aA) at (1.5, 1.8) {aA};
+\node[label] (AA) at (2.5, 1.8) {AA};
+\node[label] (0) at (0.5, 1.4) {0};
+\node[label] (1) at (1.5, 1.4) {1};
+\node[label] (2) at (2.5, 1.4) {2};
+ \draw[->] (0, -0.2) -- (0, 1.2);
+\draw (-0.1, 1) -- (0.1, 1);
+\draw (-0.1, 0) -- (0.1, 0);
+\node[tick] at (-0.4, 1) {1};
+\node[tick] at (-0.4, 0) {0};
+\end{tikzpicture}
+```
+
+:::
+
+::::
+
+:::::{.translatey50}
+
+:::: {.columns}
+
+::: {.column width="10%"}
+
+::: {.fragment fragment-index=2}
+
+t=1
+
+:::
+
+:::
+
+::: {.column width="30%"}
+
+::: {.fragment fragment-index=2}
+
+```{r, engine='tikz', fig.ext="svg"}
+#| label: tikz-afd-aa-1
+#| echo: false
+#| eval: true
+#| out-width: 200px
+\begin{tikzpicture}[ybar interval]
+\tikzstyle{tick}=[font=\scriptsize];
+\tikzstyle{label}=[font=\small];
+  \draw[fill=black, draw=black]
+plot coordinates{(0,1) (1,0) (2, 0) (3, 0)};
+ \draw[->] (0, -0.2) -- (0, 1.2);
+\draw (-0.1, 1) -- (0.1, 1);
+\draw (-0.1, 0) -- (0.1, 0);
+\node[tick] at (-0.4, 1) {1};
+\node[tick] at (-0.4, 0) {0};
+\end{tikzpicture}
+```
+
+:::
+
+:::
+
+::: {.column width="30%"}
+
+::: {.fragment fragment-index=4}
+
+```{r, engine='tikz', fig.ext="svg"}
+#| label: tikz-afd-aA-1
+#| echo: false
+#| eval: true
+#| out-width: 200px
+\begin{tikzpicture}[ybar interval]
+\tikzstyle{tick}=[font=\scriptsize];
+\tikzstyle{label}=[font=\small];
+  \draw[fill=black, draw=black]
+plot coordinates{(0,0.25) (1,0.5) (2, 0.25) (3, 0.25)};
+ \draw[->] (0, -0.2) -- (0, 1.2);
+\draw (-0.1, 1) -- (0.1, 1);
+\draw (-0.1, 0) -- (0.1, 0);
+\node[tick] at (-0.4, 1) {1};
+\node[tick] at (-0.4, 0) {0};
+\end{tikzpicture}
+```
+
+:::
+
+:::
+
+::: {.column width="30%"}
+
+::: {.fragment fragment-index=3}
+
+```{r, engine='tikz', fig.ext="svg"}
+#| label: tikz-afd-AA-1
+#| echo: false
+#| eval: true
+#| out-width: 200px
+\begin{tikzpicture}[ybar interval]
+\tikzstyle{tick}=[font=\scriptsize];
+\tikzstyle{label}=[font=\small];
+  \draw[fill=black, draw=black]
+plot coordinates{(0,0) (1,0) (2, 1) (3, 1)};
+ \draw[->] (0, -0.2) -- (0, 1.2);
+\draw (-0.1, 1) -- (0.1, 1);
+\draw (-0.1, 0) -- (0.1, 0);
+\node[tick] at (-0.4, 1) {1};
+\node[tick] at (-0.4, 0) {0};
+\end{tikzpicture}
+```
+
+:::
+
+:::
+
+::::
+
+:::::
+
+:::::{.translatey100}
+
+:::: {.columns}
+
+::: {.column width="10%"}
+
+::: {.fragment fragment-index=5}
+
+t=2
+
+:::
+
+:::
+
+::: {.column width="30%"}
+
+:::
+
+::: {.column width="30%"}
+
+::: {.fragment fragment-index=5}
+
+```{r, engine='tikz', fig.ext="svg"}
+#| label: tikz-afd-aA-2
+#| echo: false
+#| eval: true
+#| out-width: 200px
+\begin{tikzpicture}[ybar interval]
+\tikzstyle{tick}=[font=\scriptsize];
+\tikzstyle{label}=[font=\small];
+  \draw[fill=black, draw=black]
+plot coordinates{(0,0.375) (1,0.25) (2, 0.375) (3, 0.25)};
+ \draw[->] (0, -0.2) -- (0, 1.2);
+\draw (-0.1, 1) -- (0.1, 1);
+\draw (-0.1, 0) -- (0.1, 0);
+\node[tick] at (-0.4, 1) {1};
+\node[tick] at (-0.4, 0) {0};
+\end{tikzpicture}
+```
+
+:::
+
+:::
+
+::: {.column width="30%"}
+
+:::
+
+::::
+
+:::::
+
+::: {.notes}
+
+Example from [@gillespie_PopulationGeneticsConcise_2004, p. 24]. We
+look at a single hermaphroditic individual that mates with itself at
+random. For each generation, given a genotype distribution, we
+calculate the outcome for the next generation. For instance, starting
+out in state 0 (only $aa$ genotypes, hence only $a$ alleles), we can
+only produce new $aa$ genotypes and will therefore never leave
+state 0. The same holds for state 2. These states are *absorbing
+states*.
+
+Starting from state 1 ($aA$) we can get $aa$ genotype with 25%
+probability, since the probability of picking one $a$ is 50%, and we
+perform two draws. Similarly, we get $AA$ with 25% probability,
+leaving 50% to $aA$.
+
+In the next generation, the $aA$ genotype frequency is 0.5, to be
+split in fractions 0.25, 0.5, 0.25 as before, and so on.
+
+To study the system we therefore need to enumerate the probabilistic
+outcomes from each state ($aa$ -> 1, 0, 0, $aA$ -> 0.25, 0.5, 0.25,
+$AA$ <- 0, 0, 1). To get the state in next generation, we multiply the
+current distribution with these outcomes. The next slide gives
+Kimura's example for the case where we have N=10 chromosomes.
+
+:::
+
+## Probability distributions of allele frequencies {.smaller}
+
+```{r }
+#| label: allele-frequency-histogram
+#| echo: false
+#| eval: true
+n <- 10
+x <- vector(mode="numeric", length=n + 1)
+# Start with n major = n minor
+n_a <- ceiling(length(x)/2)
+x[n_a] <- 1
+class <- c("absorbing", rep("normal", n - 1), "absorbing")
+# Make transition matrix
+P <- do.call("rbind", lapply(0:n, function(i) {dbinom(0:n, n, i/n)}))
+
+plot_drift_histogram <- function(t, P) {
+  data <- t(x %*% (P%^%t))
+  xlabels <- unlist(lapply(0:n, function(x) {
+    sprintf("frac(%i, %i)", x, n)
+  }))
+  p <- data.frame(n=0:n, class=class, obs=data) %>%
+    ggplot(aes(y=obs, x=n, fill=class)) +
+    geom_bar(stat="identity", color="black", width=1) +
+    xlab("") + ylab("") +
+    annotate("text", label = paste("t =", t), fontface="italic",
+             x = n/2, y = 1.2*max(data), size = 10) +
+    scale_fill_manual(values=list("absorbing"="black", "normal"="white")) +
+    theme(legend.position="none",
+          axis.text.y = element_text(size=16),
+          axis.text.x = element_text(size=16, angle=0, hjust=0.5, vjust=0)) +
+    scale_x_continuous(
+        breaks=0:n,
+        labels=do.call(c, lapply(xlabels, function(l) {parse(text=l)}))) +
+    ylim(c(0, 1.3*max(data)))
+  p
+}
+```
+
+:::: {.columns}
+
+::: {.column width="40%"}
+
+```{r }
+#| label: fig-allele-frequency-histogram-plot
+#| echo: false
+#| eval: true
+#| out-width: 100%
+#| fig-width: 12
+#| fig-height: 8
+#| fig-cap: |
+#|     Histogram showing the course of change of the allele
+#|     frequency distribution with time [@kimura_1983, Fig. 3.4].
+#|     When N large ($\gtrsim 100$) histogram can be approximated
+#|     by continuous distribution (diffusion theory). Try recipe
+#|     [{{< fa rectangle-list >}}]({{< var recipes.slides
+#|     >}}#sec-recipe-slides-allele-frequency-distribution)
+#|     for different values of N.
+grid.arrange(
+    plot_drift_histogram(t=1, P=P),
+    plot_drift_histogram(t=5, P=P),
+    plot_drift_histogram(t=10, P=P),
+    plot_drift_histogram(t=20, P=P),
+    ncol=2)
+```
+
+:::
+
+::: {.column width="60%"}
+
+```{r }
+#| label: fig-buri-table-14
+#| echo: false
+#| eval: true
+#| out-width: 60%
+#| fig-width: 12
+#| fig-height: 10
+#| fig-align: center
+#| fig-cap: |
+#|    Frequency distributions of the brown eye ($bw^{75}$)
+#|    allele in replicate experimental populations ($n\sim 100$)
+#|    of *Drosophila melanogaster* (8 {{< fa venus >}},
+#|    8 {{< fa mars >}}) [@buri_GeneFrequencySmall_1956]
+data <- read.csv("assets/data/buri-table14.csv", header=TRUE, fill=0)
+colnames(data)[3:35] <- as.character(0:32)
+data <- data %>% replace(., is.na(.), 0)
+data$`32` <- data$`32` + data$Total.fixed.bw.75
+data$`0` <- data$`0` + data$Total.fixed.bw
+plot_buri <- function(t, xaxis=FALSE, yaxis=FALSE, title=TRUE) {
+  labels <- lapply(0:32, function(x) {
+    ""
+  })
+  names(labels) <- as.character(0:32)
+  labels$`0` <- 0
+  labels$`32` <- 1
+  p <- ggplot(stack(subset(data[2:20,c(1, 2:36)], Generation==t)[ , 3:35]),
+              aes(x=ind, y=values)) +
+    geom_bar(stat="identity") +
+    theme(legend.position="none",
+          axis.ticks=element_blank(),
+          axis.text.x = element_blank(),
+          axis.text.y = element_blank(),
+          plot.margin = unit(c(0, 0, 0, 0), "null"),
+          panel.spacing = unit(c(0, 0, 0, 0), "null")) +
+    ylab("") + xlab("") + ylim(0, 30)
+  if (title) {
+    p <- p + annotate("text", label = paste("t =", t), fontface="italic",
+                      x = 2, y = 28, size = 8)
+  }
+  if (xaxis)  {
+    p <- p + scale_x_discrete(breaks=0:32, labels=labels) +
+      xlab("Frequency") +
+      theme(axis.text.x = element_text(size=16, angle=0,
+                                       hjust=0.5, vjust=0))
+  }
+  if (yaxis) {
+    p <- p + ylab("Count") +
+      theme(axis.text.y = element_text(size=16))
+  }
+  p
+}
+grid.arrange(
+    plot_buri(1),# plot_buri(2), plot_buri(3),
+    plot_buri(5),# plot_buri(5), plot_buri(6),
+    plot_buri(10),# plot_buri(8), plot_buri(9),
+    plot_buri(15),# plot_buri(11), plot_buri(12),
+    plot_buri(19),
+    ncol=1, padding=0
+)
+```
+
+:::
+
+::::
+
+::: {.fragment}
+
+Mathematical treatment of drift can become complicated: easier to
+study dynamics of *heterozygosity*
+
+:::
+
+::: {.notes}
+
+Kimura's plot illustrates the allelic frequency distribution of
+replicate populations each consisting of N=10 sequences. There are two
+allelic types. The x axis corresponds to the proportion of populations
+in a given state (e.g., the y value for x=3/10 corresponds to the
+proportion of populations with 3 alleles of one type and 7 of the
+other). At $t=0$ all populations are in state 5/10.
+
+Kimura's plot is very instructive and students are encouraged to test
+the recipe code, increasing the number of states incrementally. For
+large enough N, the histograms can be approximated by continuous
+distributions. This observation led Kimura (even though diffusion
+equations were originally introduced to genetics by Fisher in 1922) to
+apply diffusion theory to obtain probability densities of allele
+frequencies, leading in turn to compact expressions of fixation
+probabilities, expected ages of alleles, and more. A treatment of
+diffusion theory is outside the scope of this course; the interested
+reader can consult e.g., [@ewens_MathematicalPopulationGenetics_2004].
+
+The Buri experiment is an empirical demonstration of Kimura's plot.
+
+On the sampling model, [@charlesworth_ElementsEvolutionaryGenetics_2010, p. 231] says:
+
+> It is, however, impossible to write down a simple algebraic
+> expression for P, even without selection and mutation. [The
+> equation] is useful for obtaining numerical results for relatively
+> small populations, but becomes computationally demanding when N
+> becomes very large.
+
+:::
+
+## Heterozygosity dynamics{.smaller}
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+```{r, engine='tikz', fig.ext="svg" }
+#| label: fig-identity-by-state-and-descent
+#| echo: false
+#| eval: true
+#| out-width: 70%
+#| fig-cap:
+#|     Illustration of identity by descent (IBD) and state (IBS).
+#|     Alleles in generation $n$ are IBD but not IBS.
+\begin{tikzpicture}
+\node (n_2) {$n-2$};
+\node[right of=n_2] (nl0) {};
+\node[right of=nl0] (n0) {\ttfamily-aac-};
+\node[right of=n0] (nr0) {};
+\node[below of=nl0,anchor=north] (n1) {\ttfamily-aac-};
+\node[below of=nr0,anchor=north] (n2) {\ttfamily-aac-};
+  \node[below of=n1,anchor=north] (n3) {\ttfamily-aac-};
+  \node[below of=n2,anchor=north] (n4) {\ttfamily-aag-};
+  \node[left of=n1] (nm1) {$n - 1$};
+  \node[left of=n3] {$n$};
+  \draw[->] (n0) -- (n1);
+  \draw[->] (n0) -- (n2);
+  \draw[->] (n1) -- (n3);
+  \draw[->] (n2) -- (n4);
+\end{tikzpicture}
+```
+
+:::
+
+::: {.column width="50%"}
+
+Let $\mathcal{H}_t$ be the probability that two alleles are
+**different by state**. One can show that the time course evolution of
+$\mathcal{H}_t$ in a randomly mating population consisting of $N$
+diploid hermaphroditic individuals is
+
+$$
+\mathcal{H}_t = \mathcal{H}_0 \left( 1 - \frac{1}{2N} \right)^t
+$$
+
+Important consequence: heterozygosity in WF population lost at rate
+$1/2N$.
+
+:::
+
+::::
+
+::: {.notes }
+
+Alleles in generation $n$ are IDB but not IBS
+
+Motivation: mathematical description of genetic drift complicated for
+populations with more than one individual. Easier to study the
+evolution of heterozygosity.
+
+Equation presented without details. Derivation in
+[@gillespie_PopulationGeneticsConcise_2004, pp. 25-27] starts from
+G=probability that two alleles are IBS
+
+:::
+
+## Heterozygosity dynamics {.smaller}
+
+:::: {.columns}
+
+::: {.column width="40%"}
+
+```{r }
+#| label: fig-gillespie-2.4
+#| echo: false
+#| eval: true
+#| fig-cap:
+#|    Plot of $\mathcal{H}_t$ illustrating dependency
+#|    on population size
+#| out-width: 90%
+het_t <- function(N=1, t=0:100, H0=1) {
+  H0 * (1 - 1/(2*N))^t
+}
+tmax <- 100
+t <- 0:tmax
+data <- data.frame(
+    population_size = c(
+        rep(1, length(t)),
+        rep(10, length(t)),
+        rep(100, length(t)),
+        rep(1e6, length(t))),
+    het = c(het_t(N=1), het_t(N=10), het_t(N=100), het_t(N=1e6)),
+    tn = rep(t, 4)
+)
+ggplot(data, aes(x=tn, y=het, shape=factor(population_size))) +
+  geom_point(size=3) + geom_line() + xlab("generation") +
+  ylab("heterozygosity") + guides(shape=guide_legend(title="Size")) +
+  theme(text=element_text(size=28))
+```
+
+:::
+
+::: {.column width="60%"}
+
+::: {.fragment}
+
+:::: {.columns}
+
+::: {.column width="60%"}
+
+```{r }
+#| label: fig-black-footed-ferret
+#| echo: false
+#| eval: true
+#| out-width: 90%
+#| fig-cap: Heterozygosity in black-footed ferret
+#|     [@wisely_GeneticDiversityFitness_2002].
+#|     Example from @grahamcoop_NotesPopulationGenetics_2020, Fig. 4.5
+# cf: https://github.com/cooplab/popgen-notes/blob/master/Journal_figs/genetic_drift/black_footed_ferrets/black-footed-ferrets_He.csv
+data <- data.frame(date=c(1891, 1972, 1985, 1986),
+                   He=c(0.231284916, 0.210335196,
+                        0.101396648, 0.067877095),
+                   N=c("N>10k", "N=62", "N=40", "N=7")
+                   )
+ggplot(data, aes(x=date, y=He, label=N)) +
+  geom_line(size=1.2) + geom_point(size=4) +
+  xlab("year") + ylab("heterozygosity") +
+  geom_text(nudge_y=0.005, nudge_x=c(12, 12, 12, 10), size=12) +
+  theme(text=element_text(size=30)) + xlim(1880, 2005)
+```
+
+:::
+
+::: {.column width="40%"}
+
+![](assets/images/ferret.svg){width=40%}
+
+Example of how rapid decline in population size can affect
+heterozygosity.
+
+::: {.fragment}
+
+Population size influences genetic diversity!
+
+:::
+
+::: {.fragment}
+
+However, *census* population size not (always) the correct measure.
+
+:::
+
+:::
+
+::::
+
+:::
+
+:::
+
+::::
+
+::: {.notes}
+
+Dependency on population size: for large enough populations the
+decline will be **very** slow (drift speed ~ 1/2N)
+
+Practical example shows loss of heterozygosity tell-tale signature of
+population decline; conversely, **not** easy to show population
+decline in large populations (e.g., marine species with large $N_e$)
+using heterozygosity as measure
+
+[@barton2007evolution, p. 369] "The relation between genetic diversity
+and population size is difficult to discern, in part, because it is
+extremely hard to estimate the numbers of most species and because the
+number that matters is an average back into the distant past"(!)
+
+From [@grahamcoop_NotesPopulationGenetics_2020, p. 64]
+
+> To see how a decline in population size can affect levels of het-
+> erozygosity, let’s consider the case of black-footed ferrets
+> (Mustela nigripes). The black-footed ferret population has declined
+> dramatically through the twentieth century due to destruction of
+> their habitat and sylvatic plague. In 1979, when the last known
+> black-footed ferret died in captivity, they were thought to be
+> extinct. In 1981, a very small wild population was rediscovered (40
+> individuals), but in 1985 this population suffered a number of
+> disease outbreaks. At that point of the 18 remaining wild
+> individuals were brought into captivity, 7 of which reproduced.
+> Thanks to intense captive breeding efforts and conservation work, a
+> wild population of over 300 individuals has been established since.
+> However, because all of these individuals are descended from those 7
+> individuals who survived the bottleneck, diversity levels remain
+> low. Wisely et al. measured heterozygosity at a number of
+> microsatellites in individuals from museum collections, showing the
+> sharp drop in diversity as population sizes crashed (see Figure
+> 4.5).
+
+Segue: population size important; however, *census* population size is
+not always the measure we want when relating to genetic diversity
+
+:::
+
+## Effective population size
+
+Assumptions underlying Wright-Fisher model seldom fulfilled for natural populations. In particular
+
+- non-random mating (population structure)
+- fluctuations of population census size
+
+Therefore, magnitude of drift experienced by a population different
+from that predicted by population size
+
+Technically correct definition (but see @waples_WhatNeAnyway_2022, @waples_IdiotsGuideEffective_2025):
+
+> $N_e$ is the size of an ideal population that would experience the
+> same rate of genetic drift as the population in question.
+
+::: {.notes }
+
+ideal population: discrete generations with random mating, no
+evolutionary forces besides drift, no selective advantages
+
+:::
+
+## Mutation
+
+:::: {.columns}
+
+::: {.column width="30%"}
+
+<table>
+<tr>
+<td><div style="transform: translate(50px, 0px);"><i class="fa-solid fa-bolt fa-2x fa-rotate-90"></i></div></td>
+<td><div style="transform: translate(0px, 40px);"><i class="fa-solid fa-dna fa-5x"></i></div></td>
+</tr>
+</table>
+
+:::
+
+::: {.column width="70%"}
+
+```{r }
+#| label: allele-sampling-model-mutation
+#| echo: false
+#| eval: true
+#| cache: false
+#| fig-height: 3
+#| fig-width: 12
+#| fig-align: center
+set.seed(1212)
+wf <- wright_fisher_pop(n = 6, generations = 2, mu = 0.02)
+ggplot_wf(wf, fill = allele, size=6) +
+  scale_fill_manual(values = c("a" = "white", "A" = "black"))
+```
+
+:::
+
+::::
+
+::: {.fragment}
+
+:::: {.columns}
+
+::: {.column width="70%"}
+
+<!-- markdownlint-disable MD013 -->
+
+```{r, engine='tikz', fig.ext="svg" }
+#| label: mutation-models
+#| echo: false
+#| eval: true
+\usetikzlibrary{fit,decorations.pathreplacing}
+
+\begin{tikzpicture}[
+  every matrix/.style={matrix of nodes, ampersand replacement=\&,
+    nodes in empty cells},
+  every node/.style={text height=1.5ex},
+  ]
+\tikzstyle{sequence} = [black, font=\sffamily, column sep={.5cm,between origins}]
+  \matrix(seq)[sequence] at (0,0)
+  {
+    T \& T \& A \& C \& A \& A \& T \& C \& C \& G \& A \& T \& C \& G \& C\\
+    T \& T \& A \& C \& G \& A \& T \& G \& C \& G \& C \& T \& C \& G \& C\\
+    T \& C \& A \& C \& A \& A \& T \& G \& C \& G \& A \& T \& G \& G \& A\\
+     T \& T \& A \& C \& G \& A \& T \& G \& C \& G \& C \& T \& C \& G \& T\\
+  };
+\node[fit={(seq-1-2.north west) (seq-4-2.south east)}, inner sep=0, draw=black]{};
+\node[fit={(seq-1-15.north west) (seq-4-15.south east)}, inner sep=0, draw=black]{};
+\node[above of=seq-1-2, node distance=1.2cm] (two-allele) {Two-allele model};
+\draw (seq-1-2.north) -- (two-allele);
+\node[above of=seq-1-15, node distance=1.2cm] (finite) {Finite sites model};
+\draw (seq-1-15.north) -- (finite);
+\draw[decorate,decoration={brace,raise=0.2cm}] (seq-1-15.north east) -- (seq-4-15.south east);
+\node at ($(seq-3-15) !.5! (seq-2-15)$) (seq-right) {};
+\node[anchor=west, text width=1cm, right of=seq-right, node distance=1.2cm] (infinite-alleles) {Inifinite alleles model};
+\node at ($(seq-4-1) !.5! (seq-4-15)$) (seq-low) {};
+\draw[decorate,decoration={brace,mirror,raise=0.2cm}] (seq-4-1.south west) -- (seq-4-15.south east);
+\node[below of=seq-low, node distance=.8cm] (infinite-sites) {Inifinite sites model};
+\end{tikzpicture}
+```
+
+<!-- markdownlint-enable MD013 -->
+
+:::
+
+::: {.column width="30%"}
+
+Two-allele
+: Derive popgen stats
+
+Finite sites
+: Recurrent mutations
+
+Infinite alleles
+: Protein electrophoresis
+
+Inifinite sites
+: DNA sequences
+
+:::
+
+::::
+
+:::
+
+::: {.notes }
+
+Mutations are generated randomly as changes in DNA. In WF model will
+be highlighted in black. We assume mutations are described by a
+Poisson process with rate $\mu$ (per generation).
+
+The mutation models are:
+
+- two-allele model: used to derive popgen statistics
+- finite sites model: recurrent mutations may occur, an assumption
+  that is often omitted to facilitate calculations (e.g., coalescent)
+- inifinite alleles model: every mutation leads to new allele (e.g.,
+  protein electrophoresis)
+- infinite sites model: model commonly used for long DNA sequences
+
+Additional model not presented here is the stepwise mutation model
+(mainly used to model repeats):
+
+<!-- markdownlint-disable MD013 -->
+
+```{r, engine='tikz', fig.ext='svg' }
+#| label: stepwise-mutation-model
+#| echo: false
+#| eval: true
+#| out-width: 1000px
+\begin{tikzpicture}[
+  every matrix/.style={matrix of nodes, ampersand replacement=\&,
+    nodes in empty cells},
+  every node/.style={text height=2ex},
+  ]
+  \tikzstyle{sequence} = [black, font=\sffamily, column sep={1.5cm,between origins},row sep={.7cm}]
+  \matrix(seq)[sequence] at (0,0)
+  {
+$\mathsf{A}_{i-3}$ \&  $\mathsf{A}_{i-2}$ \&  $\mathsf{A}_{i-1}$ \& $\mathsf{A}_{i}$ \&  $\mathsf{A}_{i+1}$ \&  $\mathsf{A}_{i+2}$ \& $\mathsf{A}_{i+3}$ \\
+  \&   \&  \&   \&   \&  \&  \\
+  };
+\draw[<->] (seq-1-1) -- (seq-1-2);
+\draw[<->] (seq-1-2) -- (seq-1-3);
+\draw[<->] (seq-1-3) -- (seq-1-4);
+\draw[<->] (seq-1-4) -- (seq-1-5);
+\draw[<->] (seq-1-5) -- (seq-1-6);
+\draw[<->] (seq-1-6) -- (seq-1-7);
+\node[left of=seq-1-1, node distance=0.7cm] {...};
+\node[right of=seq-1-7, node distance=0.7cm] {...};
+\draw[thick] (seq-2-1.south) -- (seq-2-1.north)
+(seq-2-2.south) -- (seq-2-2.north)
+(seq-2-3.south) -- (seq-2-3.north)
+(seq-2-4.south) -- (seq-2-4.north)
+(seq-2-5.south) -- (seq-2-5.north)
+(seq-2-6.south) -- (seq-2-6.north)
+(seq-2-7.south) -- (seq-2-7.north);
+
+\draw[thick] (seq-2-1.west) -- (seq-2-7.east);
+\node[above of=seq-1-4] {Stepwise mutation model};
+\end{tikzpicture}
+```
+
+<!-- markdownlint-enable MD013 -->
+
+:::
+
+## Mutation and drift
+
+:::: {.columns}
+
+::: {.column width="60%"}
+
+Genetic drift "moves" frequencies to the point that variation is lost
+via allele fixation or loss. New variation is introduced through
+**mutation**. We typically assume mutations are described by a
+[Poisson process](https://en.wikipedia.org/wiki/Poisson_point_process)
+with rate $\mu$ (per generation).
+
+::: {.fragment}
+
+The **mutation rate** is denoted $\mu$, and the **population scaled**
+mutation rate is $2N_e\mu$ for haploid populations, $4N_e\mu$ for
+diploid, where $N_e$ is the **effective population size**.
+
+:::
+
+::: {.fragment}
+
+The **mutation - drift balance** is when the diversity lost due to drift
+equals the diversity gained due to mutation.
+
+:::
+
+:::
+
+::: {.column width="40%"}
+
+::: {.fragment}
+
+```{r }
+#| label: fig-wf-mutation
+#| echo: false
+#| eval: true
+#| fig-height: 15
+#| fig-width: 12
+#| out-height: 500px
+#| out-width: 400px
+#| fig-align: center
+#| fig-cap: |
+#|   Variation is introduced by mutations (black) at rate $\mu=1e^{-4}$
+#|   and is  occasionally lost through genetic drift.
+set.seed(1212)
+wf <- wright_fisher_pop(n = 40, generations = 30, mu = 0.0001)
+ggplot_wf(wf, fill = allele) +
+  scale_fill_manual(values = c("a" = "white", "A" = "black"))
+```
+
+:::
+
+:::
+
+::::
+
+::: {.notes }
+
+Segue: so if drift removes variation, what introduces it? Mutation!
+
+Note that the mutation rate in the WF model is not meaningful; the
+value is simply chosen such that enough mutations show up in plot.
+
+:::
+
+## Tracing the evolution of mutations
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+```{r }
+#| label: fig-tracing-evolution-of-mutations
+#| echo: false
+#| eval: true
+#| fig-height: 15
+#| fig-width: 15
+#| out-width: 80%
+#| fig-align: center
+#| fig-cap: |
+#|   Different mutations suffer different fates.
+#|   Most mutations are lost in a couple of
+#|   generations. Mutant alleles are colored
+#|   black and their genealogies are highlighted
+#|   with thicker edges.
+j <- wf %E>%
+  filter(.N()$allele[from] == "a" & .N()$allele[to] == "A") %>%
+  pull(., to)
+V(wf)$m0 <- V(wf)$allele
+cliques <- ego(wf,
+  order = attr(wf, "generations"),
+  nodes = j, mode = "out"
+)
+wf %>%
+  mutate(clique = .N()$m0 != "a") %E>%
+  mutate(width = (0.2 + as.integer(.N()$allele[from] != "a"))) %N>%
+  ggplot_wf(fill = clique, node_color = "lightgray")
+```
+
+:::
+
+::: {.column width="50%"}
+
+::: {.fragment}
+
+Observation: most mutations are in fact lost
+
+:::
+
+::: {.fragment}
+
+Recall: fixation probability $\pi(p)=p$
+
+:::
+
+:::
+
+::::
+
+::: {.notes }
+
+Difference to previous figure: here we highlight the genealogies
+
+:::
+
+## Mutation drift balance
+
+Drift removes variation. Mutation reintroduces it. At equilibrium the
+change in variation by definition is 0. In terms of $\mathcal{H}_t$
+(the probability that two alleles are *not* identical by state),
+$\Delta\mathcal{H}=0$.
+
+One can show^[see [@gillespie_PopulationGeneticsConcise_2004, p.29 --
+31] for a concise treatement] the classical formula that the
+equilibrium **heterozygosity** value is
+
+$$
+\hat{\mathcal{H}} = \frac{4N_e\mu}{1 + 4N_e\mu}
+$$
+
+::: {.fragment}
+
+$\mu$ is often assumed known, and heterozygosity is easily calculated
+from data, which provides a way of estimating $N_e$.
+
+:::
+
+::: {.fragment}
+
+The compound parameter $4N_e\mu$ is called the **population scaled
+mutation rate** and is commonly named $\theta$ such that
+
+$$
+\hat{\mathcal{H}} = \frac{\theta}{1 + \theta}
+$$
+
+:::
+
+::: {.notes}
+
+@gillespie_PopulationGeneticsConcise_2004, pp. 30--31 uses a
+*difference equation* approach to derive $\mathcal{H}$. Briefly, he
+studies the time evolution of $\mathcal{G}$, the probability that two
+alleles drawn at random without replacement from the population are
+identical by state. Mutations are assumed unique, i.e., the
+*infinite-alleles* model. It holds
+
+$$
+\mathcal{G}^\prime = (1-\mu)^2\left[ \frac{1}{2N} +
+\left( 1 - \frac{1}{2N} \right) \mathcal{G} \right]
+$$
+
+where $(1-\mu)^2$ is the probability that no mutation occur in either
+of the two sampled alleles. Since $\mu$ is small, $(1-\mu)^2 \approx
+1-2\mu$, which after some manipulation gives the desired expression
+for $\mathcal{H} = 1 - \mathcal{G}$.
+
+On pages 46--47, he shows that the expression for \mathcal{H} can be
+derived in a much simpler fashion using coalescent theory. Tracing two
+lineages backwards in time, the probability of coalescence is 1/2N,
+whereas the probability of a mutation is $1-(1-\mu)^2\approx 2\mu$;
+$\mathcal{H}$ is then simply the relative probability of the two
+events
+
+$$
+\mathcal{H} = \frac{2\mu}{2\mu + 1/2N} = \frac{4N\mu}{4N\mu + 1}
+$$
+
+:::
+
+## The neutral theory of evolution
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+Mutation drift balance, together with the observation during 50's-60's
+that polymorphism was more common than expected, is the foundation of
+the **neutral theory** of evolution [@kimura_1983]: allele frequencies
+may change and fix due to chance alone and not selection; most
+mutations behave as if they are **neutral**.
+
+::: {.fragment}
+
+**Nearly neutral theory** [@ohta_SlightlyDeleteriousMutant_1973] was
+later developed to explain failure to predict scaling of polymorphism
+with population size: most mutations are not neutral but *slightly
+deleterious* and *purged* from population by natural selection.
+
+:::
+
+:::
+
+::: {.column width="50%"}
+
+```{r }
+#| label: fig-heterozygosity-function-ne
+#| echo: false
+#| eval: true
+#| out-width: 60%
+#| fig-align: center
+#| fig-cap:
+#|     Heterozygosity $H=\frac{\theta}{1 + \theta}$ predicted by
+#|     the neutral theory.
+#|     Shaded region shows typical heterozygosities in animals (y-axis).
+#|     The observed $N_e\mu$ range is higher than predicted from plot.
+#|     From @hurst_GeneticsUnderstandingSelection_2009, Fig 1.
+NeMu <- c(
+    seq(0.001, 0.999, 0.001),
+    seq(1, 9.9, 0.1),
+    seq(10, 100, 1)
+)
+ticks <- data.frame(x = c(trans_breaks("log10", function(x) 10^x)(c(0.001, 100)),
+                          0.01483, 0.0567))
+data <- data.frame(NeMu=NeMu,
+                   H=4*NeMu / (1 + 4*NeMu))
+ggplot(data, aes(x=NeMu, y=H)) + geom_line() +
+  scale_x_continuous(trans="log10",
+                     breaks = ticks$x,
+                     labels = function(x) ifelse(x==0, "0", x),
+                     expand = c(0, 0)) +
+  scale_y_continuous(
+      breaks = c(seq(0, 1, 0.1), 0.056, 0.185),
+      labels = function(x) ifelse(x==0, "0", x),
+      expand=c(0,0)) +
+  ylab("Heterozygosity (H)") + xlab(expression(N[e]~mu)) +
+  geom_rect(inherit.aes=FALSE,
+            data = data.frame(xstart = c(0.01483, 0.01483), xend = c(0.0567, 0),
+                              ystart = c(0, 0.056), yend = c(0.185, 0.185)),
+                              aes(xmin = xstart, xmax = xend,
+                                  ymin = ystart, ymax = yend,
+                                  fill = "red"), alpha = 0.4,
+            show.legend=FALSE)
+```
+
+:::
+
+::::
+
+::: {.notes }
+
+Related to rate of substitution and molecular evolution is the work of
+Kimura that lead to the development of the neutral theory.
+
+Motivation: if polymorphic sites deleterious, should not expect much
+polymorphism.
+
+Low levels of polymorphism expected assuming little balancing
+selection [@hurst_GeneticsUnderstandingSelection_2009, p. 87]; however
+electrophoretic studies showed polymorphism common. Would lead to
+detrimental load [@kimura_ProteinPolymorphismPhase_1971] -> therefore
+majority of polymorphism must evolve neutrally (dynamics). Also: rate
+of evolution (on protein level) too high (Haldane's dilemma)
+
+On the shaded region: the observed range of $N_e\mu$ is larger than
+that which is predicted by the plot, and since $\mu$ is constrained
+within a couple of orders of magnitude, $N_e$ must vary more than
+predicted by the (strictly) neutral theory.
+
+Conversely: given a constrained $\mu$, we observe a range of $N_e\mu$
+that predicts a heterozygosity range H, which is much larger than that
+which we observe. In other words, the heterozygosity range is much
+lower than predicted by the neutral, given the observed $N_e\mu$
+range, so some other process must reduce variation somehow.
+
+The general idea of nearly neutral theory is that most mutations are
+slightly deleterious and therefore purged by natural selection,
+thereby reducing observed variation. The efficacy of purging depends
+in turn on the effective population size, such that species with small
+$N_e$ will have a harder time getting rid of potentially damaging
+variants.
+
+:::
+
+## Mutation rate can be estimated from substitution rate
+
+Mutation enters populations and may be fixed by drift. Therefore, with
+time there will be fixed differences, or **substitions** (typically in
+the evolution of species) between populations, or species. In
+molecular evolution, the **substition rate**, **$\rho$**, is the most
+interesting quantity.
+
+::: {.fragment}
+
+The total number of new mutations in every generation is $2N\mu$
+(total number of gametes times mutation rate)
+
+:::
+
+::: {.fragment}
+
+New mutations fix at a rate $1/2N$
+
+:::
+
+::: {.fragment}
+
+Therefore, the **average rate of substitution**, **$\rho$**, is $2N\mu\times1/2N$, or
+
+$$
+\rho=\mu
+$$
+
+which is independent of population size!
+
+:::
+
+::: {.fragment}
+
+Practical implication: we can *estimate mutation rate from the
+substitution rate* at neutrally evolving sites (e.g.,
+@kumar_MutationRatesMammalian_2002)
+
+:::
+
+::: {.notes }
+
+What happens when sufficient amount of time passes? Mutations **fix**
+and generate **substitutions** between species. This slide presents
+Kimura's remarkable result regarding mutation rate and substitution
+rate!
+
+On $2N\mu$: the larger the population, the larger the number of
+mutations that can fix
+
+If $4N\mu>>0$ no new mutations can fix. Issue here is there is no
+explicit mention of DNA sequence -> introduction of infinite sites
+model
+
+For practical note on estimation of mutation rate see e.g.,
+[@hubisz_InferenceAncestralRecombination_2020, p. 247]
+
+[@kumar_MutationRatesMammalian_2002, first paragraph]:
+
+> Rates of point mutation can be determined indirectly by estimating
+> the rate at which the neutral substitutions accumulate in
+> protein-coding genes
+
+:::
+
+## Bibliography {.unnumbered .unlisted .smaller}
+
+::: { #refs }
+:::
