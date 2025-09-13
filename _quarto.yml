@@ -23,6 +23,8 @@ project:
     - slides/variant_calling/variant_calling.qmd
     - slides/variant_calling/reproducibility.qmd
     - slides/variant_filtering/index.qmd
+    - slides/variant_filtering/variant_filtering.qmd
+    - slides/variant_filtering/depth_filtering.qmd
     # - slides/recombination/index.qmd
     # - slides/recombination/linkage.qmd
     # - slides/genetic_diversity/index.qmd
