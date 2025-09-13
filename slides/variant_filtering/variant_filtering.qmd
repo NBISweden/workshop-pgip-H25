@@ -11,6 +11,7 @@ format:
     toc: false
 ---
 
+
 ## Setup {visibility="hidden" .hidden .unnumbered .unlisted}
 
 {{< include /slides/_knitr.qmd >}}
@@ -30,12 +31,12 @@ library(curl)
 #| echo: false
 #| eval: true
 if [ ! -e variantsites.vcf.gz ]; then
- bcftools view redyellow.variantsites.vcf.gz | vcfrandomsample -r 0.1 |\
-  bgzip -c > variantsites.vcf.gz
+  bcftools view redyellow/variantsites.vcf.gz | vcfrandomsample -r 0.1 |\
+    bgzip -c > variantsites.vcf.gz
 fi
 if [ ! -e allsites.vcf.gz ]; then
- bcftools view redyellow.allsites.vcf.gz | vcfrandomsample -r 0.1 |\
-  bgzip -c > allsites.vcf.gz
+  bcftools view redyellow/allsites.vcf.gz | vcfrandomsample -r 0.1 |\
+    bgzip -c > allsites.vcf.gz
 fi
 ```
 
