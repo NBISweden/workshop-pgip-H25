@@ -8,22 +8,18 @@ author:
   - Per Unneberg
 execute:
   cache: false
+listing:
+  id: rec-listing
+  type: table
+  sort: false
+  fields: [title, description]
+  contents:
+    - ld_decay.qmd
 ---
 
 ## About
 
-## Exercises
+## Listing
 
-:::{.callout-note collapse=true}
-
-## Data setup
-
-:::{.panel-tabset}
-
-#### {{< fa server >}} PDC
-
-#### {{< fa laptop >}} Local
-
-:::
-
+:::{#rec-listing}
 :::

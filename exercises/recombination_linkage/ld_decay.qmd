@@ -1,6 +1,7 @@
 ---
 title: Linkage disequilibrium decay
-description: Calculate LD decay
+description: >-
+  Calculate linkage disequilibrium decay from an input VCF with plink2
 format:
   nbis-course-html:
     number-sections: false
