@@ -25,9 +25,9 @@ project:
     - slides/variant_filtering/index.qmd
     - slides/variant_filtering/variant_filtering.qmd
     - slides/variant_filtering/depth_filtering.qmd
-    # - slides/recombination/index.qmd
-    # - slides/recombination/linkage.qmd
-    # - slides/genetic_diversity/index.qmd
+    - slides/recombination/index.qmd
+    - slides/genetic_diversity/index.qmd
+    - slides/genetic_diversity/diversity.qmd
     # - slides/simulation/index.qmd
     # - slides/scratch/index.qmd
     # Exercises and datasets
@@ -42,10 +42,10 @@ project:
     - exercises/variant_filtering/index.qmd
     - exercises/variant_filtering/basic_filtering.qmd
     - exercises/variant_filtering/depth_filtering.qmd
-    # - exercises/genetic_diversity/index.qmd
-    # - exercises/genetic_diversity/landscape.qmd
-    # - exercises/recombination_linkage/index.qmd
-    # - exercises/recombination_linkage/ld_decay.qmd
+    - exercises/recombination_linkage/index.qmd
+    - exercises/recombination_linkage/ld_decay.qmd
+    - exercises/genetic_diversity/index.qmd
+    - exercises/genetic_diversity/landscape.qmd
     # - exercises/population_structure/index.qmd
     # - exercises/population_structure/pca.qmd
     # - exercises/population_structure/admixture.qmd

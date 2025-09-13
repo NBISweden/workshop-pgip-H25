@@ -40,7 +40,10 @@ website:
               - slides/variant_filtering/index.qmd
               - slides/variant_filtering/variant_filtering.qmd
               - slides/variant_filtering/depth_filtering.qmd
-          # - slides/genetic_diversity/index.qmd
+          - section: Genetic diversity
+            contents:
+              - slides/genetic_diversity/index.qmd
+              - slides/genetic_diversity/diversity.qmd
           # - slides/simulation/index.qmd
       - section: Exercises
         contents:
@@ -61,14 +64,14 @@ website:
               - exercises/variant_filtering/index.qmd
               - exercises/variant_filtering/basic_filtering.qmd
               - exercises/variant_filtering/depth_filtering.qmd
-          # - section: Genetic diversity
-          #   contents:
-          #     - exercises/genetic_diversity/index.qmd
-          #     - exercises/genetic_diversity/landscape.qmd
-          # - section: Recombination and linkage
-          #   contents:
-          #     - exercises/recombination_linkage/index.qmd
-          #     - exercises/recombination_linkage/ld_decay.qmd
+          - section: Recombination and linkage
+            contents:
+              - exercises/recombination_linkage/index.qmd
+              - exercises/recombination_linkage/ld_decay.qmd
+          - section: Genetic diversity
+            contents:
+              - exercises/genetic_diversity/index.qmd
+              - exercises/genetic_diversity/landscape.qmd
           # - section: Population structure
           #   contents:
           #     - exercises/population_structure/index.qmd
