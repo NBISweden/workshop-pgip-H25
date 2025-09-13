@@ -8,6 +8,10 @@ version = "0.1.0"
 requires-pixi = ">=0.45"
 
 [tasks]
+clean = [{ task = "rmtikzlog" }]
+
+[tasks.rmtikzlog]
+cmd = "find exercises slides recipes -name \"tikz*.log\" -delete"
 
 [dependencies]
 python = "==3.11.9"
