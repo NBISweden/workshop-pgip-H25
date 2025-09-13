@@ -15,17 +15,28 @@ website:
     contents:
       - section: Slides
         contents:
-          - slides/index.qmd
-          - slides/pgip/index.qmd
-          - slides/foundations/index.qmd
-          - slides/foundations/data.qmd
-          - slides/foundations/alleles.qmd
-          - slides/variant_calling/index.qmd
-          - slides/variant_calling/dna_sequencing.qmd
-          - slides/variant_calling/read_mapping.qmd
-          - slides/variant_calling/variant_calling.qmd
-          - slides/variant_calling/reproducibility.qmd
-          # - slides/variant_filtering/index.qmd
+          - text: Listing
+            href: slides/index.qmd
+          - section: Introduction
+            contents:
+              - slides/pgip/index.qmd
+          - section: Population genetics foundations
+            contents:
+              - slides/foundations/index.qmd
+              - slides/foundations/data.qmd
+              - slides/foundations/alleles.qmd
+          - section: Variant calling
+            contents:
+              - slides/variant_calling/index.qmd
+              - slides/variant_calling/dna_sequencing.qmd
+              - slides/variant_calling/read_mapping.qmd
+              - slides/variant_calling/variant_calling.qmd
+              - slides/variant_calling/reproducibility.qmd
+          - section: Variant filtering
+            contents:
+              - slides/variant_filtering/index.qmd
+              - slides/variant_filtering/variant_filtering.qmd
+              - slides/variant_filtering/depth_filtering.qmd
           # - slides/genetic_diversity/index.qmd
           # - slides/simulation/index.qmd
       - section: Exercises
@@ -35,13 +46,13 @@ website:
             contents:
               - exercises/compute_environment/index.qmd
               - exercises/datasets/monkeyflowers.qmd
-      - section: Variant calling
-        contents:
-          - exercises/variant_calling/index.qmd
-          - exercises/variant_calling/introduction.qmd
-          - exercises/variant_calling/data_qc.qmd
-          - exercises/variant_calling/read_mapping.qmd
-          - exercises/variant_calling/variant_calling_workflow.qmd
+          - section: Variant calling
+            contents:
+              - exercises/variant_calling/index.qmd
+              - exercises/variant_calling/introduction.qmd
+              - exercises/variant_calling/data_qc.qmd
+              - exercises/variant_calling/read_mapping.qmd
+              - exercises/variant_calling/variant_calling_workflow.qmd
           - section: Variant filtering
             contents:
               - exercises/variant_filtering/index.qmd
