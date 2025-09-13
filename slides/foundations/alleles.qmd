@@ -1,6 +1,8 @@
 ---
 title: Alleles and genealogies
 subtitle: More descriptions of genetic data
+description: >-
+  Introduction to alleles and genealogies
 author:
   - Per Unneberg
 format:
@@ -8,6 +10,8 @@ format:
     toc: false
     smaller: false
     footer: Foundations - alleles and genealogies
+module:
+  - variant filtering
 ---
 
 ## Setup  {.hidden .unnumbered .unlisted visibility="hidden"}
@@ -378,9 +382,9 @@ is $1 - 0.49 - 0.09 = 0.42 = 0.21 + 0.21 = 2pq$
 
 :::
 
-## In absence of evolutionary forces alleles are in equilibrium{.smaller}
+## In absence of evolutionary forces alleles are in equilibrium
 
-### The Hardy-Weinberg equilibrium
+#### The Hardy-Weinberg equilibrium
 
 For a locus, let $A$ and $a$ be two different alleles and let $p$ be
 the frequency of the $A$ allele and $q=1-p$ the frequency of the $a$
@@ -411,16 +415,30 @@ the **Hardy-Weinberg equilibrium** (**HWE**).
 
 ::::
 
-Under HWE assumption, neither allele nor genotype frequencies change
-over time.
+:::: {.columns}
+
+::: {.column width="50%"}
+
+#### HWE assumption
+
+Under **HWE assumption**, neither allele nor genotype frequencies
+change over time.
 
 Importantly, we can calculate allele frequencies from genotype
-frequencies and vice versa:
+frequencies and vice versa.
+
+:::
+
+::: {.column width="50%"}
 
 $$
 p = f_{AA} + \frac{f_{Aa}}{2} = p^2 + pq\\
 q = f_{aa} + \frac{f_{Aa}}{2} = q^2 + pq\\
 $$
+
+:::
+
+::::
 
 ::: {.notes }
 
@@ -688,6 +706,116 @@ node[mut] (m6) at ($(4) !.75! (7)$) {}
 :::
 
 ::::
+
+## The obsession of population genetics
+
+Population genetics is about [@gillespie_PopulationGeneticsConcise_2004]
+
+1. describing the genetic structure of populations
+2. constructing theories on the forces that influence genetic
+   variation
+
+::: {.fragment}
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+Questions to ponder:
+
+- why does variation look the way it does?
+- how is variation maintained?
+- how does variation change over time ($\Delta p$)?
+- what forces shape the genetic structure of *populations*?
+
+:::
+
+::: {.column width="50%" .fragment}
+
+:::: {style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+grid-row-gap: 0px; grid-column-gap: 0px; align-items: center;"}
+
+:::{}
+
+![](assets/images/flower-red.svg){width=27}
+![](assets/images/flower-white.svg){width=27}
+![](assets/images/flower-white.svg){width=27}
+![](assets/images/flower-white.svg){width=27}
+![](assets/images/flower-white.svg){width=27}
+![](assets/images/flower-white.svg){width=27}
+![](assets/images/flower-white.svg){width=27}
+![](assets/images/flower-white.svg){width=27}
+![](assets/images/flower-white.svg){width=27}
+![](assets/images/flower-white.svg){width=27}
+
+$$p=0.1$$
+
+:::
+
+:::{}
+
+$$\large\rightarrow$$
+
+:::
+
+:::{}
+
+![](assets/images/flower-red.svg){width=27}
+![](assets/images/flower-red.svg){width=27}
+![](assets/images/flower-red.svg){width=27}
+![](assets/images/flower-red.svg){width=27}
+![](assets/images/flower-red.svg){width=27}
+![](assets/images/flower-white.svg){width=27}
+![](assets/images/flower-white.svg){width=27}
+![](assets/images/flower-white.svg){width=27}
+![](assets/images/flower-white.svg){width=27}
+![](assets/images/flower-white.svg){width=27}
+
+$$p=0.5$$
+
+:::
+
+:::{}
+
+$$\large\rightarrow$$
+
+:::
+
+:::{}
+
+![](assets/images/flower-red.svg){width=27}
+![](assets/images/flower-red.svg){width=27}
+![](assets/images/flower-red.svg){width=27}
+![](assets/images/flower-red.svg){width=27}
+![](assets/images/flower-red.svg){width=27}
+![](assets/images/flower-red.svg){width=27}
+![](assets/images/flower-red.svg){width=27}
+![](assets/images/flower-red.svg){width=27}
+![](assets/images/flower-red.svg){width=27}
+![](assets/images/flower-white.svg){width=27}
+
+$$p=0.9$$
+
+:::
+
+::::
+
+:::
+
+::::
+
+:::
+
+::: {.notes }
+
+From HWE: we want to look a the creation, maintenance and loss of
+variation and what forces affect it
+
+Goal: describe theory behind evolving populations. This has been an
+obsession for a long time, even before DNA was known. We need to get
+back to basics.
+
+:::
 
 ## Bibliography {.unnumbered .unlisted .smaller}
 

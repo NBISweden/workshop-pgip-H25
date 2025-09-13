@@ -11,6 +11,8 @@ author:
 listing:
   id: theory-listings
   type: table
+  fields: [title, description]
+  sort: false
   contents:
     - data.qmd
     - alleles.qmd
