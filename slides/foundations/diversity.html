@@ -1,0 +1,1625 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<link href="../../assets/logos/nbislogo-green.svg" rel="icon" type="image/svg+xml">
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-html/tabby.min.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-541d1840fe0299ec4c9bf9ceaf6b9fb6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/quarto-contrib/reveal-logo-1.0.0/reveal-logo.js" defer="true"></script>
+<link href="../../site_libs/quarto-contrib/reveal-logo-1.0.0/reveal-logo.css" rel="stylesheet">
+<link href="../../site_libs/quarto-contrib/fontawesome6-1.2.0/all.min.css" rel="stylesheet">
+<link href="../../site_libs/quarto-contrib/fontawesome6-1.2.0/latex-fontsize.css" rel="stylesheet">
+<script src="../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.7.33">
+
+  <meta name="author" content="Per Unneberg">
+  <title>Population Genomics in Practice 2025 – Genetic diversity</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../../site_libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="../../site_libs/revealjs/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+      }
+    pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+    div.sourceCode
+      { color: #3c3836;  }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #3c3836; } /* Normal */
+    code span.al { color: #282828; background-color: #cc241d; font-weight: bold; } /* Alert */
+    code span.an { color: #98971a; } /* Annotation */
+    code span.at { color: #d79921; } /* Attribute */
+    code span.bn { color: #f67400; } /* BaseN */
+    code span.bu { color: #d65d0e; } /* BuiltIn */
+    code span.cf { color: #cc241d; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #b16286; } /* Char */
+    code span.cn { color: #b16286; font-weight: bold; } /* Constant */
+    code span.co { color: #928374; } /* Comment */
+    code span.cv { color: #928374; } /* CommentVar */
+    code span.do { color: #98971a; } /* Documentation */
+    code span.dt { color: #d79921; } /* DataType */
+    code span.dv { color: #f67400; } /* DecVal */
+    code span.er { color: #cc241d; text-decoration: underline; } /* Error */
+    code span.ex { color: #689d6a; font-weight: bold; } /* Extension */
+    code span.fl { color: #f67400; } /* Float */
+    code span.fu { color: #689d6a; } /* Function */
+    code span.im { color: #689d6a; } /* Import */
+    code span.in { color: #282828; background-color: #83a598; } /* Information */
+    code span.kw { color: #3c3836; font-weight: bold; } /* Keyword */
+    code span.op { color: #3c3836; } /* Operator */
+    code span.ot { color: #689d6a; } /* Other */
+    code span.pp { color: #d65d0e; } /* Preprocessor */
+    code span.re { color: #928374; background-color: #f9f5d7; } /* RegionMarker */
+    code span.sc { color: #b16286; } /* SpecialChar */
+    code span.ss { color: #98971a; } /* SpecialString */
+    code span.st { color: #98971a; } /* String */
+    code span.va { color: #458588; } /* Variable */
+    code span.vs { color: #98971a; } /* VerbatimString */
+    code span.wa { color: #282828; background-color: #fabd2f; } /* Warning */
+    /* CSS for citations */
+    div.csl-bib-body { }
+    div.csl-entry {
+      clear: both;
+      margin-bottom: 0em;
+    }
+    .hanging-indent div.csl-entry {
+      margin-left:2em;
+      text-indent:-2em;
+    }
+    div.csl-left-margin {
+      min-width:2em;
+      float:left;
+    }
+    div.csl-right-inline {
+      margin-left:2em;
+      padding-left:1em;
+    }
+    div.csl-indent {
+      margin-left: 2em;
+    }  </style>
+  <link rel="stylesheet" href="../../site_libs/revealjs/dist/theme/quarto-802d3b82e08d8dc8d935d89a8ebe9074.css">
+  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css">
+  <link href="../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="../../site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="../../site_libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <style type="text/css">
+    .reveal div.sourceCode {
+      margin: 0;
+      overflow: auto;
+    }
+    .reveal div.hanging-indent {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
+    .reveal .slide:not(.center) {
+      height: 100%;
+    }
+    .reveal .slide.scrollable {
+      overflow-y: auto;
+    }
+    .reveal .footnotes {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide .absolute {
+      position: absolute;
+      display: block;
+    }
+    .reveal .footnotes ol {
+      counter-reset: ol;
+      list-style-type: none; 
+      margin-left: 0;
+    }
+    .reveal .footnotes ol li:before {
+      counter-increment: ol;
+      content: counter(ol) ". "; 
+    }
+    .reveal .footnotes ol li > p:first-child {
+      display: inline-block;
+    }
+    .reveal .slide ul,
+    .reveal .slide ol {
+      margin-bottom: 0.5em;
+    }
+    .reveal .slide ul li,
+    .reveal .slide ol li {
+      margin-top: 0.4em;
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide ul[role="tablist"] li {
+      margin-bottom: 0;
+    }
+    .reveal .slide ul li > *:first-child,
+    .reveal .slide ol li > *:first-child {
+      margin-block-start: 0;
+    }
+    .reveal .slide ul li > *:last-child,
+    .reveal .slide ol li > *:last-child {
+      margin-block-end: 0;
+    }
+    .reveal .slide .columns:nth-child(3) {
+      margin-block-start: 0.8em;
+    }
+    .reveal blockquote {
+      box-shadow: none;
+    }
+    .reveal .tippy-content>* {
+      margin-top: 0.2em;
+      margin-bottom: 0.7em;
+    }
+    .reveal .tippy-content>*:last-child {
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide > img.stretch.quarto-figure-center,
+    .reveal .slide > img.r-stretch.quarto-figure-center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-left,
+    .reveal .slide > img.r-stretch.quarto-figure-left  {
+      display: block;
+      margin-left: 0;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-right,
+    .reveal .slide > img.r-stretch.quarto-figure-right  {
+      display: block;
+      margin-left: auto;
+      margin-right: 0; 
+    }
+  </style>
+</head>
+<body class="quarto-light">
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide" class="quarto-title-block center">
+  <h1 class="title">Genetic diversity</h1>
+  <p class="subtitle">The origin and maintenance of genetic diversity</p>
+
+<div class="quarto-title-authors">
+<div class="quarto-title-author">
+<div class="quarto-title-author-name">
+Per Unneberg 
+</div>
+</div>
+</div>
+
+</section>
+
+<section>
+<section id="origin-and-change-of-variation" class="title-slide slide level1 center">
+<h1>Origin and change of variation</h1>
+<div style="display: grid; grid-template-columns: 300px 200px 200px; grid-row-gap: 0px; grid-column-gap: 100px;">
+<div>
+&nbsp;
+</div>
+<div class="circular-image">
+<p>Mutation</p>
+<p><a href="../../slides/pgip/assets/images/mutation.webp" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img data-src="../../slides/pgip/assets/images/mutation.webp"></a></p>
+</div>
+<div class="circular-image">
+<p>Selection</p>
+<p><a href="../../slides/pgip/assets/images/finches.webp" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img data-src="../../slides/pgip/assets/images/finches.webp"></a></p>
+</div>
+<div>
+&nbsp;
+</div>
+<div class="circular-image">
+<p>Recombination</p>
+<p><a href="../../slides/pgip/assets/images/recombination.webp" class="lightbox" data-gallery="quarto-lightbox-gallery-3"><img data-src="../../slides/pgip/assets/images/recombination.webp"></a></p>
+</div>
+<div class="circular-image">
+<p>Drift</p>
+<p><a href="../../slides/pgip/assets/images/genetic-drift.webp" class="lightbox" data-gallery="quarto-lightbox-gallery-4"><img data-src="../../slides/pgip/assets/images/genetic-drift.webp"></a></p>
+</div>
+</div>
+</section>
+<section id="wright-fisher-model-with-alleles" class="slide level2 smaller ultitle">
+<h2>Wright-Fisher model with alleles</h2>
+<div class="columns compact">
+<div class="column" style="width:35%;">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><a href="diversity_files/figure-revealjs/wright-fisher-drift-0.3-1-1.svg" class="lightbox" data-gallery="quarto-lightbox-gallery-5"><img data-src="diversity_files/figure-revealjs/wright-fisher-drift-0.3-1-1.svg" width="960"></a></p>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="column fragment" style="width:35%;">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><a href="diversity_files/figure-revealjs/wright-fisher-drift-0.3-2-1.svg" class="lightbox" data-gallery="quarto-lightbox-gallery-6"><img data-src="diversity_files/figure-revealjs/wright-fisher-drift-0.3-2-1.svg" width="960"></a></p>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="column fragment" style="width:30%;">
+<p>Alleles can randomly <em>fix</em> or be <em>lost</em> through process called <strong>genetic drift</strong></p>
+</div><p>Wright-Fisher model showing the evolution of population of 10 genes over 16 generations. Allele variants are shown in white and black. Starting frequency black variant is 0.3.</p>
+</div>
+<aside class="notes">
+<p>(To avoid confusion: previously black was used to indicate parent, here black/white will refer to different alleles)</p>
+<p>Enter allelic variants; we are looking at two alleles</p>
+<p>Important: the fate of any allele under drift is to be <strong>lost</strong> or <strong>fixed</strong>, which ultimately means variation is <strong>lost</strong> (decays) with drift</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="binomial-process-models-allele-sampling" class="slide level2 smaller ultitle">
+<h2>Binomial process models allele sampling</h2>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><a href="diversity_files/figure-revealjs/allele-sampling-model-1.svg" class="lightbox" data-gallery="quarto-lightbox-gallery-7"><img data-src="diversity_files/figure-revealjs/allele-sampling-model-1.svg" class="quarto-figure quarto-figure-center" style="width:60.0%"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="columns fragment">
+<div class="column" style="width:50%;">
+<p>We assume two alleles <span class="math inline">A</span>, <span class="math inline">a</span>, each with <span class="math inline">i</span> and <span class="math inline">j=2N-i</span> copies in generation <span class="math inline">t</span>.</p>
+</div><div class="column" style="width:50%;">
+<div style="display: grid; grid-template-columns: 1fr 1fr; grid-row-gap: 0px; grid-column-gap: 0px; align-items: center;">
+<div>
+<p><img data-src="assets/images/flower-red.svg" width="20"> <img data-src="assets/images/flower-red.svg" width="20"> <img data-src="assets/images/flower-red.svg" width="20"> <img data-src="assets/images/flower-red.svg" width="20"> <img data-src="assets/images/flower-white.svg" width="20"> <img data-src="assets/images/flower-white.svg" width="20"></p>
+</div>
+<div>
+<p><span class="math inline">i=8</span>, <span class="math inline">j=2\cdot 6-8=4</span></p>
+</div>
+</div>
+</div></div>
+<div class="columns fragment">
+<div class="column" style="width:50%;">
+<p>Let <span class="math inline">p_t=i/2N</span> be the <em>frequency</em> of <span class="math inline">A</span> in generation <span class="math inline">t</span>, and <span class="math inline">q_t=1-p_t</span> the frequency of <span class="math inline">a</span>.</p>
+</div><div class="column" style="width:50%;">
+<div style="display: grid; grid-template-columns: 1fr 1fr; grid-row-gap: 0px; grid-column-gap: 0px;">
+<div>
+<p><img data-src="assets/images/flower-red.svg" width="20"> <img data-src="assets/images/flower-red.svg" width="20"> <img data-src="assets/images/flower-red.svg" width="20"> <img data-src="assets/images/flower-red.svg" width="20"> <img data-src="assets/images/flower-white.svg" width="20"> <img data-src="assets/images/flower-white.svg" width="20"></p>
+<p><span class="math inline">p_t = 8/12</span></p>
+</div>
+<div>
+<p><img data-src="assets/images/flower-red.svg" width="20"> <img data-src="assets/images/flower-red.svg" width="20"> <img data-src="assets/images/flower-white.svg" width="20"> <img data-src="assets/images/flower-white.svg" width="20"> <img data-src="assets/images/flower-white.svg" width="20"> <img data-src="assets/images/flower-white.svg" width="20"></p>
+<p><span class="math inline">p_{t+1} = 4/12</span></p>
+</div>
+</div>
+</div></div>
+<div class="fragment">
+<p>Prob(<span class="math inline">k</span> <span class="math inline">A</span> alleles in next generation) is <span class="math inline">\mathsf{Bin}(2N,
+\frac{i}{2N})</span></p>
+</div>
+<aside class="notes">
+<p>A more formal mathematical description goes as follows:</p>
+<p>The sampling model for next generation <span class="math inline">t+1</span>, <em>given</em> <span class="math inline">i</span> <span class="math inline">A</span> alleles in generation <span class="math inline">t</span>, is</p>
+<p><span class="math display">
+p_{t+1} = P(v_A=k) = {2N\choose k}\left( \frac{i}{2N} \right)^k
+\left(1 - \frac{i}{2N} \right)^{(2N - k)} = \mathsf{Bin}(2N, \frac{i}{2N})
+</span></p>
+<p>NB: we here slightly change notation, with <span class="math inline">p_{t+1} = P(X=k)</span>. Also, we have omitted an index <span class="math inline">i</span> in the expressions of <span class="math inline">p</span>. The probability of observing <span class="math inline">k</span> <span class="math inline">A</span> alleles in generation <span class="math inline">t+1</span> will of course depend on the number <span class="math inline">i</span> <span class="math inline">A</span> alleles in the previous generation.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="genetic-drift" class="slide level2 ultitle">
+<h2>Genetic drift</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p>To capture dynamics, follow allele frequency trajectory (<span class="math inline">p_t</span>) as function of time.</p>
+<div class="smallr">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="do">##' Wright Fisher model - follow allele frequency distribution</span></span>
+<span id="cb1-2"><a></a><span class="do">##'</span></span>
+<span id="cb1-3"><a></a><span class="do">##' @param p0 Starting frequency</span></span>
+<span id="cb1-4"><a></a><span class="do">##' @param n Population size</span></span>
+<span id="cb1-5"><a></a><span class="do">##' @param generations Number of generations to simulate</span></span>
+<span id="cb1-6"><a></a><span class="do">##'</span></span>
+<span id="cb1-7"><a></a>wright_fisher <span class="ot">&lt;-</span> <span class="cf">function</span>(p0, n, generations) {</span>
+<span id="cb1-8"><a></a>    x <span class="ot">&lt;-</span> <span class="fu">vector</span>(<span class="at">mode =</span> <span class="st">"numeric"</span>, <span class="at">length =</span> generations)</span>
+<span id="cb1-9"><a></a>    x[<span class="dv">1</span>] <span class="ot">&lt;-</span> p0</span>
+<span id="cb1-10"><a></a>    <span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq</span>(<span class="dv">2</span>, <span class="fu">length</span>(x))) {</span>
+<span id="cb1-11"><a></a>        x[i] <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(<span class="dv">1</span>, <span class="at">size =</span> n, <span class="at">prob =</span> x[i <span class="sc">-</span> <span class="dv">1</span>])<span class="sc">/</span>n</span>
+<span id="cb1-12"><a></a>    }</span>
+<span id="cb1-13"><a></a>    x</span>
+<span id="cb1-14"><a></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a><span class="co"># Example simulation and plot</span></span>
+<span id="cb2-2"><a></a><span class="fu">set.seed</span>(<span class="dv">1223</span>)</span>
+<span id="cb2-3"><a></a>generations <span class="ot">&lt;-</span> <span class="dv">100</span></span>
+<span id="cb2-4"><a></a>n <span class="ot">&lt;-</span> <span class="dv">100</span>  <span class="co"># NB: haploid population size!</span></span>
+<span id="cb2-5"><a></a><span class="fu">plot</span>(<span class="dv">1</span><span class="sc">:</span>generations, <span class="fu">wright_fisher</span>(<span class="fl">0.5</span>, n, generations), <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">ylab =</span> <span class="st">"frequency"</span>,</span>
+<span id="cb2-6"><a></a>    <span class="at">xlab =</span> <span class="st">"generation"</span>, <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div><div class="column" style="width:50%;">
+<div class="fragment">
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-genetic-drift-N-10" class="quarto-float quarto-figure quarto-figure-center">
+<figure class="quarto-float quarto-float-fig">
+<div aria-describedby="fig-genetic-drift-N-10-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="diversity_files/figure-revealjs/fig-genetic-drift-N-10-1.gif" class="lightbox" data-gallery="quarto-lightbox-gallery-8" title="Figure&nbsp;1: Genetic drift for different haploid(!) population sizes, starting frequency p_0=0.5. Note dependency of variance on population size N."><img data-src="diversity_files/figure-revealjs/fig-genetic-drift-N-10-1.gif" style="width:80.0%"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-genetic-drift-N-10-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Genetic drift for different haploid(!) population sizes, starting frequency <span class="math inline">p_0</span>=0.5. Note dependency of variance on population size N.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div></div>
+<aside class="notes">
+<p>Mention <em>neutral</em> here as this is how alleles behave under drift: like gas particle diffusing up and down. Allele is eventually either fixed or lost.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="genetic-drift-1" class="slide level2 ultitle">
+<h2>Genetic drift</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<!-- markdownlint-disable MD013 -->
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-genetic-drift-many-repetitions" class="quarto-float quarto-figure quarto-figure-center">
+<figure class="quarto-float quarto-float-fig">
+<div aria-describedby="fig-genetic-drift-many-repetitions-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="diversity_files/figure-revealjs/fig-genetic-drift-many-repetitions-1.svg" class="lightbox" data-gallery="quarto-lightbox-gallery-9" title="Figure&nbsp;2: Genetic drift for different combinations of starting frequency and population size for n=50 repetitions per parameter combination. Note how variation and time to fixation depends on population size and starting frequency."><img data-src="diversity_files/figure-revealjs/fig-genetic-drift-many-repetitions-1.svg" width="560" height="380"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-genetic-drift-many-repetitions-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: Genetic drift for different combinations of starting frequency and population size for n=50 repetitions per parameter combination. Note how variation and time to fixation depends on population size and starting frequency.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<!-- markdownlint-enable MD013 -->
+</div><div class="column" style="width:50%;">
+<ul>
+<li class="fragment">fate of allele: fixation or loss <span class="math inline">\rightarrow</span> eventually loss of variation</li>
+<li class="fragment"><strong>probability of fixation <span class="math inline">\pi(p)=p</span></strong>, where <span class="math inline">p</span> is the <em>current</em> frequency</li>
+<li class="fragment">rate of drift (loss of variation) <span class="math inline">\propto \frac{1}{2N}</span></li>
+</ul>
+<div class="fragment">
+<div class="center">
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><a href="diversity_files/figure-revealjs/gas-particle-drift-1.svg" class="lightbox" data-gallery="quarto-lightbox-gallery-10"><img data-src="diversity_files/figure-revealjs/gas-particle-drift-1.svg" class="quarto-figure quarto-figure-center" width="960" height="200"></a></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div></div>
+<aside class="notes">
+<p>Simplifying assumptions -&gt; rate of drift <span class="math inline">\propto \frac{1}{N}</span> (<span class="math inline">\frac{1}{2N}</span> in our treatment) <span class="citation" data-cites="leffler_RevisitingOldRiddle_2012">(<a href="#/bibliography" role="doc-biblioref" onclick="">Leffler et al., 2012</a>)</span></p>
+<p>In reality population fluctuates and therefore Ne is substituted for N. Larger Ne -&gt; smaller fluctuation in allele frequency (as evidenced in plots) -&gt; maintain larger genetic diversity</p>
+<p>Drift can be thought of as a force acting on a buoyant gas particle floating up and down at random.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="allele-frequency-distribution-for-n1" class="slide level2 smaller ultitle">
+<h2>Allele frequency distribution for N=1</h2>
+<p>Instead of looking at frequencies let’s switch to distributions of alleles for <strong>one</strong> individual, one locus. Then there are three possible genotypes (<strong>states</strong>) <span class="math inline">aa</span>, <span class="math inline">aA</span>, and <span class="math inline">AA</span>. Let <span class="math inline">n=0,1,2</span> be an integer corresponding to each genotype (i.e., it counts the number of <span class="math inline">A</span> alleles).</p>
+<p>Assume individual mates with itself at random(!) starting in either of the three states. How does distribution evolve?</p>
+<div class="columns fragment" data-fragment-index="1">
+<div class="column" style="width:10%;">
+<p>t=0</p>
+</div><div class="column" style="width:30%;">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><a href="diversity_files/figure-revealjs/tikz-afd-aa-1.svg" class="lightbox" data-gallery="quarto-lightbox-gallery-11"><img data-src="diversity_files/figure-revealjs/tikz-afd-aa-1.svg" width="200"></a></p>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:30%;">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><a href="diversity_files/figure-revealjs/tikz-afd-aA-1.svg" class="lightbox" data-gallery="quarto-lightbox-gallery-12"><img data-src="diversity_files/figure-revealjs/tikz-afd-aA-1.svg" width="200"></a></p>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:30%;">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><a href="diversity_files/figure-revealjs/tikz-afd-AA-1.svg" class="lightbox" data-gallery="quarto-lightbox-gallery-13"><img data-src="diversity_files/figure-revealjs/tikz-afd-AA-1.svg" width="200"></a></p>
+</figure>
+</div>
+</div>
+</div>
+</div></div>
+<div class="translatey50">
+<div class="columns">
+<div class="column" style="width:10%;">
+<div class="fragment" data-fragment-index="2">
+<p>t=1</p>
+</div>
+</div><div class="column" style="width:30%;">
+<div class="fragment" data-fragment-index="2">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><a href="diversity_files/figure-revealjs/tikz-afd-aa-1-1.svg" class="lightbox" data-gallery="quarto-lightbox-gallery-14"><img data-src="diversity_files/figure-revealjs/tikz-afd-aa-1-1.svg" width="200"></a></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:30%;">
+<div class="fragment" data-fragment-index="4">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><a href="diversity_files/figure-revealjs/tikz-afd-aA-1-1.svg" class="lightbox" data-gallery="quarto-lightbox-gallery-15"><img data-src="diversity_files/figure-revealjs/tikz-afd-aA-1-1.svg" width="200"></a></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:30%;">
+<div class="fragment" data-fragment-index="3">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><a href="diversity_files/figure-revealjs/tikz-afd-AA-1-1.svg" class="lightbox" data-gallery="quarto-lightbox-gallery-16"><img data-src="diversity_files/figure-revealjs/tikz-afd-AA-1-1.svg" width="200"></a></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div></div>
+</div>
+<div class="translatey100">
+<div class="columns">
+<div class="column" style="width:10%;">
+<div class="fragment" data-fragment-index="5">
+<p>t=2</p>
+</div>
+</div><div class="column" style="width:30%;">
+
+</div><div class="column" style="width:30%;">
+<div class="fragment" data-fragment-index="5">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><a href="diversity_files/figure-revealjs/tikz-afd-aA-2-1.svg" class="lightbox" data-gallery="quarto-lightbox-gallery-17"><img data-src="diversity_files/figure-revealjs/tikz-afd-aA-2-1.svg" width="200"></a></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:30%;">
+
+</div></div>
+</div>
+<aside class="notes">
+<p>Example from <span class="citation" data-cites="gillespie_PopulationGeneticsConcise_2004">(<a href="#/bibliography" role="doc-biblioref" onclick="">Gillespie, 2004, p. 24</a>)</span>. We look at a single hermaphroditic individual that mates with itself at random. For each generation, given a genotype distribution, we calculate the outcome for the next generation. For instance, starting out in state 0 (only <span class="math inline">aa</span> genotypes, hence only <span class="math inline">a</span> alleles), we can only produce new <span class="math inline">aa</span> genotypes and will therefore never leave state 0. The same holds for state 2. These states are <em>absorbing states</em>.</p>
+<p>Starting from state 1 (<span class="math inline">aA</span>) we can get <span class="math inline">aa</span> genotype with 25% probability, since the probability of picking one <span class="math inline">a</span> is 50%, and we perform two draws. Similarly, we get <span class="math inline">AA</span> with 25% probability, leaving 50% to <span class="math inline">aA</span>.</p>
+<p>In the next generation, the <span class="math inline">aA</span> genotype frequency is 0.5, to be split in fractions 0.25, 0.5, 0.25 as before, and so on.</p>
+<p>To study the system we therefore need to enumerate the probabilistic outcomes from each state (<span class="math inline">aa</span> -&gt; 1, 0, 0, <span class="math inline">aA</span> -&gt; 0.25, 0.5, 0.25, <span class="math inline">AA</span> &lt;- 0, 0, 1). To get the state in next generation, we multiply the current distribution with these outcomes. The next slide gives Kimura’s example for the case where we have N=10 chromosomes.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="probability-distributions-of-allele-frequencies" class="slide level2 smaller ultitle">
+<h2>Probability distributions of allele frequencies</h2>
+<div class="columns">
+<div class="column" style="width:40%;">
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-allele-frequency-histogram-plot" class="quarto-float quarto-figure quarto-figure-center">
+<figure class="quarto-float quarto-float-fig">
+<div aria-describedby="fig-allele-frequency-histogram-plot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="diversity_files/figure-revealjs/fig-allele-frequency-histogram-plot-1.svg" class="lightbox" data-gallery="quarto-lightbox-gallery-18" title="Figure&nbsp;3: Histogram showing the course of change of the allele frequency distribution with time [@kimura_1983, Fig. 3.4]. When N large (\gtrsim 100) histogram can be approximated by continuous distribution (diffusion theory). Try recipe  for different values of N."><img data-src="diversity_files/figure-revealjs/fig-allele-frequency-histogram-plot-1.svg" style="width:100.0%"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-allele-frequency-histogram-plot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: Histogram showing the course of change of the allele frequency distribution with time <span class="citation" data-cites="kimura_1983">(<a href="#/bibliography" role="doc-biblioref" onclick="">Kimura, 1983, Figure 3.4</a>)</span>. When N large (<span class="math inline">\gtrsim 100</span>) histogram can be approximated by continuous distribution (diffusion theory). Try recipe <a href="../../recipes/slides/index.html#sec-recipe-slides-allele-frequency-distribution"><i class="fa-solid fa-rectangle-list" aria-label="rectangle-list"></i></a> for different values of N.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:60%;">
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-buri-table-14" class="quarto-float quarto-figure quarto-figure-center" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig">
+<div aria-describedby="fig-buri-table-14-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="diversity_files/figure-revealjs/fig-buri-table-14-1.svg" class="lightbox" data-gallery="quarto-lightbox-gallery-19" title="Figure&nbsp;4: Frequency distributions of the brown eye (bw^{75}) allele in replicate experimental populations (n\sim 100) of Drosophila melanogaster (8 , 8 ) [@buri_GeneFrequencySmall_1956]"><img data-src="diversity_files/figure-revealjs/fig-buri-table-14-1.svg" class="quarto-figure quarto-figure-center" style="width:60.0%"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-buri-table-14-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4: Frequency distributions of the brown eye (<span class="math inline">bw^{75}</span>) allele in replicate experimental populations (<span class="math inline">n\sim 100</span>) of <em>Drosophila melanogaster</em> (8 <i class="fa-solid fa-venus" aria-label="venus"></i>, 8 <i class="fa-solid fa-mars" aria-label="mars"></i>) <span class="citation" data-cites="buri_GeneFrequencySmall_1956">(<a href="#/bibliography" role="doc-biblioref" onclick="">Buri, 1956</a>)</span>
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div></div>
+<div class="fragment">
+<p>Mathematical treatment of drift can become complicated: easier to study dynamics of <em>heterozygosity</em></p>
+</div>
+<aside class="notes">
+<p>Kimura’s plot illustrates the allelic frequency distribution of replicate populations each consisting of N=10 sequences. There are two allelic types. The x axis corresponds to the proportion of populations in a given state (e.g., the y value for x=3/10 corresponds to the proportion of populations with 3 alleles of one type and 7 of the other). At <span class="math inline">t=0</span> all populations are in state 5/10.</p>
+<p>Kimura’s plot is very instructive and students are encouraged to test the recipe code, increasing the number of states incrementally. For large enough N, the histograms can be approximated by continuous distributions. This observation led Kimura (even though diffusion equations were originally introduced to genetics by Fisher in 1922) to apply diffusion theory to obtain probability densities of allele frequencies, leading in turn to compact expressions of fixation probabilities, expected ages of alleles, and more. A treatment of diffusion theory is outside the scope of this course; the interested reader can consult e.g., <span class="citation" data-cites="ewens_MathematicalPopulationGenetics_2004">(<a href="#/bibliography" role="doc-biblioref" onclick="">Ewens, 2004</a>)</span>.</p>
+<p>The Buri experiment is an empirical demonstration of Kimura’s plot.</p>
+<p>On the sampling model, <span class="citation" data-cites="charlesworth_ElementsEvolutionaryGenetics_2010">(<a href="#/bibliography" role="doc-biblioref" onclick="">Charlesworth &amp; Charlesworth, 2010, p. 231</a>)</span> says:</p>
+<blockquote>
+<p>It is, however, impossible to write down a simple algebraic expression for P, even without selection and mutation. [The equation] is useful for obtaining numerical results for relatively small populations, but becomes computationally demanding when N becomes very large.</p>
+</blockquote>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="heterozygosity-dynamics" class="slide level2 smaller ultitle">
+<h2>Heterozygosity dynamics</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-identity-by-state-and-descent" class="quarto-float quarto-figure quarto-figure-center">
+<figure class="quarto-float quarto-float-fig">
+<div aria-describedby="fig-identity-by-state-and-descent-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="diversity_files/figure-revealjs/fig-identity-by-state-and-descent-1.svg" class="lightbox" data-gallery="quarto-lightbox-gallery-20" title="Figure&nbsp;5: Illustration of identity by descent (IBD) and state (IBS). Alleles in generation n are IBD but not IBS."><img data-src="diversity_files/figure-revealjs/fig-identity-by-state-and-descent-1.svg" style="width:70.0%"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-identity-by-state-and-descent-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;5: Illustration of identity by descent (IBD) and state (IBS). Alleles in generation <span class="math inline">n</span> are IBD but not IBS.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:50%;">
+<p>Let <span class="math inline">\mathcal{H}_t</span> be the probability that two alleles are <strong>different by state</strong>. One can show that the time course evolution of <span class="math inline">\mathcal{H}_t</span> in a randomly mating population consisting of <span class="math inline">N</span> diploid hermaphroditic individuals is</p>
+<p><span class="math display">
+\mathcal{H}_t = \mathcal{H}_0 \left( 1 - \frac{1}{2N} \right)^t
+</span></p>
+<p>Important consequence: heterozygosity in WF population lost at rate <span class="math inline">1/2N</span>.</p>
+</div></div>
+<aside class="notes">
+<p>Alleles in generation <span class="math inline">n</span> are IDB but not IBS</p>
+<p>Motivation: mathematical description of genetic drift complicated for populations with more than one individual. Easier to study the evolution of heterozygosity.</p>
+<p>Equation presented without details. Derivation in <span class="citation" data-cites="gillespie_PopulationGeneticsConcise_2004">(<a href="#/bibliography" role="doc-biblioref" onclick="">Gillespie, 2004, pp. 25–27</a>)</span> starts from G=probability that two alleles are IBS</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="heterozygosity-dynamics-1" class="slide level2 smaller ultitle">
+<h2>Heterozygosity dynamics</h2>
+<div class="columns">
+<div class="column" style="width:40%;">
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-gillespie-2.4" class="quarto-float quarto-figure quarto-figure-center">
+<figure class="quarto-float quarto-float-fig">
+<div aria-describedby="fig-gillespie-2.4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="diversity_files/figure-revealjs/fig-gillespie-2.4-1.svg" class="lightbox" data-gallery="quarto-lightbox-gallery-21" title="Figure&nbsp;6: Plot of \mathcal{H}_t illustrating dependency on population size"><img data-src="diversity_files/figure-revealjs/fig-gillespie-2.4-1.svg" style="width:90.0%"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-gillespie-2.4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6: Plot of <span class="math inline">\mathcal{H}_t</span> illustrating dependency on population size
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:60%;">
+<div class="fragment">
+<div class="columns">
+<div class="column" style="width:60%;">
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-black-footed-ferret" class="quarto-float quarto-figure quarto-figure-center">
+<figure class="quarto-float quarto-float-fig">
+<div aria-describedby="fig-black-footed-ferret-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="diversity_files/figure-revealjs/fig-black-footed-ferret-1.svg" class="lightbox" data-gallery="quarto-lightbox-gallery-22" title="Figure&nbsp;7: Heterozygosity in black-footed ferret [@wisely_GeneticDiversityFitness_2002]. Example from @grahamcoop_NotesPopulationGenetics_2020, Fig. 4.5"><img data-src="diversity_files/figure-revealjs/fig-black-footed-ferret-1.svg" style="width:90.0%"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-black-footed-ferret-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;7: Heterozygosity in black-footed ferret <span class="citation" data-cites="wisely_GeneticDiversityFitness_2002">(<a href="#/bibliography" role="doc-biblioref" onclick="">Wisely et al., 2002</a>)</span>. Example from <span class="citation" data-cites="grahamcoop_NotesPopulationGenetics_2020">Graham Coop (<a href="#/bibliography" role="doc-biblioref" onclick="">2020</a>)</span>, Fig. 4.5
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:40%;">
+<p><a href="assets/images/ferret.svg" class="lightbox" data-gallery="quarto-lightbox-gallery-23"><img data-src="assets/images/ferret.svg" style="width:40.0%"></a></p>
+<p>Example of how rapid decline in population size can affect heterozygosity.</p>
+<div class="fragment">
+<p>Population size influences genetic diversity!</p>
+</div>
+<div class="fragment">
+<p>However, <em>census</em> population size not (always) the correct measure.</p>
+</div>
+</div></div>
+</div>
+</div></div>
+<aside class="notes">
+<p>Dependency on population size: for large enough populations the decline will be <strong>very</strong> slow (drift speed ~ 1/2N)</p>
+<p>Practical example shows loss of heterozygosity tell-tale signature of population decline; conversely, <strong>not</strong> easy to show population decline in large populations (e.g., marine species with large <span class="math inline">N_e</span>) using heterozygosity as measure</p>
+<p><span class="citation" data-cites="barton2007evolution">(<a href="#/bibliography" role="doc-biblioref" onclick="">Barton et al., 2007, p. 369</a>)</span> “The relation between genetic diversity and population size is difficult to discern, in part, because it is extremely hard to estimate the numbers of most species and because the number that matters is an average back into the distant past”(!)</p>
+<p>From <span class="citation" data-cites="grahamcoop_NotesPopulationGenetics_2020">(<a href="#/bibliography" role="doc-biblioref" onclick="">Graham Coop, 2020, p. 64</a>)</span></p>
+<blockquote>
+<p>To see how a decline in population size can affect levels of het- erozygosity, let’s consider the case of black-footed ferrets (Mustela nigripes). The black-footed ferret population has declined dramatically through the twentieth century due to destruction of their habitat and sylvatic plague. In 1979, when the last known black-footed ferret died in captivity, they were thought to be extinct. In 1981, a very small wild population was rediscovered (40 individuals), but in 1985 this population suffered a number of disease outbreaks. At that point of the 18 remaining wild individuals were brought into captivity, 7 of which reproduced. Thanks to intense captive breeding efforts and conservation work, a wild population of over 300 individuals has been established since. However, because all of these individuals are descended from those 7 individuals who survived the bottleneck, diversity levels remain low. Wisely et al.&nbsp;measured heterozygosity at a number of microsatellites in individuals from museum collections, showing the sharp drop in diversity as population sizes crashed (see Figure 4.5).</p>
+</blockquote>
+<p>Segue: population size important; however, <em>census</em> population size is not always the measure we want when relating to genetic diversity</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="effective-population-size" class="slide level2 ultitle">
+<h2>Effective population size</h2>
+<p>Assumptions underlying Wright-Fisher model seldom fulfilled for natural populations. In particular</p>
+<ul>
+<li>non-random mating (population structure)</li>
+<li>fluctuations of population census size</li>
+</ul>
+<p>Therefore, magnitude of drift experienced by a population different from that predicted by population size</p>
+<p>Technically correct definition (but see <span class="citation" data-cites="waples_WhatNeAnyway_2022">Waples (<a href="#/bibliography" role="doc-biblioref" onclick="">2022</a>)</span>, <span class="citation" data-cites="waples_IdiotsGuideEffective_2025">Waples (<a href="#/bibliography" role="doc-biblioref" onclick="">2025</a>)</span>):</p>
+<blockquote>
+<p><span class="math inline">N_e</span> is the size of an ideal population that would experience the same rate of genetic drift as the population in question.</p>
+</blockquote>
+<aside class="notes">
+<p>ideal population: discrete generations with random mating, no evolutionary forces besides drift, no selective advantages</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="mutation" class="slide level2 ultitle">
+<h2>Mutation</h2>
+<div class="columns">
+<div class="column" style="width:30%;">
+<table>
+<tbody><tr>
+<td>
+<div style="transform: translate(50px, 0px);">
+<i class="fa-solid fa-bolt fa-2x fa-rotate-90"></i>
+</div>
+</td>
+<td>
+<div style="transform: translate(0px, 40px);">
+<i class="fa-solid fa-dna fa-5x"></i>
+</div>
+</td>
+</tr>
+</tbody></table>
+</div><div class="column" style="width:70%;">
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><a href="diversity_files/figure-revealjs/allele-sampling-model-mutation-1.svg" class="lightbox" data-gallery="quarto-lightbox-gallery-24"><img data-src="diversity_files/figure-revealjs/allele-sampling-model-mutation-1.svg" class="quarto-figure quarto-figure-center" width="1152"></a></p>
+</figure>
+</div>
+</div>
+</div>
+</div></div>
+<div class="fragment">
+<div class="columns">
+<div class="column" style="width:70%;">
+<!-- markdownlint-disable MD013 -->
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><a href="diversity_files/figure-revealjs/mutation-models-1.svg" class="lightbox" data-gallery="quarto-lightbox-gallery-25"><img data-src="diversity_files/figure-revealjs/mutation-models-1.svg" width="960"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<!-- markdownlint-enable MD013 -->
+</div><div class="column" style="width:30%;">
+<dl>
+<dt>Two-allele</dt>
+<dd>
+Derive popgen stats
+</dd>
+<dt>Finite sites</dt>
+<dd>
+Recurrent mutations
+</dd>
+<dt>Infinite alleles</dt>
+<dd>
+Protein electrophoresis
+</dd>
+<dt>Inifinite sites</dt>
+<dd>
+DNA sequences
+</dd>
+</dl>
+</div></div>
+</div>
+<aside class="notes">
+<p>Mutations are generated randomly as changes in DNA. In WF model will be highlighted in black. We assume mutations are described by a Poisson process with rate <span class="math inline">\mu</span> (per generation).</p>
+<p>The mutation models are:</p>
+<ul>
+<li>two-allele model: used to derive popgen statistics</li>
+<li>finite sites model: recurrent mutations may occur, an assumption that is often omitted to facilitate calculations (e.g., coalescent)</li>
+<li>inifinite alleles model: every mutation leads to new allele (e.g., protein electrophoresis)</li>
+<li>infinite sites model: model commonly used for long DNA sequences</li>
+</ul>
+<p>Additional model not presented here is the stepwise mutation model (mainly used to model repeats):</p>
+<!-- markdownlint-disable MD013 -->
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><a href="diversity_files/figure-revealjs/stepwise-mutation-model-1.svg" class="lightbox" data-gallery="quarto-lightbox-gallery-26"><img data-src="diversity_files/figure-revealjs/stepwise-mutation-model-1.svg" width="1000"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<!-- markdownlint-enable MD013 -->
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="mutation-and-drift" class="slide level2 ultitle">
+<h2>Mutation and drift</h2>
+<div class="columns">
+<div class="column" style="width:60%;">
+<p>Genetic drift “moves” frequencies to the point that variation is lost via allele fixation or loss. New variation is introduced through <strong>mutation</strong>. We typically assume mutations are described by a <a href="https://en.wikipedia.org/wiki/Poisson_point_process">Poisson process</a> with rate <span class="math inline">\mu</span> (per generation).</p>
+<div class="fragment">
+<p>The <strong>mutation rate</strong> is denoted <span class="math inline">\mu</span>, and the <strong>population scaled</strong> mutation rate is <span class="math inline">2N_e\mu</span> for haploid populations, <span class="math inline">4N_e\mu</span> for diploid, where <span class="math inline">N_e</span> is the <strong>effective population size</strong>.</p>
+</div>
+<div class="fragment">
+<p>The <strong>mutation - drift balance</strong> is when the diversity lost due to drift equals the diversity gained due to mutation.</p>
+</div>
+</div><div class="column" style="width:40%;">
+<div class="fragment">
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-wf-mutation" class="quarto-float quarto-figure quarto-figure-center" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig">
+<div aria-describedby="fig-wf-mutation-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="diversity_files/figure-revealjs/fig-wf-mutation-1.svg" class="lightbox" data-gallery="quarto-lightbox-gallery-27" title="Figure&nbsp;8: Variation is introduced by mutations (black) at rate \mu=1e^{-4} and is occasionally lost through genetic drift."><img data-src="diversity_files/figure-revealjs/fig-wf-mutation-1.svg" class="quarto-figure quarto-figure-center" width="400" height="500"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-wf-mutation-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;8: Variation is introduced by mutations (black) at rate <span class="math inline">\mu=1e^{-4}</span> and is occasionally lost through genetic drift.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div></div>
+<aside class="notes">
+<p>Segue: so if drift removes variation, what introduces it? Mutation!</p>
+<p>Note that the mutation rate in the WF model is not meaningful; the value is simply chosen such that enough mutations show up in plot.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="tracing-the-evolution-of-mutations" class="slide level2 ultitle">
+<h2>Tracing the evolution of mutations</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-tracing-evolution-of-mutations" class="quarto-float quarto-figure quarto-figure-center" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig">
+<div aria-describedby="fig-tracing-evolution-of-mutations-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="diversity_files/figure-revealjs/fig-tracing-evolution-of-mutations-1.svg" class="lightbox" data-gallery="quarto-lightbox-gallery-28" title="Figure&nbsp;9: Different mutations suffer different fates. Most mutations are lost in a couple of generations. Mutant alleles are colored black and their genealogies are highlighted with thicker edges."><img data-src="diversity_files/figure-revealjs/fig-tracing-evolution-of-mutations-1.svg" class="quarto-figure quarto-figure-center" style="width:80.0%"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-tracing-evolution-of-mutations-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;9: Different mutations suffer different fates. Most mutations are lost in a couple of generations. Mutant alleles are colored black and their genealogies are highlighted with thicker edges.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:50%;">
+<div class="fragment">
+<p>Observation: most mutations are in fact lost</p>
+</div>
+<div class="fragment">
+<p>Recall: fixation probability <span class="math inline">\pi(p)=p</span></p>
+</div>
+</div></div>
+<aside class="notes">
+<p>Difference to previous figure: here we highlight the genealogies</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="mutation-drift-balance" class="slide level2 ultitle">
+<h2>Mutation drift balance</h2>
+<p>Drift removes variation. Mutation reintroduces it. At equilibrium the change in variation by definition is 0. In terms of <span class="math inline">\mathcal{H}_t</span> (the probability that two alleles are <em>not</em> identical by state), <span class="math inline">\Delta\mathcal{H}=0</span>.</p>
+<p>One can show<sup>1</sup> the classical formula that the equilibrium <strong>heterozygosity</strong> value is</p>
+<p><span class="math display">
+\hat{\mathcal{H}} = \frac{4N_e\mu}{1 + 4N_e\mu}
+</span></p>
+<div class="fragment">
+<p><span class="math inline">\mu</span> is often assumed known, and heterozygosity is easily calculated from data, which provides a way of estimating <span class="math inline">N_e</span>.</p>
+</div>
+<div class="fragment">
+<p>The compound parameter <span class="math inline">4N_e\mu</span> is called the <strong>population scaled mutation rate</strong> and is commonly named <span class="math inline">\theta</span> such that</p>
+<p><span class="math display">
+\hat{\mathcal{H}} = \frac{\theta}{1 + \theta}
+</span></p>
+</div>
+<aside class="notes">
+<p><span class="citation" data-cites="gillespie_PopulationGeneticsConcise_2004">Gillespie (<a href="#/bibliography" role="doc-biblioref" onclick="">2004</a>)</span>, pp.&nbsp;30–31 uses a <em>difference equation</em> approach to derive <span class="math inline">\mathcal{H}</span>. Briefly, he studies the time evolution of <span class="math inline">\mathcal{G}</span>, the probability that two alleles drawn at random without replacement from the population are identical by state. Mutations are assumed unique, i.e., the <em>infinite-alleles</em> model. It holds</p>
+<p><span class="math display">
+\mathcal{G}^\prime = (1-\mu)^2\left[ \frac{1}{2N} +
+\left( 1 - \frac{1}{2N} \right) \mathcal{G} \right]
+</span></p>
+<p>where <span class="math inline">(1-\mu)^2</span> is the probability that no mutation occur in either of the two sampled alleles. Since <span class="math inline">\mu</span> is small, <span class="math inline">(1-\mu)^2 \approx
+1-2\mu</span>, which after some manipulation gives the desired expression for <span class="math inline">\mathcal{H} = 1 - \mathcal{G}</span>.</p>
+<p>On pages 46–47, he shows that the expression for can be derived in a much simpler fashion using coalescent theory. Tracing two lineages backwards in time, the probability of coalescence is 1/2N, whereas the probability of a mutation is <span class="math inline">1-(1-\mu)^2\approx 2\mu</span>; <span class="math inline">\mathcal{H}</span> is then simply the relative probability of the two events</p>
+<p><span class="math display">
+\mathcal{H} = \frac{2\mu}{2\mu + 1/2N} = \frac{4N\mu}{4N\mu + 1}
+</span></p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+<aside><ol class="aside-footnotes"><li id="fn1"><p>see <span class="citation" data-cites="gillespie_PopulationGeneticsConcise_2004">(<a href="#/bibliography" role="doc-biblioref" onclick="">Gillespie, 2004, p. 29</a> – 31)</span> for a concise treatement</p></li></ol></aside></section>
+<section id="the-neutral-theory-of-evolution" class="slide level2 ultitle">
+<h2>The neutral theory of evolution</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p>Mutation drift balance, together with the observation during 50’s-60’s that polymorphism was more common than expected, is the foundation of the <strong>neutral theory</strong> of evolution <span class="citation" data-cites="kimura_1983">(<a href="#/bibliography" role="doc-biblioref" onclick="">Kimura, 1983</a>)</span>: allele frequencies may change and fix due to chance alone and not selection; most mutations behave as if they are <strong>neutral</strong>.</p>
+<div class="fragment">
+<p><strong>Nearly neutral theory</strong> <span class="citation" data-cites="ohta_SlightlyDeleteriousMutant_1973">(<a href="#/bibliography" role="doc-biblioref" onclick="">Ohta, 1973</a>)</span> was later developed to explain failure to predict scaling of polymorphism with population size: most mutations are not neutral but <em>slightly deleterious</em> and <em>purged</em> from population by natural selection.</p>
+</div>
+</div><div class="column" style="width:50%;">
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-heterozygosity-function-ne" class="quarto-float quarto-figure quarto-figure-center" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig">
+<div aria-describedby="fig-heterozygosity-function-ne-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="diversity_files/figure-revealjs/fig-heterozygosity-function-ne-1.svg" class="lightbox" data-gallery="quarto-lightbox-gallery-29" title="Figure&nbsp;10: Heterozygosity H=\frac{\theta}{1 + \theta} predicted by the neutral theory. Shaded region shows typical heterozygosities in animals (y-axis). The observed N_e\mu range is higher than predicted from plot. From @hurst_GeneticsUnderstandingSelection_2009, Fig 1."><img data-src="diversity_files/figure-revealjs/fig-heterozygosity-function-ne-1.svg" class="quarto-figure quarto-figure-center" style="width:60.0%"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-heterozygosity-function-ne-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;10: Heterozygosity <span class="math inline">H=\frac{\theta}{1 + \theta}</span> predicted by the neutral theory. Shaded region shows typical heterozygosities in animals (y-axis). The observed <span class="math inline">N_e\mu</span> range is higher than predicted from plot. From <span class="citation" data-cites="hurst_GeneticsUnderstandingSelection_2009">Hurst (<a href="#/bibliography" role="doc-biblioref" onclick="">2009</a>)</span>, Fig 1.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div></div>
+<aside class="notes">
+<p>Related to rate of substitution and molecular evolution is the work of Kimura that lead to the development of the neutral theory.</p>
+<p>Motivation: if polymorphic sites deleterious, should not expect much polymorphism.</p>
+<p>Low levels of polymorphism expected assuming little balancing selection <span class="citation" data-cites="hurst_GeneticsUnderstandingSelection_2009">(<a href="#/bibliography" role="doc-biblioref" onclick="">Hurst, 2009, p. 87</a>)</span>; however electrophoretic studies showed polymorphism common. Would lead to detrimental load <span class="citation" data-cites="kimura_ProteinPolymorphismPhase_1971">(<a href="#/bibliography" role="doc-biblioref" onclick="">Kimura &amp; Ohta, 1971</a>)</span> -&gt; therefore majority of polymorphism must evolve neutrally (dynamics). Also: rate of evolution (on protein level) too high (Haldane’s dilemma)</p>
+<p>On the shaded region: the observed range of <span class="math inline">N_e\mu</span> is larger than that which is predicted by the plot, and since <span class="math inline">\mu</span> is constrained within a couple of orders of magnitude, <span class="math inline">N_e</span> must vary more than predicted by the (strictly) neutral theory.</p>
+<p>Conversely: given a constrained <span class="math inline">\mu</span>, we observe a range of <span class="math inline">N_e\mu</span> that predicts a heterozygosity range H, which is much larger than that which we observe. In other words, the heterozygosity range is much lower than predicted by the neutral, given the observed <span class="math inline">N_e\mu</span> range, so some other process must reduce variation somehow.</p>
+<p>The general idea of nearly neutral theory is that most mutations are slightly deleterious and therefore purged by natural selection, thereby reducing observed variation. The efficacy of purging depends in turn on the effective population size, such that species with small <span class="math inline">N_e</span> will have a harder time getting rid of potentially damaging variants.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="mutation-rate-can-be-estimated-from-substitution-rate" class="slide level2 ultitle">
+<h2>Mutation rate can be estimated from substitution rate</h2>
+<p>Mutation enters populations and may be fixed by drift. Therefore, with time there will be fixed differences, or <strong>substitions</strong> (typically in the evolution of species) between populations, or species. In molecular evolution, the <strong>substition rate</strong>, <strong><span class="math inline">\rho</span></strong>, is the most interesting quantity.</p>
+<div class="fragment">
+<p>The total number of new mutations in every generation is <span class="math inline">2N\mu</span> (total number of gametes times mutation rate)</p>
+</div>
+<div class="fragment">
+<p>New mutations fix at a rate <span class="math inline">1/2N</span></p>
+</div>
+<div class="fragment">
+<p>Therefore, the <strong>average rate of substitution</strong>, <strong><span class="math inline">\rho</span></strong>, is <span class="math inline">2N\mu\times1/2N</span>, or</p>
+<p><span class="math display">
+\rho=\mu
+</span></p>
+<p>which is independent of population size!</p>
+</div>
+<div class="fragment">
+<p>Practical implication: we can <em>estimate mutation rate from the substitution rate</em> at neutrally evolving sites (e.g., <span class="citation" data-cites="kumar_MutationRatesMammalian_2002">Kumar &amp; Subramanian (<a href="#/bibliography" role="doc-biblioref" onclick="">2002</a>)</span>)</p>
+</div>
+<aside class="notes">
+<p>What happens when sufficient amount of time passes? Mutations <strong>fix</strong> and generate <strong>substitutions</strong> between species. This slide presents Kimura’s remarkable result regarding mutation rate and substitution rate!</p>
+<p>On <span class="math inline">2N\mu</span>: the larger the population, the larger the number of mutations that can fix</p>
+<p>If <span class="math inline">4N\mu&gt;&gt;0</span> no new mutations can fix. Issue here is there is no explicit mention of DNA sequence -&gt; introduction of infinite sites model</p>
+<p>For practical note on estimation of mutation rate see e.g., <span class="citation" data-cites="hubisz_InferenceAncestralRecombination_2020">(<a href="#/bibliography" role="doc-biblioref" onclick="">Hubisz &amp; Siepel, 2020, p. 247</a>)</span></p>
+<p><span class="citation" data-cites="kumar_MutationRatesMammalian_2002">(<a href="#/bibliography" role="doc-biblioref" onclick="">Kumar &amp; Subramanian, 2002</a>, first paragraph)</span>:</p>
+<blockquote>
+<p>Rates of point mutation can be determined indirectly by estimating the rate at which the neutral substitutions accumulate in protein-coding genes</p>
+</blockquote>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="bibliography" class="slide level2 unnumbered unlisted smaller ultitle scrollable">
+<h2>Bibliography</h2>
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" data-line-spacing="2" role="list">
+<div id="ref-barton2007evolution" class="csl-entry" role="listitem">
+Barton, N. H., Briggs, D. E. G., Eisen, J. A., Goldstein, D. B., &amp; Patel, N. H. (2007). <em>Evolution</em>. <span>Cold Spring Harbor Laboratory Press</span>.
+</div>
+<div id="ref-buri_GeneFrequencySmall_1956" class="csl-entry" role="listitem">
+Buri, P. (1956). Gene <span>Frequency</span> in <span>Small Populations</span> of <span>Mutant Drosophila</span>. <em>Evolution</em>, <em>10</em>(4), 367–402. <a href="https://doi.org/10.1111/j.1558-5646.1956.tb02864.x">https://doi.org/10.1111/j.1558-5646.1956.tb02864.x</a>
+</div>
+<div id="ref-charlesworth_ElementsEvolutionaryGenetics_2010" class="csl-entry" role="listitem">
+Charlesworth, B., &amp; Charlesworth, D. (2010). <em>Elements of <span>Evolutionary Genetics</span></em>. <span>Roberts and Company Publishers</span>.
+</div>
+<div id="ref-ewens_MathematicalPopulationGenetics_2004" class="csl-entry" role="listitem">
+Ewens, W. J. (2004). <em>Mathematical <span>Population Genetics</span></em> (S. S. Antman, J. E. Marsden, L. Sirovich, &amp; S. Wiggins, Eds.; Vol. 27). <span>Springer</span>. <a href="https://doi.org/10.1007/978-0-387-21822-9">https://doi.org/10.1007/978-0-387-21822-9</a>
+</div>
+<div id="ref-gillespie_PopulationGeneticsConcise_2004" class="csl-entry" role="listitem">
+Gillespie, J. H. (2004). <em>Population <span>Genetics</span>: <span>A Concise Guide</span></em> (2nd edition). <span>Johns Hopkins University Press</span>.
+</div>
+<div id="ref-grahamcoop_NotesPopulationGenetics_2020" class="csl-entry" role="listitem">
+Graham Coop. (2020). <em>Notes on <span>Population Genetics</span></em>. <a href="https://github.com/cooplab/popgen-notes">https://github.com/cooplab/popgen-notes</a>
+</div>
+<div id="ref-hubisz_InferenceAncestralRecombination_2020" class="csl-entry" role="listitem">
+Hubisz, M., &amp; Siepel, A. (2020). Inference of <span>Ancestral Recombination Graphs Using ARGweaver</span>. In J. Y. Dutheil (Ed.), <em>Statistical <span>Population Genomics</span></em> (pp. 231–266). <span>Springer US</span>. <a href="https://doi.org/10.1007/978-1-0716-0199-0_10">https://doi.org/10.1007/978-1-0716-0199-0_10</a>
+</div>
+<div id="ref-hurst_GeneticsUnderstandingSelection_2009" class="csl-entry" role="listitem">
+Hurst, L. D. (2009). Genetics and the understanding of selection. <em>Nature Reviews Genetics</em>, <em>10</em>(2), 83–93. <a href="https://doi.org/10.1038/nrg2506">https://doi.org/10.1038/nrg2506</a>
+</div>
+<div id="ref-kimura_1983" class="csl-entry" role="listitem">
+Kimura, M. (1983). <em>The neutral theory of molecular evolution</em>. <span>Cambridge University Press</span>. <a href="https://doi.org/10.1017/CBO9780511623486">https://doi.org/10.1017/CBO9780511623486</a>
+</div>
+<div id="ref-kimura_ProteinPolymorphismPhase_1971" class="csl-entry" role="listitem">
+Kimura, M., &amp; Ohta, T. (1971). Protein <span>Polymorphism</span> as a <span>Phase</span> of <span>Molecular Evolution</span>. <em>Nature</em>, <em>229</em>(5285), 467–469. <a href="https://doi.org/10.1038/229467a0">https://doi.org/10.1038/229467a0</a>
+</div>
+<div id="ref-kumar_MutationRatesMammalian_2002" class="csl-entry" role="listitem">
+Kumar, S., &amp; Subramanian, S. (2002). Mutation rates in mammalian genomes. <em>Proceedings of the National Academy of Sciences</em>, <em>99</em>(2), 803–808. <a href="https://doi.org/10.1073/pnas.022629899">https://doi.org/10.1073/pnas.022629899</a>
+</div>
+<div id="ref-leffler_RevisitingOldRiddle_2012" class="csl-entry" role="listitem">
+Leffler, E. M., Bullaughey, K., Matute, D. R., Meyer, W. K., Ségurel, L., Venkat, A., Andolfatto, P., &amp; Przeworski, M. (2012). Revisiting an <span>Old Riddle</span>: <span>What Determines Genetic Diversity Levels</span> within <span>Species</span>? <em>PLOS Biology</em>, <em>10</em>(9), e1001388. <a href="https://doi.org/10.1371/journal.pbio.1001388">https://doi.org/10.1371/journal.pbio.1001388</a>
+</div>
+<div id="ref-ohta_SlightlyDeleteriousMutant_1973" class="csl-entry" role="listitem">
+Ohta, T. (1973). Slightly <span>Deleterious Mutant Substitutions</span> in <span>Evolution</span>. <em>Nature</em>, <em>246</em>(5428), 96. <a href="https://doi.org/10.1038/246096a0">https://doi.org/10.1038/246096a0</a>
+</div>
+<div id="ref-waples_WhatNeAnyway_2022" class="csl-entry" role="listitem">
+Waples, R. S. (2022). What <span>Is Ne</span>, <span>Anyway</span>? <em>Journal of Heredity</em>, <em>113</em>(4), 371–379. <a href="https://doi.org/10.1093/jhered/esac023">https://doi.org/10.1093/jhered/esac023</a>
+</div>
+<div id="ref-waples_IdiotsGuideEffective_2025" class="csl-entry" role="listitem">
+Waples, R. S. (2025). The <span>Idiot</span>’s <span>Guide</span> to <span>Effective Population Size</span>. <em>Molecular Ecology</em>, e17670. <a href="https://doi.org/10.1111/mec.17670">https://doi.org/10.1111/mec.17670</a>
+</div>
+<div id="ref-wisely_GeneticDiversityFitness_2002" class="csl-entry" role="listitem">
+Wisely, S. M., Buskirk, S. W., Fleming, M. A., McDonald, D. B., &amp; Ostrander, E. A. (2002). Genetic <span>Diversity</span> and <span>Fitness</span> in <span>Black-Footed Ferrets Before</span> and <span>During</span> a <span>Bottleneck</span>. <em>Journal of Heredity</em>, <em>93</em>(4), 231–237. <a href="https://doi.org/10.1093/jhered/93.4.231">https://doi.org/10.1093/jhered/93.4.231</a>
+</div>
+</div>
+
+
+<div class="reveal-header">
+<div class="header-logo-left">
+<a href="https://nbisweden.github.io/workshop-pgip-H25"><img data-src="../../site_libs/quarto-contrib/quarto-project/percyfal/nbis-quarto/assets/logo/nbislogo-green-teal.svg" style="height:50px;max-width:none;"></a>
+</div>
+<div class="header-logo-right">
+<img data-src="../../site_libs/quarto-contrib/quarto-project/percyfal/nbis-quarto/assets/logo/SciLifeLab_symbol_green.png" style="height:50px;max-width:none;">
+</div>
+</div>
+</section></section>
+
+    </div>
+  <div class="quarto-auto-generated-content" style="display: none;">
+<div class="footer footer-default">
+<p>Genetic diversity</p>
+</div>
+</div></div>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="../../site_libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="../../site_libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="../../site_libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="../../site_libs/revealjs/plugin/quarto-support/support.js"></script>
+  
+
+  <script src="../../site_libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="../../site_libs/revealjs/plugin/search/search.js"></script>
+  <script src="../../site_libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+'controlsAuto': true,
+'previewLinksAuto': false,
+'pdfSeparateFragments': false,
+'autoAnimateEasing': "ease",
+'autoAnimateDuration': 1,
+'autoAnimateUnmatched': true,
+'jumpToSlide': true,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'smaller': true,
+ 
+        // Display controls in the bottom right corner
+        controls: false,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: false,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'edges',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: 'c/t',
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'linear',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: false,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'none',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'none',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1280,
+
+        height: 720,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 8.0e-2,
+
+        // reveal.js plugins
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, QuartoSupport,
+
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    
+    <script>
+      // htmlwidgets need to know to resize themselves when slides are shown/hidden.
+      // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
+      // slide changes (different for each slide format).
+      (function () {
+        // dispatch for htmlwidgets
+        function fireSlideEnter() {
+          const event = window.document.createEvent("Event");
+          event.initEvent("slideenter", true, true);
+          window.document.dispatchEvent(event);
+        }
+
+        function fireSlideChanged(previousSlide, currentSlide) {
+          fireSlideEnter();
+
+          // dispatch for shiny
+          if (window.jQuery) {
+            if (previousSlide) {
+              window.jQuery(previousSlide).trigger("hidden");
+            }
+            if (currentSlide) {
+              window.jQuery(currentSlide).trigger("shown");
+            }
+          }
+        }
+
+        // hookup for slidy
+        if (window.w3c_slidy) {
+          window.w3c_slidy.add_observer(function (slide_num) {
+            // slide_num starts at position 1
+            fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
+          });
+        }
+
+      })();
+    </script>
+
+    <script id="quarto-html-after-body" type="application/javascript">
+      window.document.addEventListener("DOMContentLoaded", function (event) {
+        const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+        tabsets.forEach(function(tabset) {
+          const tabby = new Tabby('#' + tabset.id);
+        });
+        const isCodeAnnotation = (el) => {
+          for (const clz of el.classList) {
+            if (clz.startsWith('code-annotation-')) {                     
+              return true;
+            }
+          }
+          return false;
+        }
+        const onCopySuccess = function(e) {
+          // button target
+          const button = e.trigger;
+          // don't keep focus
+          button.blur();
+          // flash "checked"
+          button.classList.add('code-copy-button-checked');
+          var currentTitle = button.getAttribute("title");
+          button.setAttribute("title", "Copied!");
+          let tooltip;
+          if (window.bootstrap) {
+            button.setAttribute("data-bs-toggle", "tooltip");
+            button.setAttribute("data-bs-placement", "left");
+            button.setAttribute("data-bs-title", "Copied!");
+            tooltip = new bootstrap.Tooltip(button, 
+              { trigger: "manual", 
+                customClass: "code-copy-button-tooltip",
+                offset: [0, -8]});
+            tooltip.show();    
+          }
+          setTimeout(function() {
+            if (tooltip) {
+              tooltip.hide();
+              button.removeAttribute("data-bs-title");
+              button.removeAttribute("data-bs-toggle");
+              button.removeAttribute("data-bs-placement");
+            }
+            button.setAttribute("title", currentTitle);
+            button.classList.remove('code-copy-button-checked');
+          }, 1000);
+          // clear code selection
+          e.clearSelection();
+        }
+        const getTextToCopy = function(trigger) {
+            const codeEl = trigger.previousElementSibling.cloneNode(true);
+            for (const childEl of codeEl.children) {
+              if (isCodeAnnotation(childEl)) {
+                childEl.remove();
+              }
+            }
+            return codeEl.innerText;
+        }
+        const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+          text: getTextToCopy
+        });
+        clipboard.on('success', onCopySuccess);
+        if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+          const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+            text: getTextToCopy,
+            container: window.document.getElementById('quarto-embedded-source-code-modal')
+          });
+          clipboardModal.on('success', onCopySuccess);
+        }
+          var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+          var mailtoRegex = new RegExp(/^mailto:/);
+            var filterRegex = new RegExp("https:\/\/NBISweden\.github\.io\/workshop-pgip-H25\/");
+          var isInternal = (href) => {
+              return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+          }
+          // Inspect non-navigation links and adorn them if external
+         var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+          for (var i=0; i<links.length; i++) {
+            const link = links[i];
+            if (!isInternal(link.href)) {
+              // undo the damage that might have been done by quarto-nav.js in the case of
+              // links that we want to consider external
+              if (link.dataset.originalHref !== undefined) {
+                link.href = link.dataset.originalHref;
+              }
+            }
+          }
+        function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+          const config = {
+            allowHTML: true,
+            maxWidth: 500,
+            delay: 100,
+            arrow: false,
+            appendTo: function(el) {
+                return el.closest('section.slide') || el.parentElement;
+            },
+            interactive: true,
+            interactiveBorder: 10,
+            theme: 'light-border',
+            placement: 'bottom-start',
+          };
+          if (contentFn) {
+            config.content = contentFn;
+          }
+          if (onTriggerFn) {
+            config.onTrigger = onTriggerFn;
+          }
+          if (onUntriggerFn) {
+            config.onUntrigger = onUntriggerFn;
+          }
+            config['offset'] = [0,0];
+            config['maxWidth'] = 700;
+          window.tippy(el, config); 
+        }
+        const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+        for (var i=0; i<noterefs.length; i++) {
+          const ref = noterefs[i];
+          tippyHover(ref, function() {
+            // use id or data attribute instead here
+            let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+            try { href = new URL(href).hash; } catch {}
+            const id = href.replace(/^#\/?/, "");
+            const note = window.document.getElementById(id);
+            if (note) {
+              return note.innerHTML;
+            } else {
+              return "";
+            }
+          });
+        }
+        const findCites = (el) => {
+          const parentEl = el.parentElement;
+          if (parentEl) {
+            const cites = parentEl.dataset.cites;
+            if (cites) {
+              return {
+                el,
+                cites: cites.split(' ')
+              };
+            } else {
+              return findCites(el.parentElement)
+            }
+          } else {
+            return undefined;
+          }
+        };
+        var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+        for (var i=0; i<bibliorefs.length; i++) {
+          const ref = bibliorefs[i];
+          const citeInfo = findCites(ref);
+          if (citeInfo) {
+            tippyHover(citeInfo.el, function() {
+              var popup = window.document.createElement('div');
+              citeInfo.cites.forEach(function(cite) {
+                var citeDiv = window.document.createElement('div');
+                citeDiv.classList.add('hanging-indent');
+                citeDiv.classList.add('csl-entry');
+                var biblioDiv = window.document.getElementById('ref-' + cite);
+                if (biblioDiv) {
+                  citeDiv.innerHTML = biblioDiv.innerHTML;
+                }
+                popup.appendChild(citeDiv);
+              });
+              return popup.innerHTML;
+            });
+          }
+        }
+      });
+      </script>
+    <script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+    (function() {
+      let previousOnload = window.onload;
+      window.onload = () => {
+        if (previousOnload) {
+          previousOnload();
+        }
+        lightboxQuarto.on('slide_before_load', (data) => {
+          const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+          const href = trigger.getAttribute('href');
+          if (href !== null) {
+            const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+            if (imgEl !== null) {
+              const srcAttr = imgEl.getAttribute("src");
+              if (srcAttr && srcAttr.startsWith("data:")) {
+                slideConfig.href = srcAttr;
+              }
+            }
+          } 
+        });
+      
+        lightboxQuarto.on('slide_after_load', (data) => {
+          const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(slideNode);
+          }
+        });
+      
+      };
+      
+    })();
+              </script>
+    
+
+</body></html>

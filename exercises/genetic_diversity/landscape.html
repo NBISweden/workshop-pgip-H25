@@ -1,0 +1,1765 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.33">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<meta name="author" content="Per Unneberg">
+<title>Genetic diversity landscapes – Population Genomics in Practice 2025</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../assets/logos/nbislogo-green.svg" rel="icon" type="image/svg+xml">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-e0fa960b084fe2c1b9e2a0a843ce9846.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-c99def4582b0a787bea15946fe8e6d6f.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/quarto-contrib/fontawesome6-1.2.0/all.min.css" rel="stylesheet">
+<link href="../../site_libs/quarto-contrib/fontawesome6-1.2.0/latex-fontsize.css" rel="stylesheet">
+<script src="../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script><script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+</head>
+<body class="nav-sidebar floating nav-fixed slimcontent quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="navbar navbar-expand-lg " data-bs-theme="dark"><div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../../assets/logos/nbislogo-green.svg" alt="" class="navbar-logo"></a>
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Population Genomics in Practice 2025</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+<li class="nav-item">
+    <a class="nav-link active" href="../../slides/index.html" aria-current="page"> 
+<span class="menu-text">Slides</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../exercises/index.html"> 
+<span class="menu-text">Exercises</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../recipes/index.html"> 
+<span class="menu-text">Code recipes</span></a>
+  </li>  
+</ul>
+</div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../exercises/index.html">Exercises</a></li><li class="breadcrumb-item"><a href="../../exercises/genetic_diversity/index.html">Genetic diversity</a></li><li class="breadcrumb-item"><a href="../../exercises/genetic_diversity/landscape.html">Genetic diversity landscapes</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+<li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Slides</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../slides/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Listing</span></a>
+  </div>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false">
+ <span class="menu-text">Introduction</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth2 ">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../slides/pgip/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Population genomics in practice</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false">
+ <span class="menu-text">Population genetics foundations</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth2 ">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../slides/foundations/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Population genetics foundations</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../slides/foundations/data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data and definitions</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../slides/foundations/alleles.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Alleles and genealogies</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../slides/foundations/linkage.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Linkage disequilibrium</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../slides/foundations/wrightfisher.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">The Wright-Fisher model</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../slides/foundations/diversity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Genetic diversity</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false">
+ <span class="menu-text">Variant calling</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth2 ">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../slides/variant_calling/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Variant calling</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+ <span class="menu-text">slides/variant_calling/dna_sequencing.qmd</span>
+  </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../slides/variant_calling/read_mapping.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Read mapping</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../slides/variant_calling/variant_calling.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Variant calling and genotyping</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../slides/variant_calling/reproducibility.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Variant calling workflows</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false">
+ <span class="menu-text">Variant filtering</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth2 ">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../slides/variant_filtering/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Variant filtering</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../slides/variant_filtering/variant_filtering.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Variant filtering</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../slides/variant_filtering/depth_filtering.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Depth filtering</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false">
+ <span class="menu-text">Genetic diversity</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth2 ">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../slides/genetic_diversity/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Genetic diversity</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../slides/genetic_diversity/diversity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Genetic diversity</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
+ <span class="menu-text">Exercises</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../exercises/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Exercises</span></a>
+  </div>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="false">
+ <span class="menu-text">Data</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth2 ">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../exercises/compute_environment/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Compute environment</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../exercises/datasets/monkeyflowers.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Monkeyflowers dataset</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="false">
+ <span class="menu-text">Variant calling</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth2 ">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../exercises/variant_calling/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Variant calling index</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../exercises/variant_calling/introduction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Variant calling introduction</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../exercises/variant_calling/data_qc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data quality control</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../exercises/variant_calling/read_mapping.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Read mapping and duplicate removal</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../exercises/variant_calling/variant_calling_workflow.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Variant calling workflow</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="false">
+ <span class="menu-text">Variant filtering</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-10" class="collapse list-unstyled sidebar-section depth2 ">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../exercises/variant_filtering/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Variant filtering index</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../exercises/variant_filtering/basic_filtering.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Basic variant filtering</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../exercises/variant_filtering/depth_filtering.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Depth filtering on invariant sites</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="false">
+ <span class="menu-text">Recombination and linkage</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-11" class="collapse list-unstyled sidebar-section depth2 ">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../exercises/recombination_linkage/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Recombination and linkage index</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../exercises/recombination_linkage/ld_decay.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Linkage disequilibrium decay</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" role="navigation" aria-expanded="true">
+ <span class="menu-text">Genetic diversity</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-12" class="collapse list-unstyled sidebar-section depth2 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../exercises/genetic_diversity/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Genetic diversity index</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../exercises/genetic_diversity/landscape.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Genetic diversity landscapes</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-13" role="navigation" aria-expanded="true">
+ <span class="menu-text">Code recipes</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-13" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-13" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../recipes/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Code recipes</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+    </ul>
+</div>
+</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
+   
+  <ul>
+<li><a href="#about" id="toc-about" class="nav-link active" data-scroll-target="#about">About</a></li>
+  <li><a href="#preparation" id="toc-preparation" class="nav-link" data-scroll-target="#preparation">Preparation</a></li>
+  <li>
+<a href="#generating-and-visualising-diversity-statistics" id="toc-generating-and-visualising-diversity-statistics" class="nav-link" data-scroll-target="#generating-and-visualising-diversity-statistics">Generating and visualising diversity statistics</a>
+  <ul class="collapse">
+<li><a href="#compiling-statistics-with-vcftools" id="toc-compiling-statistics-with-vcftools" class="nav-link" data-scroll-target="#compiling-statistics-with-vcftools">Compiling statistics with vcftools</a></li>
+  <li><a href="#compiling-statistics-with-pixy" id="toc-compiling-statistics-with-pixy" class="nav-link" data-scroll-target="#compiling-statistics-with-pixy">Compiling statistics with pixy</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#genome-scans-and-genomic-features" id="toc-genome-scans-and-genomic-features" class="nav-link" data-scroll-target="#genome-scans-and-genomic-features">Genome scans and genomic features</a>
+  <ul class="collapse">
+<li><a href="#working-with-z-transformed-data" id="toc-working-with-z-transformed-data" class="nav-link" data-scroll-target="#working-with-z-transformed-data"><i class="fa-brands fa-r-project" aria-label="r-project"></i> Working with Z-transformed data</a></li>
+  <li><a href="#stratifying-by-genomic-feature" id="toc-stratifying-by-genomic-feature" class="nav-link" data-scroll-target="#stratifying-by-genomic-feature">Stratifying by genomic feature</a></li>
+  </ul>
+</li>
+  <li><a href="#monkeyflower-diversity-landscape" id="toc-monkeyflower-diversity-landscape" class="nav-link" data-scroll-target="#monkeyflower-diversity-landscape">Monkeyflower diversity landscape</a></li>
+  </ul></nav>
+    </div>
+<!-- main -->
+<main class="content page-columns page-full column-body" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../exercises/index.html">Exercises</a></li><li class="breadcrumb-item"><a href="../../exercises/genetic_diversity/index.html">Genetic diversity</a></li><li class="breadcrumb-item"><a href="../../exercises/genetic_diversity/landscape.html">Genetic diversity landscapes</a></li></ol></nav><div class="quarto-title">
+<h1 class="title">Genetic diversity landscapes</h1>
+<p class="subtitle lead">Investigating the diversity landscape in Monkeyflower</p>
+</div>
+
+
+
+<div class="quarto-title-meta column-body">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Per Unneberg </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">13-Sep-2025</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header><!-- markdownlint-disable MD041 --><!-- markdownlint-disable MD041 --><!-- markdownlint-enable MD041 --><!-- markdownlint-disable MD041 --><!-- markdownlint-enable MD041 --><!-- markdownlint-disable MD041 --><!-- markdownlint-enable MD041 --><!-- markdownlint-disable MD041 --><!-- markdownlint-enable MD041 --><!-- markdownlint-enable MD041 --><section id="about" class="level2"><h2 class="anchored" data-anchor-id="about">About</h2>
+<p>In this exercise we will look at measures that describe variation and compile statistics along a sequence. By scanning variation in windows along the sequence (a.k.a. genomic scan) we can identify outlier regions whose pattern of variation could potentially be attributed to causes other than neutral processes, such as adaptation or migration. We will use the Monkeyflower system to generate a diversity landscape.</p>
+<!-- markdownlint-disable MD041 -->
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Commands have been run on a subset of the data
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>The commands of this document have been run on a subset (a subregion) of the data. Therefore, although you will use the same commands, your results will differ from those presented here.</p>
+</div>
+</div>
+</div>
+<!-- markdownlint-enable MD041 -->
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Learning objectives
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<ul>
+<li>describe and calculate commonly used measures of variation, including nucleotide diversity <span class="math inline">\(\pi\)</span>, divergence <span class="math inline">\(d_{XY}\)</span> and differentiation <span class="math inline">\(F_{ST}\)</span>
+</li>
+<li>perform genome scans of diversity and plot the results</li>
+<li>identify outlier regions of interest</li>
+</ul>
+</div>
+</div>
+</div>
+<!-- markdownlint-disable MD041 -->
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tools
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist">
+<li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true">Listing</a></li>
+<li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false"><i class="fa-solid fa-server" aria-label="server"></i> PDC</a></li>
+<li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false"><i class="fa-solid fa-laptop" aria-label="laptop"></i> pixi</a></li>
+</ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<ul>
+<li>
+<a href="https://samtools.github.io/bcftools/bcftools.html">bcftools</a> <span class="citation" data-cites="danecek_TwelveYearsSAMtools_2021">(<a href="#ref-danecek_TwelveYearsSAMtools_2021" role="doc-biblioref">Danecek et al., 2021</a>)</span>
+</li>
+<li>
+<a href="https://bedtools.readthedocs.io/en/latest/index.html">bedtools</a> <span class="citation" data-cites="quinlan_BEDToolsFlexibleSuite_2010">(<a href="#ref-quinlan_BEDToolsFlexibleSuite_2010" role="doc-biblioref">Quinlan &amp; Hall, 2010</a>)</span>
+</li>
+<li><a href="https://bioinf.shenwei.me/csvtk">csvtk</a></li>
+<li>
+<a href="https://github.com/ksamuk/pixy.git">pixy</a> <span class="citation" data-cites="korunes_PixyUnbiasedEstimation_2021">(<a href="#ref-korunes_PixyUnbiasedEstimation_2021" role="doc-biblioref">Korunes &amp; Samuk, 2021</a>)</span>
+</li>
+<li>
+<a href="https://vcftools.github.io">vcftools</a> <span class="citation" data-cites="danecek_VariantCallFormat_2011">(<a href="#ref-danecek_VariantCallFormat_2011" role="doc-biblioref">Danecek et al., 2011</a>)</span>
+</li>
+</ul>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<p>Choose <strong>one</strong> of <strong>Modules</strong> and <strong>Virtual environment</strong> to access relevant tools.</p>
+<section id="modules" class="level5"><h5 class="anchored" data-anchor-id="modules">Modules</h5>
+<p>Execute the following command to load modules:</p>
+<div class="sourceCode">
+<pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"># NB: the following tools are not available as modules:
+# - csvtk
+module load bioinfo-tools \ 
+    bcftools/1.20 bedtools/2.31.0 pixy/1.2.5.beta1 \ 
+    vcftools/0.1.16
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre>
+</div>
+</section><section id="virtual-environment" class="level5"><h5 class="anchored" data-anchor-id="virtual-environment">Virtual environment</h5>
+<p>Run the <code>pgip</code> initialization script and activate the <code>pgip</code> default environment:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> /cfs/klemming/projects/supr/pgip_2025/init.sh</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">pgip_activate</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Then activate the <code>e-genetic-diversity</code> environment:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># pgip_shell calls pixi shell -e e-genetic-diversity --as-is</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">pgip_shell</span> e-genetic-diversity</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+</div>
+<div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
+<p>Copy the contents to a file <code>pixi.toml</code> in directory <code>genetic-diversity</code>, <code>cd</code> to directory and activate environment with <code>pixi shell</code>:</p>
+<div class="sourceCode cell-code">
+<pre class="sourceCode toml code-with-copy"><code class="sourceCode toml">[workspace]
+channels = ["conda-forge", "bioconda"]
+name = "genetic-diversity"
+platforms = ["linux-64", "osx-64"]
+
+[dependencies]
+bcftools = "&gt;=1.22,&lt;2"
+bedtools = "&gt;=2.31.1,&lt;3"
+csvtk = "&gt;=0.34.0,&lt;0.35"
+pixy = "&gt;=2.0.0.beta12,&lt;3"
+vcftools = "&gt;=0.1.17,&lt;0.2"
+
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- markdownlint-enable MD041 -->
+<!-- markdownlint-disable MD041 -->
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Data setup
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-4" class="callout-4-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist">
+<li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true"><i class="fa-solid fa-server" aria-label="server"></i> PDC</a></li>
+<li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false"><i class="fa-solid fa-laptop" aria-label="laptop"></i> Local</a></li>
+</ul>
+<div class="tab-content">
+<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
+<p>Make an analysis directory <code>genetic-diversity</code> and cd to it:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> genetic-diversity <span class="kw">&amp;&amp;</span> <span class="bu">cd</span> genetic-diversity</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="using-rsync" class="level5"><h5 class="anchored" data-anchor-id="using-rsync">Using rsync</h5>
+<p>Use rsync to sync data to your analysis directory (hint: first use options <code>-anv</code> to run the command without actually copying data):</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Run rsync -anv first time</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">rsync</span> <span class="at">-av</span> /cfs/klemming/projects/supr/pgip_2025/data/monkeyflower/selection/large/vcftools-filter-bqsr/ .</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section><section id="using-pgip-client" class="level5"><h5 class="anchored" data-anchor-id="using-pgip-client">Using pgip client</h5>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pgip</span> exercises setup e-genetic-diversity</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+</div>
+<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
+<p>Make an analysis directory <code>genetic-diversity</code> and cd to it:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> genetic-diversity <span class="kw">&amp;&amp;</span> <span class="bu">cd</span> genetic-diversity</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Then use wget to retrieve data to analysis directory.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">wget</span> <span class="at">-r</span> <span class="at">-np</span> <span class="at">-nH</span> <span class="at">-N</span> <span class="at">--accept-regex</span> all<span class="pp">*</span> <span class="at">--cut-dirs</span><span class="op">=</span>7 <span class="dt">\</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>     https://export.uppmax.uu.se/uppstore2017171/pgip/data/monkeyflower/selection/large/vcftools-filter-bqsr/</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- markdownlint-enable MD041 -->
+</section><section id="preparation" class="level2 page-columns page-full"><h2 class="anchored" data-anchor-id="preparation">Preparation</h2>
+<p>In this exercise, we will be analysing the full data set for linkage group 4 (LG4), consisting of all 37 samples.</p>
+<div class="cell">
+<details class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">read_bcftools</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">fn</span>, <span class="va">stat</span> <span class="op">=</span> <span class="st">"SN"</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readLines.html">readLines</a></span><span class="op">(</span><span class="va">fn</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="va">fn</span>, <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.table</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/textconnections.html">textConnection</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html">grep</a></span><span class="op">(</span><span class="va">stat</span>, <span class="va">x</span><span class="op">)</span><span class="op">]</span><span class="op">)</span>, sep <span class="op">=</span> <span class="st">"\t"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span><span class="va">vcfs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html">list.files</a></span><span class="op">(</span>pattern <span class="op">=</span> <span class="st">"vcf.gz.bcftools.stats$"</span><span class="op">)</span></span>
+<span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/do.call.html">do.call</a></span><span class="op">(</span><span class="st">"rbind"</span>, <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="va">vcfs</span>, <span class="va">read_bcftools</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Filename"</span>, <span class="st">"SN"</span>, <span class="st">"id"</span>, <span class="st">"key"</span>, <span class="st">"value"</span><span class="op">)</span></span>
+<span><span class="va">x</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="fu">mutate</span><span class="op">(</span><span class="fu">across</span><span class="op">(</span>.col <span class="op">=</span> <span class="st">"Filename"</span>, .names <span class="op">=</span> <span class="st">"FN"</span>, .fns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="op">~</span><span class="op">(</span><span class="fu">str_replace</span><span class="op">(</span><span class="va">.x</span>,</span>
+<span>        <span class="st">".bcftools.stats"</span>, <span class="st">""</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="fu">mutate</span><span class="op">(</span><span class="fu">across</span><span class="op">(</span>.col <span class="op">=</span> <span class="st">"key"</span>, .names <span class="op">=</span> <span class="st">"key"</span>, .fns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="op">~</span><span class="fu">str_replace</span><span class="op">(</span><span class="va">.x</span>, <span class="st">"number of "</span>,</span>
+<span>        <span class="st">""</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="fu">mutate</span><span class="op">(</span><span class="fu">across</span><span class="op">(</span>.col <span class="op">=</span> <span class="st">"key"</span>, .names <span class="op">=</span> <span class="st">"key"</span>, .fns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="op">~</span><span class="fu">str_replace</span><span class="op">(</span><span class="va">.x</span>, <span class="st">":"</span>,</span>
+<span>        <span class="st">""</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">key</span> <span class="op">==</span> <span class="st">"records"</span> <span class="op">|</span> <span class="va">key</span> <span class="op">==</span> <span class="st">"samples"</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="fu">pivot_wider</span><span class="op">(</span>names_from <span class="op">=</span> <span class="va">key</span>, values_from <span class="op">=</span> <span class="va">value</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="fu">select</span><span class="op">(</span><span class="va">Filename</span>, <span class="va">records</span>, <span class="va">samples</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="fu">kable</span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div id="tbl-r-bcftools-summarise-vcfs" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure"><figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-r-bcftools-summarise-vcfs-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;1: Summary of VCF files
+</figcaption><div aria-describedby="tbl-r-bcftools-summarise-vcfs-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="do-not-create-environment cell caption-top table table-sm table-striped small">
+<thead><tr class="header">
+<th style="text-align: left;">Filename</th>
+<th style="text-align: right;">records</th>
+<th style="text-align: right;">samples</th>
+</tr></thead>
+<tbody><tr class="odd">
+<td style="text-align: left;">allsites.vcf.gz.bcftools.stats</td>
+<td style="text-align: right;">17076</td>
+<td style="text-align: right;">37</td>
+</tr></tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p>Some of the programs require we prepare population files. For <code>pixy</code>, this is a headerless, tab-separated file with sample and population columns. The <code>sampleinfo.csv</code> file contains the information we need; the sample names have been prefixed with a three-letter code to indicate population (apart from <em>ssp. puniceus</em> which also comes with a single letter <code>R</code> or <code>Y</code> indicating ecotype). <a href="#tbl-sample-populations" class="quarto-xref">Table&nbsp;2</a> summarizes the populations and samples.</p>
+<div class="cell">
+<details class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># R code to generate sample population summary</span></span>
+<span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.csv</a></span><span class="op">(</span><span class="st">"sampleinfo.csv"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">data</span> <span class="op">&lt;-</span> <span class="va">data</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="fu">mutate</span><span class="op">(</span>Population <span class="op">=</span> <span class="va">SampleAlias</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="fu">mutate</span><span class="op">(</span><span class="fu">across</span><span class="op">(</span>.col <span class="op">=</span> <span class="st">"Population"</span>, .names <span class="op">=</span> <span class="st">"Population"</span>, .fns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="op">~</span><span class="fu">str_replace</span><span class="op">(</span><span class="va">.x</span>,</span>
+<span>        <span class="st">"(.+)-.+$"</span>, <span class="st">"\\1"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="fu">mutate</span><span class="op">(</span><span class="fu">across</span><span class="op">(</span>.col <span class="op">=</span> <span class="st">"Population"</span>, .names <span class="op">=</span> <span class="st">"Population"</span>, .fns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="op">~</span><span class="fu">str_replace</span><span class="op">(</span><span class="va">.x</span>,</span>
+<span>        <span class="st">"(CLV)_.+"</span>, <span class="st">"\\1"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">data</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="fu">group_by</span><span class="op">(</span><span class="va">Population</span>, <span class="va">ScientificName</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="fu">summarise</span><span class="op">(</span>n <span class="op">=</span> <span class="fu">n</span><span class="op">(</span><span class="op">)</span>, samples <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="va">SampleAlias</span>, collapse <span class="op">=</span> <span class="st">", "</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="fu">kable</span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div id="tbl-sample-populations" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure"><figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-sample-populations-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;2: Summary of populations and samples.
+</figcaption><div aria-describedby="tbl-sample-populations-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="do-not-create-environment cell caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 11%">
+<col style="width: 25%">
+<col style="width: 3%">
+<col style="width: 59%">
+</colgroup>
+<thead><tr class="header">
+<th style="text-align: left;">Population</th>
+<th style="text-align: left;">ScientificName</th>
+<th style="text-align: right;">n</th>
+<th style="text-align: left;">samples</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">ARI</td>
+<td style="text-align: left;">Diplacus aridus</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: left;">ARI-159_83, ARI-159_84, ARI-195_1, ARI-T84</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">AUR</td>
+<td style="text-align: left;">Diplacus aurantiacus</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: left;">AUR-T102, AUR-T104, AUR-T50, AUR-T92</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">CAL</td>
+<td style="text-align: left;">Diplacus calycinus</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: left;">CAL-T90, CAL-T91, CAL-T144, CAL-T150</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">CLV</td>
+<td style="text-align: left;">Diplacus clevelandii</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: left;">CLV_GH, CLV_11, CLV_4</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">GRA</td>
+<td style="text-align: left;">Diplacus grandiflorus</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: left;">GRA-T96, GRA-T101, GRA-T61, GRA-T99</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">LON</td>
+<td style="text-align: left;">Diplacus longiflorus</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: left;">LON-T33, LON-T8, LON-DPR, LON-SS</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">PAR</td>
+<td style="text-align: left;">Erythranthe parviflora</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: left;">PAR-KK161, PAR-KK168, PAR-KK180, PAR-KK182</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">PUN-R</td>
+<td style="text-align: left;">Diplacus puniceus</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: left;">PUN-R-ELF, PUN-R-JMC, PUN-R-LH, PUN-R-MT, PUN-R-UCSD</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">PUN-Y</td>
+<td style="text-align: left;">Diplacus puniceus</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: left;">PUN-Y-BCRD, PUN-Y-INJ, PUN-Y-LO, PUN-Y-PCT, PUN-Y-POTR</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<div id="fig-evolutionary-relationship" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-evolutionary-relationship-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="../../exercises/datasets/assets/images/stankowski-2019-fig1A.webp" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Figure&nbsp;1: Evolutionary relationships across the radiation"><img src="../../exercises/datasets/assets/images/stankowski-2019-fig1A.webp" class="img-fluid figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-evolutionary-relationship-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Evolutionary relationships across the radiation
+</figcaption></figure>
+</div>
+<div id="fig-monkeyflower-sampling-location" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-monkeyflower-sampling-location-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="../../slides/simulation/assets/images/stankowski-2019-figs2.webp" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Figure&nbsp;2: Monkeyflower sampling locations"><img src="../../slides/simulation/assets/images/stankowski-2019-figs2.webp" class="img-fluid figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-monkeyflower-sampling-location-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: Monkeyflower sampling locations
+</figcaption></figure>
+</div>
+</div></div><p>We convert the sample information with <code>csvtk</code>. We also add a populations file with all samples belonging to the same population:<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ex">csvtk</span> mutate <span class="at">--name</span> Population <span class="at">--fields</span> SampleAlias sampleinfo.csv <span class="kw">|</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a> <span class="ex">csvtk</span> cut <span class="at">--fields</span> SampleAlias,Population <span class="kw">|</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a> <span class="ex">csvtk</span> replace <span class="at">--fields</span> Population <span class="at">--pattern</span> <span class="st">"(.+)-.+$"</span> <span class="at">--replacement</span> <span class="st">"</span><span class="dt">\$</span><span class="st">1"</span> <span class="kw">|</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a> <span class="ex">csvtk</span> replace <span class="at">--fields</span> Population <span class="at">--pattern</span> <span class="st">"(CLV)_.+"</span> <span class="at">--replacement</span> <span class="st">"</span><span class="dt">\$</span><span class="st">1"</span> <span class="kw">|</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a> <span class="ex">csvtk</span> del-header <span class="at">--out-tabs</span> <span class="op">&gt;</span> populations.txt</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="ex">csvtk</span> cut <span class="at">--fields</span> SampleAlias sampleinfo.csv <span class="kw">|</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a> <span class="ex">csvtk</span> mutate <span class="at">--name</span> Population <span class="at">--fields</span> SampleAlias <span class="kw">|</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a> <span class="ex">csvtk</span> replace <span class="at">--fields</span> Population <span class="at">--pattern</span> <span class="st">".+"</span> <span class="at">--replacement</span> <span class="st">"ALL"</span> <span class="kw">|</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a> <span class="ex">csvtk</span> del-header <span class="at">--out-tabs</span> <span class="op">&gt;</span> populations.ALL.txt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><code>vcftools</code>, on the other hand, requires that populations are specified as separate files, containing the individuals of each population. We can use the <code>populations.txt</code> file to quickly generate population-specific files, and we add an <code>ALL</code> population, treating all samples as coming from the same population:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> pop <span class="kw">in</span> ARI AUR CAL CLV GRA LON PAR PUN-R PUN-Y<span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a> <span class="ex">csvtk</span> <span class="at">--no-header-row</span> grep <span class="at">--tabs</span> <span class="at">--fields</span> 2 <span class="at">--pattern</span> <span class="st">"</span><span class="va">$pop</span><span class="st">"</span> populations.txt <span class="kw">|</span> <span class="dt">\</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="ex">csvtk</span> cut <span class="at">--tabs</span> <span class="at">--fields</span> 1 <span class="op">&gt;</span> <span class="va">$pop</span>.txt<span class="kw">;</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="ex">csvtk</span> cut <span class="at">--tabs</span> <span class="at">--no-header-row</span> <span class="at">--fields</span> 1 populations.txt <span class="op">&gt;</span> ALL.txt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We define environment variables to make the downstream commands easier to type:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="va">VCF</span><span class="op">=</span>allsites.vcf.gz</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="va">POPS</span><span class="op">=</span>populations.txt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section><section id="generating-and-visualising-diversity-statistics" class="level2 page-columns page-full"><h2 class="anchored" data-anchor-id="generating-and-visualising-diversity-statistics">Generating and visualising diversity statistics</h2>
+<section id="compiling-statistics-with-vcftools" class="level3 page-columns page-full"><h3 class="anchored" data-anchor-id="compiling-statistics-with-vcftools">Compiling statistics with vcftools</h3>
+<p>Create an output directory for the results and define some environment variables:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> 01-vcftools</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="va">OUT</span><span class="op">=</span>01-vcftools/allsites</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="nucleotide-diversity-pi" class="level4 page-columns page-full"><h4 class="anchored" data-anchor-id="nucleotide-diversity-pi">Nucleotide diversity (<span class="math inline">\(\pi\)</span>)</h4>
+<p>Nucleotide diversity can be calculated by site (<code>--site-pi</code>) or in windows (<code>--window-pi</code>)<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="ex">vcftools</span> <span class="at">--gzvcf</span> <span class="va">$VCF</span> <span class="at">--site-pi</span> <span class="at">--out</span> <span class="va">$OUT</span> <span class="dv">2</span><span class="op">&gt;</span> /dev/null</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="ex">csvtk</span> summary <span class="va">$OUT</span>.sites.pi <span class="at">--ignore-non-numbers</span> <span class="at">--tabs</span> <span class="dt">\</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>   <span class="at">--fields</span> PI:mean,PI:stdev</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>PI:mean PI:stdev
+0.02    0.07</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Set your window size higher, e.g., 10kb</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="ex">vcftools</span> <span class="at">--gzvcf</span> <span class="va">$VCF</span> <span class="at">--window-pi</span> 1000 <span class="at">--out</span> <span class="va">$OUT</span> <span class="dv">2</span><span class="op">&gt;</span> /dev/null</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+On genome scans and window sizes
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-5" class="callout-5-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Genetic diversity estimates can be noisy, so we often want to compute values in sliding windows across a sequence. Choosing window size can be as simple as trying out different values, often ranging from single to several hundred kilobases. As always, the appropriate size depends on the analyses.</p>
+<p>One rule of thumb that can be applied is that the window size should be larger than the genomic background of linkage disequilibrium (LD). Recall, LD is the non-random co-segregation of alleles at two or more loci. Linked loci will induce correlations in window-based statistics, so by choosing a window size larger than the LD background, we ensure that our windows are, in some sense, independent.</p>
+<p>For this reason, a common approach is to calculate some measure of LD between marker pairs, and generate a plot of LD decay. This is outside the scope of this exercise, but the interested reader can consult the <a href="https://www.cog-genomics.org/plink2/">plink</a> documentation for ways to do this. See also <a href="#fig-ld-decay-fuller" class="quarto-xref">Figure&nbsp;3</a> for an example plot.</p>
+
+</div>
+</div>
+</div>
+<div class="no-row-height column-margin column-container"><div class="callout-5-contents callout-collapse collapse callout-margin-content">
+<!-- markdownlint-disable MD013 -->
+<div id="fig-ld-decay-fuller" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-ld-decay-fuller-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="https://www.science.org/cms/10.1126/science.aba4674/asset/661d50bb-a085-41af-abdb-06c487ed4e63/assets/graphic/369_aba4674_f2.jpeg" class="lightbox" data-gallery="quarto-lightbox-gallery-3" title="Figure&nbsp;3: Properties of genetic variation and inferred demographic history in sampled A. millepora. @fuller_PopulationGeneticsCoral_2020, Figure 2. Upper left plot illustrates LD as a function of physical distance. Here, choosing a window size 20-30kb would ensure that most windows are independent."><img src="https://www.science.org/cms/10.1126/science.aba4674/asset/661d50bb-a085-41af-abdb-06c487ed4e63/assets/graphic/369_aba4674_f2.jpeg" class="img-fluid figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ld-decay-fuller-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: Properties of genetic variation and inferred demographic history in sampled <em>A. millepora</em>. <span class="citation" data-cites="fuller_PopulationGeneticsCoral_2020">Fuller et al. (<a href="#ref-fuller_PopulationGeneticsCoral_2020" role="doc-biblioref">2020</a>)</span>, Figure 2. Upper left plot illustrates LD as a function of physical distance. Here, choosing a window size 20-30kb would ensure that most windows are independent.
+</figcaption></figure>
+</div>
+<!-- markdownlint-enable MD013 -->
+</div></div><p>Even though single point summary statistics can be informative, we can get an overview of the distribution over the chromosome by plotting:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="ex">csvtk</span> plot line <span class="at">--tabs</span> <span class="va">$OUT</span>.windowed.pi <span class="at">-x</span> BIN_START <span class="at">-y</span> PI <span class="dt">\</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>   <span class="at">--point-size</span> 0.01 <span class="at">--xlab</span> <span class="st">"Position (bp)"</span> <span class="dt">\</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>   <span class="at">--ylab</span> <span class="st">"Diversity"</span> <span class="at">--title</span> LG4 <span class="at">--width</span> 9.0 <span class="at">--height</span> 3.5 <span class="dt">\</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>   <span class="op">&gt;</span> <span class="va">$OUT</span>.png</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="fig-01-vcftools-window-pi" class="quarto-float quarto-figure quarto-figure-center anchored" data-attr-output=".details summary=&quot;Output&quot;">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-01-vcftools-window-pi-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="01-vcftools/allsites.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4" title="Figure&nbsp;4: Nucleotide diversity across LG4 for all populations."><img src="01-vcftools/allsites.png" class="img-fluid figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-01-vcftools-window-pi-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4: Nucleotide diversity across LG4 for all populations.
+</figcaption></figure>
+</div>
+<p><a href="#fig-01-vcftools-window-pi" class="quarto-xref">Figure&nbsp;4</a> shows the diversity for all populations. We would also be interested in <em>comparing</em> the diversity for <em>different</em> populations. This can be achieved by passing a population file to <code>bcftools view</code> and piping (<code>|</code>) the output to <code>vcftools</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="ex">bcftools</span> view <span class="at">-S</span> PAR.txt <span class="va">$VCF</span> <span class="kw">|</span><span class="dt">\</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a> <span class="ex">vcftools</span> <span class="at">--vcf</span> <span class="at">-</span> <span class="at">--window-pi</span> 1000 <span class="at">--out</span> <span class="va">$OUT</span>.PAR <span class="dv">2</span><span class="op">&gt;</span> /dev/null</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="ex">bcftools</span> view <span class="at">-S</span> ARI.txt <span class="va">$VCF</span> <span class="kw">|</span><span class="dt">\</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a> <span class="ex">vcftools</span> <span class="at">--vcf</span> <span class="at">-</span> <span class="at">--window-pi</span> 1000 <span class="at">--out</span> <span class="va">$OUT</span>.ARI <span class="dv">2</span><span class="op">&gt;</span> /dev/null</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>With some <code>csvtk</code> magic we can combine the measures and plot:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># When assigning a constant must enclose it in single quotes within double quotes</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="ex">csvtk</span> mutate2 <span class="at">--tabs</span> <span class="at">--name</span> Population <span class="at">--expression</span> <span class="st">" 'ARI' "</span> <span class="dt">\</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>   <span class="va">$OUT</span>.ARI.windowed.pi <span class="op">&gt;</span> <span class="va">$OUT</span>.ARI.wpi</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="ex">csvtk</span> mutate2 <span class="at">--tabs</span> <span class="at">--name</span> Population <span class="at">--expression</span> <span class="st">" 'PAR' "</span> <span class="dt">\</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>   <span class="va">$OUT</span>.PAR.windowed.pi <span class="op">&gt;</span> <span class="va">$OUT</span>.PAR.wpi</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="ex">csvtk</span> concat <span class="at">--tabs</span> <span class="va">$OUT</span>.ARI.wpi <span class="va">$OUT</span>.PAR.wpi <span class="kw">|</span><span class="dt">\</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a> <span class="ex">csvtk</span> plot <span class="at">--tabs</span> line <span class="at">-</span> <span class="at">-x</span> BIN_START <span class="at">-y</span> PI <span class="dt">\</span></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">--group-field</span> Population <span class="dt">\</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">--point-size</span> 0.01 <span class="at">--xlab</span> <span class="st">"Position (bp)"</span> <span class="dt">\</span></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">--ylab</span> <span class="st">"Diversity"</span> <span class="at">--title</span> <span class="st">"LG4:PAR and ARI"</span> <span class="dt">\</span></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">--width</span> 9.0 <span class="at">--height</span> 3.5 <span class="dt">\</span></span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">&gt;</span> <span class="va">$OUT</span>.ARI.PAR.png <span class="dv">2</span><span class="op">&gt;</span>/dev/null</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="fig-01-vcftools-window-pi-ARI-PAR" class="quarto-float quarto-figure quarto-figure-center anchored" data-attr-output=".details summary=&quot;Output&quot;">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-01-vcftools-window-pi-ARI-PAR-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="01-vcftools/allsites.ARI.PAR.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5" title="Figure&nbsp;5: Nucleotide diversity across LG4 comparing populations ARI and PAR."><img src="01-vcftools/allsites.ARI.PAR.png" class="img-fluid figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-01-vcftools-window-pi-ARI-PAR-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;5: Nucleotide diversity across LG4 comparing populations ARI and PAR.
+</figcaption></figure>
+</div>
+</section><section id="f_st" class="level4"><h4 class="anchored" data-anchor-id="f_st"><span class="math inline">\(F_{ST}\)</span></h4>
+<p>Since <span class="math inline">\(F_{ST}\)</span> is a statistic that compares populations, we must supply two or more of the population files we defined above. A population file name is passed to the <code>--weir-fst-pop</code> option. Calculations are done by site per default, but let’s calculate <span class="math inline">\(F_{ST}\)</span> for a comparison of two populations in 100kb windows:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Set your window size higher, e.g., 100000</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="ex">vcftools</span> <span class="at">--gzvcf</span> <span class="va">$VCF</span> <span class="at">--weir-fst-pop</span> ARI.txt <span class="dt">\</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>   <span class="at">--weir-fst-pop</span> PAR.txt <span class="dt">\</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>   <span class="at">--fst-window-size</span> 1000 <span class="dt">\</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>   <span class="at">--out</span> <span class="va">$OUT</span>.ARI-PAR</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="ex">csvtk</span> plot line <span class="at">--tabs</span> <span class="va">$OUT</span>.ARI-PAR.windowed.weir.fst <span class="dt">\</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>   <span class="at">-x</span> BIN_START <span class="at">-y</span> MEAN_FST <span class="dt">\</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>   <span class="at">--point-size</span> 0.01 <span class="at">--xlab</span> <span class="st">"Position (bp)"</span> <span class="dt">\</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>   <span class="at">--ylab</span> <span class="st">"Fst"</span> <span class="at">--title</span> <span class="st">"LG4:ARI vs PAR"</span> <span class="dt">\</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>   <span class="at">--width</span> 9.0 <span class="at">--height</span> 3.5 <span class="dt">\</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>   <span class="op">&gt;</span> <span class="va">$OUT</span>.ARI-PAR.windowed.weir.fst.mean.png</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="fig-01-vcftools-fst" class="quarto-float quarto-figure quarto-figure-center anchored" data-attr-output=".details summary=&quot;Output&quot;">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-01-vcftools-fst-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="01-vcftools/allsites.ARI-PAR.windowed.weir.fst.mean.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6" title="Figure&nbsp;6: Mean F_{ST} across LG4, comparing ARI and PAR populations."><img src="01-vcftools/allsites.ARI-PAR.windowed.weir.fst.mean.png" class="img-fluid figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-01-vcftools-fst-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6: Mean <span class="math inline">\(F_{ST}\)</span> across LG4, comparing ARI and PAR populations.
+</figcaption></figure>
+</div>
+</section></section><section id="compiling-statistics-with-pixy" class="level3"><h3 class="anchored" data-anchor-id="compiling-statistics-with-pixy">Compiling statistics with pixy</h3>
+<p>The vcftools statistics that we just calculated have a couple of issues:</p>
+<ol type="1">
+<li>they have been calculated on unfiltered data; this can be somewhat remediated by applying a depth-based filter</li>
+<li>a more concerning problem is that even if we did apply a filter, all missing sites would be treated as invariant sites, when in reality the windows would need to be adjusted to the number of accessible sites within a window. This number could be calculated from a mask file, but adds some complexity to the calculations.</li>
+</ol>
+<p>Instead of applying filters, let’s first try out an alternative solution. <a href="https://pixy.readthedocs.io/en/latest/about.html">pixy</a> is a program that facilitates the calculation of nucleotide diversity within <span class="math inline">\(\pi\)</span> and between <span class="math inline">\(d_{XY}\)</span> populations from a VCF, as well as differentiation (<span class="math inline">\(F_{ST}\)</span>). It also takes invariant sites and missing data into consideration. Another nice feature is that by providing a population file with all samples, every population comparison is done on the fly, so only one run is needed!</p>
+<p>Calculating per-site statistics takes too long time, so we will only generate windowed output here. This may still take a couple of minutes though.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> 02-pixy</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Set your window size higher, e.g., 100kb</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="ex">pixy</span> <span class="at">--stats</span> pi fst dxy <span class="dt">\</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--vcf</span> <span class="va">$VCF</span> <span class="dt">\</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--populations</span> populations.txt <span class="dt">\</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">--window_size</span> 1000 <span class="dt">\</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">--output_folder</span> 02-pixy <span class="dt">\</span></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">--n_cores</span> 4</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span> <span class="at">-n</span> 3 02-pixy/pixy_pi.txt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>pop chromosome  window_pos_1    window_pos_2    avg_pi  no_sites    count_diffs count_comparisons   count_missing
+LON LG4 1   1000    0.0019674355495251  616 29  14740   3544
+PAR LG4 1   1000    0.0008201763379126  625 12  14631   3653</code></pre>
+</div>
+</div>
+<p>For windowed output, the pixy output files contain information on the windows, the number of missing sites, number of snps, and more. The first column corresponds to the population, which means we can easily select lines matching population(s) of interest. For a full description, consult the <a href="https://pixy.readthedocs.io/en/latest/output.html">documentation</a>. Note that because we provided a population file defining two populations, diversity is calculated per population.</p>
+<p>We conclude by plotting diversity for ARI and PAR</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Possibly remove NA values that otherwise would throw error</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="ex">csvtk</span> filter2 <span class="at">--tabs</span> <span class="dt">\</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>   <span class="at">--filter</span> <span class="st">'$avg_pi != "NA" &amp;&amp; ($pop == "ARI" || $pop == "PAR") '</span> <span class="dt">\</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>   02-pixy/pixy_pi.txt <span class="kw">|</span> <span class="dt">\</span></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a> <span class="ex">csvtk</span> plot line <span class="at">--tabs</span> <span class="at">-</span> <span class="at">-x</span> window_pos_1 <span class="at">-y</span> avg_pi <span class="dt">\</span></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">--group-field</span> pop <span class="dt">\</span></span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">--point-size</span> 0.01 <span class="at">--xlab</span> <span class="st">"Position (bp)"</span> <span class="dt">\</span></span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">--ylab</span> <span class="st">"Diversity"</span> <span class="at">--title</span> <span class="st">"LG4:ARI and PAR"</span> <span class="dt">\</span></span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a> <span class="at">--width</span> 9.0 <span class="at">--height</span> 3.5 <span class="dt">\</span></span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">&gt;</span> 02-pixy/pixy_pi.ARI-PAR.txt.png</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="fig-02-pixy-fst" class="quarto-float quarto-figure quarto-figure-center anchored" data-attr-output=".details summary=&quot;Output&quot;">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-02-pixy-fst-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="02-pixy/pixy_pi.ARI-PAR.txt.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7" title="Figure&nbsp;7: Mean diversity across LG4 for ARI and PAR."><img src="02-pixy/pixy_pi.ARI-PAR.txt.png" class="img-fluid figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-02-pixy-fst-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;7: Mean diversity across LG4 for ARI and PAR.
+</figcaption></figure>
+</div>
+<p>and <span class="math inline">\(F_{ST}\)</span> comparing ARI and PAR</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="ex">csvtk</span> filter2 <span class="at">--tabs</span> <span class="dt">\</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>   <span class="at">--filter</span> <span class="st">'$avg_wc_fst != "NA" &amp;&amp; $pop1 == "PAR" &amp;&amp; $pop2 == "ARI" '</span> <span class="dt">\</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>   02-pixy/pixy_fst.txt <span class="kw">|</span> <span class="dt">\</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a> <span class="ex">csvtk</span> plot line <span class="at">-t</span> <span class="at">-</span> <span class="at">-x</span> window_pos_1 <span class="at">-y</span> avg_wc_fst <span class="dt">\</span></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">--point-size</span> 0.01 <span class="at">--xlab</span> <span class="st">"Position (bp)"</span> <span class="dt">\</span></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">--ylab</span> <span class="st">"Fst"</span> <span class="at">--title</span> <span class="st">"LG4:ARI vs PAR"</span> <span class="at">--width</span> 9.0 <span class="at">--height</span> 3.5 <span class="dt">\</span></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">&gt;</span> 02-pixy/pixy_fst.ARI-PAR.txt.png</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="fig-02-pixy-fst-ARI-PAR" class="quarto-float quarto-figure quarto-figure-center anchored" data-attr-output=".details summary=&quot;Output&quot;">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-02-pixy-fst-ARI-PAR-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="02-pixy/pixy_fst.ARI-PAR.txt.png" class="lightbox" data-gallery="quarto-lightbox-gallery-8" title="Figure&nbsp;8: Mean F_{ST} across LG4 for ARI vs PAR."><img src="02-pixy/pixy_fst.ARI-PAR.txt.png" class="img-fluid figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-02-pixy-fst-ARI-PAR-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;8: Mean <span class="math inline">\(F_{ST}\)</span> across LG4 for ARI vs PAR.
+</figcaption></figure>
+</div>
+<p>Comparing <a href="#fig-02-pixy-fst-ARI-PAR" class="quarto-xref">Figure&nbsp;8</a> to <a href="#fig-01-vcftools-fst" class="quarto-xref">Figure&nbsp;6</a> shows a stark contrast, so clearly, how you filter and handle invariant/missing data will strongly affect the outcome.</p>
+<div class="callout callout-style-default callout-exercise callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+OPTIONAL: Apply filters to pixy and vcftools output and compare
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-6" class="callout-6-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div>
+<div class="callout-exercise">
+<p>Generate depth filters, utilizing the knowledge from the variant filtering lab, and apply them to the VCF file. Rerun a couple of pixy and vcftools stats to see how it affects the outcome. Provided you use identical window sizes, you could make a scatter plot of a statistic of the two tools against oneanother.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section></section><section id="genome-scans-and-genomic-features" class="level2"><h2 class="anchored" data-anchor-id="genome-scans-and-genomic-features">Genome scans and genomic features</h2>
+<section id="working-with-z-transformed-data" class="level3"><h3 class="anchored" data-anchor-id="working-with-z-transformed-data">
+<i class="fa-brands fa-r-project" aria-label="r-project"></i> Working with Z-transformed data</h3>
+<p>Transforming raw data to Z-scores can facilitate the scan for outlier regions. However, there is no easy way to do this with <code>csvtk</code>, so here is some template <code>R</code> code to do this from <code>pixy</code> data.</p>
+<div class="cell">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">pi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.table</a></span><span class="op">(</span><span class="st">"pixy_pi.txt"</span>, header <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co"># Select population PAR</span></span>
+<span><span class="va">data</span> <span class="op">&lt;-</span> <span class="va">data</span><span class="op">[</span><span class="va">data</span><span class="op">$</span><span class="va">pop</span> <span class="op">==</span> <span class="st">"PAR"</span>, <span class="op">]</span></span>
+<span><span class="va">x</span> <span class="op">&lt;-</span> <span class="va">data</span><span class="op">$</span><span class="va">avg_pi</span></span>
+<span><span class="va">z</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">x</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">x</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">x</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co"># Plot data along chromosome and identify region by eye plot(x =</span></span>
+<span><span class="co"># data$window_pos_1, y = z, xlab = 'Position (bp)')</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section><section id="stratifying-by-genomic-feature" class="level3"><h3 class="anchored" data-anchor-id="stratifying-by-genomic-feature">Stratifying by genomic feature</h3>
+<p><code>pixy</code> accepts as input a BED file that defines coordinates of genome features. Here is an example of how to extract CDS regions and then compile results with <code>pixy</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="ex">csvtk</span> filter2 <span class="at">--tabs</span> annotation.gff <span class="at">--filter</span> <span class="st">' $3 == "CDS" '</span> <span class="kw">|</span><span class="dt">\</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a> <span class="ex">csvtk</span> cut <span class="at">--tabs</span> <span class="at">--fields</span> 1,10,11 <span class="kw">|</span> <span class="ex">bedtools</span> sort <span class="kw">|</span> <span class="ex">bedtools</span> merge <span class="dt">\</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">&gt;</span> CDS.bed <span class="dv">2</span><span class="op">&gt;</span>/dev/null</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pixy</span> <span class="at">--vcf</span> allsites.vcf.gz <span class="at">--stats</span> pi <span class="dt">\</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a> <span class="at">--populations</span> populations.txt <span class="dt">\</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a> <span class="at">--output_prefix</span> cds <span class="at">--bed_file</span> CDS.bed</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section></section><section id="monkeyflower-diversity-landscape" class="level2"><h2 class="anchored" data-anchor-id="monkeyflower-diversity-landscape">Monkeyflower diversity landscape</h2>
+<p>Drawing on what you learned earlier today about filtering, and with the help of the command examples above, you can now start exploring the Monkeyflower diversity landscape. Try different population comparisons, perform outlier analyses, and see if you can find candidate regions of interest. If you want inspiration, take a look at the methods section of <span class="citation" data-cites="stankowski_WidespreadSelectionGene_2019">Stankowski et al. (<a href="#ref-stankowski_WidespreadSelectionGene_2019" role="doc-biblioref">2019</a>)</span>.</p>
+<p>Here are some suggested actions that you can take, but feel free to look at the data in any way you want.</p>
+<div class="callout callout-style-default callout-exercise callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Apply depth filter to VCF
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-7" class="callout-7-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div>
+<div class="callout-exercise">
+<p>Create a VCF subset of all samples and generate a depth filter, following the guidelines in the filtering exercise.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-exercise callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Run an outlier analysis and investigate significant loci
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-8" class="callout-8-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div>
+<div class="callout-exercise">
+<p>Z-transform a statistic and try to identify outliers. You can compare the coordinates of any significant locus with those in the provided annotation file <code>MAUR_annotation_functional_submission.gff</code>.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-exercise callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-9-contents" aria-controls="callout-9" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Compile data by genome feature
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-9" class="callout-9-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div>
+<div class="callout-exercise">
+<p>Use the annotation file <code>MAUR_annotation_functional_submission.gff</code> to generate BED files that define the regions of some features of interest, e.g., genes, introns, or UTRs. Do the results make sense?</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-exercise callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-10-contents" aria-controls="callout-10" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Reproduce distributions of diversity statistics for different population comparisons
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-10" class="callout-10-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div>
+<div class="callout-exercise">
+<!-- markdownlint-disable MD013 -->
+<p>See if you can reproduce some of the results in <a href="https://journals.plos.org/plosbiology/article/figure?id=10.1371/journal.pbio.3000391.g001"><span class="citation" data-cites="stankowski_WidespreadSelectionGene_2019">Stankowski et al. (<span>2019</span>)</span>, Fig. 2</a></p>
+<!-- markdownlint-enable MD013 -->
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-exercise callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-11-contents" aria-controls="callout-11" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Investigate a known adaptive locus on LG4
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-11" class="callout-11-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div>
+<div class="callout-exercise">
+<!-- markdownlint-disable MD013 -->
+<p>Investigate more closely the known adaptive locus on LG4, as illustrated in <a href="https://journals.plos.org/plosbiology/article/figure?id=10.1371/journal.pbio.3000391.g004"><span class="citation" data-cites="stankowski_WidespreadSelectionGene_2019">Stankowski et al. (<span>2019</span>)</span>, Fig. 4</a></p>
+<!-- markdownlint-enable MD013 -->
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+
+</section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" data-line-spacing="2" role="list">
+<div id="ref-danecek_VariantCallFormat_2011" class="csl-entry" role="listitem">
+Danecek, P., Auton, A., Abecasis, G., Albers, C. A., Banks, E., DePristo, M. A., Handsaker, R. E., Lunter, G., Marth, G. T., Sherry, S. T., McVean, G., &amp; Durbin, R. (2011). The variant call format and <span>VCFtools</span>. <em>Bioinformatics (Oxford, England)</em>, <em>27</em>(15), 2156–2158. <a href="https://doi.org/10.1093/bioinformatics/btr330">https://doi.org/10.1093/bioinformatics/btr330</a>
+</div>
+<div id="ref-danecek_TwelveYearsSAMtools_2021" class="csl-entry" role="listitem">
+Danecek, P., Bonfield, J. K., Liddle, J., Marshall, J., Ohan, V., Pollard, M. O., Whitwham, A., Keane, T., McCarthy, S. A., Davies, R. M., &amp; Li, H. (2021). Twelve years of <span>SAMtools</span> and <span>BCFtools</span>. <em>GigaScience</em>, <em>10</em>(2), giab008. <a href="https://doi.org/10.1093/gigascience/giab008">https://doi.org/10.1093/gigascience/giab008</a>
+</div>
+<div id="ref-fuller_PopulationGeneticsCoral_2020" class="csl-entry" role="listitem">
+Fuller, Z. L., Mocellin, V. J. L., Morris, L. A., Cantin, N., Shepherd, J., Sarre, L., Peng, J., Liao, Y., Pickrell, J., Andolfatto, P., Matz, M., Bay, L. K., &amp; Przeworski, M. (2020). Population genetics of the coral <span>Acropora</span> millepora: <span>Toward</span> genomic prediction of bleaching. <em>Science</em>, <em>369</em>(6501), eaba4674. <a href="https://doi.org/10.1126/science.aba4674">https://doi.org/10.1126/science.aba4674</a>
+</div>
+<div id="ref-korunes_PixyUnbiasedEstimation_2021" class="csl-entry" role="listitem">
+Korunes, K. L., &amp; Samuk, K. (2021). Pixy: <span>Unbiased</span> estimation of nucleotide diversity and divergence in the presence of missing data. <em>Molecular Ecology Resources</em>, <em>21</em>(4), 1359–1368. <a href="https://doi.org/10.1111/1755-0998.13326">https://doi.org/10.1111/1755-0998.13326</a>
+</div>
+<div id="ref-quinlan_BEDToolsFlexibleSuite_2010" class="csl-entry" role="listitem">
+Quinlan, A. R., &amp; Hall, I. M. (2010). <span>BEDTools</span>: A flexible suite of utilities for comparing genomic features. <em>Bioinformatics</em>, <em>26</em>(6), 841–842. <a href="https://doi.org/10.1093/bioinformatics/btq033">https://doi.org/10.1093/bioinformatics/btq033</a>
+</div>
+<div id="ref-stankowski_WidespreadSelectionGene_2019" class="csl-entry" role="listitem">
+Stankowski, S., Chase, M. A., Fuiten, A. M., Rodrigues, M. F., Ralph, P. L., &amp; Streisfeld, M. A. (2019). Widespread selection and gene flow shape the genomic landscape during a radiation of monkeyflowers. <em>PLOS Biology</em>, <em>17</em>(7), e3000391. <a href="https://doi.org/10.1371/journal.pbio.3000391">https://doi.org/10.1371/journal.pbio.3000391</a>
+</div>
+</div></section><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+<ol>
+<li id="fn1"><p>Whenever you see a large number of commands strung together with pipe (<code>|</code>) characters and you are unsure what is going on, I suggest you build the command from scratch, one statement at a time. So, begin with <code>csvtk mutate</code> up until the first pipe character, and once you understand what is going on, add the next statement up until the next pipe character, and so on.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>Recall; the dataset used to render these pages is much smaller, which is why we use a smaller window size below. Consequently, your plot will look different.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol></section></div></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/NBISweden\.github\.io\/workshop-pgip-H25\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer"><div class="nav-footer">
+    <div class="nav-footer-left">
+<p>2025 <a href="https://nbis.se">NBIS</a> | <a href="https://choosealicense.com/licenses/gpl-3.0/">GPL-3 License</a></p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p>Published with <a href="https://quarto.org/">Quarto</a> v<!--?quarto.version ?--></p>
+</div>
+  </div>
+</footer><script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
+
+
+</body></html>

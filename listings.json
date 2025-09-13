@@ -1,5 +1,17 @@
 [
   {
+    "listing": "/exercises/genetic_diversity/index.html",
+    "items": [
+      "/exercises/genetic_diversity/landscape.html"
+    ]
+  },
+  {
+    "listing": "/exercises/recombination_linkage/index.html",
+    "items": [
+      "/exercises/recombination_linkage/ld_decay.html"
+    ]
+  },
+  {
     "listing": "/exercises/variant_calling/index.html",
     "items": [
       "/exercises/variant_calling/introduction.html",
@@ -9,19 +21,8 @@
     ]
   },
   {
-    "listing": "/slides/variant_filtering/index.html",
-    "items": [
-      "/slides/variant_filtering/variant_filtering.html",
-      "/slides/variant_filtering/depth_filtering.html"
-    ]
-  },
-  {
-    "listing": "/slides/variant_calling/index.html",
-    "items": [
-      "/slides/variant_calling/read_mapping.html",
-      "/slides/variant_calling/variant_calling.html",
-      "/slides/variant_calling/reproducibility.html"
-    ]
+    "listing": "/slides/recombination/index.html",
+    "items": []
   },
   {
     "listing": "/slides/index.html",
@@ -36,7 +37,29 @@
     "listing": "/slides/foundations/index.html",
     "items": [
       "/slides/foundations/data.html",
-      "/slides/foundations/alleles.html"
+      "/slides/foundations/alleles.html",
+      "/slides/foundations/linkage.html"
+    ]
+  },
+  {
+    "listing": "/slides/variant_calling/index.html",
+    "items": [
+      "/slides/variant_calling/read_mapping.html",
+      "/slides/variant_calling/variant_calling.html",
+      "/slides/variant_calling/reproducibility.html"
+    ]
+  },
+  {
+    "listing": "/slides/variant_filtering/index.html",
+    "items": [
+      "/slides/variant_filtering/variant_filtering.html",
+      "/slides/variant_filtering/depth_filtering.html"
+    ]
+  },
+  {
+    "listing": "/slides/genetic_diversity/index.html",
+    "items": [
+      "/slides/genetic_diversity/diversity.html"
     ]
   },
   {
