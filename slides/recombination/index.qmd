@@ -5,11 +5,19 @@ author:
 format:
   nbis-course-html:
     number-sections: false
+listing:
+  id: rec-listing
+  type: table
+  fields: [title, author, description]
+  #contents:
 ---
+
 
 ## About
 
 Slides for recombination and linkage module.
 
-- [Theory](theory)
-- [Linkage](linkage.qmd)
+## Listing
+
+:::{#rec-listing}
+:::
