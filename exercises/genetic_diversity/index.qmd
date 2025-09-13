@@ -8,12 +8,21 @@ author:
   - Per Unneberg
 execute:
   cache: false
+exercise:
+  dir: diversity
+  venv: e-diversity
+listing:
+  id: div-listing
+  type: table
+  sort: false
+  fields: [title, description]
+  contents:
+    - landscape.qmd
 ---
 
 ## About
 
-## Exercises
+## Listing
 
-[Genetic diversity landscapes](landscape.qmd)
-
-: Introduction to calculating genetic diversity landscapes.
+:::{#div-listing}
+:::
