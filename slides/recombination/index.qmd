@@ -8,10 +8,9 @@ format:
 listing:
   id: rec-listing
   type: table
-  fields: [title, author, description]
-  #contents:
+  sort: false
+  fields: [title, description]
 ---
-
 
 ## About
 

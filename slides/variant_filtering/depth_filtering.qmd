@@ -1,6 +1,8 @@
 ---
 title: Depth filtering
 subtitle: Filtering variant and non-variant sites on depth
+description: >-
+  Variant filtering based on sequencing depth
 author:
   - Per Unneberg
 format:

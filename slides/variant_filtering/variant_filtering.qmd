@@ -1,6 +1,8 @@
 ---
 title: Variant filtering
 subtitle: From raw variant calls to high-quality call sets
+description: >-
+  Introduction to manual variant filtering using context statistics.
 author:
   - Per Unneberg
 format:

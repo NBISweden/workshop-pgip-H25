@@ -1,6 +1,8 @@
 ---
 title: Data and definitions
 subtitle: Populations genetics foundations
+description: >-
+  Introduction to population genetic data and definitions.
 author:
   - Per Unneberg
 format:
@@ -8,6 +10,8 @@ format:
     toc: false
     smaller: false
     footer: Population genetics foundations - data
+module:
+  - variant calling
 ---
 
 ## Setup  {.hidden .unnumbered .unlisted visibility="hidden"}

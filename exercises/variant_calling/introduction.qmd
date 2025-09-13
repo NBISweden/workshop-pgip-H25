@@ -1,5 +1,7 @@
 ---
 title: Variant calling introduction
+description: >-
+  Introduction to variant calling and the command line interface.
 format: nbis-course-html
 author:
   - Per Unneberg

@@ -10,6 +10,8 @@ format:
 listing:
   id: vc-listing
   type: table
+  fields: [title, description]
+  sort: false
   contents:
     - dna_sequencing.qmd
     - read_mapping.qmd

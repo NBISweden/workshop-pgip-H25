@@ -12,6 +12,8 @@ exercise:
 listing:
   id: vc-listing
   type: table
+  sort: false
+  fields: [title, description]
   contents:
     - introduction.qmd
     - data_qc.qmd

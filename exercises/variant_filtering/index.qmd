@@ -16,6 +16,8 @@ exercise:
 listing:
   id: vf-listing
   type: table
+  fields: [title, description]
+  sort: false
   contents:
     - basic_filtering.qmd
     - depth_filtering.qmd
