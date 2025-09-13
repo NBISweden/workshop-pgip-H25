@@ -72,12 +72,12 @@ website:
             contents:
               - exercises/genetic_diversity/index.qmd
               - exercises/genetic_diversity/landscape.qmd
-          # - section: Population structure
-          #   contents:
-          #     - exercises/population_structure/index.qmd
-          #     - exercises/population_structure/pca.qmd
-          #     - exercises/population_structure/admixture.qmd
-          #     - exercises/population_structure/dstats.qmd
+          - section: Population structure
+            contents:
+              - exercises/population_structure/index.qmd
+              - exercises/population_structure/pca.qmd
+              - exercises/population_structure/admixture.qmd
+              - exercises/population_structure/dstats.qmd
           # - section: Demography
           #   contents:
           #     - exercises/demography/index.qmd
