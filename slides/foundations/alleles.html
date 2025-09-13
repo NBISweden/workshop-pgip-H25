@@ -376,9 +376,9 @@ Per Unneberg
           display:block!important;
       }</style></aside>
 </section>
-<section id="in-absence-of-evolutionary-forces-alleles-are-in-equilibrium" class="slide level2 smaller ultitle">
+<section id="in-absence-of-evolutionary-forces-alleles-are-in-equilibrium" class="slide level2 ultitle">
 <h2>In absence of evolutionary forces alleles are in equilibrium</h2>
-<h3 class="ultitle" id="the-hardy-weinberg-equilibrium">The Hardy-Weinberg equilibrium</h3>
+<h4 id="the-hardy-weinberg-equilibrium">The Hardy-Weinberg equilibrium</h4>
 <p>For a locus, let <span class="math inline">A</span> and <span class="math inline">a</span> be two different alleles and let <span class="math inline">p</span> be the frequency of the <span class="math inline">A</span> allele and <span class="math inline">q=1-p</span> the frequency of the <span class="math inline">a</span> allele. In the <strong>absence</strong> of <strong>mutation</strong>, <strong>drift</strong>, <strong>migration</strong>, and other evolutionary processes, the equilibrium state is given by the <strong>Hardy-Weinberg equilibrium</strong> (<strong>HWE</strong>).</p>
 <div class="{.columns=center}">
 <div class="column" style="width:45%;">
@@ -427,12 +427,17 @@ Per Unneberg
 </tbody>
 </table>
 </div></div>
-<p>Under HWE assumption, neither allele nor genotype frequencies change over time.</p>
-<p>Importantly, we can calculate allele frequencies from genotype frequencies and vice versa:</p>
+<div class="columns">
+<div class="column" style="width:50%;">
+<h4 id="hwe-assumption">HWE assumption</h4>
+<p>Under <strong>HWE assumption</strong>, neither allele nor genotype frequencies change over time.</p>
+<p>Importantly, we can calculate allele frequencies from genotype frequencies and vice versa.</p>
+</div><div class="column" style="width:50%;">
 <p><span class="math display">
 p = f_{AA} + \frac{f_{Aa}}{2} = p^2 + pq\\
 q = f_{aa} + \frac{f_{Aa}}{2} = q^2 + pq\\
 </span></p>
+</div></div>
 <aside class="notes">
 <p>Segue: apart from describing the variation via e.g., diversity measures, we want to model how allele frequencies <em>change</em> in time. As <span class="citation" data-cites="gillespie_PopulationGeneticsConcise_2004">(<a href="#/bibliography" role="doc-biblioref" onclick="">Gillespie, 2004</a>, preface p.&nbsp;xi)</span> points out, “While genotype frequencies are easily measured, their change is not”</p>
 <p>IOW: describing variation fine, but where does it come from and how does it change?</p>
@@ -688,6 +693,61 @@ Figure&nbsp;1: Hardy-Weinberg proportions in 10,000 SNPs on chromosome 22 from t
 </div></div>
 </div>
 </div></div>
+</section>
+<section id="the-obsession-of-population-genetics" class="slide level2 ultitle">
+<h2>The obsession of population genetics</h2>
+<p>Population genetics is about <span class="citation" data-cites="gillespie_PopulationGeneticsConcise_2004">(<a href="#/bibliography" role="doc-biblioref" onclick="">Gillespie, 2004</a>)</span></p>
+<ol type="1">
+<li>describing the genetic structure of populations</li>
+<li>constructing theories on the forces that influence genetic variation</li>
+</ol>
+<div class="fragment">
+<div class="columns">
+<div class="column" style="width:50%;">
+<p>Questions to ponder:</p>
+<ul>
+<li>why does variation look the way it does?</li>
+<li>how is variation maintained?</li>
+<li>how does variation change over time (<span class="math inline">\Delta p</span>)?</li>
+<li>what forces shape the genetic structure of <em>populations</em>?</li>
+</ul>
+</div><div class="column fragment" style="width:50%;">
+<div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr; grid-row-gap: 0px; grid-column-gap: 0px; align-items: center;">
+<div>
+<p><img data-src="assets/images/flower-red.svg" width="27"> <img data-src="assets/images/flower-white.svg" width="27"> <img data-src="assets/images/flower-white.svg" width="27"> <img data-src="assets/images/flower-white.svg" width="27"> <img data-src="assets/images/flower-white.svg" width="27"> <img data-src="assets/images/flower-white.svg" width="27"> <img data-src="assets/images/flower-white.svg" width="27"> <img data-src="assets/images/flower-white.svg" width="27"> <img data-src="assets/images/flower-white.svg" width="27"> <img data-src="assets/images/flower-white.svg" width="27"></p>
+<p><span class="math display">p=0.1</span></p>
+</div>
+<div>
+<p><span class="math display">\large\rightarrow</span></p>
+</div>
+<div>
+<p><img data-src="assets/images/flower-red.svg" width="27"> <img data-src="assets/images/flower-red.svg" width="27"> <img data-src="assets/images/flower-red.svg" width="27"> <img data-src="assets/images/flower-red.svg" width="27"> <img data-src="assets/images/flower-red.svg" width="27"> <img data-src="assets/images/flower-white.svg" width="27"> <img data-src="assets/images/flower-white.svg" width="27"> <img data-src="assets/images/flower-white.svg" width="27"> <img data-src="assets/images/flower-white.svg" width="27"> <img data-src="assets/images/flower-white.svg" width="27"></p>
+<p><span class="math display">p=0.5</span></p>
+</div>
+<div>
+<p><span class="math display">\large\rightarrow</span></p>
+</div>
+<div>
+<p><img data-src="assets/images/flower-red.svg" width="27"> <img data-src="assets/images/flower-red.svg" width="27"> <img data-src="assets/images/flower-red.svg" width="27"> <img data-src="assets/images/flower-red.svg" width="27"> <img data-src="assets/images/flower-red.svg" width="27"> <img data-src="assets/images/flower-red.svg" width="27"> <img data-src="assets/images/flower-red.svg" width="27"> <img data-src="assets/images/flower-red.svg" width="27"> <img data-src="assets/images/flower-red.svg" width="27"> <img data-src="assets/images/flower-white.svg" width="27"></p>
+<p><span class="math display">p=0.9</span></p>
+</div>
+</div>
+</div></div>
+</div>
+<aside class="notes">
+<p>From HWE: we want to look a the creation, maintenance and loss of variation and what forces affect it</p>
+<p>Goal: describe theory behind evolving populations. This has been an obsession for a long time, even before DNA was known. We need to get back to basics.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
 <section id="bibliography" class="slide level2 unnumbered unlisted smaller ultitle scrollable">
 <h2>Bibliography</h2>

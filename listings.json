@@ -2,10 +2,17 @@
   {
     "listing": "/exercises/variant_calling/index.html",
     "items": [
+      "/exercises/variant_calling/introduction.html",
       "/exercises/variant_calling/data_qc.html",
       "/exercises/variant_calling/read_mapping.html",
-      "/exercises/variant_calling/introduction.html",
       "/exercises/variant_calling/variant_calling_workflow.html"
+    ]
+  },
+  {
+    "listing": "/slides/variant_filtering/index.html",
+    "items": [
+      "/slides/variant_filtering/variant_filtering.html",
+      "/slides/variant_filtering/depth_filtering.html"
     ]
   },
   {
@@ -21,14 +28,15 @@
     "items": [
       "/slides/pgip/index.html",
       "/slides/foundations/index.html",
-      "/slides/variant_calling/index.html"
+      "/slides/variant_calling/index.html",
+      "/slides/variant_filtering/index.html"
     ]
   },
   {
     "listing": "/slides/foundations/index.html",
     "items": [
-      "/slides/foundations/alleles.html",
-      "/slides/foundations/data.html"
+      "/slides/foundations/data.html",
+      "/slides/foundations/alleles.html"
     ]
   },
   {
