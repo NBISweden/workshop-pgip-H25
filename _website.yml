@@ -25,6 +25,7 @@ website:
               - slides/foundations/index.qmd
               - slides/foundations/data.qmd
               - slides/foundations/alleles.qmd
+              - slides/foundations/linkage.qmd
           - section: Variant calling
             contents:
               - slides/variant_calling/index.qmd

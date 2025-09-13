@@ -95,9 +95,21 @@ library(data.table)
 
 #### Observations
 
-- Particular combinations of alleles at different SNPs occur together
+- Particular combinations of alleles at different SNPs occur
+  together
 - Non-random assortment of alleles is called **linkage
   disequilibrium** (**LD**)
+  - Note: detecting **LD** does **not** ensure linkage or lack of
+    equilibrium
+- Unfortunate term: barrier to understanding
+  [@slatkin_LinkageDisequilibriumUnderstanding_2008]
+
+:::{.fragment}
+
+Going forward: discuss how **linkage generates LD** and
+**recombination breaks it down**
+
+:::
 
 ## Linkage generates haplotype structure
 
@@ -185,6 +197,13 @@ library(data.table)
 - Mutations 1, 2 on same branch $\Rightarrow$ appear together
 - Mutations 1, 5 on derived branches $\Rightarrow$ *usually* appear
   together
+
+:::
+
+::: {.notes}
+
+Key assumption in genealogies: infinite sites model; a mutation
+happens once and once only at a given site
 
 :::
 
@@ -291,6 +310,13 @@ library(data.table)
 
 :::
 
+::: {.notes}
+
+Note the implicit assumption of the infinite sites model, that is, we
+are only allowed to place each mutation **once** on the tree.
+
+:::
+
 ## Recombination breaks association between loci {.smaller}
 
 :::: {.columns}
@@ -309,22 +335,82 @@ library(data.table)
 
 :::
 
-Once per chromosome! But: rates vary between loci (hotspots), sex
-chromosomes vs autosomes, and in some species, recombination only
-occurs in one sex (e.g., *D.melanogaster*).
+One (at least) **crossover** in meiosis I per chromosome! But: rates
+vary between loci (hotspots), sex chromosomes vs autosomes, and in
+some species, recombination only occurs in one sex (e.g.,
+*D.melanogaster*).
 
 :::
 
-::: {.column width="40%"}
+::: {.column width="40%" .fragment}
 
-:::{}
+#### Genetic distance and recombination rate
+
+:::{.center}
+
+```{r, engine='tikz', fig.ext="svg" }
+#| label: ld-model
+#| echo: false
+#| eval: true
+#| out-width: 100%
+\begin{tikzpicture}[ultra thick, font=\sffamily]
+\tikzset{locus/.style={circle, fill=black, minimum size=1pt}}
+\node[locus, label={A/a}] (a) at (2, 0) {};
+\node[locus, label={B/b}] (b) at (8, 0) {};
+\node[label={$r$}] (r) at (5,0) {};
+\draw (0,0) -- (10,0);
+\draw[node distance=20px,%%
+      decoration={brace,mirror,amplitude=15px},decorate]%%
+   (a.south) -- node[below=15px] {$d$} (b.south);
+\end{tikzpicture}
+```
+
+:::
+
+$d$ - physical distance in bp
+
+Definiton: **genetic distance** between two points is $x$
+centiMorgans(cM) if the average number of crossovers between points
+$x/100$ per meiosis
+
+For short distances, genetic distance in cM $\approx$
+$\mathrm{Pr}(\text{crossover})$
+
+Definition: **recombination rate** $r$ relates genetic distance to
+base pair distance; commonly measured in cM/Mb
+
+Example: in human average is 1.2 cM per Mb - the probability of crossover  is a 1.2%
+
+:::
+
+::::
+
+::: {.notes}
+
+The mechanism that breaks up association between loci is
+recombination. Cartoon to right shows the possible (haploid) outcomes
+of meiosis. $r$ (the recombination rate) denotes the probability that
+there is a recombination event between the two loci.
+
+The farther apart two loci on the same chromosome, the larger the
+probability that a recombination event occurs between them. Note that
+this can be applied to loci on different chromosomes as well; they
+segregate independently.
+
+:::
+
+## Recombination generates new combinations of alleles
+
+:::: {.columns}
+
+::: {.column width="50%"}
 
 ```{r, engine='tikz', fig.ext="svg" }
 #| label: fig-parent-gamete
 #| echo: false
 #| eval: true
 #| fig-cap: Recombination mixes haplotypes
-#| out-width: 70%
+#| out-width: 50%
 \begin{tikzpicture}[ultra thick, font=\sffamily, x=1cm]
 \tikzset{
   r70/.style={red!70, text=red!70},
@@ -373,23 +459,17 @@ occurs in one sex (e.g., *D.melanogaster*).
 
 :::
 
+::: {.column width="50%"}
+
+#### Rules of thumb (human)
+
+- For close SNPs (less than ~0.01-0.1 cM, or ~10-100Kb) linkage is
+  stronger force than recombination
+- At larger (>0.1cM) recombination is stronger
+
 :::
 
 ::::
-
-::: {.notes}
-
-The mechanism that breaks up association between loci is
-recombination. Cartoon to right shows the possible (haploid) outcomes
-of meiosis. $r$ (the recombination rate) denotes the probability that
-there is a recombination event between the two loci.
-
-The farther apart two loci on the same chromosome, the larger the
-probability that a recombination event occurs between them. Note that
-this can be applied to loci on different chromosomes as well; they
-segregate independently.
-
-:::
 
 ## Measuring LD{.smaller}
 
@@ -508,6 +588,30 @@ $$
 
 ::::
 
+::: {.notes}
+
+Alternatively put:
+
+$$
+\max{|D|} = \min(p(1-q), (1-p)q)
+$$
+
+Better use $R^2$ or $D^\prime$
+
+Square of correlation coefficient between alleles at two loci:
+
+$$
+R^2 = \frac{D^2}{pq(1-p)(1-q)}
+$$
+
+Toy example to show how mixing subpopulations can introduce linkage:
+assume two subpopulations fixed for AB and ab. Then for either
+population $D=p_{AB} - p_Ap_B=1-1=0$. Mixing the populations leads to
+$p_{AB}=p_{ab}=p_A=p_A=0.5$, so $D=0.5-0.5^2=0.25$,
+$D_{max}=\min(p_Ap_B, p_ap_b)=0.25$ and $D^\prime=1$.
+
+:::
+
 ## LD decay
 
 :::: {.columns}
@@ -547,7 +651,8 @@ ggplot(df, aes(x = x, y = value, color = variable)) +
 
 #### Observation
 
-Even for free recombination ($r=0.5$) LD decay takes time
+Even for free recombination ($r=0.5$) LD decay takes time. Comparison:
+HWE which takes one generation.
 
 :::
 
@@ -566,6 +671,62 @@ Even for free recombination ($r=0.5$) LD decay takes time
 <!-- markdownlint-enable MD013 -->
 
 :::
+
+:::
+
+::::
+
+## LD importance and applications
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+### Importance
+
+- information about past events
+- constrains potential response to natural and artificial selection
+- genome-wide LD is reflection of
+  - population history
+  - breeding system
+  - pattern of geographic subdivision
+- regional LD reflection of
+  - natural selection
+  - gene conversion
+  - mutation and more
+
+Due to lack of data LD didn't become important until the end of the
+70's
+
+:::
+
+::: {.column width="50%"}
+
+### Applications
+
+#### Mutation and gene mapping
+
+Most loci are in close linkage with a variable site which can be used
+as a *marker* to study the inheritance of a trait of interest.
+
+#### Linked selection
+
+Reduced variation close to a site under selection due to linkage
+
+#### Estimating allele age
+
+Strong LD in large region indication of young allele.
+
+#### Determining window size for genome scans
+
+Ideal window size ~ distance at which LD between markers approaches
+background levels
+
+:::
+
+:::{.citation .flushright}
+
+[@slatkin_LinkageDisequilibriumUnderstanding_2008]
 
 :::
 
