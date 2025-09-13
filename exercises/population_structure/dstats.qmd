@@ -1,5 +1,7 @@
 ---
 title: D-statistics
+description: >-
+  Infer introgression and hybridization with D-statistics
 author:
   - Per Unneberg
 format:
@@ -55,24 +57,23 @@ tools.admixtools2.fmt >}}.
 
 ## On D-stastitics and f-statistics
 
-FIXME!
+D and f-statistics are tools used in explorations of
+multiple-population histories, particularly in instances involving
+migration or hybridization that form reticulate networks, as opposed
+to bifurcating trees. D-statistics, also known as ABBA-BABA tests, are
+designed to infer signs of introgression.
 
-- multiple-population histories in which migration/hybridization takes
-  place form *reticulate* networks as opposed to *bifurcating* trees
-- D-statistics (ABBA-BABA) tests infer signs of introgression
-- f-statistics were developed to detect admixture from data
-  - $f_2$ measures the total branch length between populations
-  - $f_3$ tests whether P1 is an admixture of P2 and P3
-  - $f_4$ tests for independence between P1, P2 and P3, P4
+On the other hand, f-statistics are crucial for detecting admixture
+from data. Specifically, f2 measures the total branch length between
+populations, while f3 tests whether one population (P1) is an
+admixture of two others (P2 and P3). Furthermore, f4 tests for the
+independence between two pairs of populations (P1, P2 and P3, P4).
 
-The aforementioned statistics and tests have previously been
-implemented in {{< var tools.admixtools.fmt >}}.
-
-in the
-computationally effective package {{< var tools.admixtools2.fmt >}}.
-The package is very comprehensive, and we will in this exercise only
-scratch the surface of its capabilities. For a more thorough overview,
-see [the admixtools
+These statistics can be effectively implemented using the
+comprehensive admixtools and admixtools2 packages. The packages offer
+an array of capabilities, the extent of which will only be slightly
+explored in this context. A more exhaustive overview can be found in
+the [the admixtools
 tutorial](https://uqrmaie1.github.io/admixtools/articles/admixtools.html).
 
 ## Data setup

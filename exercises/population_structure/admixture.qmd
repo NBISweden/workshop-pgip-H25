@@ -1,5 +1,7 @@
 ---
 title: Admixture
+description: >-
+  Infer populations and individual ancestries
 author:
   - Per Unneberg
 format:
@@ -54,49 +56,25 @@ ancestry.
 
 ## Admixture
 
-FIXME!
+Although clustering methods like Principal Component Analysis (PCA)
+cluster individuals, they provide limited information regarding the
+compositional makeup of genomes. Admixture modelling involves
+analyzing ancestry from multiple source populations, where individual
+allele frequency (P) is a mixture (Q) of source population Ps. Two
+approaches to this include estimating P from known populations and
+using the STRUCTURE tool, which applies Bayesian estimations directly
+from 'G' as proposed by
+[@pritchard_InferencePopulationStructure_2000]. Ancestry is
+essentially the proportion of a genome sourced from specified groups
+or populations. The Admixture tool
+[@alexander_FastModelbasedEstimation_2009] is another method used to
+estimate ancestry components from genotypes based on maximum
+likelihood. Its development was primarily motivated by the need to
+address population stratification, a common confounding factor in
+association studies.
 
-- admixture model: we have recent ancestry from multiple source populations
-- individual allele frequency P: mixture (Q) of source population P's
-- first approach: estimate P from *known* populations
-- STRUCTURE: estimate directly from G, Bayesian
-  [@pritchard_InferencePopulationStructure_2000]
-
-- ancestry: how much of a genome is from a set of defined groups or
-  populations
-- [PCA](pca.qmd) clusters individuals but says little about the
-  composition of genomes
-
-- {{< var tools.admixture.fmt >}} is a method to estimate ancestry components
-  from genotypes
-- maximum likelihood
-- motivation behind development: population stratification confounding
-  factor in association studies
-
-```{r, engine="tikz", fig.ext="svg" }
-#| label: fig-genotype-matrix
-#| echo: false
-#| eval: true
-#| out-width: "50%"
-\begin{tikzpicture}
-\tikzset{%
-table/.style={matrix of math nodes,nodes in empty cells,
-left delimiter={[}, right delimiter={]}},
-highlight/.style={rectangle,fill=red!30,rounded corners=1mm,inner sep=0mm,outer sep=0mm,opacity=0.5},
-ll/.style={node distance=4.5ex, outer sep=0mm, inner sep=0mm,font=\tiny\sffamily},
-rl/.style={node distance=2.5ex, font=\tiny\sffamily}
-}
- \matrix (m) [table]
-  {
-    a_8 & a_1 & a_6\\
-    a_3 & a_5 & a_7\\
-    a_4 & a_9 & a_2\\
-  };
-  \node[highlight, fit={(m-1-1.north west) (m-3-3.south east)}]{};
-\node [ll, left of=m-1-1] {1};
-\node [rl, above of=m-1-1] {1};
-\end{tikzpicture}
-```
+In this exercise, you will use Admixture to estimate ancestry
+components in Monkeyflower.
 
 ## Data setup
 

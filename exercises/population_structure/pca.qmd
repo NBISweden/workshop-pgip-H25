@@ -1,5 +1,8 @@
 ---
 title: Principal component analysis
+description: >-
+  Generate a PCA plot of data to get an overview of population
+  structure
 author:
   - Per Unneberg
 format:

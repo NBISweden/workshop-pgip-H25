@@ -8,35 +8,20 @@ author:
   - Per Unneberg
 execute:
   cache: false
+listing:
+  id: pop-listing
+  type: table
+  sort: false
+  fields: [title, description]
+  contents:
+    - pca.qmd
+    - admixture.qmd
+    - dstats.qmd
 ---
 
 ## About
 
-## Exercises
+## Listing
 
-:::{.callout-note collapse=true}
-
-## Data setup
-
-:::{.panel-tabset}
-
-#### {{< fa server >}} PDC
-
-#### {{< fa laptop >}} Local
-
+:::{#pop-listing}
 :::
-
-:::
-
-[Principal component analysis (PCA)](pca.qmd)
-
-: Generate a PCA plot of data to get an overview of population
-  structure
-
-[Admixture analysis](admixture.qmd)
-
-: Infer populations and individual ancestries
-
-[D-stastitics](dstats.qmd)
-
-: Infer introgression and hybridization with D-statistics
