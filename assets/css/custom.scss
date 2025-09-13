@@ -19,7 +19,7 @@
 .dna .italic {
   font-weight: bold;
   font-family: monospace;
-  color: cl.$aqua75;
+  color: $aqua75;
 }
 
 .translatey50 {
@@ -32,20 +32,20 @@
 
 .sourceCode > .r::before {
     content: "R";
-    color: cl.$grape;
+    color: $grape;
     font-weight: 900;
     margin-right: 10px;
 }
 
 .sourceCode.r {
     background-color: rgba(242, 229, 244, 0.1); // $grape05;
-    border-left-color: cl.$grape;
+    border-left-color: $grape;
     border-left-width: 5px;
 }
 
 .sourceCode.bash {
     background-color: rgba(231, 251, 254, 0.1); // $aqua05;
     background-opacity: 0.9;
-    border-left-color: cl.$aqua;
+    border-left-color: $aqua;
     border-left-width: 5px;
 }

@@ -17,6 +17,9 @@ project:
     - slides/foundations/index.qmd
     - slides/foundations/data.qmd
     - slides/foundations/alleles.qmd
+    - slides/foundations/linkage.qmd
+    - slides/foundations/wrightfisher.qmd
+    - slides/foundations/diversity.qmd
     - slides/variant_calling/index.qmd
     - slides/variant_calling/dna_sequencing.qmd
     - slides/variant_calling/read_mapping.qmd
