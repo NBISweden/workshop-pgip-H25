@@ -1,6 +1,9 @@
 ---
 title: "Population genomics in practice"
 subtitle: "What is population genomics?"
+description: >-
+  Discussion of @fuller_PopulationGeneticsCoral_2020 to introduce
+  concepts in population genomics.
 author:
   - "Per Unneberg"
 format:
