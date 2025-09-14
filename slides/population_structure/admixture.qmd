@@ -1,0 +1,549 @@
+---
+title: Admixture
+description: >-
+  Introduction to the admixture model
+author:
+  - Per Unneberg
+  - Nikolay Oskolkov
+format:
+  nbis-quarto-revealjs:
+    toc: false
+---
+
+## Setup  {.hidden .unnumbered .unlisted visibility="hidden"}
+
+{{< include /slides/_knitr.qmd >}}
+
+{{< include /slides/_rlibs.qmd >}}
+
+```{r }
+#| label: load-custom-libraries
+#| echo: false
+#| eval: true
+#| cache: false
+library(RColorBrewer)
+```
+
+## Admixture: underlying assumptions
+
+:::: {.columns}
+
+::: {.column width="70%"}
+
+![](assets/images/IBD.webp)\
+
+:::
+
+::: {.column width="30%"}
+
+- genetic clustering algorithm
+- at least two unadmixed populations
+- at least one admixed population
+- Maximum Likelihood: ADMIXTURE
+- Bayesian: STRUCTURE
+- delivers admixture proportions Q
+- delivers allele frequencies F for all loci for all K populations
+
+:::
+
+::::
+
+## Genotype matrices and data
+
+:::: {.columns}
+
+:::{.column width="30%"}
+
+Code genotypes as integers (we count the number of derived alleles per
+genotype):
+
+$$AA\rightarrow 0$$
+$$Aa\rightarrow 1$$
+$$aa\rightarrow 2$$
+
+Let $G_i$ denote a single row: *genotype* of individual $i$
+
+:::
+
+::: {.column width="70%"}
+
+```{r, engine='tikz', fig.ext="svg" }
+#| label: genotype-matrix
+#| echo: false
+#| eval: true
+#| out-width: 100%
+\begin{tikzpicture}[x=1cm, y=1cm, font=\sffamily, ultra thick]
+\tikzset{
+  matrix/.style={rectangle,fill=gray!30, anchor=west},
+  entry/.style={fill=red!40, minimum size=4pt, inner sep=0pt, outer sep=0pt},
+  rc/.style={draw=red!40, line width=4pt},
+  every node/.style={inner sep=0pt, outer sep=0pt},
+  label/.style={inner sep=1em, outer sep=1em},
+}
+
+\node[matrix, minimum width=6cm, minimum height=4cm] (G) at (0,0) {};
+\draw ($(G.south west) + (.2em, 0)$) -- (G.south west) --
+   (G.north west) -- ($(G.north west) + (.2em, 0)$);
+\draw ($(G.south east) - (.2em, 0)$) -- (G.south east) --
+   (G.north east) -- ($(G.north east) - (.2em, 0)$);
+
+\node (glab) at ($(G.north west) + (-2.5em, 2.5em)$) {G};
+\node[anchor=east] (individuals) at ($(G.west) + (-1.5em, 0)$) {Individuals};
+\node (snps) at ($(G.north) + (0, 2.5em)$) {SNPs};
+
+\node (c1) at ($(G.north west) + (0, 1em)$) {};
+\node (c2) at ($(G.north east) + (0, 1em)$) {};
+
+\foreach \col [count=\l] in {1,2,.,.,.,.,.,.,.,L} {
+  \node at ($(c1) !\l / 10 - 0.05! (c2)$) {\col};
+}
+
+\node (r1) at ($(G.north west) - (1em, 0)$) {};
+\node (r2) at ($(G.south west) - (1em, 0)$) {};
+
+\foreach \row [count=\i] in {1,2,.,.,.,.,.,I} {
+  \node at ($(r1) !\i / 8 - 0.0625! (r2)$) {\row};
+}
+
+
+\node (i1) at ($(G.west) + (0, -1em)$) {};
+\node (i2) at ($(G.east) + (0, -1em)$) {};
+
+\foreach \col [count=\l] in {$g_{i1}$,$g_{i2}$,.,.,.,.,.,.,.,$g_{iL}$} {
+  \node[text=red!60] at ($(i1) !\l / 10 - 0.05! (i2)$) {\col};
+}
+
+\node[text=red!60, anchor=west, align=center] (i3) at ($(G.east) + (1em, -1em)$)
+{Genotype of\\ individual $i$};
+\end{tikzpicture}
+```
+
+:::
+
+:::: {.columns .fragment}
+
+::: {.column width="50%"}
+
+#### Genotype clustering
+
+Early work performed hierarchical clustering on row-wise differences.
+
+Simple idea that clustered individuals to continent.
+
+::: {.flushright}
+
+[@mountain_MultilocusGenotypesTree_1997]
+
+:::
+
+:::
+
+::: {.column width="50%"}
+
+```{r, engine='tikz', fig.ext="svg" }
+#| label: genotype-clustering
+#| echo: false
+#| eval: true
+#| out-width: 100%
+\begin{tikzpicture}[font=\sffamily\Large]
+\tikzset{
+  every node/.style={inner sep=0pt, outer sep=0pt},
+  label/.style={inner sep=1em, outer sep=1em},
+}
+\node (upperleft) at (0, 0) {};
+\foreach \g [count=\gi] in {0,0,2,1,1,2,0,1,2,0} {
+  \node at ($(upperleft) + (\gi, 0)$) {\g};
+}
+\foreach \g [count=\gi] in {1,2,2,1,1,1,2,2,2,1} {
+  \node at ($(upperleft) + (\gi, -1)$) {\g};
+}
+\foreach \g [count=\gi] in {1,2,0,0,0,1,2,1,0,0} {
+  \node at ($(upperleft) + (\gi, -2)$) {\g};
+}
+\foreach \gi in {1,...,9}
+  \node at ($(upperleft) + (\gi + 0.5, -2)$) {+};
+\node[anchor=west] at ($(upperleft) + (10, -2.3)$) {/10 = 0.7};
+
+\node[anchor=east] at ($(upperleft) + (-1, 0)$) {Genotype 1};
+\node[anchor=east] at ($(upperleft) + (-1, -1)$) {Genotype 2};
+\node[anchor=east, align=left] at ($(upperleft) + (-1, -2)$) {$\frac{\mathsf{\sum |Difference|}}{\mathsf{L}}$};
+
+\end{tikzpicture}
+```
+
+:::
+
+::::
+
+::::
+
+::: {.notes}
+
+Describe data as is. Point out that SNPs
+
+:::
+
+## The admixture model
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+#### Population matrix
+
+```{r, engine='tikz', fig.ext="svg" }
+#| label: fig-admixture-model-P-matrix
+#| echo: false
+#| eval: true
+#| out-width: 100%
+#| fig-cap: |
+#|    The allele frequency matrix P. Each entry $p_{kl}$ records the
+#|    population frequency of SNP $l$ in population $k$.
+\begin{tikzpicture}[x=1cm, y=1cm, font=\sffamily, ultra thick]
+\tikzset{
+  matrix/.style={rectangle,fill=gray!30, anchor=west},
+  entry/.style={fill=red!40, minimum size=4pt, inner sep=0pt, outer sep=0pt},
+  rc/.style={draw=red!40, line width=4pt},
+  every node/.style={inner sep=0pt, outer sep=0pt},
+  label/.style={inner sep=1em, outer sep=1em},
+}
+
+\node[matrix, minimum width=6cm, minimum height=4cm] (P) at (0,0) {};
+\draw ($(P.south west) + (.2em, 0)$) -- (P.south west) --
+   (P.north west) -- ($(P.north west) + (.2em, 0)$);
+\draw ($(P.south east) - (.2em, 0)$) -- (P.south east) --
+   (P.north east) -- ($(P.north east) - (.2em, 0)$);
+
+\node (glab) at ($(P.north west) + (-2.5em, 2.5em)$) {P};
+\node[anchor=east] (individuals) at ($(P.west) + (-1.5em, 0)$) {Populations};
+\node (snps) at ($(P.north) + (0, 2.5em)$) {SNPs};
+
+\node (c1) at ($(P.north west) + (0, 1em)$) {};
+\node (c2) at ($(P.north east) + (0, 1em)$) {};
+
+\foreach \col [count=\l] in {1,2,.,.,.,.,.,.,.,L} {
+  \node at ($(c1) !\l / 10 - 0.05! (c2)$) {\col};
+}
+
+\node (r1) at ($(P.north west) - (1em, 0)$) {};
+\node (r2) at ($(P.south west) - (1em, 0)$) {};
+
+\foreach \row [count=\i] in {1,2,.,.,.,.,.,K} {
+  \node at ($(r1) !\i / 8 - 0.0625! (r2)$) {\row};
+}
+
+\node (l1) at ($(P.north) + (-1em, 0)$) {};
+\node (l2) at ($(P.south) + (-1em, 0)$) {};
+
+\foreach \col [count=\l] in {$P_{1l}$,$P_{2l}$,.,.,.,.,.,.,.,$P_{kl}$} {
+  \node[text=red!60] at ($(l1) !\l / 10 - 0.05! (l2)$) {\col};
+}
+
+\node[text=red!60, align=center, anchor=north] (c3) at ($(P.south) + (0, -1em)$)
+{Frequencies\\of SNP l};
+
+\node (i1) at ($(P.west) + (0, -1em)$) {};
+\node (i2) at ($(P.east) + (0, -1em)$) {};
+
+\foreach \col [count=\l] in {$P_{k1}$,$P_{k2}$,.,.,.,.,.,.,.,$P_{kl}$} {
+  \node[text=blue!60] at ($(i1) !\l / 10 - 0.05! (i2)$) {\col};
+}
+
+\node[text=blue!60, anchor=west, align=center] (i3) at ($(P.east) + (1em, -1em)$)
+{Frequencies\\of all SNPs\\ in population k};
+\end{tikzpicture}
+```
+
+Assumptions:
+
+- within populations SNPs are in HWE
+- linkage equilibrium between remote SNPs
+
+We also assume $K$ populations, $L$ SNPs and record *allele
+frequencies* in $P$
+
+:::
+
+::: {.column width="50%" .fragment}
+
+```{r, engine='tikz', fig.ext="svg" }
+#| label: fig-admixture-model-Q-matrix
+#| echo: false
+#| eval: true
+#| out-width: 70%
+#| fig-cap: |
+#|    The allele frequency matrix, Q. Each entry $q_{ik}$ denotes the
+#|    ancestry component of individual $i$ from population $k$
+\begin{tikzpicture}[x=1cm, y=1cm, font=\sffamily, ultra thick]
+\tikzset{
+  matrix/.style={rectangle,fill=gray!30, anchor=west},
+  entry/.style={fill=red!40, minimum size=4pt, inner sep=0pt, outer sep=0pt},
+  rc/.style={draw=red!40, line width=4pt},
+  every node/.style={inner sep=0pt, outer sep=0pt},
+  label/.style={inner sep=1em, outer sep=1em},
+}
+
+\node[matrix, minimum width=4cm, minimum height=6cm] (Q) at (0,0) {};
+\draw ($(Q.south west) + (.2em, 0)$) -- (Q.south west) --
+   (Q.north west) -- ($(Q.north west) + (.2em, 0)$);
+\draw ($(Q.south east) - (.2em, 0)$) -- (Q.south east) --
+   (Q.north east) -- ($(Q.north east) - (.2em, 0)$);
+
+\node (glab) at ($(Q.north west) + (-2.5em, 2.5em)$) {Q};
+\node[anchor=east] (individuals) at ($(Q.west) + (-1.5em, 0)$) {Individuals};
+\node (pops) at ($(Q.north) + (0, 2.5em)$) {Populations};
+
+\node (c1) at ($(Q.north west) + (0, 1em)$) {};
+\node (c2) at ($(Q.north east) + (0, 1em)$) {};
+
+\foreach \col [count=\l] in {1,2,.,.,.,.,.,.,.,K} {
+  \node at ($(c1) !\l / 10 - 0.05! (c2)$) {\col};
+}
+
+\node (r1) at ($(Q.north west) - (1em, 0)$) {};
+\node (r2) at ($(Q.south west) - (1em, 0)$) {};
+
+\foreach \row [count=\i] in {1,2,.,.,.,.,.,I} {
+  \node at ($(r1) !\i / 8 - 0.0625! (r2)$) {\row};
+}
+
+
+\node (i1) at ($(Q.west) + (0, -1em)$) {};
+\node (i2) at ($(Q.east) + (0, -1em)$) {};
+
+\foreach \col [count=\l] in {$q_{i1}$,$q_{i2}$,.,.,.,.,.,.,.,$q_{iK}$} {
+  \node[text=red!60] at ($(i1) !\l / 10 - 0.05! (i2)$) {\col};
+}
+
+\node[text=red!60, anchor=west, align=center] (i3) at ($(Q.east) + (1em, -1em)$)
+{Ancestry of\\ individual $i$};
+\end{tikzpicture}
+```
+
+$Q$ is the *ancestry* matrix. The row $Q_i$ corresponds to the
+ancestry components of an individual.
+
+:::
+
+::::
+
+## A generative model
+
+We want to model the genotypes of an individual given ancestry
+components and population allele frequencies.
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+#### No admixture
+
+Assume no admixture, e.g., $Q={0,0,0,1,0}$
+
+Genotype at SNP $l$ results from sampling genotypes from the
+corresponding population allele frequency.
+
+```{r, engine='tikz', fig.ext="svg" }
+#| label: fig-no-admix-generative-model
+#| echo: false
+#| eval: true
+#| out-width: 70%
+#| fig-cap: |
+#|    Individual is from population $k=4$. Sample genotypes
+#|    from corresponding population entry.
+\begin{tikzpicture}[x=1cm, y=1cm, >=latex]
+\tikzset{
+  entry/.style={draw=black, rectangle, minimum size=10pt, inner sep=0pt, outer sep=0pt},
+  sel/.style={fill=black, draw=black, minimum size=10pt, inner sep=0pt, outer sep=0pt},
+}
+\node[entry] (q1) at (0, 0) {};
+\foreach \q [remember=\q as \lastq (initially 1)] in {2,3,4,5} {
+  \node[entry, anchor=west] (q\q) at (q\lastq.east) {};
+}
+\node[sel] (q4s) at (q4) {};
+
+\node[entry] (p1) at ($(q4) + (3em, 1em)$) {};
+\foreach \p [remember=\p as \lastp (initially 1)] in {2,3,4,5} {
+  \node[entry, anchor=north] (p\p) at (p\lastp.south) {};
+}
+\node[sel] (p4s) at (p4) {};
+
+\draw (q4s.south) edge [->, out=270, in=0, bend right=60] (p4s.west);
+
+\node (r1) at ($(p4s) + (3em, 0)$) {1};
+\node[above of=r1, node distance=10pt] (rp) {+};
+\node[above of=rp, node distance=10pt] (r0) {0};
+\draw (r0.north east) -- +(.2em, 0) -- ($(r1.south east) + (.2em, 0)$) -- (r1.south east);
+\node[right of=rp, node distance=30pt, anchor=west] (rg) {$g_{i1}=1$};
+\draw[->] (p4s.east) -- (r1.west);
+\draw[->] (p4s.east) .. controls +(right:3pt) and +(left:7pt) .. (r0.west);
+\draw[->] ($(rp) +  (12pt, 0)$) -- (rg.west);
+
+\node[above of=q3, node distance=1cm] (Qi) {$Q_i$};
+\node[right of=Qi, node distance=1.3cm] (Pl) {$P_l$};
+\node[right of=Pl, node distance=1.5cm, align=left] (randomgt) {Random\\ genotypes};
+
+\end{tikzpicture}
+```
+
+:::
+
+::: {.column width="50%" .fragment}
+
+#### Admixture
+
+Now an individual has ancestry from multiple populations. First
+therefore it must sample the population, and given the population, can
+sample random genotypes from the population entry. Here we assume
+$Q_i={0,0.25,0,0.75,0}$.
+
+```{r, engine='tikz', fig.ext="svg" }
+#| label: fig-admixture-mix
+#| echo: false
+#| eval: true
+#| out-width: 70%
+#| fig-cap: |
+#|    First pick the population of origin given $Q_i$, then sample
+#|    genotype given the population allele frequencies
+\begin{tikzpicture}[x=1cm, y=1cm, >=latex]
+\tikzset{
+  entry/.style={draw=black, rectangle, minimum size=10pt, inner sep=0pt, outer sep=0pt},
+  q75/.style={fill=black!75, draw=black, minimum size=10pt, inner sep=0pt, outer sep=0pt},
+  q25/.style={fill=black!25, draw=black, minimum size=10pt, inner sep=0pt, outer sep=0pt},
+  sel/.style={fill=black, draw=black, minimum size=10pt, inner sep=0pt, outer sep=0pt},
+}
+\node[entry] (q1) at (0, 0) {};
+\foreach \q [remember=\q as \lastq (initially 1)] in {2,3,4,5} {
+  \node[entry, anchor=west] (q\q) at (q\lastq.east) {};
+}
+\node[q75] (q4s) at (q4) {};
+\node[q25] (q2s) at (q2) {};
+
+\node[entry] (p1) at ($(q4) + (3em, 1em)$) {};
+\foreach \p [remember=\p as \lastp (initially 1)] in {2,3,4,5} {
+  \node[entry, anchor=north] (p\p) at (p\lastp.south) {};
+}
+\node[sel] (p4s) at (p4) {};
+\node[sel] (p2s) at (p2) {};
+
+\draw (q4s.south) edge [->, out=270, in=0, bend right=60] (p4s.west);
+\draw (q2s.south) edge [->, out=270, in=180, bend right=60] (p2s.west);
+
+\node (r1) at ($(p4s) + (3em, 0)$) {1};
+\node[above of=r1, node distance=10pt] (rp) {+};
+\node[above of=rp, node distance=10pt] (r0) {1};
+\draw (r0.north east) -- +(.2em, 0) -- ($(r1.south east) + (.2em, 0)$) -- (r1.south east);
+\node[right of=rp, node distance=30pt, anchor=west] (rg) {$g_{i1}=2$};
+\draw[->] (p2s.east) -- (r0.west);
+\draw[->] (p4s.east) -- (r1.west);
+\draw[->] ($(rp) +  (12pt, 0)$) -- (rg.west);
+
+\node[above of=q3, node distance=1cm] (Qi) {$Q_i$};
+\node[right of=Qi, node distance=1.3cm] (Pl) {$P_l$};
+\node[right of=Pl, node distance=1.5cm, align=left] (randomgt) {Random\\ genotypes};
+
+\end{tikzpicture}
+```
+
+:::
+
+::::
+
+::: {.fragment}
+
+Here we assume $P$, $Q$ known - we could for instance use compiled
+databases of population allele frequencies. But we can estimate $P$
+and $Q$ directly from data - and this is what software packages
+ADMIXTURE[@alexander_FastModelbasedEstimation_2009] and
+STRUCTURE[@pritchard_InferencePopulationStructure_2000] do.
+
+:::
+
+## Admixture in practice
+
+```{r }
+#| label: load-admixture-results
+#| echo: false
+#| eval: true
+DATAPFX <- here("exercises", "population_structure", "monkeyflower_adm.save")
+sampleinfo <- read.csv("sampleinfo.csv") %>% rename(sample=SampleAlias) %>%
+  mutate(species = as.factor(gsub("ssp. ", "", Taxon))) %>%
+  select(sample, ScientificName, Taxon, Latitude, Longitude, species) %>%
+  as_tibble
+fam <- read.table(paste0(DATAPFX, ".fam")) %>% select(2) %>%
+  rename(sample=V2) %>% right_join(sampleinfo) %>% as_tibble
+```
+
+```{r }
+#| label: plot-admixture-function
+#| echo: false
+#| eval: true
+plot_admixture <- function(filename, fam) {
+  df <- read.table(filename) %>%
+    rename_with(~ paste0("pop", seq_along(.))) %>%
+    mutate(sample=fam$sample) %>% left_join(fam) %>%
+    pivot_longer(cols=starts_with("pop"), names_to="Population", values_to="Q") %>%
+    mutate(across(Population, as.factor)) %>%
+    as_tibble
+  colors <- colorRampPalette(brewer.pal(12, "Set3"))(length(levels(df$Population)))
+  p <- ggplot(df, aes(x=sample, y=Q, fill=factor(Population))) +
+    geom_col(aes(color = Population), linewidth=0.1) +
+    facet_grid(~species, switch = "x", scales = "free", space = "free") +
+    labs(x="Individual", y="Q") +
+    scale_y_continuous(expand = c(0, 0)) +
+    scale_x_discrete(expand = expansion(add = 1)) +
+    theme(
+        panel.spacing.x = unit(0.1, "lines"),
+        axis.text.x = element_text(angle=45),
+        panel.grid = element_blank(),
+        strip.text.x = element_text(angle=0)
+    ) + scale_fill_manual("Population", values=colors)
+  return(p)
+}
+```
+
+:::{}
+
+```{r }
+#| label: plot-admixture-2
+#| echo: false
+#| eval: true
+#| out-width: 100%
+#| fig-width: 16
+#| fig-height: 8
+plot_admixture(paste0(DATAPFX, ".2.Q"), fam)
+```
+
+:::
+
+## Admixture in practice
+
+:::{}
+
+```{r }
+#| label: plot-admixture-7
+#| echo: false
+#| eval: true
+#| out-width: 100%
+#| fig-width: 16
+#| fig-height: 8
+plot_admixture(paste0(DATAPFX, ".7.Q"), fam)
+```
+
+:::
+
+## Don't overinterpret admixture bar plots
+
+:::{}
+
+![Three scenarios giving indistinguishable ADMIXTURE results. From
+[@lawson_TutorialHowNot_2018, Fig.
+2]](https://media.springernature.com/full/springer-static/image/art%3A10.1038%2Fs41467-018-05257-7/MediaObjects/41467_2018_5257_Fig2_HTML.png?as=webp){#fig-admixture-interpretation
+height="600px"}
+
+:::
+
+## Bibliography
+
+:::{#refs}
+:::

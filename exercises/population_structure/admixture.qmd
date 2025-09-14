@@ -73,8 +73,8 @@ likelihood. Its development was primarily motivated by the need to
 address population stratification, a common confounding factor in
 association studies.
 
-In this exercise, you will use Admixture to estimate ancestry
-components in Monkeyflower.
+In this exercise, you will use {{< var tools.admixture.fmt >}} to
+estimate ancestry components in Monkeyflower.
 
 ## Data setup
 

@@ -24,6 +24,7 @@ project:
     - slides/genetic_diversity/diversity.qmd
     - slides/population_structure/index.qmd
     - slides/population_structure/pca.qmd
+    - slides/population_structure/admixture.qmd
     - slides/simulation/index.qmd
     - slides/scratch/index.qmd
     # Exercises and datasets
