@@ -12,6 +12,7 @@ listing:
   sort: false
   contents:
     - pca.qmd
+    - admixture.qmd
 ---
 
 ## About
