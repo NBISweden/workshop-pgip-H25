@@ -1,0 +1,24 @@
+---
+title: Population structure
+description: >-
+  Collection of presentations on the analysis of population structure
+format:
+  nbis-course-html:
+    number-sections: false
+listing:
+  id: popstruct-listing
+  type: table
+  fields: [title, description]
+  sort: false
+  contents:
+    - pca.qmd
+---
+
+## About
+
+{{< meta description >}}
+
+## Listing
+
+:::{#popstruct-listing}
+:::

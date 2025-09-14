@@ -1,0 +1,417 @@
+---
+title: Principal component analysis
+subtitle: Clustering and dimensionality reduction
+description: >-
+  Introduction to clustering and dimensionality reduction with a focus
+  on PCA
+author:
+  - Per Unneberg
+  - Nikolay Oskolkov
+format:
+  nbis-quarto-revealjs:
+    toc: false
+---
+
+## Setup  {.hidden .unnumbered .unlisted visibility="hidden"}
+
+{{< include /slides/_knitr.qmd >}}
+
+{{< include /slides/_rlibs.qmd >}}
+
+```{r }
+#| label: r-libraries
+#| echo: false
+#| eval: true
+#| cache: false
+library(gridExtra)
+```
+
+## PCA in population genetics
+
+:::{#fig-popgen-pca}
+
+![PCA was first applied to population genetics by Cavalli-Sforza and
+Menozzi [@menozzi_SyntheticMapsHuman_1978;
+@cavalli-sforza_PhylogeneticAnalysisModels_1967]
+](/slides/population_structure/assets/images/Cavalli_Sforza.webp){width="100%"}\
+
+PCA was first applied to population genetics by Cavalli-Sforza and
+Menozzi [@cavalli-sforza_PhylogeneticAnalysisModels_1967;
+@menozzi_SyntheticMapsHuman_1978] who noted that genetic distance
+seems to correlate with geographical distance.
+
+:::
+
+:::{.fragment}
+
+Beware: @novembre_InterpretingPrincipalComponent_2008 pointed out that
+patterns may be due to mathematical artifacts and not necessarily
+directly inform us about the underlying demographic process!
+
+:::
+
+## PCA in population genetics
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+:::{#fig-popstructure-europe}
+
+![Population structure within Europe](https://media.springernature.com/full/springer-static/image/art%3A10.1038%2Fnature07331/MediaObjects/41586_2008_Article_BFnature07331_Fig1_HTML.jpg?as=webp){width="60%"}\
+
+Population structure within Europe [@novembre_GenesMirrorGeography_2008, Fig. 1]
+
+:::
+
+:::
+
+::: {.column width="50%"}
+
+:::{#fig-performance-assignment}
+
+![Performance of assignment method](https://media.springernature.com/full/springer-static/image/art%3A10.1038%2Fnature07331/MediaObjects/41586_2008_Article_BFnature07331_Fig2_HTML.jpg?as=webp){width="50%"}\
+
+Performance of assignment [@novembre_GenesMirrorGeography_2008, Fig. 2]
+
+:::
+
+:::
+
+::::
+
+## PCA is a matrix factorization technique
+
+:::{}
+
+```{r, engine='tikz', fig.ext="svg" }
+#| label: fig-pca-matrix-factorization
+#| echo: false
+#| eval: true
+#| out-width: 100%
+#| fig-cap: |
+#|    Factorization of a genotype matrix G into loadings $\Lambda$ and
+#|    factors F plus residual errors $\epsilon$ that PCA minimizes.
+#|    The loadings contain ancestry components that are plotted in PCA
+#|    biplots. Based on @pritchard_OwnerGuideHuman_, Fig. 3.16.
+\begin{tikzpicture}[x=1cm, y=1cm, font=\sffamily\Large, ultra thick]
+\tikzset{
+  matrix/.style={rectangle,fill=gray!30, anchor=west},
+  entry/.style={fill=red!40, minimum size=4pt, inner sep=0pt, outer sep=0pt},
+  rc/.style={draw=red!40, line width=4pt},
+  every node/.style={inner sep=0pt, outer sep=0pt},
+  label/.style={inner sep=1em, outer sep=1em},
+}
+
+\node[matrix, minimum width=4cm, minimum height=3cm] (G) at (0,0) {};
+\node[matrix, minimum width=2cm, minimum height=3cm] (L) at (6,0) {};
+\node at ($(G.east) !.5! (L.west)$) {$=$};
+\node[matrix, minimum width=4cm, minimum height=2cm] (F) at (10,0) {};
+\node at ($(L.east) !.5! (F.west)$) {$\times$};
+\node[matrix, minimum width=4cm, minimum height=3cm] (E) at (16,0) {};
+\node at ($(F.east) !.5! (E.west)$) {$+$};
+\node (glab) at ($(G.north) + (0, 2.5em)$) {G};
+\node at (L.north |- glab) {$\Lambda$};
+\node at (F.north |- glab) {F};
+\node at (E.north |- glab) {$\epsilon$};
+\node (gtext) at ($(G.south) + (0, -1.5em)$) {Genotypes};
+\node at (L.south |- gtext) {Loadings};
+\node at (F.south |- gtext) {Factors};
+\node at (E.south |- gtext) {Errors};
+\node (a) at ($(G.north west) !.2! (G.north east)$) {};
+\node (b) at ($(G.north east) !.4! (G.south east)$) {};
+\node[entry] at (a |- b) {};
+\node (c) at ($(L.north west) !.4! (L.south west)$) {};
+\draw [rc] (c) -- (c -| L.north east) {};
+\node (d) at ($(F.north west) !.2! (F.north east)$) {};
+\draw [rc] (d) -- (d |- F.south east) {};
+\node (e) at ($(E.north west) !.2! (E.north east)$) {};
+\node (f) at ($(E.north east) !.4! (E.south east)$) {};
+\node[entry] at (e |- f) {};
+
+%% Brackets
+\foreach \X in {G,L,F,E} {
+  \draw ($(\X.south west) + (.2em, 0)$) -- (\X.south west) --
+     (\X.north west) -- ($(\X.north west) + (.2em, 0)$);
+  \draw ($(\X.south east) - (.2em, 0)$) -- (\X.south east) --
+     (\X.north east) -- ($(\X.north east) - (.2em, 0)$);
+}
+%% Rows
+\foreach \X/\lab in {G/I,L/I} {
+  \node[text=blue] at ($(\X.west) + (-.75em, 0)$) {\lab};
+  \draw[blue] ($(\X.north west) - (.75em, 0)$) -- ($(\X.west) + (-.75em, 1em)$);
+  \draw[blue] ($(\X.south west) - (.75em, 0)$) -- ($(\X.west) + (-.75em, -1em)$);
+}
+\foreach \X/\lab in {F/K,E/I} {
+  \node[text=blue] at ($(\X.east) + (.75em, 0)$) {\lab};
+  \draw[blue] ($(\X.north east) + (.75em, 0)$) -- ($(\X.east) + (.75em, 1em)$);
+  \draw[blue] ($(\X.south east) + (.75em, 0)$) -- ($(\X.east) + (.75em, -1em)$);
+}
+%% Columns
+\foreach \X/\lab in {G/L,L/K,F/L,E/L} {
+  \node[text=blue] at ($(\X.north) + (0, .75em)$) {\lab};
+  \draw[blue] ($(\X.north west) + (0, .75em)$) -- ($(\X.north) + (-1em, .75em)$);
+  \draw[blue] ($(\X.north east) + (0, .75em)$) -- ($(\X.north) + (1em, .75em)$);
+}
+\end{tikzpicture}
+```
+
+:::
+
+::: {.fragment}
+
+An entry in the genotype matrix is approximated by the $K$ first loadings
+
+$$
+G_{ij} \approx \mathbf{\Lambda}_i \mathbf{F}_j
+$$
+
+:::
+
+## Toy example of PCA for population genetics{.smaller}
+
+:::: {.columns}
+
+::: {.column width="33%"}
+
+```{r }
+#| label: toy-pca
+#| echo: true
+#| eval: true
+#| out-width: "80%"
+#| fig-align: center
+gen <- t(matrix(
+    c(1, 0, 2, 0, 2, 0, 2, 1, 1,
+      1, 0, 1, 0, 2, 1, 2, 1, 1,
+      1, 1, 1, 0, 1, 0, 2, 0, 1,
+      1, 0, 2, 1, 2, 0, 1, 0), 5,
+    by = TRUE))
+colnames(gen) <- paste0("Ind", 1:5)
+rownames(gen) <- paste0("SNP", 1:7)
+print(gen)
+```
+
+:::
+
+:::{.column width="33%"}
+
+```{r }
+#| label: toy-pca-2
+#| echo: true
+#| eval: true
+gen_centered <- scale(gen, center = TRUE, scale = FALSE)
+covariance <- t(gen_centered) %*% gen_centered
+eig <- eigen(covariance)
+barplot(eig$values/sum(eig$values), names = paste0("PC", 1:5))
+```
+
+:::
+
+::: {.column width="33%"}
+
+```{r }
+#| label: toy-pca-plot
+#| echo: true
+#| eval: true
+plot(eig$vectors[, 1:2], xlab = "PC1", ylab = "PC2", pch = 16, cex = 5, col = 2:6)
+points(eig$vectors[, 1:2], pch = as.character(1:5))
+```
+
+:::
+
+::::
+
+:::{}
+
+Idea: project the data into a low dimensional space that explains the
+largest amount of variance
+
+:::
+
+## Geometric interpretation
+
+:::: {.columns}
+
+::: {.column width="60%"}
+
+```{r }
+#| label: pca-geometric-interpretation
+#| echo: false
+#| eval: true
+#| fig-width: 12
+#| fig-height: 8
+#| out-width: 100%
+set.seed(123)
+meanVec     <- c(0, 1)
+Sigma       <- matrix(c(1, 1.5 , 1, 4), 2, 2)
+X <- as.data.frame(MASS::mvrnorm(n = 1000,
+                   mu = meanVec,
+                   Sigma = Sigma))
+PCA <- prcomp(X)
+p1 <- ggplot(X, aes(X$V1, X$V2)) + geom_point() +
+  geom_hline(yintercept=0, color="red") +
+  geom_vline(xintercept=0, color="red") +
+  xlab("") + ylab("") + ggtitle("Original data axes") +
+  xlim(-5, 5) + ylim(-5, 5)
+p2 <- ggplot(X, aes(X$V1, X$V2)) + geom_point() +
+  geom_abline(slope=PCA$rotation[1,2] / PCA$rotation[1,1], color="red") +
+  geom_abline(slope=PCA$rotation[2,2] / PCA$rotation[2,1], color="red") +
+  xlab("") + ylab("") + ggtitle("Rotated data axes (PCA)") +
+  xlim(-5, 5) + ylim(-5, 5)
+grid.arrange(p1, p2, nrow = 1)
+```
+
+:::
+
+::: {.column width="40%"}
+
+#### Variance maximization and eigen value decomposition
+
+- Collapse $p$ features ($p>>n$) to few latent features and keep
+  variation
+- Rotation and shift of coordinate system toward maximal variance
+- PCA is an **eigen matrix decomposition** problem
+
+:::
+
+::::
+
+## Example of PCA plot of Monkeyflower data
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+We will use [plink2](https://www.cog-genomics.org/plink/2.0/)
+[@chang_SecondgenerationPLINKRising_2015] to generate PCA plots.
+
+#### LD pruning
+
+PCA assumes independent markers!
+
+```{bash }
+#| label: plink-ld-prune-bad
+#| echo: true
+#| eval: false
+plink2 --vcf $VCF --double-id --allow-extra-chr \
+       --set-missing-var-ids @:# \
+       --indep-pairwise 50 5 0.1 \
+       --bad-ld \
+       --out monkeyflower_pca
+```
+
+#### PCA
+
+Construct PCA from subset of pruned markers
+
+```{bash }
+#| label: plink2-make-pca
+#| echo: true
+#| eval: false
+plink2 --vcf $VCF --double-id --allow-extra-chr \
+       --set-missing-var-ids @:# \
+       --extract monkeyflower_pca.prune.in \
+       --pca --read-freq monkeyflower_pca.afreq.zst \
+       --out monkeyflower_pca
+```
+
+:::
+
+::: {.column width="50%"}
+
+```{r }
+#| label: prepare-plot-pca
+#| echo: false
+#| eval: true
+eigenvec <- read.table("assets/monkeyflower_pca.eigenvec") %>%
+  select(-V1) %>% rename(sample=V2) %>%
+  rename_with(~ paste0("PC", 1:10), -sample) %>% as_tibble
+eigenval <- read.table("assets/monkeyflower_pca.eigenval") %>%
+  rename(value=V1) %>% mutate(pve=value/sum(value) * 100) %>%
+  mutate(PC=factor(paste0("PC", row_number()), levels=paste0("PC", row_number()))) %>%
+  as_tibble
+```
+
+```{r }
+#| label: read-sampleinfo-and-merge
+#| echo: false
+#| eval: true
+pca <- read.csv("sampleinfo.csv") %>% rename(sample=SampleAlias) %>%
+  mutate(species = as.factor(gsub("ssp. ", "", Taxon))) %>%
+  select(sample, ScientificName, Taxon, Latitude, Longitude, species) %>%
+  left_join(eigenvec) %>% as_tibble
+species <- as_tibble(data.frame(
+    species = levels(pca$species),
+    color = c("#000000", "#65c3ca", "#0f4e8b",
+              "#8282d8", "#008b00", "#ff9d00",
+              "#b400f7", "#ff0100", "#b9a030")
+))
+```
+
+```{r }
+#| label: fig-r-plot-pcs
+#| echo: false
+#| eval: true
+#| out-width: 100%
+#| fig-width: 12
+#| fig-height: 10
+ggplot(pca, aes(PC1, PC2, color=species)) +
+  geom_point(size=3, alpha=0.8) +
+  scale_color_manual(values=species$color)
+```
+
+:::
+
+::::
+
+## Uneven sampling may distort PCA projections
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+![The effect of uneven sampling on PCA projection
+[@mcvean_GenealogicalInterpretationPrincipal_2009, Fig.
+3]](https://journals.plos.org/plosgenetics/article/figure/image?size=large&id=10.1371/journal.pgen.1000686.g003){#fig-uneven-sampling
+width="70%"}
+
+:::
+
+::: {.column width="50%"}
+
+“The results described here provide an explanation. First, from
+Equation 10 it can be seen that **the matrix M is influenced by the
+relative sample size from each population through the components
+$t_i$**. For instance, even if all populations are equally divergent
+from each other, those for which there are fewer samples will have
+larger values of $t_i$ because relatively more pairwise comparisons
+are between populations.”
+
+$$M=XX^T=\frac{1}{N}\sum_{ij}x_ix_j$$
+$$N=N_{pop1}+N_{pop2}+N_{pop3}+...=\sum_k N_k$$
+$$M_{uneven}=\sum_{ijk}\frac{1}{N_k}x_{ik}x_{jk}$$
+
+- Potential solution: normalize each sample by its population size
+  before computing the covariance matrix.
+- Is it still an unsupervised technique?
+
+:::
+
+::::
+
+## Example of uneven sampling
+
+:::{#fig-pca-plot-1000g}
+
+![Example PCA from 1000G project](/slides/population_structure/assets/images/uneven_sampling.webp){width="100%"}\
+
+Example of how uneven sampling may distort PCA projection. Downsampled
+European samples cluster with Mexican samples (left), whereas
+downsampled Asian samples cluster with Mexican samples (right).
+
+:::
+
+## Bibliography
+
+:::{#refs}
+:::
