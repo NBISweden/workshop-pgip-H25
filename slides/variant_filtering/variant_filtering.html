@@ -544,14 +544,14 @@ Variant Quality Score Recalibration
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a></a><span class="ex">bcftools</span> stats variantsites.vcf.gz <span class="kw">|</span> <span class="fu">grep</span> <span class="st">"^SN"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>SN  0   number of samples:  10
-SN  0   number of records:  12726
+SN  0   number of records:  12800
 SN  0   number of no-ALTs:  0
-SN  0   number of SNPs: 10459
+SN  0   number of SNPs: 10451
 SN  0   number of MNPs: 0
-SN  0   number of indels:   2296
+SN  0   number of indels:   2373
 SN  0   number of others:   0
-SN  0   number of multiallelic sites:   1038
-SN  0   number of multiallelic SNP sites:   217</code></pre>
+SN  0   number of multiallelic sites:   1028
+SN  0   number of multiallelic SNP sites:   197</code></pre>
 </div>
 </div>
 </div>
@@ -746,14 +746,14 @@ Figure&nbsp;8: Genome-wide inbreeding coefficient by individual
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a></a><span class="ex">bcftools</span> stats allsites.vcf.gz <span class="kw">|</span> <span class="fu">grep</span> <span class="st">"^SN"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>SN  0   number of samples:  10
-SN  0   number of records:  10103
-SN  0   number of no-ALTs:  9323
-SN  0   number of SNPs: 400
+SN  0   number of records:  9951
+SN  0   number of no-ALTs:  9178
+SN  0   number of SNPs: 375
 SN  0   number of MNPs: 0
-SN  0   number of indels:   132
+SN  0   number of indels:   102
 SN  0   number of others:   0
-SN  0   number of multiallelic sites:   43
-SN  0   number of multiallelic SNP sites:   4</code></pre>
+SN  0   number of multiallelic sites:   45
+SN  0   number of multiallelic SNP sites:   6</code></pre>
 </div>
 </div>
 <p>Filtering as before but excluding MAF, variant quality filters</p>

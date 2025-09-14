@@ -21,7 +21,27 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="../site_libs/quarto-nav/quarto-nav.js"></script>
@@ -83,9 +103,9 @@ ul.task-list li input[type="checkbox"] {
     }
 
     const options = {
-      valueNames: ['listing-title','listing-subtitle','listing-author',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
+      valueNames: ['listing-title','listing-description',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-title-sort'] }],
       
-      searchColumns: ["listing-title","listing-author","listing-image","listing-description"],
+      searchColumns: ["listing-title","listing-author"],
     };
 
     window['quarto-listings'] = window['quarto-listings'] || {};
@@ -213,80 +233,124 @@ window.Quarto = {
 </section>
 <section id="slides" class="level3">
 <h3 class="anchored" data-anchor-id="slides">Slides</h3>
-<div id="listing-slide-listings" class="quarto-listing quarto-listing-container-grid">
-<div class="list grid quarto-listing-cols-4">
-<div class="g-col-1" data-index="0" data-listing-file-modified-sort="1757776663749" data-listing-reading-time-sort="14" data-listing-word-count-sort="2735">
-<a href="../slides/pgip/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Population genomics in practice
-</h5>
-<div class="card-subtitle listing-subtitle">
-What is population genomics?
+<div id="listing-slide-listings" class="quarto-listing quarto-listing-container-table">
+<div class="listing-actions-group">
+   <div class="input-group input-group-sm quarto-listing-sort">
+    <span class="input-group-text"><i class="bi bi-sort-down"></i></span>
+    <select id="listing-slide-listings-sort" class="form-select" aria-label="Order By" onchange="window['quarto-listings']['listing-slide-listings'].sort(this.options[this.selectedIndex].value, { order: this.options[this.selectedIndex].getAttribute('data-direction')})">
+      <option value="" disabled="" selected="" hidden="">Order By</option>
+      <option value="index" data-direction="asc">Default</option>
+      <option value="listing-title-sort" data-direction="asc">
+        Title
+      </option>
+    </select>
+  </div>
+    <div class="input-group input-group-sm quarto-listing-filter">
+      <span class="input-group-text"><i class="bi bi-search"></i></span>
+      <input type="text" class="search form-control" placeholder="Filter">
+    </div>
 </div>
-<div class="card-attribution card-text-small start">
-<div class="listing-author">
-Per Unneberg
-</div>
-</div>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="1" data-listing-file-modified-sort="1757776663745" data-listing-reading-time-sort="1" data-listing-word-count-sort="11">
-<a href="../slides/foundations/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Population genetics foundations
-</h5>
-<div class="card-attribution card-text-small start">
-<div class="listing-author">
-Per Unneberg
-</div>
-</div>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="2" data-listing-file-modified-sort="1757776663755" data-listing-reading-time-sort="1" data-listing-word-count-sort="10">
-<a href="../slides/variant_calling/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Variant calling
-</h5>
-<div class="card-attribution card-text-small start">
-<div class="listing-author">
-Per Unneberg
-</div>
-</div>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="3" data-listing-file-modified-sort="1757776663756" data-listing-reading-time-sort="1" data-listing-word-count-sort="7">
-<a href="../slides/variant_filtering/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Variant filtering
-</h5>
-<div class="card-attribution card-text-small start">
-<div class="listing-author">
-Per Unneberg
-</div>
-</div>
-</div>
-</div></a>
-</div>
-</div>
+<table class="quarto-listing-table table">
+<thead>
+<tr>
+
+<th>
+<a class="sort" data-sort="listing-title-sort" onclick="if (this.classList.contains('sort-asc')) { this.classList.add('sort-desc'); this.classList.remove('sort-asc') } else { this.classList.add('sort-asc'); this.classList.remove('sort-desc')} return false;">Title</a>
+</th>
+
+<th>
+Description
+</th>
+
+</tr>
+</thead>
+<tbody class="list">
+
+<tr data-index="0" data-listing-file-modified-sort="1757882404358" data-listing-reading-time-sort="14" data-listing-word-count-sort="2735" data-listing-title-sort="Population genomics in practice" data-listing-filename-sort="index.qmd">
+<td>
+<a href="../slides/pgip/index.html" class="title listing-title">Population genomics in practice</a>
+</td>
+<td>
+<span class="listing-description">Discussion of <span class="citation" data-cites="fuller_PopulationGeneticsCoral_2020">Fuller et al. (<a href="#ref-fuller_PopulationGeneticsCoral_2020" role="doc-biblioref">2020</a>)</span> to introduce concepts in population genomics.</span>
+</td>
+
+</tr>
+
+<tr data-index="1" data-listing-file-modified-sort="1757882404354" data-listing-reading-time-sort="1" data-listing-word-count-sort="11" data-listing-title-sort="Population genetics foundations" data-listing-filename-sort="index.qmd">
+<td>
+<a href="../slides/foundations/index.html" class="title listing-title">Population genetics foundations</a>
+</td>
+<td>
+<span class="listing-description">Collection of short presentations on population genetic theory and foundations</span>
+</td>
+
+</tr>
+
+<tr data-index="2" data-listing-file-modified-sort="1757882404365" data-listing-reading-time-sort="1" data-listing-word-count-sort="10" data-listing-title-sort="Variant calling" data-listing-filename-sort="index.qmd">
+<td>
+<a href="../slides/variant_calling/index.html" class="title listing-title">Variant calling</a>
+</td>
+<td>
+<span class="listing-description">Collection of presentations on DNA sequencing and variant calling.</span>
+</td>
+
+</tr>
+
+<tr data-index="3" data-listing-file-modified-sort="1757882404366" data-listing-reading-time-sort="1" data-listing-word-count-sort="7" data-listing-title-sort="Variant filtering" data-listing-filename-sort="index.qmd">
+<td>
+<a href="../slides/variant_filtering/index.html" class="title listing-title">Variant filtering</a>
+</td>
+<td>
+<span class="listing-description">Collection of presentations on variant filtering.</span>
+</td>
+
+</tr>
+
+<tr data-index="4" data-listing-file-modified-sort="1757882404359" data-listing-reading-time-sort="1" data-listing-word-count-sort="7" data-listing-title-sort="Recombination and linkage" data-listing-filename-sort="index.qmd">
+<td>
+<a href="../slides/recombination/index.html" class="title listing-title">Recombination and linkage</a>
+</td>
+<td>
+<span class="listing-description">Slides for recombination and linkage module.</span>
+</td>
+
+</tr>
+
+<tr data-index="5" data-listing-file-modified-sort="1757882404357" data-listing-reading-time-sort="1" data-listing-word-count-sort="11" data-listing-title-sort="Genetic diversity" data-listing-filename-sort="index.qmd">
+<td>
+<a href="../slides/genetic_diversity/index.html" class="title listing-title">Genetic diversity</a>
+</td>
+<td>
+<span class="listing-description">Collection of presentations on estimation of genetic diversity and related statistics.</span>
+</td>
+
+</tr>
+
+<tr data-index="6" data-listing-file-modified-sort="1757882404359" data-listing-reading-time-sort="1" data-listing-word-count-sort="5" data-listing-title-sort="Population structure" data-listing-filename-sort="index.qmd">
+<td>
+<a href="../slides/population_structure/index.html" class="title listing-title">Population structure</a>
+</td>
+<td>
+<span class="listing-description">Collection of presentations on the analysis of population structure</span>
+</td>
+
+</tr>
+
+</tbody>
+</table>
 <div class="listing-no-matching d-none">No matching items</div>
 </div>
 
 
 
+
 </section>
 
-</main> <!-- /main -->
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" data-line-spacing="2" role="list">
+<div id="ref-fuller_PopulationGeneticsCoral_2020" class="csl-entry" role="listitem">
+Fuller, Z. L., Mocellin, V. J. L., Morris, L. A., Cantin, N., Shepherd, J., Sarre, L., Peng, J., Liao, Y., Pickrell, J., Andolfatto, P., Matz, M., Bay, L. K., &amp; Przeworski, M. (2020). Population genetics of the coral <span>Acropora</span> millepora: <span>Toward</span> genomic prediction of bleaching. <em>Science</em>, <em>369</em>(6501), eaba4674. <a href="https://doi.org/10.1126/science.aba4674">https://doi.org/10.1126/science.aba4674</a>
+</div>
+</div></section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";

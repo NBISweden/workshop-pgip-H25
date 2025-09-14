@@ -1,5 +1,13 @@
 [
   {
+    "listing": "/exercises/population_structure/index.html",
+    "items": [
+      "/exercises/population_structure/pca.html",
+      "/exercises/population_structure/admixture.html",
+      "/exercises/population_structure/dstats.html"
+    ]
+  },
+  {
     "listing": "/exercises/genetic_diversity/index.html",
     "items": [
       "/exercises/genetic_diversity/landscape.html"
@@ -21,24 +29,23 @@
     ]
   },
   {
-    "listing": "/slides/recombination/index.html",
-    "items": []
-  },
-  {
-    "listing": "/slides/index.html",
+    "listing": "/slides/population_structure/index.html",
     "items": [
-      "/slides/pgip/index.html",
-      "/slides/foundations/index.html",
-      "/slides/variant_calling/index.html",
-      "/slides/variant_filtering/index.html"
+      "/slides/population_structure/pca.html",
+      "/slides/population_structure/admixture.html"
     ]
   },
   {
-    "listing": "/slides/foundations/index.html",
+    "listing": "/slides/genetic_diversity/index.html",
     "items": [
-      "/slides/foundations/data.html",
-      "/slides/foundations/alleles.html",
-      "/slides/foundations/linkage.html"
+      "/slides/genetic_diversity/diversity.html"
+    ]
+  },
+  {
+    "listing": "/slides/variant_filtering/index.html",
+    "items": [
+      "/slides/variant_filtering/variant_filtering.html",
+      "/slides/variant_filtering/depth_filtering.html"
     ]
   },
   {
@@ -50,17 +57,30 @@
     ]
   },
   {
-    "listing": "/slides/variant_filtering/index.html",
+    "listing": "/slides/foundations/index.html",
     "items": [
-      "/slides/variant_filtering/variant_filtering.html",
-      "/slides/variant_filtering/depth_filtering.html"
+      "/slides/foundations/data.html",
+      "/slides/foundations/alleles.html",
+      "/slides/foundations/linkage.html",
+      "/slides/foundations/wrightfisher.html",
+      "/slides/foundations/diversity.html"
     ]
   },
   {
-    "listing": "/slides/genetic_diversity/index.html",
+    "listing": "/slides/index.html",
     "items": [
-      "/slides/genetic_diversity/diversity.html"
+      "/slides/pgip/index.html",
+      "/slides/foundations/index.html",
+      "/slides/variant_calling/index.html",
+      "/slides/variant_filtering/index.html",
+      "/slides/recombination/index.html",
+      "/slides/genetic_diversity/index.html",
+      "/slides/population_structure/index.html"
     ]
+  },
+  {
+    "listing": "/slides/recombination/index.html",
+    "items": []
   },
   {
     "listing": "/exercises/index.html",
@@ -68,7 +88,10 @@
       "/exercises/compute_environment/index.html",
       "/exercises/datasets/monkeyflowers.html",
       "/exercises/variant_calling/index.html",
-      "/exercises/variant_filtering/index.html"
+      "/exercises/variant_filtering/index.html",
+      "/exercises/recombination_linkage/index.html",
+      "/exercises/genetic_diversity/index.html",
+      "/exercises/population_structure/index.html"
     ]
   },
   {
