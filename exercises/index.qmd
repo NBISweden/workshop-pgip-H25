@@ -6,16 +6,18 @@ format:
   nbis-course-html:
     number-sections: false
 listing:
-  id: exercise-listings
-  type: grid
-  grid-columns: 4
-  fields: [title, subtitle, author]
+  id: exercise-listing
+  type: table
+  fields: [title, description]
   sort: false
   contents:
     - compute_environment/index.qmd
     - datasets/monkeyflowers.qmd
     - variant_calling/index.qmd
     - variant_filtering/index.qmd
+    - recombination_linkage/index.qmd
+    - genetic_diversity/index.qmd
+    - population_structure/index.qmd
 toc: false
 sidebar: false
 ---
@@ -79,3 +81,11 @@ is `ls -l`.
 :::
 
 ## Exercises
+
+:::{#exercise-listing}
+:::
+
+## Bibliography
+
+:::{#refs}
+:::

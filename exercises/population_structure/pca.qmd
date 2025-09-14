@@ -345,12 +345,16 @@ try.
 - Exclude *M.clevelandii* from the PCA (you can use the `--remove`
   option to remove samples).
 
-## PCA caveats
+## Remarks
 
-- not model-based - gives no information about the underlying
-  demographic process [@novembre_InterpretingPrincipalComponent_2008]
-- sensitive to unequal sampling
-  [@mcvean_GenealogicalInterpretationPrincipal_2009]
+Helpful as PCA is in identifying population substructure, it is
+important to keep in mind that it is not model-based and therefore
+gives limited information about the underlying demographic process
+[@novembre_InterpretingPrincipalComponent_2008] in the context of
+analysing spatial data. Another potential issue is that PCA is
+sensitive to unequal sampling
+[@mcvean_GenealogicalInterpretationPrincipal_2009] which may distort
+clusters in the resulting plots.
 
 ## References
 
