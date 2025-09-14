@@ -44,6 +44,10 @@ website:
             contents:
               - slides/genetic_diversity/index.qmd
               - slides/genetic_diversity/diversity.qmd
+          - section: Population structure
+            contents:
+              - slides/population_structure/index.qmd
+              - slides/population_structure/pca.qmd
           # - slides/simulation/index.qmd
       - section: Exercises
         contents:

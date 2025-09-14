@@ -221,6 +221,10 @@ slides/variant_filtering:
     - __redyellow_variants__
     - __reference__
 
+slides/population_structure:
+  content:
+    - __sampleinfo__
+
 slides/genetic_diversity:
   content:
     - __sampleinfo__
