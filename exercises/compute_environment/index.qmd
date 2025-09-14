@@ -1,5 +1,7 @@
 ---
 title: Compute environment
+description: >-
+  Description of compute resources
 author:
   - Per Unneberg
 format: nbis-course-html

@@ -17,6 +17,8 @@ listing:
     - data.qmd
     - alleles.qmd
     - linkage.qmd
+    - wrightfisher.qmd
+    - diversity.qmd
 ---
 
 ## About

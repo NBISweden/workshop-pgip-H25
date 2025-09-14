@@ -397,6 +397,20 @@
   urldate = {2022-12-19},
   abstract = {Molecular population genetics aims to explain genetic variation and molecular evolution from population genetics principles. The field was born 50 years ago with the first measures of genetic variation in allozyme loci, continued with the nucleotide sequencing era, and is currently in the era of population genomics. During this period, molecular population genetics has been revolutionized by progress in data acquisition and theoretical developments. The conceptual elegance of the neutral theory of molecular evolution or the footprint carved by natural selection on the patterns of genetic variation are two examples of the vast number of inspiring findings of population genetics research. Since the inception of the field, Drosophila has been the prominent model species: molecular variation in populations was first described in Drosophila and most of the population genetics hypotheses were tested in Drosophila species. In this review, we describe the main concepts, methods, and landmarks of molecular population genetics, using the Drosophila model as a reference. We describe the different genetic data sets made available by advances in molecular technologies, and the theoretical developments fostered by these data. Finally, we review the results and new insights provided by the population genomics approach, and conclude by enumerating challenges and new lines of inquiry posed by increasingly large population scale sequence data.},
 }
+@article{cavalli-sforza_PhylogeneticAnalysisModels_1967,
+  title = {Phylogenetic Analysis. {{Models}} and Estimation Procedures},
+  author = {{Cavalli-Sforza}, L. L. and Edwards, A. W. F.},
+  year = {1967},
+  month = may,
+  journal = {American Journal of Human Genetics},
+  volume = {19},
+  number = {3 Pt 1},
+  pages = {233--257},
+  issn = {0002-9297},
+  urldate = {2021-05-05},
+  pmcid = {PMC1706274},
+  pmid = {6026583},
+}
 @article{chan_GenomeWideFineScaleRecombination_2012,
   title = {Genome-{{Wide Fine-Scale Recombination Rate Variation}} in {{Drosophila}} Melanogaster},
   author = {Chan, Andrew H. and Jenkins, Paul A. and Song, Yun S.},
@@ -447,6 +461,7 @@
   urldate = {2023-10-28},
   abstract = {PLINK 1 is a widely used open-source C/C++ toolset for genome-wide association studies (GWAS) and research in population genetics. However, the steady accumulation of data from imputation and whole-genome sequencing studies has exposed a strong need for faster and scalable implementations of key functions, such as logistic regression, linkage disequilibrium estimation, and genomic distance evaluation. In addition, GWAS and population-genetic data now frequently contain genotype likelihoods, phase information, and/or multiallelic variants, none of which can be represented by PLINK 1's primary data format.To address these issues, we are developing a second-generation codebase for PLINK. The first major release from this codebase, PLINK 1.9, introduces extensive use of bit-level parallelism, (n)-time/constant-space Hardy-Weinberg equilibrium and Fisher's exact tests, and many other algorithmic improvements. In combination, these changes accelerate most operations by 1-4 orders of magnitude, and allow the program to handle datasets too large to fit in RAM. We have also developed an extension to the data format which adds low-overhead support for genotype likelihoods, phase, multiallelic variants, and reference vs. alternate alleles, which is the basis of our planned second release (PLINK 2.0).The second-generation versions of PLINK will offer dramatic improvements in performance and compatibility. For the first time, users without access to high-end computing resources can perform several essential analyses of the feature-rich and very large genetic datasets coming into use.},
 }
+
 @article{charlesworth_EffectDeleteriousMutations_1993,
   title = {The {{Effect}} of {{Deleterious Mutations}} on {{Neutral Molecular Variation}}},
   author = {Charlesworth, B. and Morgan, M. T. and Charlesworth, D.},
@@ -476,7 +491,6 @@
   url = {https://doi.org/10.1146/annurev-ecolsys-010621-044528},
   abstract = {Patterns of variation and evolution at a given site in a genome can be strongly influenced by the effects of selection at genetically linked sites. In particular, the recombination rates of genomic regions correlate with their amount of within-population genetic variability, the degree to which the frequency distributions of DNA sequence variants differ from their neutral expectations, and the levels of adaptation of their functional components. We review the major population genetic processes that are thought to lead to these patterns, focusing on their effects on patterns of variability: selective sweeps, background selection, associative overdominance, and Hill\textendash Robertson interference among deleterious mutations. We emphasize the difficulties in distinguishing among the footprints of these processes and disentangling them from the effects of purely demographic factors such as population size changes. We also discuss how interactions between selective and demographic processes can significantly affect patterns of variability within genomes.}
 }
-
 @book{charlesworth_ElementsEvolutionaryGenetics_2010,
   title = {Elements of {{Evolutionary Genetics}}},
   author = {Charlesworth, Brian and Charlesworth, Deborah},
@@ -488,6 +502,8 @@
   langid = {english},
   keywords = {Science / Life Sciences / Evolution,Science / Life Sciences / Genetics \& Genomics}
 }
+
+
 @article{charlesworth_HowCanWe_2022,
   title = {How {{Can We Resolve Lewontin}}'s {{Paradox}}?},
   author = {Charlesworth, Brian and Jensen, Jeffrey D},
@@ -503,7 +519,6 @@
   urldate = {2022-07-27},
   abstract = {We discuss the genetic, demographic, and selective forces that are likely to be at play in restricting observed levels of DNA sequence variation in natural populations to a much smaller range of values than would be expected from the distribution of census population sizes alone\textemdash Lewontin's Paradox. While several processes that have previously been strongly emphasized must be involved, including the effects of direct selection and genetic hitchhiking, it seems unlikely that they are sufficient to explain this observation without contributions from other factors. We highlight a potentially important role for the less-appreciated contribution of population size change; specifically, the likelihood that many species and populations may be quite far from reaching the relatively high equilibrium diversity values that would be expected given their current census sizes.},
 }
-
 
 @misc{cooplab_PopulationGeneticsCourse_2011,
   title = {Population Genetics Course Resources: {{Hardy-Weinberg Eq}}.},
@@ -536,7 +551,6 @@
   langid = {english},
   keywords = {DNA recombination,Gene mapping,Genomics,Invertebrate genomics,Natural selection,Population genetics,Population size,Species diversity},
 }
-
 @article{corbett-detig_NaturalSelectionConstrains_2015,
   title = {Natural {{Selection Constrains Neutral Diversity}} across {{A Wide Range}} of {{Species}}},
   author = {{Corbett-Detig}, Russell B. and Hartl, Daniel L. and Sackton, Timothy B.},
@@ -569,6 +583,7 @@
   urldate = {2022-09-16},
   abstract = {SAMtools and BCFtools are widely used programs for processing and analysing high-throughput sequencing data. They include tools for file format conversion and manipulation, sorting, querying, statistics, variant calling, and effect analysis amongst other methods.The first version appeared online 12 years ago and has been maintained and further developed ever since, with many new features and improvements added over the years. The SAMtools and BCFtools packages represent a unique collection of tools that have been used in numerous other software projects and countless genomic pipelines.Both SAMtools and BCFtools are freely available on GitHub under the permissive MIT licence, free for both non-commercial and commercial use. Both packages have been installed \&gt;1 million times via Bioconda. The source code and documentation are available from https://www.htslib.org.},
 }
+
 @article{danecek_VariantCallFormat_2011,
   title = {The Variant Call Format and {{VCFtools}}},
   author = {Danecek, Petr and Auton, Adam and Abecasis, Goncalo and Albers, Cornelis A and Banks, Eric and DePristo, Mark A and Handsaker, Robert E and Lunter, Gerton and Marth, Gabor T and Sherry, Stephen T and McVean, Gilean and Durbin, Richard},
@@ -587,7 +602,6 @@
   pmid = {21653522},
   keywords = {Alleles,Genetic Variation,{Genome, Human},Genomics,Genotype,Humans,Information Storage and Retrieval,Software,vcf}
 }
-
 @article{davey_RADSeqNextgenerationPopulation_2010,
   title = {{{RADSeq}}: Next-Generation Population Genetics},
   shorttitle = {{{RADSeq}}},
@@ -976,13 +990,13 @@
   publisher = {{Oxford University Press}},
   isbn = {978-0-87893-965-7}
 }
+
 @article{haller_SLiMEvolutionarySimulation_2022,
   title = {{{SLiM}}: {{An Evolutionary Simulation Framework}}},
   author = {Haller, Benjamin C and Messer, Philipp W},
   year = {2022},
   langid = {english},
 }
-
 @article{haller_SLiMForwardGenetic_2019,
   title = {{{SLiM}} 3: {{Forward Genetic Simulations Beyond}} the {{Wright}}\textendash{{Fisher Model}}},
   shorttitle = {{{SLiM}} 3},
@@ -1506,6 +1520,7 @@ journal = {Systematic Biology - SYST BIOL}
   copyright = {2011 Nature Publishing Group},
   langid = {english},
 }
+
 @article{li_Minimap2PairwiseAlignment_2018,
   title = {Minimap2: Pairwise Alignment for Nucleotide Sequences},
   shorttitle = {Minimap2},
@@ -1522,7 +1537,6 @@ journal = {Systematic Biology - SYST BIOL}
   urldate = {2023-10-31},
   abstract = {Recent advances in sequencing technologies promise ultra-long reads of {$\sim$}100 kb in average, full-length mRNA or cDNA reads in high throughput and genomic contigs over 100 Mb in length. Existing alignment programs are unable or inefficient to process such data at scale, which presses for the development of new alignment algorithms.Minimap2 is a general-purpose alignment program to map DNA or long mRNA sequences against a large reference database. It works with accurate short reads of {$\geq$}100\,bp in length, {$\geq$}1\,kb genomic reads at error rate {$\sim$}15\%, full-length noisy Direct RNA or cDNA reads and assembly contigs or closely related full chromosomes of hundreds of megabases in length. Minimap2 does split-read alignment, employs concave gap cost for long insertions and deletions and introduces new heuristics to reduce spurious alignments. It is 3\textendash 4 times as fast as mainstream short-read mappers at comparable accuracy, and is {$\geq$}30 times faster than long-read genomic or cDNA mappers at higher accuracy, surpassing most aligners specialized in one type of alignment.https://github.com/lh3/minimap2Supplementary data are available at Bioinformatics online.},
 }
-
 @article{li_SNPDetectionMassively_2009,
   title = {{{SNP}} Detection for Massively Parallel Whole-Genome Resequencing},
   author = {Li, Ruiqiang and Li, Yingrui and Fang, Xiaodong and Yang, Huanming and Wang, Jian and Kristiansen, Karsten and Wang, Jun},
@@ -1733,6 +1747,20 @@ journal = {Systematic Biology - SYST BIOL}
   abstract = {Principal components analysis, PCA, is a statistical method commonly used in population genetics to identify structure in the distribution of genetic variation across geographical location and ethnic background. However, while the method is often used to inform about historical demographic processes, little is known about the relationship between fundamental demographic parameters and the projection of samples onto the primary axes. Here I show that for SNP data the projection of samples onto the principal components can be obtained directly from considering the average coalescent times between pairs of haploid genomes. The result provides a framework for interpreting PCA projections in terms of underlying processes, including migration, geographical isolation, and admixture. I also demonstrate a link between PCA and Wright's fst and show that SNP ascertainment has a largely simple and predictable effect on the projection of samples. Using examples from human genetics, I discuss the application of these results to empirical data and the implications for inference.},
   langid = {english},
   keywords = {Eigenvectors,Genetic polymorphism,Genomics,Haplotypes,Population genetics,Principal component analysis,Single nucleotide polymorphisms,Variant genotypes},
+}
+@article{menozzi_SyntheticMapsHuman_1978,
+  title = {Synthetic {{Maps}} of {{Human Gene Frequencies}} in {{Europeans}}},
+  author = {Menozzi, P. and Piazza, A. and {Cavalli-Sforza}, L.},
+  year = {1978},
+  month = sep,
+  journal = {Science},
+  volume = {201},
+  number = {4358},
+  pages = {786--792},
+  publisher = {American Association for the Advancement of Science},
+  doi = {10.1126/science.356262},
+  urldate = {2025-09-14},
+  abstract = {Multivariate techniques can be used to condense the information for a large number of loci and alleles into one or a few synthetic variables. The geographic distribution of synthetic variables can be plotted by the same technique used in mapping the gene frequency of a single allele. Synthetic maps were constructed for Europe and the Near East, with the use of principal components to condense the information of 38 independent alleles from ten loci. The first principal component summarizes close to 30 percent of the total information and shows gradients. Maps thus constructed show clines in remarkable agreement with those expected on the basis of the spread of early farming in Europe, thus supporting the hypothesis that this spread was a demic spread rather than a cultural diffusion of farming technology.}
 }
 @book{miller_HumanBiology_2020,
   title = {Human {{Biology}}},
@@ -2366,6 +2394,7 @@ journal = {Systematic Biology - SYST BIOL}
   keywords = {age structure,effective population size,estimation,genetic drift,inbreeding,spatial structure},
   note = {e17670 MEC-24-0861.R1},
 }
+
 @article{waples_WhatNeAnyway_2022,
   title = {What {{Is Ne}}, {{Anyway}}?},
   author = {Waples, Robin S},
@@ -2395,7 +2424,6 @@ journal = {Systematic Biology - SYST BIOL}
   pmid = {36375448},
   keywords = {conservation genomics,deleterious mutations,genetic adaptation,genome assembly,insect declines},
 }
-
 @misc{webstermatthew_GeneticVariationMountain_2022,
   title = {Genetic {{Variation}} in {{Mountain Bumblebees}}},
   author = {{Webster, Matthew} and {Yuanzhen Liu}},

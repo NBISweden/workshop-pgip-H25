@@ -1,6 +1,9 @@
 ---
 title: Monkeyflowers dataset
 subtitle: Speciation genomics and simulation
+description: >-
+  Summary of Monkeyflower dataset from
+  @stankowski_WidespreadSelectionGene_2019
 author:
   - Per Unneberg
 format: nbis-course-html
