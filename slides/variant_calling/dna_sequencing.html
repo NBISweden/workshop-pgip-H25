@@ -16,7 +16,7 @@
   <meta name="generator" content="quarto-1.7.33">
 
   <meta name="author" content="Per Unneberg">
-  <title>Population Genomics in Practice 2025 – Variant calling workflows</title>
+  <title>Population Genomics in Practice 2025 – DNA sequencing data</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -100,7 +100,27 @@
     code span.va { color: #458588; } /* Variable */
     code span.vs { color: #98971a; } /* VerbatimString */
     code span.wa { color: #282828; background-color: #fabd2f; } /* Warning */
-  </style>
+    /* CSS for citations */
+    div.csl-bib-body { }
+    div.csl-entry {
+      clear: both;
+      margin-bottom: 0em;
+    }
+    .hanging-indent div.csl-entry {
+      margin-left:2em;
+      text-indent:-2em;
+    }
+    div.csl-left-margin {
+      min-width:2em;
+      float:left;
+    }
+    div.csl-right-inline {
+      margin-left:2em;
+      padding-left:1em;
+    }
+    div.csl-indent {
+      margin-left: 2em;
+    }  </style>
   <link rel="stylesheet" href="../../site_libs/revealjs/dist/theme/quarto-802d3b82e08d8dc8d935d89a8ebe9074.css">
   <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
   <script>document.addEventListener("DOMContentLoaded", function () {
@@ -215,8 +235,8 @@
     <div class="slides">
 
 <section id="title-slide" class="quarto-title-block center">
-  <h1 class="title">Variant calling workflows</h1>
-  <p class="subtitle">Making your work reproducible</p>
+  <h1 class="title">DNA sequencing data</h1>
+  <p class="subtitle">DNA sequencing approaches and data</p>
 
 <div class="quarto-title-authors">
 <div class="quarto-title-author">
@@ -228,352 +248,237 @@ Per Unneberg
 
 </section>
 
-<section id="motivation" class="slide level2 ultitle">
-<h2>Motivation</h2>
-<h3 class="ultitle" id="manual-variant-calling">Manual variant calling</h3>
-<div class="fragment">
-<div class="sourceCode" id="cb1"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a></a><span class="ex">bwa</span> index ref/M_aurantiacus_v1.fasta</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="fragment">
-<div class="sourceCode" id="cb2"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a></a><span class="ex">samtools</span> faidx ref/M_aurantiacus_v1.fasta</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="fragment">
-<div class="sourceCode" id="cb3"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a></a><span class="ex">bwa</span> mem <span class="at">-R</span> <span class="st">"@RG\tID:SRR9309790\tSM:PUN-Y-INJ\tPL:ILLUMINA"</span> <span class="at">-t</span> 4 <span class="at">-M</span> <span class="dt">\</span></span>
-<span id="cb3-2"><a></a>    ref/M_aurantiacus_v1.fasta <span class="dt">\</span></span>
-<span id="cb3-3"><a></a>    fastq/PUN-Y-INJ_R1.fastq.gz <span class="dt">\</span></span>
-<span id="cb3-4"><a></a>    fastq/PUN-Y-INJ_R2.fastq.gz <span class="kw">|</span> <span class="dt">\</span></span>
-<span id="cb3-5"><a></a>    <span class="ex">samtools</span> sort <span class="at">-</span> <span class="kw">|</span> <span class="dt">\</span></span>
-<span id="cb3-6"><a></a>    <span class="ex">samtools</span> view <span class="at">--with-header</span> <span class="at">--output</span> bam/PUN-Y-INJ.bam</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="fragment">
-<p>This quickly becomes complex - not to mention tedious and boring. With larger sample sizes it becomes difficult to keep track which commands need updating should input data change.</p>
-</div>
-<div class="fragment largest">
-<h3 class="ultitle" id="solution">Solution</h3>
-<p>Workflow managers!</p>
-</div>
-</section>
-<section id="of-inputs-and-outputs" class="slide level2 ultitle">
-<h2>Of inputs and outputs</h2>
-<div>
-<div class="cell" data-layout-align="center">
-<div class="cell-output-display">
+<section id="sequencing-technologies" class="slide level2 ultitle">
+<h2>Sequencing technologies</h2>
+<div class="columns">
+<div class="column" style="width:90%;">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><a href="reproducibility_files/figure-revealjs/workflow-diagram-1.svg" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img data-src="reproducibility_files/figure-revealjs/workflow-diagram-1.svg" class="quarto-figure quarto-figure-center" style="width:70.0%"></a></p>
+<p><a href="https://ngisweden.scilifelab.se/wp-content/uploads/2023/06/tech3-1024x171.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img data-src="https://ngisweden.scilifelab.se/wp-content/uploads/2023/06/tech3-1024x171.png" class="quarto-figure quarto-figure-center" style="width:80.0%"></a></p>
+</figure>
+</div>
+</div><div class="column" data-fig-align="left" style="width:10%;">
+<p><a href="https://ngisweden.scilifelab.se/wp-content/themes/ngisweden/img/NGI-logo.svg" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img data-src="https://ngisweden.scilifelab.se/wp-content/themes/ngisweden/img/NGI-logo.svg" style="width:100.0%"></a></p>
+</div></div>
+<div class="columns">
+<div class="column" style="width:50%;">
+<h5 id="illumina-novaseq-600">Illumina NovaSeq 600</h5>
+<div class="smallr">
+<blockquote>
+<p>Scale up and down with a tunable output of up to 6 Tb and 20B single reads in &lt; 2 days.</p>
+</blockquote>
+</div>
+<p>Up to 2X250 bp read length. Price example: 8,000 SEK total for resequencing 3Gbp genome to 30X</p>
+<div class="flushright smallest">
+<p><a href="https://www.illumina.com/systems/sequencing-platforms/novaseq.html" class="uri">https://www.illumina.com/systems/sequencing-platforms/novaseq.html</a></p>
+</div>
+</div><div class="column" style="width:50%;">
+<h5 id="pacbio-revio">PacBio Revio</h5>
+<div class="smallr">
+<blockquote>
+<p>Up to 360 Gb of HiFi reads per day, equivalent to 1,300 human whole genomes per year.</p>
+</blockquote>
+</div>
+<p>Tens of kilobases long HiFi reads. Price example (Sequel II): ~35kSEK per library and SMRT cell</p>
+<div class="flushright smallest">
+<p><a href="https://www.pacb.com/revio/" class="uri">https://www.pacb.com/revio/</a></p>
+</div>
+</div></div>
+</section>
+<section id="sequencing-approaches" class="slide level2 ultitle">
+<h2>Sequencing approaches</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<!-- markdownlint-disable MD013 -->
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-sequencing-cost" class="quarto-float quarto-figure quarto-figure-center">
+<figure class="quarto-float quarto-float-fig">
+<div aria-describedby="fig-sequencing-cost-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="dna_sequencing_files/figure-revealjs/fig-sequencing-cost-1.svg" class="lightbox" data-gallery="quarto-lightbox-gallery-3" title="Figure&nbsp;1: DNA sequencing costs [@wetterstrandka_DNASequencingCosts]"><img data-src="dna_sequencing_files/figure-revealjs/fig-sequencing-cost-1.svg" style="width:90.0%"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-sequencing-cost-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: DNA sequencing costs <span class="citation" data-cites="wetterstrandka_DNASequencingCosts">(<a href="#/bibliography" role="doc-biblioref" onclick="">Wetterstrand, KA</a>)</span>
+</figcaption>
 </figure>
 </div>
 </div>
 </div>
+<!-- markdownlint-enable MD013 -->
+<p>Despite price drop, still need to make choices regarding depth and breadth of sequencing coverage and number of samples.</p>
+</div><div class="column fragment" style="width:50%;">
+<div id="fig-sequencing-approaches" class="quarto-float quarto-figure quarto-figure-center" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig">
+<div aria-describedby="fig-sequencing-approaches-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="assets/images/sequencing_approaches_lou_2021.webp" class="lightbox" data-gallery="quarto-lightbox-gallery-4" title="Figure&nbsp;2: Comparison of common sequencing approaches. Restriction site-associated DNA sequencing (RAD-seq, top), targets regions flanking given restriction sites, but misses much of genome. Pooled sequencing (Pool-seq, middle) is cost-effective, but loses information about individuals. Low-coverage whole genome sequencing (lcWGS, bottom) is increasing in popularity, but genotyping low coverage data is problematic."><img data-src="assets/images/sequencing_approaches_lou_2021.webp" class="quarto-figure quarto-figure-center" style="width:60.0%"></a>
 </div>
-<div class="columns">
-<div class="column" style="width:50%;">
-<ul>
-<li class="fragment"><strong>Inputs</strong> are connected to <strong>outputs</strong></li>
-<li class="fragment">Arrows correspond to <strong>dependencies</strong> and <strong>transformation/generation</strong> of new data</li>
-<li class="fragment">Workflow managers define <strong>rules</strong> that link inputs to outputs with an action</li>
-</ul>
-</div><div class="column" style="width:50%;">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-sequencing-approaches-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: Comparison of common sequencing approaches. Restriction site-associated DNA sequencing (RAD-seq, top), targets regions flanking given restriction sites, but misses much of genome. Pooled sequencing (Pool-seq, middle) is cost-effective, but loses information about individuals. Low-coverage whole genome sequencing (lcWGS, bottom) is increasing in popularity, but genotyping low coverage data is problematic.
+</figcaption>
+</figure>
+</div>
+<div class="flushright smallest">
+<p><span class="citation" data-cites="lou_BeginnerGuideLowcoverage_2021">Lou et al. (<a href="#/bibliography" role="doc-biblioref" onclick="">2021</a>)</span></p>
+</div>
 <div class="fragment">
-<div class="sourceCode" id="cb4"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb4-1"><a></a>rule markdup:</span>
-<span id="cb4-2"><a></a>    input: map/PUN-Y-INJ.bam</span>
-<span id="cb4-3"><a></a>    output: markdup/PUN-Y-INJ.bam</span>
-<span id="cb4-4"><a></a>    action: run picard MarkDuplicates</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Our focus will be on Whole Genome reSequencing (WGS), mostly high-coverage.</p>
 </div>
 </div></div>
-</section>
-<section id="workflow-managers" class="slide level2 ultitle">
-<h2>Workflow managers</h2>
-<div class="columns">
-<div class="column" style="width:50%;">
-<p><img data-src="../../slides/variant_calling/assets/images/nextflow.svg" height="60" alt="Nextflow"><br>
-</p>
-<pre lang="nextflow"><code>process GATK4_MARKDUPLICATES {
-
-    input:
-    path  bam
-    path  fasta
-    path  fasta_fai
-
-    output:
-    tuple val(meta), path("*bam"),      emit: bam
-    tuple val(meta), path("*.bai"),     emit: bai
-    tuple val(meta), path("*.metrics"), emit: metrics
-
-    script:
-    -- snip --
-
-    gatk MarkDuplicates $input_list ...</code></pre>
-<div class="fragment">
-<ul>
-<li>Groovy syntax</li>
-<li>becoming a standard in production settings</li>
-</ul>
-</div>
-</div><div class="column" style="width:50%;">
-<h3 class="ultitle" id="snakemake-snakemake"><img data-src="../../slides/variant_calling/assets/images/logo-snake.svg" height="60" alt="Snakemake">&nbsp;Snakemake</h3>
-<pre lang="snakemake"><code>rule mark_duplicates:
-    input:
-        bam = "map/{prefix}.bam",
-        bai = "map/{prefix}.bai",
-        fasta = "ref/M_aurantiacus_v1.fasta"
-    output:
-        bam = "markdup/{prefix}.bam",
-    shell:
-        "gatk MarkDuplicates..."</code></pre>
-<div class="fragment">
-<ul>
-<li>Python-like syntax</li>
-</ul>
-</div>
-</div></div>
-</section>
-<section id="nf-core-and-sarek" class="slide level2 ultitle">
-<h2>nf-core and Sarek</h2>
-<div class="columns">
-<div class="column" style="width:50%;">
-<p><img data-src="../../slides/variant_calling/assets/images/nf-core-logo.svg" height="100" alt="nf-core logo"><br>
-</p>
-<div class="larger">
-<p><a href="https://nf-co.re/" class="uri">https://nf-co.re/</a></p>
-</div>
-<blockquote>
-<p>A global community effort to collect a curated set of open‑source analysis pipelines built using Nextflow.</p>
-</blockquote>
-<div class="fragment">
-<ul>
-<li><strong>huge</strong> community base</li>
-<li>lots of curated workflows</li>
-</ul>
-</div>
-</div><div class="column" style="width:50%;">
-<p><img data-src="../../slides/variant_calling/assets/images/nf-core-sarek-light.svg" height="100" alt="nf-core sarek logo"><br>
-</p>
-<div class="larger">
-<p><a href="https://nf-co.re/sarek/3.5.1/" class="uri">https://nf-co.re/sarek/3.5.1/</a></p>
-</div>
-<blockquote>
-<p>Analysis pipeline to detect germline or somatic variants (pre-processing, variant calling and annotation) from WGS / targeted sequencing</p>
-</blockquote>
-<div class="fragment">
-<ul>
-<li>focusses on variant calling in human</li>
-<li>does <strong>not</strong> produce all-sites variant file!</li>
-</ul>
-</div>
-</div></div>
-</section>
-<section id="snparcher---a-snakemake-workflow-for-nonmodel-organisms" class="slide level2 ultitle">
-<h2>snpArcher - a Snakemake workflow for nonmodel organisms</h2>
-<div>
-<p><img data-src="../../slides/variant_calling/assets/images/snparcher_logo.webp" height="100" alt="snpArcher logotype"><br>
-</p>
-</div>
-<div class="larger">
-<p><a href="https://github.com/harvardinformatics/snpArcher" class="uri">https://github.com/harvardinformatics/snpArcher</a></p>
-</div>
-<div>
-<blockquote>
-<p>snpArcher is a reproducible workflow optimized for nonmodel organisms and comparisons across datasets, built on the Snakemake workflow management system. It provides a streamlined approach to dataset acquisition, variant calling, quality control, and downstream analysis.</p>
-</blockquote>
-</div>
-</section>
-<section id="our-snakemake-workflow" class="slide level2 ultitle">
-<h2>Our Snakemake workflow</h2>
-<div class="columns">
-<div class="column" style="width:40%;">
+<aside class="notes">
+<p>Despite the fact that sequencing costs have dropped dramatically (left), there still are choices to be made regarding the distribution of costs along 1) sequencing coverage depth, i.e., the mean depth of sequencing 2) sequencing coverage breadth, i.e., whether or not to do targeted or whole-genome resequencing or 3) sample size; how many individuals to sample. Whole-genome resequencing of individuals from populations to sufficient depth (30X) is still very expensive, but often needed to understand mechanisms of adaptation <span class="citation" data-cites="lou_BeginnerGuideLowcoverage_2021">(<a href="#/bibliography" role="doc-biblioref" onclick="">Lou et al., 2021, p. 5967</a>)</span>. Various protocols have been developed to meet the challenges that cost imposes:</p>
 <ol type="1">
-<li>raw read QC</li>
-<li>read mapping
-<ol type="a">
-<li>mapping QC</li>
-</ol></li>
-<li>duplicate marking</li>
-<li>raw variant calling</li>
-<li>base quality score recalibration (bqsr)</li>
-<li>bqsr variant calling</li>
-<li>genotyping
-<ol type="a">
-<li>variant statistics</li>
-</ol></li>
-<li>QC report generation</li>
+<li>RAD-seq, restriction site-associated DNA sequencing, targets regions flanking given restriction sites. Downside: much of genome is missed</li>
+<li>pool-seq, pooled sequencing. Cost-effective, but loses information about individuals</li>
+<li>lcWGS, low-coverage whole genome sequencing increasing in popularity. Genotyping low coverage is problematic however.</li>
 </ol>
-</div><div class="column" style="width:60%;">
-<div class="cell" data-layout-align="center">
-<!--?xml version="1.0" encoding="UTF-8" standalone="no"?-->
-<!-- Generated by graphviz version 12.2.1 (20250203.1708)
- -->
-<!-- Title: snakemake_dag Pages: 1 -->
-<svg width="606pt" height="836pt" viewbox="0.00 0.00 606.00 836.00" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink">
-<g id="graph0" class="graph" transform="scale(0.5 0.5) rotate(0) translate(4 832)">
-<title>
-snakemake_dag
-</title>
-<polygon fill="white" stroke="none" points="-4,4 -4,-832 602,-832 602,4 -4,4"></polygon> <!-- 0 --> <g id="node1" class="node">
-<title>
-0
-</title>
-<path fill="none" stroke="#d85656" stroke-width="2" d="M231,-36C231,-36 201,-36 201,-36 195,-36 189,-30 189,-24 189,-24 189,-12 189,-12 189,-6 195,0 201,0 201,0 231,0 231,0 237,0 243,-6 243,-12 243,-12 243,-24 243,-24 243,-30 237,-36 231,-36"></path> <text text-anchor="middle" x="216" y="-14.88" font-family="sans" font-size="10.00">all</text> </g> <!-- 1 --> <g id="node2" class="node">
-<title>
-1
-</title>
-<path fill="none" stroke="#56d8b9" stroke-width="2" d="M231,-108C231,-108 201,-108 201,-108 195,-108 189,-102 189,-96 189,-96 189,-84 189,-84 189,-78 195,-72 201,-72 201,-72 231,-72 231,-72 237,-72 243,-78 243,-84 243,-84 243,-96 243,-96 243,-102 237,-108 231,-108"></path> <text text-anchor="middle" x="216" y="-86.88" font-family="sans" font-size="10.00">multiqc</text> </g> <!-- 1&#45;&gt;0 --> <g id="edge1" class="edge">
-<title>
-1-&gt;0
-</title>
-<path fill="none" stroke="grey" stroke-width="2" d="M216,-71.34C216,-64.75 216,-57.08 216,-49.67"></path> <polygon fill="grey" stroke="grey" stroke-width="2" points="219.5,-49.93 216,-39.93 212.5,-49.93 219.5,-49.93"></polygon> </g> <!-- 2 --> <g id="node3" class="node">
-<title>
-2
-</title>
-<path fill="none" stroke="#d6d856" stroke-width="2" d="M42,-180C42,-180 12,-180 12,-180 6,-180 0,-174 0,-168 0,-168 0,-156 0,-156 0,-150 6,-144 12,-144 12,-144 42,-144 42,-144 48,-144 54,-150 54,-156 54,-156 54,-168 54,-168 54,-174 48,-180 42,-180"></path> <text text-anchor="middle" x="27" y="-158.88" font-family="sans" font-size="10.00">fastqc</text> </g> <!-- 2&#45;&gt;1 --> <g id="edge3" class="edge">
-<title>
-2-&gt;1
-</title>
-<path fill="none" stroke="grey" stroke-width="2" d="M54.71,-149.29C59.14,-147.48 63.69,-145.67 68,-144 104.31,-129.98 146.1,-115.13 175.99,-104.73"></path> <polygon fill="grey" stroke="grey" stroke-width="2" points="176.86,-108.13 185.17,-101.55 174.57,-101.52 176.86,-108.13"></polygon> </g> <!-- 3 --> <g id="node4" class="node">
-<title>
-3
-</title>
-<path fill="none" stroke="#d87556" stroke-width="2" d="M312.75,-180C312.75,-180 253.25,-180 253.25,-180 247.25,-180 241.25,-174 241.25,-168 241.25,-168 241.25,-156 241.25,-156 241.25,-150 247.25,-144 253.25,-144 253.25,-144 312.75,-144 312.75,-144 318.75,-144 324.75,-150 324.75,-156 324.75,-156 324.75,-168 324.75,-168 324.75,-174 318.75,-180 312.75,-180"></path> <text text-anchor="middle" x="283" y="-158.88" font-family="sans" font-size="10.00">bcftools_stats</text> </g> <!-- 3&#45;&gt;1 --> <g id="edge5" class="edge">
-<title>
-3-&gt;1
-</title>
-<path fill="none" stroke="grey" stroke-width="2" d="M266.09,-143.34C258.77,-135.69 250.03,-126.56 241.92,-118.08"></path> <polygon fill="grey" stroke="grey" stroke-width="2" points="244.67,-115.89 235.23,-111.09 239.61,-120.73 244.67,-115.89"></polygon> </g> <!-- 4 --> <g id="node5" class="node">
-<title>
-4
-</title>
-<path fill="none" stroke="#59d856" stroke-width="2" d="M398.12,-252C398.12,-252 301.88,-252 301.88,-252 295.88,-252 289.88,-246 289.88,-240 289.88,-240 289.88,-228 289.88,-228 289.88,-222 295.88,-216 301.88,-216 301.88,-216 398.12,-216 398.12,-216 404.12,-216 410.12,-222 410.12,-228 410.12,-228 410.12,-240 410.12,-240 410.12,-246 404.12,-252 398.12,-252"></path> <text text-anchor="middle" x="350" y="-230.88" font-family="sans" font-size="10.00">gatk_genotype_gvcfs</text> </g> <!-- 4&#45;&gt;3 --> <g id="edge6" class="edge">
-<title>
-4-&gt;3
-</title>
-<path fill="none" stroke="grey" stroke-width="2" d="M333.09,-215.34C325.77,-207.69 317.03,-198.56 308.92,-190.08"></path> <polygon fill="grey" stroke="grey" stroke-width="2" points="311.67,-187.89 302.23,-183.09 306.61,-192.73 311.67,-187.89"></polygon> </g> <!-- 5 --> <g id="node6" class="node">
-<title>
-5
-</title>
-<path fill="none" stroke="#78d856" stroke-width="2" d="M346.25,-324C346.25,-324 253.75,-324 253.75,-324 247.75,-324 241.75,-318 241.75,-312 241.75,-312 241.75,-300 241.75,-300 241.75,-294 247.75,-288 253.75,-288 253.75,-288 346.25,-288 346.25,-288 352.25,-288 358.25,-294 358.25,-300 358.25,-300 358.25,-312 358.25,-312 358.25,-318 352.25,-324 346.25,-324"></path> <text text-anchor="middle" x="300" y="-302.88" font-family="sans" font-size="10.00">gatk_combine_gvcfs</text> </g> <!-- 5&#45;&gt;4 --> <g id="edge7" class="edge">
-<title>
-5-&gt;4
-</title>
-<path fill="none" stroke="grey" stroke-width="2" d="M312.62,-287.34C317.79,-280.1 323.91,-271.53 329.68,-263.45"></path> <polygon fill="grey" stroke="grey" stroke-width="2" points="332.49,-265.54 335.45,-255.37 326.79,-261.47 332.49,-265.54"></polygon> </g> <!-- 6 --> <g id="node7" class="node">
-<title>
-6
-</title>
-<path fill="none" stroke="#56d87b" stroke-width="2" d="M353.5,-396C353.5,-396 232.5,-396 232.5,-396 226.5,-396 220.5,-390 220.5,-384 220.5,-384 220.5,-372 220.5,-372 220.5,-366 226.5,-360 232.5,-360 232.5,-360 353.5,-360 353.5,-360 359.5,-360 365.5,-366 365.5,-372 365.5,-372 365.5,-384 365.5,-384 365.5,-390 359.5,-396 353.5,-396"></path> <text text-anchor="middle" x="293" y="-374.88" font-family="sans" font-size="10.00">gatk_haplotypecaller_bqsr</text> </g> <!-- 6&#45;&gt;5 --> <g id="edge10" class="edge">
-<title>
-6-&gt;5
-</title>
-<path fill="none" stroke="grey" stroke-width="2" d="M294.77,-359.34C295.42,-352.75 296.19,-345.08 296.93,-337.67"></path> <polygon fill="grey" stroke="grey" stroke-width="2" points="300.4,-338.21 297.91,-327.91 293.43,-337.52 300.4,-338.21"></polygon> </g> <!-- 7 --> <g id="node8" class="node">
-<title>
-7
-</title>
-<path fill="none" stroke="#b6d856" stroke-width="2" d="M271.12,-468C271.12,-468 198.88,-468 198.88,-468 192.88,-468 186.88,-462 186.88,-456 186.88,-456 186.88,-444 186.88,-444 186.88,-438 192.88,-432 198.88,-432 198.88,-432 271.12,-432 271.12,-432 277.12,-432 283.12,-438 283.12,-444 283.12,-444 283.12,-456 283.12,-456 283.12,-462 277.12,-468 271.12,-468"></path> <text text-anchor="middle" x="235" y="-446.88" font-family="sans" font-size="10.00">gatk_apply_bqsr</text> </g> <!-- 7&#45;&gt;6 --> <g id="edge13" class="edge">
-<title>
-7-&gt;6
-</title>
-<path fill="none" stroke="grey" stroke-width="2" d="M249.64,-431.34C255.77,-423.93 263.05,-415.14 269.88,-406.9"></path> <polygon fill="grey" stroke="grey" stroke-width="2" points="272.55,-409.17 276.24,-399.23 267.16,-404.7 272.55,-409.17"></polygon> </g> <!-- 8 --> <g id="node9" class="node">
-<title>
-8
-</title>
-<path fill="none" stroke="#56b9d8" stroke-width="2" d="M189.12,-684C189.12,-684 80.88,-684 80.88,-684 74.88,-684 68.88,-678 68.88,-672 68.88,-672 68.88,-660 68.88,-660 68.88,-654 74.88,-648 80.88,-648 80.88,-648 189.12,-648 189.12,-648 195.12,-648 201.12,-654 201.12,-660 201.12,-660 201.12,-672 201.12,-672 201.12,-678 195.12,-684 189.12,-684"></path> <text text-anchor="middle" x="135" y="-662.88" font-family="sans" font-size="10.00">picard_mark_duplicates</text> </g> <!-- 8&#45;&gt;1 --> <g id="edge4" class="edge">
-<title>
-8-&gt;1
-</title>
-<path fill="none" stroke="grey" stroke-width="2" d="M123.76,-647.41C108.2,-621.33 82,-570.37 82,-523 82,-523 82,-523 82,-233 82,-177.16 137.49,-134.38 177.05,-110.98"></path> <polygon fill="grey" stroke="grey" stroke-width="2" points="178.64,-114.11 185.6,-106.12 175.18,-108.02 178.64,-114.11"></polygon> </g> <!-- 8&#45;&gt;7 --> <g id="edge14" class="edge">
-<title>
-8-&gt;7
-</title>
-<path fill="none" stroke="grey" stroke-width="2" d="M133.78,-647.05C132.52,-615.59 133.8,-549.54 162,-504 168.8,-493.02 178.8,-483.61 189.23,-475.9"></path> <polygon fill="grey" stroke="grey" stroke-width="2" points="190.91,-478.99 197.2,-470.47 186.97,-473.21 190.91,-478.99"></polygon> </g> <!-- 11 --> <g id="node12" class="node">
-<title>
-11
-</title>
-<path fill="none" stroke="#97d856" stroke-width="2" d="M286.88,-540C286.88,-540 183.12,-540 183.12,-540 177.12,-540 171.12,-534 171.12,-528 171.12,-528 171.12,-516 171.12,-516 171.12,-510 177.12,-504 183.12,-504 183.12,-504 286.88,-504 286.88,-504 292.88,-504 298.88,-510 298.88,-516 298.88,-516 298.88,-528 298.88,-528 298.88,-534 292.88,-540 286.88,-540"></path> <text text-anchor="middle" x="235" y="-518.88" font-family="sans" font-size="10.00">gatk_base_recalibrator</text> </g> <!-- 8&#45;&gt;11 --> <g id="edge18" class="edge">
-<title>
-8-&gt;11
-</title>
-<path fill="none" stroke="grey" stroke-width="2" d="M141.06,-647.17C147.96,-628.36 160.47,-598.41 177,-576 184.06,-566.43 193.04,-557.23 201.81,-549.26"></path> <polygon fill="grey" stroke="grey" stroke-width="2" points="203.98,-552.02 209.23,-542.81 199.38,-546.73 203.98,-552.02"></polygon> </g> <!-- 12 --> <g id="node13" class="node">
-<title>
-12
-</title>
-<path fill="none" stroke="#56d89a" stroke-width="2" d="M316,-612C316,-612 198,-612 198,-612 192,-612 186,-606 186,-600 186,-600 186,-588 186,-588 186,-582 192,-576 198,-576 198,-576 316,-576 316,-576 322,-576 328,-582 328,-588 328,-588 328,-600 328,-600 328,-606 322,-612 316,-612"></path> <text text-anchor="middle" x="257" y="-590.88" font-family="sans" font-size="10.00">gatk_haplotypecaller_raw</text> </g> <!-- 8&#45;&gt;12 --> <g id="edge21" class="edge">
-<title>
-8-&gt;12
-</title>
-<path fill="none" stroke="grey" stroke-width="2" d="M166.1,-647.15C180.87,-638.68 198.75,-628.42 214.73,-619.25"></path> <polygon fill="grey" stroke="grey" stroke-width="2" points="216.4,-622.33 223.33,-614.32 212.91,-616.26 216.4,-622.33"></polygon> </g> <!-- 9 --> <g id="node10" class="node">
-<title>
-9
-</title>
-<path fill="none" stroke="#d8b456" stroke-width="2" d="M360.5,-756C360.5,-756 317.5,-756 317.5,-756 311.5,-756 305.5,-750 305.5,-744 305.5,-744 305.5,-732 305.5,-732 305.5,-726 311.5,-720 317.5,-720 317.5,-720 360.5,-720 360.5,-720 366.5,-720 372.5,-726 372.5,-732 372.5,-732 372.5,-744 372.5,-744 372.5,-750 366.5,-756 360.5,-756"></path> <text text-anchor="middle" x="339" y="-734.88" font-family="sans" font-size="10.00">bwa_mem</text> </g> <!-- 9&#45;&gt;8 --> <g id="edge16" class="edge">
-<title>
-9-&gt;8
-</title>
-<path fill="none" stroke="grey" stroke-width="2" d="M304.85,-725.28C276.14,-715.43 234.3,-701.07 199.33,-689.07"></path> <polygon fill="grey" stroke="grey" stroke-width="2" points="200.74,-685.86 190.14,-685.92 198.46,-692.48 200.74,-685.86"></polygon> </g> <!-- 15 --> <g id="node16" class="node">
-<title>
-15
-</title>
-<path fill="none" stroke="#569ad8" stroke-width="2" d="M586,-612C586,-612 510,-612 510,-612 504,-612 498,-606 498,-600 498,-600 498,-588 498,-588 498,-582 504,-576 510,-576 510,-576 586,-576 586,-576 592,-576 598,-582 598,-588 598,-588 598,-600 598,-600 598,-606 592,-612 586,-612"></path> <text text-anchor="middle" x="548" y="-590.88" font-family="sans" font-size="10.00">qualimap_bamqc</text> </g> <!-- 9&#45;&gt;15 --> <g id="edge23" class="edge">
-<title>
-9-&gt;15
-</title>
-<path fill="none" stroke="grey" stroke-width="2" d="M373.27,-736.96C414.98,-735 484.79,-725.22 525,-684 539.98,-668.65 545.57,-644.89 547.5,-625.78"></path> <polygon fill="grey" stroke="grey" stroke-width="2" points="550.99,-626.1 548.14,-615.9 544,-625.65 550.99,-626.1"></polygon> </g> <!-- 10 --> <g id="node11" class="node">
-<title>
-10
-</title>
-<path fill="none" stroke="#d89556" stroke-width="2" d="M361.25,-828C361.25,-828 316.75,-828 316.75,-828 310.75,-828 304.75,-822 304.75,-816 304.75,-816 304.75,-804 304.75,-804 304.75,-798 310.75,-792 316.75,-792 316.75,-792 361.25,-792 361.25,-792 367.25,-792 373.25,-798 373.25,-804 373.25,-804 373.25,-816 373.25,-816 373.25,-822 367.25,-828 361.25,-828"></path> <text text-anchor="middle" x="339" y="-806.88" font-family="sans" font-size="10.00">bwa_index</text> </g> <!-- 10&#45;&gt;9 --> <g id="edge17" class="edge">
-<title>
-10-&gt;9
-</title>
-<path fill="none" stroke="grey" stroke-width="2" d="M339,-791.34C339,-784.75 339,-777.08 339,-769.67"></path> <polygon fill="grey" stroke="grey" stroke-width="2" points="342.5,-769.93 339,-759.93 335.5,-769.93 342.5,-769.93"></polygon> </g> <!-- 11&#45;&gt;7 --> <g id="edge15" class="edge">
-<title>
-11-&gt;7
-</title>
-<path fill="none" stroke="grey" stroke-width="2" d="M235,-503.34C235,-496.75 235,-489.08 235,-481.67"></path> <polygon fill="grey" stroke="grey" stroke-width="2" points="238.5,-481.93 235,-471.93 231.5,-481.93 238.5,-481.93"></polygon> </g> <!-- 12&#45;&gt;11 --> <g id="edge19" class="edge">
-<title>
-12-&gt;11
-</title>
-<path fill="none" stroke="grey" stroke-width="2" d="M251.45,-575.34C249.33,-568.59 246.85,-560.69 244.46,-553.11"></path> <polygon fill="grey" stroke="grey" stroke-width="2" points="247.87,-552.28 241.53,-543.79 241.19,-554.38 247.87,-552.28"></polygon> </g> <!-- 13 --> <g id="node14" class="node">
-<title>
-13
-</title>
-<path fill="none" stroke="#56d8d8" stroke-width="2" d="M394.88,-684C394.88,-684 231.12,-684 231.12,-684 225.12,-684 219.12,-678 219.12,-672 219.12,-672 219.12,-660 219.12,-660 219.12,-654 225.12,-648 231.12,-648 231.12,-648 394.88,-648 394.88,-648 400.88,-648 406.88,-654 406.88,-660 406.88,-660 406.88,-672 406.88,-672 406.88,-678 400.88,-684 394.88,-684"></path> <text text-anchor="middle" x="313" y="-662.88" font-family="sans" font-size="10.00">picard_create_sequence_dictionary</text> </g> <!-- 13&#45;&gt;4 --> <g id="edge9" class="edge">
-<title>
-13-&gt;4
-</title>
-<path fill="none" stroke="grey" stroke-width="2" d="M331.38,-647.13C355.28,-621.89 394,-573.24 394,-523 394,-523 394,-523 394,-377 394,-336.71 377.64,-292.76 364.87,-264.59"></path> <polygon fill="grey" stroke="grey" stroke-width="2" points="368.05,-263.12 360.62,-255.57 361.72,-266.11 368.05,-263.12"></polygon> </g> <!-- 13&#45;&gt;6 --> <g id="edge12" class="edge">
-<title>
-13-&gt;6
-</title>
-<path fill="none" stroke="grey" stroke-width="2" d="M323.45,-647.02C328.64,-637.06 334.36,-624.24 337,-612 352.69,-539.3 324.32,-453.17 306.27,-408.77"></path> <polygon fill="grey" stroke="grey" stroke-width="2" points="309.55,-407.55 302.45,-399.69 303.1,-410.26 309.55,-407.55"></polygon> </g> <!-- 13&#45;&gt;12 --> <g id="edge22" class="edge">
-<title>
-13-&gt;12
-</title>
-<path fill="none" stroke="grey" stroke-width="2" d="M298.87,-647.34C292.95,-639.93 285.91,-631.14 279.32,-622.9"></path> <polygon fill="grey" stroke="grey" stroke-width="2" points="282.19,-620.89 273.21,-615.27 276.73,-625.26 282.19,-620.89"></polygon> </g> <!-- 14 --> <g id="node15" class="node">
-<title>
-14
-</title>
-<path fill="none" stroke="#567bd8" stroke-width="2" d="M503.5,-684C503.5,-684 436.5,-684 436.5,-684 430.5,-684 424.5,-678 424.5,-672 424.5,-672 424.5,-660 424.5,-660 424.5,-654 430.5,-648 436.5,-648 436.5,-648 503.5,-648 503.5,-648 509.5,-648 515.5,-654 515.5,-660 515.5,-660 515.5,-672 515.5,-672 515.5,-678 509.5,-684 503.5,-684"></path> <text text-anchor="middle" x="470" y="-662.88" font-family="sans" font-size="10.00">samtools_faidx</text> </g> <!-- 14&#45;&gt;4 --> <g id="edge8" class="edge">
-<title>
-14-&gt;4
-</title>
-<path fill="none" stroke="grey" stroke-width="2" d="M470,-647.07C470,-620.13 470,-567.62 470,-523 470,-523 470,-523 470,-377 470,-326.69 425.51,-285 390.71,-260.09"></path> <polygon fill="grey" stroke="grey" stroke-width="2" points="392.99,-257.41 382.77,-254.62 389.02,-263.17 392.99,-257.41"></polygon> </g> <!-- 14&#45;&gt;6 --> <g id="edge11" class="edge">
-<title>
-14-&gt;6
-</title>
-<path fill="none" stroke="grey" stroke-width="2" d="M460.84,-647.23C440.15,-607.53 387.48,-509.1 335,-432 329.21,-423.5 322.47,-414.61 316.1,-406.59"></path> <polygon fill="grey" stroke="grey" stroke-width="2" points="318.97,-404.58 309.96,-399.01 313.53,-408.99 318.97,-404.58"></polygon> </g> <!-- 14&#45;&gt;12 --> <g id="edge20" class="edge">
-<title>
-14-&gt;12
-</title>
-<path fill="none" stroke="grey" stroke-width="2" d="M423.52,-649.72C394.32,-640.13 356.19,-627.6 323.78,-616.95"></path> <polygon fill="grey" stroke="grey" stroke-width="2" points="325.14,-613.71 314.55,-613.91 322.95,-620.36 325.14,-613.71"></polygon> </g> <!-- 15&#45;&gt;1 --> <g id="edge2" class="edge">
-<title>
-15-&gt;1
-</title>
-<path fill="none" stroke="grey" stroke-width="2" d="M543.86,-575.18C538,-548.39 528,-496.06 528,-451 528,-451 528,-451 528,-233 528,-115.2 341.46,-94.67 256.86,-91.42"></path> <polygon fill="grey" stroke="grey" stroke-width="2" points="257.09,-87.93 246.99,-91.12 256.88,-94.92 257.09,-87.93"></polygon> </g> </g>
-</svg>
-<p>:::</p>
-<p>:::</p>
-<p>::::</p>
-
-
+<p>Our focus here is WGS (whole-genome resequencing), primarily high-coverage, despite the cost it may incur.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="genome-assembly-and-population-resequencing" class="slide level2 ultitle">
+<h2>Genome assembly and population resequencing</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<h4 id="genome-assembly">Genome assembly</h4>
+<div id="fig-genome-assembly" class="quarto-float quarto-figure quarto-figure-center">
+<figure class="quarto-float quarto-float-fig">
+<div aria-describedby="fig-genome-assembly-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="assets/images/oso-genome-assembly.webp" class="lightbox" data-gallery="quarto-lightbox-gallery-5" title="Figure&nbsp;3: Schematic overview of genome assembly and annotation. Population resequencing often requires a reference assembly. Assembly quality impacts downstream analyses"><img data-src="assets/images/oso-genome-assembly.webp" style="width:70.0%"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-genome-assembly-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: Schematic overview of genome assembly and annotation. Population resequencing often requires a <em>reference assembly</em>. Assembly quality impacts downstream analyses
+</figcaption>
+</figure>
+</div>
+<div class="flushright smallest translatey50">
+<p><span class="citation" data-cites="allendorf_PopulationGenomics_2022">Allendorf et al. (<a href="#/bibliography" role="doc-biblioref" onclick="">2022</a>)</span></p>
+</div>
+</div><div class="column fragment" style="width:50%;">
+<h4 id="population-resequencing">Population resequencing</h4>
+<div id="fig-pop-reseq" class="quarto-float quarto-figure quarto-figure-center">
+<figure class="quarto-float quarto-float-fig">
+<div aria-describedby="fig-pop-reseq-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="assets/images/population-resequencing.webp" class="lightbox" data-gallery="quarto-lightbox-gallery-6" title="Figure&nbsp;4: Overview of short reads mapped to a reference sequence. Reads have been colored according to population (red or yellow). There are three individuals from each population. Note the variation in sequence coverage. Mismatches in reads are highlighted as different colors with respect to population color."><img data-src="assets/images/population-resequencing.webp"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-pop-reseq-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4: Overview of short reads mapped to a reference sequence. Reads have been colored according to population (red or yellow). There are three individuals from each population. Note the variation in sequence coverage. Mismatches in reads are highlighted as different colors with respect to population color.
+</figcaption>
+</figure>
 </div>
 </div></div>
+<aside class="notes">
+<p>DNA sequences are generated from DNA fragments, often as paired-end reads, or long reads. For population genomics, it is often necessary to generate a <em>reference sequence</em> through <em>genome assembly</em>, the quality of which will impact the types of downstream analyses that can be done. Reads are assembled into <em>contigs</em> (contiguous sequences) that with the aid of genetic maps are pieced together into <em>scaffolds</em>. In the left figure, note that the scaffolds contain areas of unknown sequence.</p>
+<p>Once a reference sequence has been produced, (short) reads from individuals are mapped to the reference (right).</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="dna-sequences-in-fastq-format" class="slide level2 smaller ultitle">
+<h2>DNA sequences in FASTQ format</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a></a><span class="fu">ls</span> <span class="at">--long</span> <span class="at">--human</span> fastq/<span class="pp">*</span>.fastq.gz</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>-rw-r--r-- 1 runner runner 302K Sep 15 17:33 fastq/PUN-Y-INJ_R1.fastq.gz
+-rw-r--r-- 1 runner runner 393K Sep 15 17:33 fastq/PUN-Y-INJ_R2.fastq.gz</code></pre>
+</div>
+</div>
+<div class="fragment">
+<p>Count number of lines:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a></a><span class="fu">zcat</span> fastq/PUN-Y-INJ_R1.fastq.gz <span class="kw">|</span> <span class="fu">wc</span> <span class="at">--lines</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>15768</code></pre>
+</div>
+</div>
+</div>
+<div>
+<div class="fragment">
+<div class="columns">
+<div class="column" style="width:30%;">
+<p>Format:</p>
+<ol type="1">
+<li>sequence id (prefixed by <code>@</code>)</li>
+<li>DNA sequence</li>
+<li>separator (<code>+</code>)</li>
+<li>Phred base quality scores</li>
+</ol>
+</div><div class="column" style="width:70%;">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a></a><span class="fu">zcat</span> fastq/PUN-Y-INJ_R1.fastq.gz <span class="kw">|</span> <span class="fu">head</span> <span class="at">--lines</span> 8 <span class="kw">|</span> <span class="fu">cut</span> <span class="at">--characters</span> <span class="at">-30</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>@SRR9309790.10003134
+TAAATCGATTCGTTTTTGCTATCTTCGTCT
++
+AAFFFJJJJJJJFJJJJJJJJJJJJJJJJJ
+@SRR9309790.10003222
+TAAATCGATTCGTTTTTGCTATCTTCGTCT
++
+AAFFFJJJJJJJJJJJJJJJJJJJJJJJJJ</code></pre>
+</div>
+</div>
+</div></div>
+</div>
+</div>
+<aside class="notes">
+<p>First data encounter is usually FASTQ files from sequencing center. Files contain <strong>sequence reads</strong> that are generated by the sequencing machine. They correspond to short stretches of DNA that have been sequentially read by the machine, resulting in a string of <strong>base calls</strong> that constitute the reads. Every DNA base has an associated so-called <strong>Phred-scaled quality score</strong> from 0 to 93 that are encoded using ASCII 33 to 126.</p>
+<p>The format consists of 1. @ title with id 2. raw sequence 3. +: a separator with optional description 4. the quality scores</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="dna-sequence-quality-control" class="slide level2 ultitle">
+<h2>DNA sequence quality control</h2>
+<p>Quality values represent the probability <span class="math inline">P</span> that the call is <em>incorrect</em>. They are coded as <strong>Phred</strong> quality scores <span class="math inline">Q</span>. Here, <span class="math inline">Q=20</span> implies 1% probability of error, <span class="math inline">Q=30</span> implies 0.1% and so on. Typically you should not rely on quality values below <span class="math inline">20</span>.</p>
+<p><span class="math display">
+Q = -10 \log_{10} P
+</span></p>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p>A common way to do QC is with <code>fastqc</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a></a><span class="ex">fastqc</span> <span class="at">--outdir</span> fastqc <span class="at">--extract</span> fastq/<span class="pp">*</span>fastq.gz</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="fragment">
+<ul>
+<li>For Illumina paired-end sequencing, the <strong>second</strong> read pair usually shows a larger drop in quality towards ends</li>
+<li><strong>Trimming</strong> the sequences for adapter sequence and quality is good practice (e.g., with CutAdapt <span class="citation" data-cites="martin_CutadaptRemovesAdapter_2011">(<a href="#/bibliography" role="doc-biblioref" onclick="">Martin, 2011</a>)</span>)</li>
+</ul>
+</div>
+</div><div class="column" style="width:50%;">
+<p><a href="results/PUN-Y-INJ_R1_fastqc/Images/per_base_quality.svg" class="lightbox" data-gallery="quarto-lightbox-gallery-7"><img data-src="results/PUN-Y-INJ_R1_fastqc/Images/per_base_quality.svg" style="width:80.0%"></a></p>
+</div></div>
+</section>
+<section id="bibliography" class="slide level2 smaller ultitle scrollable">
+<h2>Bibliography</h2>
+
+
 <div class="reveal-header">
 <div class="header-logo-left">
 <a href="https://nbisweden.github.io/workshop-pgip-H25"><img data-src="../../site_libs/quarto-contrib/quarto-project/percyfal/nbis-quarto/assets/logo/nbislogo-green-teal.svg" style="height:50px;max-width:none;"></a>
@@ -582,11 +487,25 @@ snakemake_dag
 <img data-src="../../site_libs/quarto-contrib/quarto-project/percyfal/nbis-quarto/assets/logo/SciLifeLab_symbol_green.png" style="height:50px;max-width:none;">
 </div>
 </div>
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" data-line-spacing="2" role="list">
+<div id="ref-allendorf_PopulationGenomics_2022" class="csl-entry" role="listitem">
+Allendorf, F. W., Funk, W. C., Aitken, S. N., Byrne, M., &amp; Luikart, G. (2022). Population <span>Genomics</span>. In F. W. Allendorf, W. C. Funk, S. N. Aitken, M. Byrne, G. Luikart, &amp; A. Antunes (Eds.), <em>Conservation and the <span>Genomics</span> of <span>Populations</span></em> (p. 0). <span>Oxford University Press</span>. <a href="https://doi.org/10.1093/oso/9780198856566.003.0004">https://doi.org/10.1093/oso/9780198856566.003.0004</a>
+</div>
+<div id="ref-lou_BeginnerGuideLowcoverage_2021" class="csl-entry" role="listitem">
+Lou, R. N., Jacobs, A., Wilder, A. P., &amp; Therkildsen, N. O. (2021). A beginner’s guide to low-coverage whole genome sequencing for population genomics. <em>Molecular Ecology</em>, <em>30</em>(23), 5966–5993. <a href="https://doi.org/10.1111/mec.16077">https://doi.org/10.1111/mec.16077</a>
+</div>
+<div id="ref-martin_CutadaptRemovesAdapter_2011" class="csl-entry" role="listitem">
+Martin, M. (2011). Cutadapt removes adapter sequences from high-throughput sequencing reads. <em>EMBnet.journal</em>, <em>17</em>(1), pp. 10–12. <a href="https://doi.org/10.14806/ej.17.1.200">https://doi.org/10.14806/ej.17.1.200</a>
+</div>
+<div id="ref-wetterstrandka_DNASequencingCosts" class="csl-entry" role="listitem">
+Wetterstrand, KA. <em><span>DNA Sequencing Costs</span>: <span>Data</span> from the <span>NHGRI Genome Sequencing Program</span> (<span>GSP</span>)</em>. <a href="https://www.genome.gov/sequencingcostsdata">www.genome.gov/sequencingcostsdata</a>
+</div>
+</div>
 </section>
     </div>
   <div class="quarto-auto-generated-content" style="display: none;">
 <div class="footer footer-default">
-<p>Variant calling workflows</p>
+<p>DNA data</p>
 </div>
 </div></div>
 
@@ -618,7 +537,7 @@ snakemake_dag
 'autoAnimateUnmatched': true,
 'jumpToSlide': true,
 'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
-'smaller': false,
+'smaller': true,
  
         // Display controls in the bottom right corner
         controls: false,

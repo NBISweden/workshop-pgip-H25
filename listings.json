@@ -49,11 +49,15 @@
     ]
   },
   {
-    "listing": "/slides/variant_calling/index.html",
+    "listing": "/slides/index.html",
     "items": [
-      "/slides/variant_calling/read_mapping.html",
-      "/slides/variant_calling/variant_calling.html",
-      "/slides/variant_calling/reproducibility.html"
+      "/slides/pgip/index.html",
+      "/slides/foundations/index.html",
+      "/slides/variant_calling/index.html",
+      "/slides/variant_filtering/index.html",
+      "/slides/recombination/index.html",
+      "/slides/genetic_diversity/index.html",
+      "/slides/population_structure/index.html"
     ]
   },
   {
@@ -67,15 +71,12 @@
     ]
   },
   {
-    "listing": "/slides/index.html",
+    "listing": "/slides/variant_calling/index.html",
     "items": [
-      "/slides/pgip/index.html",
-      "/slides/foundations/index.html",
-      "/slides/variant_calling/index.html",
-      "/slides/variant_filtering/index.html",
-      "/slides/recombination/index.html",
-      "/slides/genetic_diversity/index.html",
-      "/slides/population_structure/index.html"
+      "/slides/variant_calling/dna_sequencing.html",
+      "/slides/variant_calling/read_mapping.html",
+      "/slides/variant_calling/variant_calling.html",
+      "/slides/variant_calling/reproducibility.html"
     ]
   },
   {

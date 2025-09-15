@@ -300,8 +300,11 @@ window.Quarto = {
   </div>
 </li>
           <li class="sidebar-item">
- <span class="menu-text">slides/variant_calling/dna_sequencing.qmd</span>
-  </li>
+  <div class="sidebar-item-container"> 
+  <a href="../../slides/variant_calling/dna_sequencing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">DNA sequencing data</span></a>
+  </div>
+</li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../slides/variant_calling/read_mapping.html" class="sidebar-item-text sidebar-link">
@@ -654,7 +657,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">14-Sep-2025</p>
+      <p class="date">15-Sep-2025</p>
     </div>
   </div>
   
@@ -1004,9 +1007,9 @@ Note
 <pre><code># A tibble: 3 × 5
   distc      mean median count  dist
   &lt;fct&gt;     &lt;dbl&gt;  &lt;dbl&gt; &lt;int&gt; &lt;dbl&gt;
-1 (0,100]   0.232 0.0353  2488   100
-2 (100,200] 0.191 0.0215  1565   200
-3 (200,300] 0.202 0.0278  1354   300</code></pre>
+1 (0,100]   0.241 0.0346  2426   100
+2 (100,200] 0.211 0.0257  1487   200
+3 (200,300] 0.186 0.0272  1306   300</code></pre>
 </div>
 </div>
 <p>We use <code>head</code> to view the contents of the output <a href="https://tibble.tidyverse.org/">tibble</a>. Each row corresponds to an interval (<code>distc</code> column) along with mean/median <span class="math inline">\(r^2\)</span> values, number of data points in interval, and a column containing the interval endpoint. We plot the mean against the endpoint below:</p>
