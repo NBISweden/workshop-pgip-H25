@@ -5,24 +5,21 @@ format:
   nbis-course-html:
     number-sections: false
 author:
-  - Per Unneberg
+  - André Soares
 execute:
   cache: false
 ---
 
 ## About
 
-## Exercises
+We will be working in groups!
 
-:::{.callout-note collapse=true}
+[Group1](https://github.com/aersoares81/workshop-pgip-H25/blob/main/exercises/demography/group_1.html)
+[Group2](https://github.com/aersoares81/workshop-pgip-H25/blob/main/exercises/demography/group_2.html)
+[Group3](https://github.com/aersoares81/workshop-pgip-H25/blob/main/exercises/demography/group_3.html)
+[Group4](https://github.com/aersoares81/workshop-pgip-H25/blob/main/exercises/demography/group_4.html)
+[Group5](https://github.com/aersoares81/workshop-pgip-H25/blob/main/exercises/demography/group_5.html)
 
-## Data setup
-
-:::{.panel-tabset}
-
-#### {{< fa server >}} PDC
-
-#### {{< fa laptop >}} Local
 
 :::
 
