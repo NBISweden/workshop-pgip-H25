@@ -42,14 +42,15 @@ default environment:
 
 ```bash
 source {{< var pg_pgip_dir >}}/init.sh
-pgip_activate
+# Now obsolete!
+# pgip_activate
 ```
 
-Then activate the `{{< meta exercise.venv >}}` environment:
+Then activate the `full` environment:
 
 ```bash
-# pgip_shell calls pixi shell -e {{< meta exercise.venv >}} --as-is
-pgip_shell {{< meta exercise.venv >}}
+# pgip_shell calls pixi shell -e full --as-is
+pgip_shell
 ```
 
 #### {{< fa laptop >}} pixi
