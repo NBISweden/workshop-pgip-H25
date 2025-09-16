@@ -669,7 +669,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">15-Sep-2025</p>
+      <p class="date">16-Sep-2025</p>
     </div>
   </div>
   
@@ -772,10 +772,11 @@ module load bioinfo-tools \
 </section><section id="virtual-environment" class="level5"><h5 class="anchored" data-anchor-id="virtual-environment">Virtual environment</h5>
 <p>Run the <code>pgip</code> initialization script and activate the <code>pgip</code> default environment:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> /cfs/klemming/projects/supr/pgip_2025/init.sh</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">pgip_activate</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Then activate the <code>e-variant-filtering</code> environment:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># pgip_shell calls pixi shell -e e-variant-filtering --as-is</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">pgip_shell</span> e-variant-filtering</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Now obsolete!</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># pgip_activate</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Then activate the <code>full</code> environment:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># pgip_shell calls pixi shell -e full --as-is</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">pgip_shell</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 </div>
 <div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
@@ -905,7 +906,7 @@ SN  0   number of multiallelic SNP sites:   2066</code></pre>
 <span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="ex">bcftools</span> stats variantsites.subset.vcf.gz <span class="kw">|</span><span class="dt">\</span></span>
 <span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">grep</span> <span class="st">"number of records:"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>SN  0   number of records:  114927</code></pre>
+<pre><code>SN  0   number of records:  114997</code></pre>
 </div>
 </div>
 <p>The <code>-r</code> parameter sets the <em>rate</em> of sampling which is why we get <em>approximately</em> 100,000 sites. You will need to adjust this parameter accordingly.</p>
@@ -925,18 +926,18 @@ SN  0   number of multiallelic SNP sites:   2066</code></pre>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="ex">csvtk</span> summary <span class="at">-t</span> <span class="at">-f</span> MEAN_DEPTH:mean <span class="va">${OUT}</span>.idepth</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>INDV    N_SITES MEAN_DEPTH
-PUN-R-ELF   110920  8.85719
-PUN-R-JMC   111221  9.79831
-PUN-R-LH    111767  9.70294
-PUN-R-MT    111397  9.75372
-PUN-R-UCSD  111479  9.17608
-PUN-Y-BCRD  110008  10.2508
-PUN-Y-INJ   109405  8.68796
-PUN-Y-LO    108363  8.29989
-PUN-Y-PCT   109873  9.4844
-PUN-Y-POTR  110108  8.83087
+PUN-R-ELF   110975  8.88045
+PUN-R-JMC   111279  9.84226
+PUN-R-LH    111798  9.72521
+PUN-R-MT    111460  9.75853
+PUN-R-UCSD  111567  9.20329
+PUN-Y-BCRD  110048  10.2671
+PUN-Y-INJ   109430  8.74183
+PUN-Y-LO    108382  8.32864
+PUN-Y-PCT   109919  9.50498
+PUN-Y-POTR  110160  8.84542
 MEAN_DEPTH:mean
-9.28</code></pre>
+9.31</code></pre>
 </div>
 </div>
 <p>The average coverage over all samples is 9.3X. This actually is in the low range for a protocol based on explicitly calling genotypes. At 5X coverage, there may be a high probability that only one of the alleles has been sampled <span class="citation" data-cites="nielsen_GenotypeSNPCalling_2011">(<a href="#ref-nielsen_GenotypeSNPCalling_2011" role="doc-biblioref">Nielsen et al., 2011</a>)</span>, whereby sequencing errors may be mistaken for true variation.</p>
@@ -989,7 +990,7 @@ On csvtk as plotting software
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="ex">csvtk</span> summary <span class="at">-t</span> <span class="at">-f</span> 3:min,3:q1,3:median,3:mean,3:q3,3:max,3:stdev vcftools/variantsites.subset.ldepth</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>SUM_DEPTH:min   SUM_DEPTH:q1    SUM_DEPTH:median    SUM_DEPTH:mean  SUM_DEPTH:q3    SUM_DEPTH:max   SUM_DEPTH:stdev
-1.00    55.00   72.00   89.26   88.00   34131.00    249.82</code></pre>
+1.00    55.00   72.00   89.49   88.00   34131.00    250.93</code></pre>
 </div>
 </div>
 <p>The range from the first quartile (<code>q1</code>) to the third (<code>q3</code>) is 55-88, showing most sites have a depth between 50-100X. We redraw the plot to zoom in on the peak:</p>
@@ -1075,8 +1076,8 @@ Figure&nbsp;4: Distribution of minor allele frequencies.
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span> <span class="at">-n</span> 3 <span class="va">${OUT}</span>.imiss</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>INDV    N_DATA  N_GENOTYPES_FILTERED    N_MISS  F_MISS
-PUN-R-ELF   114927  0   16643   0.144814
-PUN-R-JMC   114927  0   14665   0.127603</code></pre>
+PUN-R-ELF   114997  0   16704   0.145256
+PUN-R-JMC   114997  0   14705   0.127873</code></pre>
 </div>
 </div>
 <p>and look at the results, focusing on the <code>F_MISS</code> column (proportion missing sites):</p>
@@ -1130,16 +1131,16 @@ Figure&nbsp;6: Distribution of missingness among sites.
 <span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> <span class="va">${OUT}</span>.het</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>INDV    O(HOM)  E(HOM)  N_SITES F
-PUN-R-ELF   72440   65875.6 89070   0.28302
-PUN-R-JMC   68947   67069.1 90730   0.07937
-PUN-R-LH    71109   66506.1 89879   0.19693
-PUN-R-MT    70360   66474.7 89874   0.16604
-PUN-R-UCSD  75110   66108.7 89536   0.38422
-PUN-Y-BCRD  71175   66649.1 90083   0.19314
-PUN-Y-INJ   72223   64979.5 87589   0.32037
-PUN-Y-LO    74471   64530.5 87503   0.43271
-PUN-Y-PCT   76161   65647.1 89016   0.44991
-PUN-Y-POTR  71850   64822.9 87675   0.30750</code></pre>
+PUN-R-ELF   72540   65954.1 89133   0.28413
+PUN-R-JMC   69074   67156.1 90808   0.08109
+PUN-R-LH    71195   66609.2 89969   0.19631
+PUN-R-MT    70470   66593.9 89994   0.16565
+PUN-R-UCSD  75301   66233.4 89666   0.38697
+PUN-Y-BCRD  71355   66736.9 90144   0.19730
+PUN-Y-INJ   72354   65073.9 87677   0.32208
+PUN-Y-LO    74570   64616.8 87568   0.43367
+PUN-Y-PCT   76347   65800.0 89174   0.45123
+PUN-Y-POTR  71946   64938.0 87786   0.30672</code></pre>
 </div>
 </div>
 <p>Here, F is a measure of how much the observed homozygotes <code>O(HOM)</code> differ from the expected (<code>E(HOM)</code>; expected <em>by chance</em> under Hardy-Weinberg equilibrium), and may be negative. <code>vcftools</code> calculates F from the expression <span class="math inline">\(F=(O-E)/(N-E)\)</span><a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a>, which you can verify by substituting the variables in the output.</p>
@@ -1194,11 +1195,11 @@ Answer
 <span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a> <span class="ex">vcftools</span> <span class="at">--vcf</span> <span class="at">-</span> <span class="at">--het</span> <span class="at">--stdout</span> <span class="dv">2</span><span class="op">&gt;</span>/dev/null</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>INDV    O(HOM)  E(HOM)  N_SITES F
-PUN-R-ELF   41560   37870.1 58190   0.18159
-PUN-R-JMC   37628   38609.9 59411   -0.04721
-PUN-R-LH    39685   38063.1 58455   0.07954
-PUN-R-MT    38944   38068.6 58458   0.04293
-PUN-R-UCSD  43375   37616.2 57801   0.28530</code></pre>
+PUN-R-ELF   41578   37888.1 58171   0.18192
+PUN-R-JMC   37662   38634.3 59396   -0.04683
+PUN-R-LH    39648   38078.3 58422   0.07716
+PUN-R-MT    38921   38096.3 58445   0.04053
+PUN-R-UCSD  43447   37650.5 57812   0.28750</code></pre>
 </div>
 </div>
 </div>
@@ -1234,14 +1235,14 @@ PUN-R-UCSD  43375   37616.2 57801   0.28530</code></pre>
 <div class="sourceCode cell-code" id="cb41"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="ex">bcftools</span> stats <span class="va">$OUTVCF</span> <span class="kw">|</span> <span class="fu">grep</span> <span class="st">"^SN"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>SN  0   number of samples:  10
-SN  0   number of records:  31606
+SN  0   number of records:  31756
 SN  0   number of no-ALTs:  0
-SN  0   number of SNPs: 31486
+SN  0   number of SNPs: 31639
 SN  0   number of MNPs: 0
 SN  0   number of indels:   0
 SN  0   number of others:   0
-SN  0   number of multiallelic sites:   1340
-SN  0   number of multiallelic SNP sites:   567</code></pre>
+SN  0   number of multiallelic sites:   1356
+SN  0   number of multiallelic SNP sites:   578</code></pre>
 </div>
 </div>
 <p>Quite a substantial portion variants have in fact been removed, which here can most likely be attributed to the low average sequencing coverage.</p>
