@@ -18,6 +18,7 @@ listing:
     - recombination_linkage/index.qmd
     - genetic_diversity/index.qmd
     - population_structure/index.qmd
+    - demography/index.qmd
 toc: false
 sidebar: false
 ---
