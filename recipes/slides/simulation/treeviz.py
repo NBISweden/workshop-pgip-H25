@@ -53,3 +53,15 @@ def tree_topology(
             random_seed=119,
         )
     return ts.draw_svg(**kwargs)
+
+
+def tree_viz_example():
+    ts = msprime.sim_ancestry(
+        4,
+        population_size=100,
+        record_full_arg=True,
+        sequence_length=10000,
+        recombination_rate=1e-6,
+        random_seed=2,
+    )
+    return ts

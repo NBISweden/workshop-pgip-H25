@@ -15,8 +15,8 @@ listing:
   contents:
     - stdpopsim.qmd
     - coalescent.qmd
+    - argintro.qmd
 ---
-
 
 ## About
 
