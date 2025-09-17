@@ -6,8 +6,6 @@ description: >-
 format:
   nbis-course-html:
     number-sections: false
-author:
-  - Per Unneberg
 listing:
   id: theory-listings
   type: table
@@ -19,6 +17,7 @@ listing:
     - linkage.qmd
     - wrightfisher.qmd
     - diversity.qmd
+    - selection.qmd
 ---
 
 ## About

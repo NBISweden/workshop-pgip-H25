@@ -1,0 +1,18 @@
+---
+title: Selection
+description: >-
+  Collection of presentations related to selection.
+format:
+  nbis-course-html:
+    number-sections: false
+---
+
+## About
+
+Collection of short presentations on population genetic theory and
+foundations
+
+## Listing
+
+- [Detecting Selection Using Genomic Data_ Methods and
+Characteristics.](https://uppsala.instructure.com/courses/105981/modules/items/1467337)

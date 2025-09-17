@@ -1,0 +1,17 @@
+---
+title: Introduction to stdpopsim
+description: >-
+  Short introduction to stdpopsim, the standard library for population
+  genetic simulation models.
+author:
+  - Per Unneberg
+format:
+  nbis-course-revealjs:
+    toc: false
+---
+
+## Setup  {visibility="hidden" .unnumbered .unlisted}
+
+{{< include ../_knitr.qmd >}}
+
+{{< include ../_rlibs.qmd >}}

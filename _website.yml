@@ -29,6 +29,7 @@ website:
               - slides/foundations/linkage.qmd
               - slides/foundations/wrightfisher.qmd
               - slides/foundations/diversity.qmd
+              - slides/foundations/selection.qmd
           - section: Variant calling
             contents:
               - text: Listing
@@ -54,7 +55,20 @@ website:
                 href: slides/population_structure/index.qmd
               - slides/population_structure/pca.qmd
               - slides/population_structure/admixture.qmd
-          # - slides/simulation/index.qmd
+          - section: Demography
+            contents:
+              - text: Listing
+                href: slides/demography/index.qmd
+          - section: Selection
+            contents:
+              - text: Listing
+                href: slides/selection/index.qmd
+          - section: Simulation
+            contents:
+              - text: Listing
+                href: slides/simulation/index.qmd
+              - slides/simulation/stdpopsim.qmd
+              - slides/simulation/coalescent.qmd
       - section: Exercises
         contents:
           - text: Listing
@@ -100,13 +114,14 @@ website:
           # - section: Selection
           #   contents:
           #     - exercises/selection/index.qmd
-          # - section: Simulation
-          #   contents:
-          #     - exercises/simulation/index.qmd
-          #     - exercises/simulation/howto.qmd
-          #     - exercises/simulation/stdpopsim_lab.qmd
-          #     - exercises/simulation/stdpopsim_lab_II.qmd
-          #     - exercises/simulation/simulation.qmd
+          - section: Simulation
+            contents:
+              - text: Listing
+                href: exercises/simulation/index.qmd
+              - exercises/simulation/howto.qmd
+              - exercises/simulation/stdpopsim_lab.qmd
+              - exercises/simulation/stdpopsim_lab_II.qmd
+              - exercises/simulation/simulation.qmd
           #     - exercises/ancestral_recombination_graphs/index.qmd
       - section: Code recipes
         contents:

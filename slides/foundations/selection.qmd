@@ -1,0 +1,1215 @@
+---
+title: Selection
+description: >-
+  Overview of natural selection
+author:
+  - Per Unneberg
+format:
+  nbis-quarto-revealjs:
+    footer: Selection
+---
+
+## Setup {visibility="hidden" .hidden .unnumbered .unlisted}
+
+{{< include /slides/_knitr.qmd >}}
+
+{{< include /slides/_rlibs.qmd >}}
+
+```{r }
+#| label: custom-libs
+#| echo: false
+#| eval: true
+library(viridisLite)
+library(gganimate)
+library(patchwork)
+library(expm)
+library(gridExtra)
+library(igraph)
+library(ggraph)
+library(tidygraph)
+```
+
+# Selection
+
+:::{}
+
+![](assets/images/gould_finches.webp){width=500px fig-align=center}
+
+:::
+
+::: {.notes }
+
+For a list of methods see <https://methodspopgen.com/methods-to-detect-selection/>
+
+:::
+
+## Selection and fitness {.smaller}
+
+```{r, engine='tikz', fig.ext='svg' }
+#| label: fig-selection-model-tikz
+#| echo: false
+#| eval: true
+#| fig-align: center
+#| out-width: 700px
+#| fig-cap:
+#|     The life cycle used in the fundamental model of selection
+#|     [@gillespie_PopulationGeneticsConcise_2004, Fig. 3.2]
+%%https://tex.stackexchange.com/questions/97201/how-to-anchor-labels-in-tikz-for-baseline-alignment
+\begin{tikzpicture}[>=latex, ultra thick, node distance=8em,
+                    inner sep=0.5ex]
+\tikzstyle{freq} = [anchor=mid, text depth=0pt]
+\tikzstyle{state} = [anchor=mid,
+                     rectangle, draw=black, node distance=12em,
+                     minimum height=4em, align=center,
+                     minimum width=6em, text width=4em]
+%% text depth=0pt,
+\node[state] (t0) {Newborns $p$};
+\node[left of=t0] (pin) {$p$};
+\node[state, right of=t0] (t1) {Adults $p^\prime$};
+\node[right of=t1] (pout) {$p^\prime$};
+\node[draw=black, rectangle, dashed, minimum height=7em,
+      minimum width=24em] (dash) at ($(t0) !.5! (t1)$) {};
+\node[below of=dash, node distance=4.2em] {One generation};
+\draw[->] (pin) -- (t0);
+\draw[->] (t0) -- node[auto, midway] {Selection} (t1);
+\draw[->] (t1) -- (pout);
+\end{tikzpicture}
+```
+
+::: {.fragment}
+
+> Much confusion exists in the literature regarding how various types
+> of selection are defined, in particular because some of the
+> terminology is used slightly differently within different scientific
+> communities [@nielsen_MolecularSignaturesNatural_2005]
+
+:::
+
+:::: {.columns}
+
+::: {.column width="50%" .fragment}
+
+$$
+\begin{matrix}
+\mathrm{Genotype} & AA & Aa & aa \\
+\mathrm{Frequency\ in\ newborns} & p^2 & 2pq & q^2\\
+\mathrm{Viability} & w_{AA} & w_{Aa} & w_{aa}\\
+\mathrm{Frequency\ after\ selection} & p^2w_{AA} / \bar{w} &
+    2pqw_{Aa} / \bar{w} & q^2w_{aa} / \bar{w} \\
+\mathrm{Relative\ fitness} & 1 & 1-hs & 1-s\\
+\end{matrix}
+$$
+
+where $\bar{w} = p^2w_{AA} + 2pqw_{Aa} + q^2w_{aa}$ is the **mean
+fitness**.
+
+:::
+
+::: {.column width="50%" .fragment}
+
+|         |                                        |
+|---------|----------------------------------------|
+| $h=0$   | $A$ dominant, $a$ recessive            |
+| $h=1$   | $a$ dominant, $A$ recessive            |
+| $0<h<1$ | incomplete dominance                   |
+| $h<0$   | overdominance (heterozygote advantage) |
+| $h>1$   | underdominance                         |
+
+::: {.flushright .smallr}
+
+Notation follows @gillespie_PopulationGeneticsConcise_2004, pp. 61--64.
+
+:::
+
+:::
+
+::::
+
+::: {.notes}
+
+The life cycle figure starts with newborns carrying the $A$ allele at
+frequency $p$, like parents. To reproduce they must reach adulthood,
+but due to selection, the allele frequency of $A$ may shift to
+$p^\prime$ because different genotypes affect survival probabilities.
+This is typically summarized in genotype *viabilities*.
+
+The Nielsen quote is a reminder that many different notations and
+parametrizations exist in the literature.
+
+:::
+
+## The most important equation in population genetics
+
+$$
+p^\prime - p = \Delta_sp = \frac{pq[p(w_{AA} - w_{Aa}) + q(w_{Aa} -
+w_{aa})]}{p^2w_{AA} + 2pqw_{Aa} + q^2w_{aa}}
+$$
+
+```{r }
+#| label: allele-frequency-dynamics
+#| echo: false
+#| eval: true
+dp <- function(h, s, p) {
+  q <- 1 - p
+  wbar <- 1 - 2 * p * q * h * s - q * q * s
+  p * q * s * (p * h + q * (1 - h)) / wbar
+}
+pevol <- function(p0, n, h, s) {
+  p <- vector(length=n, mode="numeric")
+  p[1] <- p0
+  for (i in 2:n)
+    p[i] <- p[i-1] + dp(h, s, p[i-1])
+  p
+}
+p <- seq(0, 1, 0.01)
+data <- as.data.frame(rbind(
+    data.frame(dp=dp(0.5, 0.1, p), h=0.5, p, selection="directional"),
+    data.frame(dp=dp(-0.5, 0.1, p), h=-0.5, p, selection="balancing"),
+    data.frame(dp=dp(1.5, 0.1, p), h=1.5, p, selection="disruptive")
+))
+data$selection <- factor(data$selection,
+                         levels=c("directional", "balancing",
+                                  "disruptive"))
+data2 <- as.data.frame(rbind(
+    data.frame(p=pevol(0.1, 100, 0.5, 0.1), generation=1:100, h=0.5,
+               selection="directional", p0=0.1),
+    data.frame(p=pevol(0.1, 100, -0.5, 0.1), generation=1:100, h=-0.5,
+               selection="balancing", p0=0.1),
+    data.frame(p=pevol(0.9, 100, -0.5, 0.1), generation=1:100, h=-0.5,
+               selection="balancing", p0=0.9),
+    data.frame(p=pevol(0.24, 100, 1.5, 0.1), generation=1:100, h=-0.5,
+               selection="disruptive", p0=0.24),
+    data.frame(p=pevol(0.26, 100, 1.5, 0.1), generation=1:100, h=1.5,
+               selection="disruptive", p0=0.26)
+))
+data2$selection <- factor(data2$selection,
+                          levels=c("directional", "balancing",
+                                   "disruptive"))
+data2$p0 <- as.factor(data2$p0)
+selnames <- list(
+    `directional` = "directional (h=0.5, s=0.1)",
+    `balancing` = "balancing (h=-0.5, s=0.1)",
+    `disruptive` = "disruptive (h=1.5, s=0.1)"
+)
+selection_labeller <- function(variable, value) {
+  selnames[value]
+}
+```
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+```{r }
+#| label: fig-selection-fig-p
+#| echo: false
+#| eval: true
+#| out-height: "400"
+#| out-width: "400"
+#| fig-height: 8
+#| fig-width: 8
+#| fig-align: center
+#| fig-cap:
+#|    Allele frequency change over time for directional,
+#|    balancing, and disruptive selection, for different
+#|    values of $p_0$.
+ggplot(data2, aes(x=generation, y=p, linetype=p0)) + geom_line(linewidth=1.2) +
+  facet_grid(selection ~ ., labeller=selection_labeller)
+```
+
+:::
+
+::: {.column width="50%"}
+
+```{r }
+#| label: fig-selection-fig-dp
+#| echo: false
+#| eval: true
+#| out-height: "400"
+#| out-width: "400"
+#| fig-height: 8
+#| fig-width: 8
+#| fig-align: center
+#| fig-cap: |
+#|    Rate of allele frequency change as a function of
+#|    allele frequency for directional,
+#|    balancing, and disruptive selection.
+ggplot(data, aes(x = p, y = dp)) +
+  geom_line(linewidth=1.2) +
+  facet_grid(selection ~ ., labeller=selection_labeller) +
+  geom_hline(yintercept=0, linetype="twodash")
+```
+
+:::
+
+::::
+
+::: {.notes}
+
+Given the genotype fitnesses/viabilities, we can work out the
+difference in allele frequency $p-p^\prime$ between successive
+generations as a function of viabilities (or relative fitnesses).
+Equation relates allele frequency change to viabilities for different
+genotypes. It is instructive to study the equation and plot
+trajectories to gain an intuition for how allele frequencies evolve
+given the different selection regimes.
+
+The left panel shows that the three modes of selection have different
+equilibrium points: for directional selection the favored homozygote
+will eventually attain 100%, balancing selection has a stable
+equilibrium point (attractor) for a given allelic ratio (here 25:75),
+and disruptive selection has an *unstable* equilibrium point
+(repeller) for a given allelic ratio.
+
+The right panel shows the rate of *change* as a function of allele
+frequency. Note how the directionality changes at the equilibrium
+point for balancing and directional selection.
+
+:::
+
+## Selection and drift - population size matters
+
+:::: {.columns}
+
+::: {.column width="80%"}
+
+```{r }
+#| label: fig-selection-and-drift
+#| echo: false
+#| eval: true
+#| fig-width: 12
+#| fig-height: 6
+#| fig-cap:
+#|     The fixation probability relative to the neutral
+#|     probability of fixation ($p=1/2N$) under the assumption $s<0.1$.
+#|     Red highlights region where $|N_es|<0.05$.
+#|     Adapted from @lynch_OriginsGenomeArchitecture_2007, Fig. 4.2.
+Ne_s <- seq(-2, 2, 0.01)
+# Lynch p. 74
+thetaf <- 4*Ne_s / (1-exp(-4*Ne_s))
+data <- as.data.frame(cbind(Ne_s, thetaf))
+ggplot(data, aes(x=Ne_s, y=thetaf)) + geom_line() +
+  ylab(expression("Relative fixation probability" ~ theta[f])) +
+  xlab(expression(N[e]* s)) + geom_hline(yintercept=1, linetype="dashed") +
+  geom_rect(inherit.aes=FALSE, data = data.frame(xstart=c(-0.05), xend=c(0.05)),
+            aes(xmin = xstart, xmax = xend, ymin = -Inf,
+                ymax = Inf, fill = "red"), alpha = 0.4,
+            show.legend=FALSE)
+```
+
+:::
+
+::: {.column width="20%"}
+
+In red region ($|N_es|<0.05$) the probability of fixation is within
+10% of neutral fixation.
+
+**Consequence**: for any population size there exists range of
+selection coefficients where mutant alleles $\approx$ neutral (**effective neutrality**).
+
+:::
+
+::::
+
+::: {.notes }
+
+Segue: note on the strength of s and the relation to $N_e$. For small
+$N_e$ the relation will hold for higher $s$, meaning small populations
+will have difficulties purging deleterious mutations.
+
+Even if a new mutation has, say, $s=0.01$, it still needs to overcome
+effects of drift. Only has 2% change of fixation.
+
+In figure, we assume $s<0.1$, which is almost always the case
+[@lynch_OriginsGenomeArchitecture_2007, p.74].
+
+[@hahn_MolecularPopulationGenetics_2019, p. 133]
+
+:::
+
+## Direct selection can be inferred from protein substitutions {.smaller}
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+For genes, the ratio of nonsynonymous to synonymous substitutions can
+tell us about protein evolution:
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+```
+Synonymous substitution
+
+Protein          L
+DNA         --- CTT ---
+                  *
+DNA         --- CTC ---
+Protein          L
+```
+
+:::
+
+::: {.column width="50%"}
+
+```
+Nonsynonymous substitution
+
+Protein          L
+DNA         --- CTT ---
+                 *
+DNA         --- CHT ---
+Protein          H
+```
+
+:::
+
+::::
+
+:::{}
+
+**$\mathbf{d_N/d_S << 1}$**
+: negative (purifying) selection
+
+**$\mathbf{d_N/d_S < 1}$**
+: majority nonsynonymous deleterious, some advantageous
+
+**$\mathbf{d_N/d_S = 1}$**
+: neutral or mix neutral / advantageous / deleterious mutations
+
+**$\mathbf{d_N/d_S > 1}$**
+: positive selection
+
+:::
+
+:::
+
+::: {.column width="50%"}
+
+```{r }
+#| label: fig-ensembl-hsapiens-rat-dnds
+#| echo: false
+#| eval: true
+#| out-height: "400"
+#| fig-width: 8
+#| fig-height: 6
+#| fig-cap: |
+#|     $d_n/d_s$ comparisons for human-rat orthologs. For
+#|     most genes, $d_n/d_s << 1$ indicating purifying selection. A handful
+#|     of genes (n=9) have $d_n/d_s > 1.0$ which could indicate
+#|     positive selection.
+#|     [{{< fa rectangle-list >}}](
+#|     {{< var recipes.base >}}#sec-recipe-slides-dn-ds-ratio-human-rat)
+#| file: ../../recipes/slides/foundations/hsapiens-rat-dnds.R
+```
+
+:::
+
+::::
+
+::: {.fragment}
+
+:::{.translatey50}
+
+Not all mutations fall in genes. Methods for detecting direct
+selection not applicable to studying selection on *single* mutation,
+or e.g., balancing. This requires looking for specific patterns of
+diversity surrounding locus under selection.
+
+:::
+
+:::
+
+::: {.notes }
+
+Segue: how do we detect selection?
+
+Early approach: look at protein-coding sequence where nucleotide
+substitutions can change the amino acid (non-synonymous, and
+presumably non-neutral) or be silent (synonymous, assumed neutral).
+
+Not all mutations in genes. Also want to look at single advantageous
+mutations, or balanced polymorphisms. Must therefore look at tell-tale
+signs of linked neutral variants.
+
+:::
+
+## Linked selection reduces diversity at neighbour loci
+
+```{r, engine='tikz', fig.ext='svg' }
+#| label: fig-selective-sweep
+#| echo: false
+#| eval: true
+#| out-height: "300"
+#| fig-cap: A selective sweep of an advantageous mutation (gray dot).
+#|    Adapted from @charlesworth_ElementsEvolutionaryGenetics_2010, Fig. 8.13
+\begin{tikzpicture}
+  \tikzstyle{mut} = [circle, minimum height=0.4cm, fill=gray, draw];
+  \tikzstyle{neutral} = [circle, minimum height=0.4cm, draw, fill=white];
+  \begin{scope}
+    \draw (0,0) -- (10,0);
+    \node[neutral] at (3, 0) {};
+    \node[neutral] at (7, 0) {};
+    \draw (0,1) -- (10,1);
+    \node[neutral] at (8, 1) {};
+    \draw (0,2) -- (10,2);
+    \node[neutral] at (2, 2) {};
+    \node[neutral] at (3, 2) {};
+    \node[neutral] at (4, 2) {};
+    \node[neutral] at (9, 2) {};
+    \draw (0,3) -- (10,3);
+    \node[neutral] at (3, 3) {};
+    \node[neutral] at (7, 3) {};
+    \draw (0,4) -- (10,4);
+    \node[neutral] at (0.5, 4) {};
+    \node[neutral] at (7, 4) {};
+    \draw (0,5) -- (10,5);
+    \node[neutral] at (9, 5) {};
+    \node[mut] at (3, 5) {};
+    \draw (0,6) -- (10,6);
+    \node[neutral] at (2, 6) {};
+    \node[neutral] at (5, 6) {};
+    \draw (0,7) -- (10,7);
+    \node[neutral] at (1, 7) {};
+    \node[neutral] at (5, 7) {};
+    \draw (0,8) -- (10,8);
+    \node[neutral] at (2, 8) {};
+    \node[neutral] at (5, 8) {};
+    \node[neutral] at (9, 8) {};
+    \draw (0,9) -- (10,9);
+    \node[neutral] at (2, 9) {};
+  \end{scope}
+
+  \draw[->, ultra thick] (11, 5) -- (19, 5);
+  \node[font=\bfseries] at (15, 5.5) {\LARGE Many generations};
+
+  \begin{scope}[shift={(20, 0)}]
+    \draw (0,0) -- (10,0);
+    \node[neutral] at (9, 0) {};
+    \node[mut] at (3, 0) {};
+
+    \draw (0,1) -- (10,1);
+    \node[neutral] at (9, 1) {};
+    \node[mut] at (3, 1) {};
+
+    \draw (0,2) -- (10,2);
+\node[neutral] at (9, 2) {};
+    \node[mut] at (3, 2) {};
+
+    \draw (0,3) -- (10,3);
+    \node[neutral] at (9, 3) {};
+    \node[mut] at (3, 3) {};
+
+    \draw (0,4) -- (10,4);
+    \node[neutral] at (9, 4) {};
+    \node[mut] at (3, 4) {};
+
+    \draw (0,5) -- (10,5);
+    \node[neutral] at (9, 5) {};
+    \node[mut] at (3, 5) {};
+
+    \draw (0,6) -- (10,6);
+    \node[neutral] at (9, 6) {};
+    \node[mut] at (3, 6) {};
+
+    \draw (0,7) -- (10,7);
+    \node[neutral] at (9, 7) {};
+    \node[mut] at (3, 7) {};
+
+    \draw (0,8) -- (10,8);
+    \node[neutral] at (9, 8) {};
+    \node[mut] at (3, 8) {};
+
+    \draw (0,9) -- (10,9);
+    \node[neutral] at (9, 9) {};
+    \node[mut] at (3, 9) {};
+
+  \end{scope}
+\end{tikzpicture}
+```
+
+Example of a selective sweep. If a sweep completes at a locus, it will
+become monomorphic, as will the *neighbouring* sites. Mutation could
+reintroduce variation. Recombination could increase diversity in
+neighbourhood, but in a manner that depends on the *distance* from the
+locus under selection.
+
+::: {.notes }
+
+Alternatives to direct selection tests are those that look at linked
+selection. In essence, we look for characteristic patterns in the
+vicinity of a selected locus. A sweep leads to the selected site and
+neigbouring sites being monomorphic (and therefore invisible to tests
+based on direct selection). Without recombination, mutation could
+reintroduce variation. In the presence of recombination, the effect of
+reduced diversity will be dependent on distance from the locus under
+selection.
+
+Note here that every sequence can be treated as an allele, such that
+we in essence are looking multi- and not a bi-allelic locus.
+
+:::
+
+## The effect of a selective sweep on diversity
+
+<!-- markdownlint-disable MD013 -->
+
+```{bash }
+#| label: pgip-slim-sweep-command
+#| echo: true
+#| eval: false
+#| code-fold: true
+pgip-slim --seed 42 -n 1000 -r 1e-6 -m 1e-7 --threads 12 recipes/slim/selective_sweep.slim -l 1000000 --outdir results/slim
+pgip-tsstat results/slim/slim*.trees -n 10 --seed 31 -s pi -s S -s TajD -w 500 --threads 10 | gzip -v - > results/slim/selective_sweep.w500.csv.gz
+```
+
+```{r }
+#| label: pgip-load-slim-data
+#| echo: false
+#| eval: true
+data <- tidyr::tibble(read.csv(here("pgip_data/results/slim/selective_sweep.w500.csv.gz"), header = TRUE))
+a <- sum(1 / seq(10 - 1))
+data$thetaW <- data$S / a
+data_mean <- as.data.frame(data) %>%
+  select(windows, TajD, pi, S, thetaW) %>%
+  group_by(windows) %>%
+  summarise(TajD = mean(TajD, na.rm = TRUE), pi = mean(pi, na.rm = TRUE), S = mean(S, na.rm = TRUE), thetaW = mean(thetaW, na.rm = TRUE)) %>%
+  mutate(fn = "mean", pi_minus_thetaW = pi - thetaW)
+L <- 1e6
+xi <- L / 2
+```
+
+<!-- markdownlint-enable MD013 -->
+
+<!-- markdownlint-disable MD013 -->
+
+```{r }
+#| label: fig-pgip-slim-sweep-plot-tajd
+#| echo: false
+#| eval: true
+#| fig-align: center
+#| fig-height: 5
+#| fig-width: 10
+#| out-width: 80%
+#| fig-format: png
+#| fig-cap: The effect of a selective sweep on
+#|     diversity. The arrow points to the site under selection.
+#|     The y-axis shows Tajima's D which is proportional to the
+#|     difference between two measures of diversity, nucleotide
+#|     diversity $\pi$ and Watterson's $\theta_W$.
+#|     [{{< fa rectangle-list >}}]({{< var recipes.slim
+#|     >}}#sec-recipe-slim-selective-sweep)
+x <- subset(data, fn %in% levels(factor(data$fn))[1:50])
+psweep_static <- ggplot(x, aes(windows, TajD, group = fn)) +
+  geom_line(color = "lightgray", linewidth = 0.5) +
+  xlab("Chromosomal position") +
+  theme(axis.text.x = element_blank(), axis.ticks.x = element_blank()) +
+  geom_segment(aes(x = xi, y = -2, xend = xi, yend = -2.5), arrow = arrow(length = unit(0.4, "cm"), type = "closed")) +
+  scale_y_continuous(expand = c(0, 0), limits = c(-2.5, 2.5)) +
+  scale_x_continuous(expand = c(0, 0), limits = c(0, L))
+p <- psweep_static + transition_manual(fn, cumulative = TRUE)
+p
+```
+
+<!-- markdownlint-enable MD013 -->
+
+::: {.notes }
+
+Simulation: N=1e4, mu=5e-8, pi=4*N*mu=0.004, seek S=a*pi=0.01, so
+a=S/pi which gives n. One needs to ramp up recombination rate to see
+the dip in TajD clearly.
+
+:::
+
+## The effect of a selective sweep on diversity
+
+<!-- markdownlint-disable MD013 -->
+
+```{bash }
+#| label: pgip-slim-sweep-command-2
+#| echo: true
+#| eval: false
+#| code-fold: true
+pgip-slim --seed 42 -n 1000 -r 1e-6 -m 1e-7 --threads 12 recipes/slim/selective_sweep.slim -l 1000000 --outdir results/slim
+pgip-tsstat results/slim/slim*.trees -n 10 --seed 31 -s pi -s S -s TajD -w 500 --threads 10 | gzip -v - > results/slim/selective_sweep.w500.csv.gz
+```
+
+<!-- markdownlint-enable MD013 -->
+
+```{r}
+#| label: fig-pgip-slim-sweep-plot-tajd-2
+#| echo: false
+#| eval: true
+#| fig-align: center
+#| fig-height: 5
+#| fig-width: 10
+#| out-width: 80%
+#| fig-cap: The effect of a selective sweep on
+#|     diversity. The arrow points to the site under selection.
+#|     The y-axis shows Tajima's D which is proportional to the
+#|     difference between two measures of diversity, nucleotide
+#|     diversity $\pi$ and Watterson's $\theta_W$.
+#|     [{{< fa rectangle-list >}}]({{< var recipes.slim
+#|     >}}#sec-recipe-slim-selective-sweep)
+psweep_static + geom_line(data = data_mean, color = "red", linewidth = 1.5)
+```
+
+::: {.notes}
+
+Important: individual runs show a lot of stochasticity, but the
+signal is clear for the *mean*.
+
+:::
+
+## The effect of a selective sweep on diversity
+
+```{r }
+#| label: pgip-load-slim-data2
+#| echo: false
+#| eval: true
+data <- tidyr::tibble(read.csv(here("pgip_data/results/slim/selective_sweep.w500.csv.gz"),
+                               header = TRUE))
+a <- sum(1 / seq(10 - 1))
+data$thetaW <- data$S / a
+data_mean <- as.data.frame(data) %>%
+  dplyr::select(windows, TajD, pi, S, thetaW) %>%
+  group_by(windows) %>%
+  summarise(TajD = mean(TajD, na.rm = TRUE),
+            pi = mean(pi, na.rm = TRUE), S = mean(S, na.rm = TRUE),
+            thetaW = mean(thetaW, na.rm = TRUE)) %>%
+  mutate(fn = "mean", pi_minus_thetaW = pi - thetaW)
+L <- 1e6
+xi <- L / 2
+```
+
+```{r }
+#| label: fig-pgip-slim-sweep-plot-pi-S
+#| echo: false
+#| eval: true
+#| fig-align: center
+#| fig-height: 5
+#| fig-width: 10
+#| out-width: "600"
+#| fig-cap:
+#|     The effect of a selective sweep on diversity.
+#|     The figure shows the mean of 1000 simulations
+#|     with the selected locus indicated with an arrow.
+x <- data_mean %>% pivot_longer(
+  cols = c("pi", "thetaW", "pi_minus_thetaW"),
+  names_transform =
+    list(name = ~readr::parse_factor(.x, levels = c("pi", "thetaW",
+                                                    "pi_minus_thetaW")))
+  )
+ggplot(x, aes(windows, value, color = name)) +
+  geom_segment(aes(x = xi, y = -1, xend = xi, yend = -2.5),
+               color = "black", arrow = arrow(length = unit(0.4, "cm"),
+                                              type = "closed")) +
+  xlab("Chromosomal position") +
+  ylab("diversity") +
+  geom_line(linewidth = 1) +
+  theme(axis.text.x = element_blank(), axis.ticks.x = element_blank(),
+        legend.title = element_blank()) +
+  scale_y_continuous(expand = c(0, 0), limits = c(-2.5, 10)) +
+  scale_x_continuous(expand = c(0, 0), limits = c(0, L)) +
+  scale_colour_manual(
+    name = "name", values = c("blue", "red", "green"),
+    labels = expression("diversity "~pi, theta[W], pi - theta[W])
+  )
+```
+
+::: {.notes}
+
+cf @nielsen_MolecularSignaturesNatural_2005. Not clear how scaling of
+statistics to have mean=1 is done.
+
+:::
+
+## Distinguishing selection from drift via topology {visibility="hidden" .unnumbered .unlisted}
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+```{r }
+#| label: wf-model-drift-genealogy
+#| echo: false
+#| eval: true
+#| out-height: "600"
+set.seed(181)
+ngen <- 50
+n <- 30
+wf <- wright_fisher_pop(n = 30, generations = 50, p0=1, init_gen=5)
+samples <- sort(sample(which(V(wf)$y == (ngen - 1)), 10))
+obj <- wf
+i <- V(obj)[unlist(ego(obj, order = ngen - 7, nodes = samples, mode = "in"))]
+E(obj)$color <- "lightgray"
+E(obj)$width <- .1
+E(obj)[.to(i)]$width <- .2
+E(obj)[.to(i)]$color <- "black"
+ggraph(obj, layout = cbind(V(obj)$x, V(obj)$y)) +
+  geom_edge_link(aes(color = color, width = width)) +
+  scale_edge_color_manual(values = c(
+    "black" = "black",
+    "lightgray" = "lightgray"
+  )) +
+  geom_node_point(ggplot2::aes(fill = allele),
+                  color = "black", shape = 21, size = 1.5) +
+  theme(legend.position = "none", axis.text.x = element_blank()) +
+  scale_y_reverse() + scale_edge_width(range = c(.1, 1)) +
+  scale_fill_manual(values = c("a" = "white", "A" = "black")) +
+  ggtitle("drift")
+```
+
+:::
+
+::: {.column width="50%"}
+
+```{r }
+#| label: wf-model-selection-genealogy
+#| echo: false
+#| eval: true
+#| out-height: "600"
+set.seed(1232)
+ngen <- 50
+n <- 30
+wf <- wright_fisher_pop(n = n, generations = ngen, p0=1, init_gen=5, s=.2)
+#samples <- sort(sample(which(V(wf)$y == (ngen - 1)), 12))
+obj <- wf
+i <- V(obj)[unlist(ego(obj, order = 43, nodes = samples, mode = "in"))]
+E(obj)$color <- "lightgray"
+E(obj)$width <- .1
+E(obj)[.to(i)]$width <- .2
+E(obj)[.to(i)]$color <- "black"
+ggraph(obj, layout = cbind(V(obj)$x, V(obj)$y)) +
+  geom_edge_link(aes(color = color, width = width)) +
+  scale_edge_color_manual(values = c(
+    "black" = "black",
+    "lightgray" = "lightgray"
+  )) +
+  geom_node_point(ggplot2::aes(fill = allele),
+                  color = "black", shape = 21, size = 1.5) +
+  theme(legend.position = "none", axis.text.x = element_blank()) +
+  scale_fill_manual(values = c("a" = "white", "A" = "black")) +
+  scale_y_reverse() + scale_edge_width(range = c(.1, 1)) +
+  ggtitle("selection")
+```
+
+:::
+
+::::
+
+::: {.notes }
+
+Even though the WF model assumes neutrality, we model an allele with a
+slight selective advantage. Note that the topology for selection is
+more compressed (=faster coalescence) than in the neutral case.
+
+:::
+
+## The phases of a selective sweep
+
+:::: {.columns}
+
+::: {.column width="70%"}
+
+```{R, engine="tikz", fig.ext="svg" }
+#| label: fig-selective-sweep-phases
+#| echo: false
+#| eval: true
+#| out-height: "400"
+#| fig-cap:
+#|     Time goes from left to right. As sweep progresses,
+#|     tree topology changes. Adapted from
+#|     @hahn_MolecularPopulationGenetics_2019, Figure 8.1
+\begin{tikzpicture}[inner sep=0, outer sep=0, thick]
+\tikzstyle{neutral} = [circle, minimum height=0.4cm, draw, fill=white];
+\tikzstyle{mut} = [circle, minimum height=0.4cm, fill=black, draw];
+  \begin{scope}
+  \path (0, 0) node (a1) {}
+  (1, 0) node (a2) {}
+  (2, 0) node (a3) {}
+  (3, 0) node (a4) {}
+  (4, 0) node (a5) {}
+  (5, 0) node (a6) {};
+\node (a7) at ($(a1) !.5! (a2) + (0, 1)$) {};
+\node (a8) at ($(a1-|a7) !.5! (a3) + (0, 3)$) {};
+\node (a9) at ($(a4) !.5! (a5) + (0, 4)$) {};
+\node (a10) at ($(a1-|a9) !.5! (a6) + (0, 6)$) {};
+\node (a11) at ($(a1-|a8) !.5! (a1-|a10) + (0, 10)$) {};
+  \draw (a1) -- (a7)
+(a2) -- (a7)
+(a7) -- (a8)
+(a3) -- (a8)
+(a4) -- (a9)
+(a5) -- (a9)
+(a6) -- (a10)
+(a9) -- (a10)
+(a10) -- (a11)
+(a8) -- (a11)
+;
+\node[mut] at ($(a6) !.1! (a10)$) {};
+\draw (0, -2) -- (6, -2)
+(0, -3) -- (6, -3)
+(0, -4) -- (6, -4)
+(0, -5) -- (6, -5)
+(0, -6) -- (6, -6)
+(0, -7) -- (6, -7)
+;
+\node[neutral] at (5, -2) {};
+\node[mut] at (4, -3) {};
+\node[neutral] at (2, -3) {};
+\node[neutral] at (5, -3) {};
+\node[neutral] at (2, -4) {};
+\node[neutral] at (1, -5) {};
+\node[neutral] at (3, -5) {};
+\node[neutral] at (1, -6) {};
+\node[neutral] at (5, -6) {};
+\node[neutral] at (1, -7) {};
+
+\end{scope}
+  \begin{scope}[xshift=8cm]
+  \path (0, 0) node (a1) {}
+  (2, 0) node (a2) {}
+  (4, 0) node (a3) {}
+  (4.5, 0) node (a4) {}
+  (5, 0) node (a5) {}
+  (5.5, 0) node (a6) {};
+\node (a7) at ($(a1) !.5! (a2) + (0, 3)$) {};
+\node (a8) at ($(a3) !.5! (a6) + (0, 2)$) {};
+\node (a9) at ($(a1-|a8) !.5! (a1-|a8) + (0, 10)$) {};
+  \draw (a1) -- (a7)
+(a2) -- (a7)
+(a3) -- (a8)
+(a4) -- (a8)
+(a5) -- (a8)
+(a6) -- (a8)
+(a8) -- (a9)
+(a7) -- (a9);
+\node[mut] at ($(a8) !.1! (a9)$) {};
+\draw (0, -2) -- (6, -2)
+(0, -3) -- (6, -3)
+(0, -4) -- (6, -4)
+(0, -5) -- (6, -5)
+(0, -6) -- (6, -6)
+(0, -7) -- (6, -7)
+;
+\node[neutral] at (2, -2) {};
+\node[mut] at (4, -2) {};
+\node[neutral] at (5, -2) {};
+\node[neutral] at (2, -3) {};
+\node[mut] at (4, -3) {};
+\node[neutral] at (5, -3) {};
+\node[neutral] at (2, -4) {};
+\node[mut] at (4, -5) {};
+\node[neutral] at (5, -4) {};
+\node[neutral] at (2, -5) {};
+\node[mut] at (4, -4) {};
+\node[neutral] at (5, -5) {};
+\node[neutral] at (1, -6) {};
+\node[neutral] at (5, -6) {};
+\node[neutral] at (1, -7) {};
+\node[neutral] at (3, -7) {};
+    \end{scope}
+
+  \begin{scope}[xshift=16cm]
+  \path (1.5, 0) node (a1) {}
+  (2, 0) node (a2) {}
+  (2.5, 0) node (a3) {}
+  (3, 0) node (a4) {}
+  (3.5, 0) node (a5) {}
+  (4, 0) node (a6) {};
+\node (a7) at ($(a1) !.5! (a6) + (0, 1)$) {};
+\node (a8) at ($(a7) + (0, 9)$) {};
+  \draw (a1) -- (a7)
+(a2) -- (a7)
+(a3) -- (a7)
+(a3) -- (a7)
+(a4) -- (a7)
+(a5) -- (a7)
+(a6) -- (a7)
+(a7) -- (a8);
+\node[mut] at ($(a7) !.1! (a8)$) {};
+\draw (0, -2) -- (6, -2)
+(0, -3) -- (6, -3)
+(0, -4) -- (6, -4)
+(0, -5) -- (6, -5)
+(0, -6) -- (6, -6)
+(0, -7) -- (6, -7)
+;
+\node[neutral] at (2, -2) {};
+\node[mut] at (4, -2) {};
+\node[neutral] at (5, -2) {};
+\node[neutral] at (2, -3) {};
+\node[mut] at (4, -3) {};
+\node[neutral] at (5, -3) {};
+\node[neutral] at (2, -4) {};
+\node[mut] at (4, -4) {};
+\node[neutral] at (5, -4) {};
+\node[neutral] at (2, -5) {};
+\node[mut] at (4, -5) {};
+\node[neutral] at (5, -5) {};
+\node[neutral] at (2, -6) {};
+\node[mut] at (4, -6) {};
+\node[neutral] at (5, -6) {};
+\node[neutral] at (2, -7) {};
+\node[mut] at (4, -7) {};
+\node[neutral] at (5, -7) {};
+
+    \end{scope}
+
+\end{tikzpicture}
+```
+
+:::
+
+::: {.column width="30%" .fragment}
+
+Amount of diversity depends on fixation time. A neutral locus fixes in
+$4N_e$ generations; for $s=0.0001$, it takes approximately $0.29N_e$
+generations.
+
+Selections changes the genealogy (different topology, shorter
+branches), an aspect used in many linkage-based tests for selection.
+
+:::
+
+::::
+
+::: {.notes}
+
+A selective sweep changes the genealogy (shorter branches, different
+*topology*) compared to the neutral case, a fact that can be utilised
+in linkage-based tests for selection.
+
+Note that the amount of variation surrounding a sweep depends heavily
+on the *rate* of the sweep. [@hahn_MolecularPopulationGenetics_2019,
+p. 167] points out that an advantageous allele with $s=0.0001$ will
+take approximately $0.29N_e$ generations to fix (compared to $4N_e$
+generations for a neutral locus)
+
+:::
+
+## Linked selection may constrain levels of diversity
+
+:::{}
+
+```{r, engine='tikz', fig.ext='svg' }
+#| label: fig-hitchhiking-vs-background-selection
+#| echo: false
+#| eval: true
+#| out-width: 1000px
+#| fig-cap: Hitchhiking (left) versus background selection (right).
+\begin{tikzpicture}
+  \tikzstyle{mut} = [circle, minimum height=0.4cm, fill=gray, draw];
+  \tikzstyle{neutral} = [circle, minimum height=0.4cm, draw, fill=white];
+
+\begin{scope}
+    \draw (0,0) -- (10,0);
+    \node[neutral] at (3, 0) {};
+    \node[neutral] at (7, 0) {};
+    \draw (0,1) -- (10,1);
+    \node[neutral] at (8, 1) {};
+    \draw (0,2) -- (10,2);
+    \node[neutral] at (2, 2) {};
+    \node[neutral] at (3, 2) {};
+    \node[neutral] at (4, 2) {};
+    \node[neutral] at (9, 2) {};
+    \draw (0,3) -- (10,3);
+    \node[neutral] at (3, 3) {};
+    \node[neutral] at (7, 3) {};
+    \draw (0,4) -- (10,4);
+    \node[neutral] at (0.5, 4) {};
+    \node[neutral] at (7, 4) {};
+    \draw (0,5) -- (10,5);
+    \node[neutral] at (9, 5) {};
+    \node[mut] at (3, 5) {};
+    \draw (0,6) -- (10,6);
+    \node[neutral] at (2, 6) {};
+    \node[neutral] at (5, 6) {};
+    \draw (0,7) -- (10,7);
+    \node[neutral] at (1, 7) {};
+    \node[neutral] at (5, 7) {};
+    \draw (0,8) -- (10,8);
+    \node[neutral] at (2, 8) {};
+    \node[neutral] at (5, 8) {};
+    \node[neutral] at (9, 8) {};
+    \draw (0,9) -- (10,9);
+    \node[neutral] at (2, 9) {};
+  \end{scope}
+
+  \draw[->, ultra thick] (11, 5) -- (14, 5);
+
+  \begin{scope}[shift={(15, 0)}]
+    \draw (0,0) -- (10,0);
+    \node[neutral] at (9, 0) {};
+    \node[mut] at (3, 0) {};
+
+    \draw (0,1) -- (10,1);
+    \node[neutral] at (9, 1) {};
+    \node[mut] at (3, 1) {};
+
+    \draw (0,2) -- (10,2);
+\node[neutral] at (9, 2) {};
+    \node[mut] at (3, 2) {};
+
+    \draw (0,3) -- (10,3);
+    \node[neutral] at (9, 3) {};
+    \node[mut] at (3, 3) {};
+
+    \draw (0,4) -- (10,4);
+    \node[neutral] at (9, 4) {};
+    \node[mut] at (3, 4) {};
+
+    \draw (0,5) -- (10,5);
+    \node[neutral] at (9, 5) {};
+    \node[mut] at (3, 5) {};
+
+    \draw (0,6) -- (10,6);
+    \node[neutral] at (9, 6) {};
+    \node[mut] at (3, 6) {};
+
+    \draw (0,7) -- (10,7);
+    \node[neutral] at (9, 7) {};
+    \node[mut] at (3, 7) {};
+
+    \draw (0,8) -- (10,8);
+    \node[neutral] at (9, 8) {};
+    \node[mut] at (3, 8) {};
+
+    \draw (0,9) -- (10,9);
+    \node[neutral] at (9, 9) {};
+    \node[mut] at (3, 9) {};
+
+\end{scope}
+
+  \begin{scope}[shift={(35, 0)}]
+    \draw (0,0) -- (10, 0);
+    \node[neutral] at (3, 0) {};
+\node[neutral] at (7, 0) {};
+    \node[mut] at (9, 0) {};
+\draw (0,1) -- (10,1);
+    \node[neutral] at (7, 1) {};
+    \node[neutral] at (8, 1) {};
+    \draw (0,2) -- (10,2);
+    \node[neutral] at (3, 2) {};
+    \node[neutral] at (4, 2) {};
+    \node[neutral] at (9, 2) {};
+    \draw (0,3) -- (10,3);
+    \node[mut] at (3, 3) {};
+    \node[neutral] at (7, 3) {};
+    \draw (0,4) -- (10,4);
+\node[neutral] at (0.5, 4) {};
+\node[neutral] at (3.5, 4) {};
+    \node[neutral] at (8.5, 4) {};
+    \node[neutral] at (7, 4) {};
+    \draw (0,5) -- (10,5);
+    \node[neutral] at (5, 5) {};
+    \node[neutral] at (4, 5) {};
+    \draw (0,6) -- (10,6);
+    \node[neutral] at (2, 6) {};
+    \draw (0,7) -- (10,7);
+    \node[neutral] at (5, 7) {};
+    \node[neutral] at (8, 7) {};
+    \draw (0,8) -- (10,8);
+    \node[neutral] at (2, 8) {};
+    \node[neutral] at (4, 8) {};
+    \node[mut] at (7, 8) {};
+    \draw (0,9) -- (10,9);
+\node[neutral] at (2, 9) {};
+\node[neutral] at (9, 9) {};
+  \end{scope}
+
+  \draw[->, ultra thick] (46, 5) -- (49, 5);
+
+  \begin{scope}[shift={(50, 0)}]
+    \draw (0,0) -- (10, 0);
+    \node[neutral] at (3, 0) {};
+\node[neutral] at (7, 0) {};
+\draw (0,1) -- (10,1);
+    \node[neutral] at (7, 1) {};
+    \node[neutral] at (8, 1) {};
+    \draw (0,2) -- (10,2);
+    \node[neutral] at (3, 2) {};
+    \node[neutral] at (4, 2) {};
+    \node[neutral] at (9, 2) {};
+    \draw (0,3) -- (10,3);
+    \node[mut] at (3, 3) {};
+    \node[neutral] at (7, 3) {};
+    \draw (0,4) -- (10,4);
+    \node[neutral] at (5, 4) {};
+    \node[neutral] at (4, 4) {};
+    \draw (0,5) -- (10,5);
+    \node[neutral] at (5, 5) {};
+    \node[neutral] at (4, 5) {};
+    \draw (0,6) -- (10,6);
+    \node[neutral] at (2, 6) {};
+    \draw (0,7) -- (10,7);
+    \node[neutral] at (5, 7) {};
+    \node[neutral] at (8, 7) {};
+    \draw (0,8) -- (10,8);
+    \node[neutral] at (2, 8) {};
+    \node[neutral] at (9, 8) {};
+    \draw (0,9) -- (10,9);
+    \node[neutral] at (2, 9) {};
+    \node[neutral] at (9, 9) {};
+  \end{scope}
+
+\end{tikzpicture}
+```
+
+:::
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+#### Hitchhiking
+
+- alleles linked to locus under selection "hitchhike" to high
+  frequencies [@smith_HitchhikingEffectFavourable_1974]
+- evidence: positive correlation between putative neutral diversity
+  and recombination [@corbett-detig_NaturalSelectionConstrains_2015]
+
+:::
+
+::: {.column width="50%"}
+
+#### Background selection
+
+- loci linked to a deleterious locus will be purged from population
+  and thus reduce diversity [@charlesworth_EffectDeleteriousMutations_1993]
+- similar patterns to hitchhiking
+
+:::
+
+::::
+
+::: {.notes}
+
+Linked selection has been proposed as solution to the low range of
+diversity seen between species with orders of magnitude ranges in
+census population sizes.
+
+:::
+
+## Summary
+
+We have looked at the **Wright-Fisher model** as a model of
+populations and **genealogies**
+
+**Genetic drift** moves allele frequencies up and down at random and
+removes variation at rate $\propto 1/2N$
+
+**Mutation** reintroduces variation. The **Neutral theory** posits
+most mutations are neutral and dynamics follow **mutation drift**
+equilibrium.
+
+Methods to detect **selection** are based on **direct selection** or
+studying patterns of variation caused by **linked selection**.
+
+## Bibliography {.unnumbered .unlisted .smaller}
+
+::: { #refs }
+:::

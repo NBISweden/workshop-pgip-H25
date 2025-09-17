@@ -15,6 +15,9 @@ listing:
     - recombination/index.qmd
     - genetic_diversity/index.qmd
     - population_structure/index.qmd
+    - selection/index.qmd
+    - demography/index.qmd
+    - simulation/index.qmd
 date: ""
 toc: false
 sidebar: true
