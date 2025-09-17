@@ -123,7 +123,7 @@
       "Slides",
       "Exercises",
       "Population structure",
-      "Population structure index"
+      "Listing"
     ]
   },
   {
@@ -136,7 +136,7 @@
       "Slides",
       "Exercises",
       "Genetic diversity",
-      "Genetic diversity index"
+      "Listing"
     ]
   },
   {
@@ -149,7 +149,7 @@
       "Slides",
       "Exercises",
       "Recombination and linkage",
-      "Recombination and linkage index"
+      "Listing"
     ]
   },
   {
@@ -196,7 +196,7 @@
     "href": "exercises/variant_filtering/basic_filtering.html#sec-basic-filtering",
     "title": "Basic variant filtering",
     "section": "Basic filtering of a VCF file1\n",
-    "text": "Basic filtering of a VCF file1\n\nWe will begin by creating filters for a VCF file consisting of variant sites only for red and yellow ecotypes. Before we start, let’s review some statistics for the entire (unfiltered) call set:\n\nbcftools stats variantsites.vcf.gz | grep ^SN\n\nSN  0   number of samples:  10\nSN  0   number of records:  127663\nSN  0   number of no-ALTs:  0\nSN  0   number of SNPs: 104774\nSN  0   number of MNPs: 0\nSN  0   number of indels:   23067\nSN  0   number of others:   0\nSN  0   number of multiallelic sites:   10333\nSN  0   number of multiallelic SNP sites:   2066\n\n\nKeep track of these numbers as we will use them to evaluate the effects of filtering.\nWhen to remove complex variants?\nAs you can see, the raw variant data set contains indels as well as multiallelic SNPs. Often we are mainly concerned with SNPs, in particular bi-allelic SNPs, which begs the question: when should we remove indels and multiallelic sites; prior to or after quality filtering? This will depend on the research question, but a general recommendation is to filter on quality measures first, and then remove more complex variants. This is the approach we opt for here.\nGenerate random subset of variants\nDepending on the size of a study, both in terms of reference sequence and number of samples, the VCF output can become large; a VCF file may in fact contain millions of variants and be several hundred GB! We want to create filters by examining distributions of VCF quality metrics and setting reasonable cutoffs. In order to decrease run time, we will look at a random sample of sites. We use the vcflib program vcfrandomsample to randomly sample approximately 100,000 sites from our VCF file2:\n\n# Set parameter r = 100000 / total number of variants\nbcftools view variantsites.vcf.gz | vcfrandomsample -r 0.9 |\\\n    bgzip -c &gt; variantsites.subset.vcf.gz\nbcftools index variantsites.subset.vcf.gz\nbcftools stats variantsites.subset.vcf.gz |\\\n    grep \"number of records:\"\n\nSN  0   number of records:  114997\n\n\nThe -r parameter sets the rate of sampling which is why we get approximately 100,000 sites. You will need to adjust this parameter accordingly.\nWe will now use vcftools to compile statistics. By default, vcftools outputs results to files with a prefix out. in the current directory. You can read up on settings and options by consulting the man pages with man vcftools3. Therefore, we define a variable OUT where we will output our quality metrics, along with a variable referencing our variant subset:\n\nmkdir -p vcftools\nOUT=vcftools/variantsites.subset\nVCF=variantsites.subset.vcf.gz\n\nGenerate statistics for filters\nvcftools can compile many different kinds of statistics. Below we will focus on the ones relevant to our data filters. We will generate metrics and plot results as we go along, with the goal of generating a set of filtering thresholds to apply to the data.\nTotal depth per site\nTo get a general overview of depth of coverage, we first generate the average depth per sample4:\n\nvcftools --gzvcf $VCF --depth --out $OUT 2&gt;/dev/null\ncat ${OUT}.idepth\ncsvtk summary -t -f MEAN_DEPTH:mean ${OUT}.idepth\n\nINDV    N_SITES MEAN_DEPTH\nPUN-R-ELF   110975  8.88045\nPUN-R-JMC   111279  9.84226\nPUN-R-LH    111798  9.72521\nPUN-R-MT    111460  9.75853\nPUN-R-UCSD  111567  9.20329\nPUN-Y-BCRD  110048  10.2671\nPUN-Y-INJ   109430  8.74183\nPUN-Y-LO    108382  8.32864\nPUN-Y-PCT   109919  9.50498\nPUN-Y-POTR  110160  8.84542\nMEAN_DEPTH:mean\n9.31\n\n\nThe average coverage over all samples is 9.3X. This actually is in the low range for a protocol based on explicitly calling genotypes. At 5X coverage, there may be a high probability that only one of the alleles has been sampled (Nielsen et al., 2011), whereby sequencing errors may be mistaken for true variation.\nThen we calculate depth per site to see if we can identify reasonable depth cutoffs:\n\nvcftools --gzvcf $VCF --site-depth --out $OUT 2&gt;/dev/null\nhead -n 3 ${OUT}.ldepth\n\nCHROM   POS SUM_DEPTH   SUMSQ_DEPTH\nLG4 2105    9   23\nLG4 2130    11  21\n\n\nSo, for each position, we have a value (column SUM_DEPTH) for the total depth across all samples.\nWe plot the distribution of total depths by counting how many times each depth is observed. This can be done with csvtk summary where we count positions and group (-g) by the SUM_DEPTH value:5\n\ncsvtk summary -t -g SUM_DEPTH -f POS:count -w 0 ${OUT}.ldepth |\\\n csvtk sort -t -k 1:n |\\\n csvtk plot line -t - -x SUM_DEPTH -y POS:count \\\n    --point-size 0.01 --xlab \"Depth of coverage (X)\" \\\n    --ylab \"Genome coverage (bp)\" \\\n    --width 9.0 --height 3.5 &gt; $OUT.ldepth.png\n\n\n\n\n\n\nFigure 1: Distribution of the total depth per site for all samples.\n\n\n\n\n\n\n\n\nOn csvtk as plotting software\n\n\n\n\n\nYou are of course perfectly welcome to use R or some other software to make these plots. We choose to generate the plots using csvtk to avoid too much context switching, and also because it emulates much of the functionality in R, albeit much less powerful when it comes to plotting.\n\n\n\nAs Figure 1 shows, most sites fall within a peak, but also that there are sites with very high coverage, up to ten times as high as the depth at the peak maximum. We calculate some range statistics to get an idea of the spread. The following csvtk command will calculate the minimum, first quartile, median, mean, third quartile, and maximum of the third column (SUM_DEPTH):\n\ncsvtk summary -t -f 3:min,3:q1,3:median,3:mean,3:q3,3:max,3:stdev vcftools/variantsites.subset.ldepth\n\nSUM_DEPTH:min   SUM_DEPTH:q1    SUM_DEPTH:median    SUM_DEPTH:mean  SUM_DEPTH:q3    SUM_DEPTH:max   SUM_DEPTH:stdev\n1.00    55.00   72.00   89.49   88.00   34131.00    250.93\n\n\nThe range from the first quartile (q1) to the third (q3) is 55-88, showing most sites have a depth between 50-100X. We redraw the plot to zoom in on the peak:\n\n\n\n\n\nFigure 2: Zoomed in version of Figure 1 which was achieved by adding the options --x-min 0 --x-max 140 --y-max 2500 to the plotting call.\n\n\nWe could choose a filter based on the quantile statistics above, or by eye-balling the graph. In this example, we could have chosen the range 50-150X, which equates to 5-15X depth per sample; note that your values will probably be different.\nAs an aside, we mention that there is a command to directly get the per-site mean depth, --site-mean-depth:\n\nvcftools --gzvcf $VCF --site-mean-depth --out $OUT 2&gt;/dev/null\nhead -n 3 ${OUT}.ldepth.mean\n\nCHROM   POS MEAN_DEPTH  VAR_DEPTH\nLG4 2105    2.25    0.916667\nLG4 2130    1.57143 0.619048\n\n\nVariant quality distribution\nAnother quantity of interest is the variant quality. Recall, variant quality scores are Phred-scaled scores, meaning a value of 10 has a 10% chance of being wrong, 20 a 1% chance, and so on; you typically want to at least filter on 20 or even higher. We extract and plot the quality values below:\n\nvcftools --gzvcf $VCF --site-quality --out $OUT\n\n\n# To improve histogram, filter out extreme quality scores. You\n# may have to fiddle with the exact values\ncsvtk filter -t -f \"QUAL&gt;0\" -f \"QUAL&lt;1000\" ${OUT}.lqual  | \\\n csvtk summary -t -g QUAL -f POS:count -w 0 - |\\\n csvtk sort -t -k 1:n |\\\n csvtk plot hist -t --bins 100 - \\\n          --xlab \"Quality value\" \\\n    --ylab \"Count\" \\\n    --width 9.0 --height 3.5 &gt; $OUT.lqual.png\n\n\n\n\n\n\nFigure 3: Distribution of variant quality scores.\n\n\nClearly most quality scores are above 20-30. For many applications, we recommend setting 30 as the cutoff.\nMinor allele frequency distribution\nSince we are going to calculate nucleotide diversities, we will not filter on the minor allele frequency (MAF) here. Nevertheless, we generate the distribution and plot for discussion purposes. The --freq2 will output the frequencies only, adding the option --max-alleles 2 to focus only on bi-allelic sites:\n\nvcftools --gzvcf $VCF --freq2 --out $OUT --max-alleles 2 2&gt;/dev/null\nhead -n 3 ${OUT}.frq\n\nCHROM   POS N_ALLELES   N_CHR   {FREQ}\nLG4 2105    2   4   0   1\nLG4 2130    2   14  0.857143    0.142857\n\n\nThe last two columns are frequencies ordered according to the reference allele. Therefore, we need to pick the minimum value to get the MAF. We can use csvtk mutate to create a new column\n\ncsvtk fix -t ${OUT}.frq 2&gt;/dev/null |\\\n csvtk mutate2 -t -n maf -e '${5} &gt; ${6} ? \"${6}\" : \"${5}\" ' - |\\\n csvtk plot hist -t --bins 20 -f maf - \\\n       --xlab \"Minor allele frequency\" \\\n       --ylab \"Count\" \\\n       --width 9.0 --height 3.5 &gt; $OUT.frq.png\n\n\n\n\n\n\nFigure 4: Distribution of minor allele frequencies.\n\n\nSince our variant file consists of 10 individuals, that is, 20 chromosomes, there are only so many frequencies that we can observe, which is why the histogram looks a bit disconnected6. In fact, given 20 chromosomes, MAF=0.05 corresponds to one alternative allele among all individuals (singleton), MAF=0.1 to two, and so on. The maximum value is 0.5, which is to be expected, as it is a minor allele frequency. We note that there are more sites with a low minor allele frequency, which in practice means there are many singleton variants.\nThis is where filtering on MAF can get tricky. Singletons may correspond to sequencing error, but if too hard a filter is applied, the resulting site frequency spectrum (SFS) will be skewed. For statistics that are based on the SFS, this may lead biased estimates. Since we will be applying such a statistic, we do not filter on the MAF here. Note, however, that for other applications, such as population structure, it may be warranted to more stringently (say, MAF&gt;0.1) filter out low-frequency variants.\nMissing data for individuals and sites\nThe proportion missing data per individual can indicate whether the input DNA was of poor quality, and that the individual should be excluded from analysis. Note that in this case, missing data refers to a missing genotype call and not sequencing depth!\nWe can calculate the proportion of missing data\n\nvcftools --gzvcf $VCF --missing-indv --out $OUT 2&gt;/dev/null\nhead -n 3 ${OUT}.imiss\n\nINDV    N_DATA  N_GENOTYPES_FILTERED    N_MISS  F_MISS\nPUN-R-ELF   114997  0   16704   0.145256\nPUN-R-JMC   114997  0   14705   0.127873\n\n\nand look at the results, focusing on the F_MISS column (proportion missing sites):\n\ncsvtk plot hist -t --x-min 0 -f F_MISS ${OUT}.imiss &gt; ${OUT}.imiss.png\n\n\n\n\n\n\nFigure 5: Distribution of missingness per sample.\n\n\nHere, the proportion lies in the range 0.06-0.10 for all samples, which indicates good coverage of all samples and we refrain from taking any action.\nSimilarly, we can look at missingness per site. This is related to the filter based on minimum number of individuals suggested by Lou et al. (2021). We calculate\n\nvcftools --gzvcf $VCF --missing-site --out $OUT 2&gt;/dev/null\nhead -n 3 ${OUT}.lmiss\n\nCHR POS N_DATA  N_GENOTYPE_FILTERED N_MISS  F_MISS\nLG4 2105    20  0   16  0.8\nLG4 2130    20  0   6   0.3\n\n\nand plot to get an idea of if there are sites that lack data.\n\ncsvtk plot hist --bins 20 -t -f F_MISS ${OUT}.lmiss &gt; ${OUT}.lmiss.png\n\n\n\n\n\n\nFigure 6: Distribution of missingness among sites.\n\n\nAs Figure 6 shows, many sites have no or little missing data, but given the low coverage, there is a non-negligible number of sites with higher missingness. We calculate range statistics to get a feeling for a good cutoff:\n\ncsvtk summary -t -f 6:min,6:q1,6:median,6:mean,6:q3,6:max vcftools/variantsites.subset.lmiss\n\nF_MISS:min  F_MISS:q1   F_MISS:median   F_MISS:mean F_MISS:q3   F_MISS:max\n0.00    0.00    0.10    0.14    0.20    0.90\n\n\nThe mean missingness is 8%, so we can safely use 25% missingness as threshold. Typical values of tolerated missingness lie in the range 5-25%. Note that vcftools interprets this value as 1 - missingness, so it has to be inverted to 75% when filtering!\nHeterozygosity\nvcftools can calculate the heterozygosity per individual. More specifically, it estimates the inbreeding coefficient F for each individual.\n\nvcftools --gzvcf $VCF --het --out $OUT 2&gt;/dev/null\ncat ${OUT}.het\n\nINDV    O(HOM)  E(HOM)  N_SITES F\nPUN-R-ELF   72540   65954.1 89133   0.28413\nPUN-R-JMC   69074   67156.1 90808   0.08109\nPUN-R-LH    71195   66609.2 89969   0.19631\nPUN-R-MT    70470   66593.9 89994   0.16565\nPUN-R-UCSD  75301   66233.4 89666   0.38697\nPUN-Y-BCRD  71355   66736.9 90144   0.19730\nPUN-Y-INJ   72354   65073.9 87677   0.32208\nPUN-Y-LO    74570   64616.8 87568   0.43367\nPUN-Y-PCT   76347   65800.0 89174   0.45123\nPUN-Y-POTR  71946   64938.0 87786   0.30672\n\n\nHere, F is a measure of how much the observed homozygotes O(HOM) differ from the expected (E(HOM); expected by chance under Hardy-Weinberg equilibrium), and may be negative. vcftools calculates F from the expression \\(F=(O-E)/(N-E)\\)7, which you can verify by substituting the variables in the output.\nIf F is positive (\\(O(HOM) &gt; E(HOM)\\)), i.e., there are more observed homozygotes than expected, then there is a deficit of heterozygotes, which could be a sign of inbreeding or signs of allelic dropout in case of low sequencing coverage.\nIf F is negative, there are fewer observed homozygotes than expected, or conversely, an excess of heterozygotes. This could be indicative of poor sequence quality (bad mappings) or contamination (Purcell et al., 2007).\nThe underlying assumption is HWE, which holds for F=0.\nIn this case, we know that the samples are from two different populations, red and yellow. In such cases, we actually expect a deficit of heterozygotes (and consequently, positive F) simply due to something called the Wahlund effect.\n\n\n\n\n\n\nWarning\n\n\n\nThe inbreeding coefficient is a population-level statistic and is not reliable for small sample sizes (\\(n&lt;10\\), say). Therefore, our sample size is in the lower range and the results should be taken with a grain of salt.\n\n\n\n\n\n\n\n\nExercise\n\n\n\n\n\n\n\nUse bcftools view -s SAMPLENAMES | vcftools --vcf - --het --stdout to calculate the heterozygosity for red and yellow samples. Substitute SAMPLENAMES for a comma-separated list of samples.\n\n\n\n\n\n\nAnswer\n\n\n\n\n\n\n\n\nbcftools view -s PUN-R-ELF,PUN-R-JMC,PUN-R-LH,PUN-R-MT,PUN-R-UCSD $VCF |\\\n vcftools --vcf - --het --stdout 2&gt;/dev/null\n\nINDV    O(HOM)  E(HOM)  N_SITES F\nPUN-R-ELF   41578   37888.1 58171   0.18192\nPUN-R-JMC   37662   38634.3 59396   -0.04683\nPUN-R-LH    39648   38078.3 58422   0.07716\nPUN-R-MT    38921   38096.3 58445   0.04053\nPUN-R-UCSD  43447   37650.5 57812   0.28750\n\n\n\n\n\n\n\n\n\n\n\n\nFiltering the VCF\nNow that we have decided on filters we can apply them to the VCF. We first set the filters as variables:\n\nMISS=0.75\nQUAL=30\nMIN_DEPTH=5\nMAX_DEPTH=15\n\nand run vcftools as follows:\n\nOUTVCF=${VCF%.subset.vcf.gz}.filtered.vcf.gz\nvcftools --gzvcf $VCF \\\n   --remove-indels --max-missing $MISS \\\n   --min-meanDP $MIN_DEPTH --max-meanDP $MAX_DEPTH \\\n   --minDP $MIN_DEPTH --maxDP $MAX_DEPTH --recode \\\n   --stdout 2&gt;/dev/null |\n gzip -c &gt; $OUTVCF\n\nCompare the results with the original input:\n\nbcftools stats $OUTVCF | grep \"^SN\"\n\nSN  0   number of samples:  10\nSN  0   number of records:  31756\nSN  0   number of no-ALTs:  0\nSN  0   number of SNPs: 31639\nSN  0   number of MNPs: 0\nSN  0   number of indels:   0\nSN  0   number of others:   0\nSN  0   number of multiallelic sites:   1356\nSN  0   number of multiallelic SNP sites:   578\n\n\nQuite a substantial portion variants have in fact been removed, which here can most likely be attributed to the low average sequencing coverage.",
+    "text": "Basic filtering of a VCF file1\n\nWe will begin by creating filters for a VCF file consisting of variant sites only for red and yellow ecotypes. Before we start, let’s review some statistics for the entire (unfiltered) call set:\n\nbcftools stats variantsites.vcf.gz | grep ^SN\n\nSN  0   number of samples:  10\nSN  0   number of records:  127663\nSN  0   number of no-ALTs:  0\nSN  0   number of SNPs: 104774\nSN  0   number of MNPs: 0\nSN  0   number of indels:   23067\nSN  0   number of others:   0\nSN  0   number of multiallelic sites:   10333\nSN  0   number of multiallelic SNP sites:   2066\n\n\nKeep track of these numbers as we will use them to evaluate the effects of filtering.\nWhen to remove complex variants?\nAs you can see, the raw variant data set contains indels as well as multiallelic SNPs. Often we are mainly concerned with SNPs, in particular bi-allelic SNPs, which begs the question: when should we remove indels and multiallelic sites; prior to or after quality filtering? This will depend on the research question, but a general recommendation is to filter on quality measures first, and then remove more complex variants. This is the approach we opt for here.\nGenerate random subset of variants\nDepending on the size of a study, both in terms of reference sequence and number of samples, the VCF output can become large; a VCF file may in fact contain millions of variants and be several hundred GB! We want to create filters by examining distributions of VCF quality metrics and setting reasonable cutoffs. In order to decrease run time, we will look at a random sample of sites. We use the vcflib program vcfrandomsample to randomly sample approximately 100,000 sites from our VCF file2:\n\n# Set parameter r = 100000 / total number of variants\nbcftools view variantsites.vcf.gz | vcfrandomsample -r 0.9 |\\\n    bgzip -c &gt; variantsites.subset.vcf.gz\nbcftools index variantsites.subset.vcf.gz\nbcftools stats variantsites.subset.vcf.gz |\\\n    grep \"number of records:\"\n\nSN  0   number of records:  114911\n\n\nThe -r parameter sets the rate of sampling which is why we get approximately 100,000 sites. You will need to adjust this parameter accordingly.\nWe will now use vcftools to compile statistics. By default, vcftools outputs results to files with a prefix out. in the current directory. You can read up on settings and options by consulting the man pages with man vcftools3. Therefore, we define a variable OUT where we will output our quality metrics, along with a variable referencing our variant subset:\n\nmkdir -p vcftools\nOUT=vcftools/variantsites.subset\nVCF=variantsites.subset.vcf.gz\n\nGenerate statistics for filters\nvcftools can compile many different kinds of statistics. Below we will focus on the ones relevant to our data filters. We will generate metrics and plot results as we go along, with the goal of generating a set of filtering thresholds to apply to the data.\nTotal depth per site\nTo get a general overview of depth of coverage, we first generate the average depth per sample4:\n\nvcftools --gzvcf $VCF --depth --out $OUT 2&gt;/dev/null\ncat ${OUT}.idepth\ncsvtk summary -t -f MEAN_DEPTH:mean ${OUT}.idepth\n\nINDV    N_SITES MEAN_DEPTH\nPUN-R-ELF   110887  8.8733\nPUN-R-JMC   111198  9.85071\nPUN-R-LH    111727  9.75163\nPUN-R-MT    111365  9.76333\nPUN-R-UCSD  111491  9.21331\nPUN-Y-BCRD  109988  10.2878\nPUN-Y-INJ   109387  8.74077\nPUN-Y-LO    108311  8.33313\nPUN-Y-PCT   109858  9.52347\nPUN-Y-POTR  110084  8.86597\nMEAN_DEPTH:mean\n9.32\n\n\nThe average coverage over all samples is 9.3X. This actually is in the low range for a protocol based on explicitly calling genotypes. At 5X coverage, there may be a high probability that only one of the alleles has been sampled (Nielsen et al., 2011), whereby sequencing errors may be mistaken for true variation.\nThen we calculate depth per site to see if we can identify reasonable depth cutoffs:\n\nvcftools --gzvcf $VCF --site-depth --out $OUT 2&gt;/dev/null\nhead -n 3 ${OUT}.ldepth\n\nCHROM   POS SUM_DEPTH   SUMSQ_DEPTH\nLG4 2105    9   23\nLG4 2130    11  21\n\n\nSo, for each position, we have a value (column SUM_DEPTH) for the total depth across all samples.\nWe plot the distribution of total depths by counting how many times each depth is observed. This can be done with csvtk summary where we count positions and group (-g) by the SUM_DEPTH value:5\n\ncsvtk summary -t -g SUM_DEPTH -f POS:count -w 0 ${OUT}.ldepth |\\\n csvtk sort -t -k 1:n |\\\n csvtk plot line -t - -x SUM_DEPTH -y POS:count \\\n    --point-size 0.01 --xlab \"Depth of coverage (X)\" \\\n    --ylab \"Genome coverage (bp)\" \\\n    --width 9.0 --height 3.5 &gt; $OUT.ldepth.png\n\n\n\n\n\n\nFigure 1: Distribution of the total depth per site for all samples.\n\n\n\n\n\n\n\n\nOn csvtk as plotting software\n\n\n\n\n\nYou are of course perfectly welcome to use R or some other software to make these plots. We choose to generate the plots using csvtk to avoid too much context switching, and also because it emulates much of the functionality in R, albeit much less powerful when it comes to plotting.\n\n\n\nAs Figure 1 shows, most sites fall within a peak, but also that there are sites with very high coverage, up to ten times as high as the depth at the peak maximum. We calculate some range statistics to get an idea of the spread. The following csvtk command will calculate the minimum, first quartile, median, mean, third quartile, and maximum of the third column (SUM_DEPTH):\n\ncsvtk summary -t -f 3:min,3:q1,3:median,3:mean,3:q3,3:max,3:stdev vcftools/variantsites.subset.ldepth\n\nSUM_DEPTH:min   SUM_DEPTH:q1    SUM_DEPTH:median    SUM_DEPTH:mean  SUM_DEPTH:q3    SUM_DEPTH:max   SUM_DEPTH:stdev\n1.00    55.00   72.00   89.60   88.00   34131.00    252.70\n\n\nThe range from the first quartile (q1) to the third (q3) is 55-88, showing most sites have a depth between 50-100X. We redraw the plot to zoom in on the peak:\n\n\n\n\n\nFigure 2: Zoomed in version of Figure 1 which was achieved by adding the options --x-min 0 --x-max 140 --y-max 2500 to the plotting call.\n\n\nWe could choose a filter based on the quantile statistics above, or by eye-balling the graph. In this example, we could have chosen the range 50-150X, which equates to 5-15X depth per sample; note that your values will probably be different.\nAs an aside, we mention that there is a command to directly get the per-site mean depth, --site-mean-depth:\n\nvcftools --gzvcf $VCF --site-mean-depth --out $OUT 2&gt;/dev/null\nhead -n 3 ${OUT}.ldepth.mean\n\nCHROM   POS MEAN_DEPTH  VAR_DEPTH\nLG4 2105    2.25    0.916667\nLG4 2130    1.57143 0.619048\n\n\nVariant quality distribution\nAnother quantity of interest is the variant quality. Recall, variant quality scores are Phred-scaled scores, meaning a value of 10 has a 10% chance of being wrong, 20 a 1% chance, and so on; you typically want to at least filter on 20 or even higher. We extract and plot the quality values below:\n\nvcftools --gzvcf $VCF --site-quality --out $OUT\n\n\n# To improve histogram, filter out extreme quality scores. You\n# may have to fiddle with the exact values\ncsvtk filter -t -f \"QUAL&gt;0\" -f \"QUAL&lt;1000\" ${OUT}.lqual  | \\\n csvtk summary -t -g QUAL -f POS:count -w 0 - |\\\n csvtk sort -t -k 1:n |\\\n csvtk plot hist -t --bins 100 - \\\n          --xlab \"Quality value\" \\\n    --ylab \"Count\" \\\n    --width 9.0 --height 3.5 &gt; $OUT.lqual.png\n\n\n\n\n\n\nFigure 3: Distribution of variant quality scores.\n\n\nClearly most quality scores are above 20-30. For many applications, we recommend setting 30 as the cutoff.\nMinor allele frequency distribution\nSince we are going to calculate nucleotide diversities, we will not filter on the minor allele frequency (MAF) here. Nevertheless, we generate the distribution and plot for discussion purposes. The --freq2 will output the frequencies only, adding the option --max-alleles 2 to focus only on bi-allelic sites:\n\nvcftools --gzvcf $VCF --freq2 --out $OUT --max-alleles 2 2&gt;/dev/null\nhead -n 3 ${OUT}.frq\n\nCHROM   POS N_ALLELES   N_CHR   {FREQ}\nLG4 2105    2   4   0   1\nLG4 2130    2   14  0.857143    0.142857\n\n\nThe last two columns are frequencies ordered according to the reference allele. Therefore, we need to pick the minimum value to get the MAF. We can use csvtk mutate to create a new column\n\ncsvtk fix -t ${OUT}.frq 2&gt;/dev/null |\\\n csvtk mutate2 -t -n maf -e '${5} &gt; ${6} ? \"${6}\" : \"${5}\" ' - |\\\n csvtk plot hist -t --bins 20 -f maf - \\\n       --xlab \"Minor allele frequency\" \\\n       --ylab \"Count\" \\\n       --width 9.0 --height 3.5 &gt; $OUT.frq.png\n\n\n\n\n\n\nFigure 4: Distribution of minor allele frequencies.\n\n\nSince our variant file consists of 10 individuals, that is, 20 chromosomes, there are only so many frequencies that we can observe, which is why the histogram looks a bit disconnected6. In fact, given 20 chromosomes, MAF=0.05 corresponds to one alternative allele among all individuals (singleton), MAF=0.1 to two, and so on. The maximum value is 0.5, which is to be expected, as it is a minor allele frequency. We note that there are more sites with a low minor allele frequency, which in practice means there are many singleton variants.\nThis is where filtering on MAF can get tricky. Singletons may correspond to sequencing error, but if too hard a filter is applied, the resulting site frequency spectrum (SFS) will be skewed. For statistics that are based on the SFS, this may lead biased estimates. Since we will be applying such a statistic, we do not filter on the MAF here. Note, however, that for other applications, such as population structure, it may be warranted to more stringently (say, MAF&gt;0.1) filter out low-frequency variants.\nMissing data for individuals and sites\nThe proportion missing data per individual can indicate whether the input DNA was of poor quality, and that the individual should be excluded from analysis. Note that in this case, missing data refers to a missing genotype call and not sequencing depth!\nWe can calculate the proportion of missing data\n\nvcftools --gzvcf $VCF --missing-indv --out $OUT 2&gt;/dev/null\nhead -n 3 ${OUT}.imiss\n\nINDV    N_DATA  N_GENOTYPES_FILTERED    N_MISS  F_MISS\nPUN-R-ELF   114911  0   16686   0.145208\nPUN-R-JMC   114911  0   14655   0.127533\n\n\nand look at the results, focusing on the F_MISS column (proportion missing sites):\n\ncsvtk plot hist -t --x-min 0 -f F_MISS ${OUT}.imiss &gt; ${OUT}.imiss.png\n\n\n\n\n\n\nFigure 5: Distribution of missingness per sample.\n\n\nHere, the proportion lies in the range 0.06-0.10 for all samples, which indicates good coverage of all samples and we refrain from taking any action.\nSimilarly, we can look at missingness per site. This is related to the filter based on minimum number of individuals suggested by Lou et al. (2021). We calculate\n\nvcftools --gzvcf $VCF --missing-site --out $OUT 2&gt;/dev/null\nhead -n 3 ${OUT}.lmiss\n\nCHR POS N_DATA  N_GENOTYPE_FILTERED N_MISS  F_MISS\nLG4 2105    20  0   16  0.8\nLG4 2130    20  0   6   0.3\n\n\nand plot to get an idea of if there are sites that lack data.\n\ncsvtk plot hist --bins 20 -t -f F_MISS ${OUT}.lmiss &gt; ${OUT}.lmiss.png\n\n\n\n\n\n\nFigure 6: Distribution of missingness among sites.\n\n\nAs Figure 6 shows, many sites have no or little missing data, but given the low coverage, there is a non-negligible number of sites with higher missingness. We calculate range statistics to get a feeling for a good cutoff:\n\ncsvtk summary -t -f 6:min,6:q1,6:median,6:mean,6:q3,6:max vcftools/variantsites.subset.lmiss\n\nF_MISS:min  F_MISS:q1   F_MISS:median   F_MISS:mean F_MISS:q3   F_MISS:max\n0.00    0.00    0.10    0.14    0.20    0.90\n\n\nThe mean missingness is 8%, so we can safely use 25% missingness as threshold. Typical values of tolerated missingness lie in the range 5-25%. Note that vcftools interprets this value as 1 - missingness, so it has to be inverted to 75% when filtering!\nHeterozygosity\nvcftools can calculate the heterozygosity per individual. More specifically, it estimates the inbreeding coefficient F for each individual.\n\nvcftools --gzvcf $VCF --het --out $OUT 2&gt;/dev/null\ncat ${OUT}.het\n\nINDV    O(HOM)  E(HOM)  N_SITES F\nPUN-R-ELF   72411   65855.3 89032   0.28286\nPUN-R-JMC   69032   67082.2 90732   0.08245\nPUN-R-LH    71150   66477.1 89828   0.20012\nPUN-R-MT    70348   66481.7 89854   0.16542\nPUN-R-UCSD  75198   66113.0 89542   0.38777\nPUN-Y-BCRD  71213   66636.3 90052   0.19546\nPUN-Y-INJ   72223   64979.9 87580   0.32049\nPUN-Y-LO    74447   64515.2 87454   0.43297\nPUN-Y-PCT   76218   65677.2 89026   0.45145\nPUN-Y-POTR  71956   64866.0 87720   0.31023\n\n\nHere, F is a measure of how much the observed homozygotes O(HOM) differ from the expected (E(HOM); expected by chance under Hardy-Weinberg equilibrium), and may be negative. vcftools calculates F from the expression \\(F=(O-E)/(N-E)\\)7, which you can verify by substituting the variables in the output.\nIf F is positive (\\(O(HOM) &gt; E(HOM)\\)), i.e., there are more observed homozygotes than expected, then there is a deficit of heterozygotes, which could be a sign of inbreeding or signs of allelic dropout in case of low sequencing coverage.\nIf F is negative, there are fewer observed homozygotes than expected, or conversely, an excess of heterozygotes. This could be indicative of poor sequence quality (bad mappings) or contamination (Purcell et al., 2007).\nThe underlying assumption is HWE, which holds for F=0.\nIn this case, we know that the samples are from two different populations, red and yellow. In such cases, we actually expect a deficit of heterozygotes (and consequently, positive F) simply due to something called the Wahlund effect.\n\n\n\n\n\n\nWarning\n\n\n\nThe inbreeding coefficient is a population-level statistic and is not reliable for small sample sizes (\\(n&lt;10\\), say). Therefore, our sample size is in the lower range and the results should be taken with a grain of salt.\n\n\n\n\n\n\n\n\nExercise\n\n\n\n\n\n\n\nUse bcftools view -s SAMPLENAMES | vcftools --vcf - --het --stdout to calculate the heterozygosity for red and yellow samples. Substitute SAMPLENAMES for a comma-separated list of samples.\n\n\n\n\n\n\nAnswer\n\n\n\n\n\n\n\n\nbcftools view -s PUN-R-ELF,PUN-R-JMC,PUN-R-LH,PUN-R-MT,PUN-R-UCSD $VCF |\\\n vcftools --vcf - --het --stdout 2&gt;/dev/null\n\nINDV    O(HOM)  E(HOM)  N_SITES F\nPUN-R-ELF   41426   37775.6 58047   0.18008\nPUN-R-JMC   37578   38529.6 59278   -0.04586\nPUN-R-LH    39601   37948.7 58279   0.08127\nPUN-R-MT    38800   37976.1 58306   0.04053\nPUN-R-UCSD  43334   37525.7 57678   0.28822\n\n\n\n\n\n\n\n\n\n\n\n\nFiltering the VCF\nNow that we have decided on filters we can apply them to the VCF. We first set the filters as variables:\n\nMISS=0.75\nQUAL=30\nMIN_DEPTH=5\nMAX_DEPTH=15\n\nand run vcftools as follows:\n\nOUTVCF=${VCF%.subset.vcf.gz}.filtered.vcf.gz\nvcftools --gzvcf $VCF \\\n   --remove-indels --max-missing $MISS \\\n   --min-meanDP $MIN_DEPTH --max-meanDP $MAX_DEPTH \\\n   --minDP $MIN_DEPTH --maxDP $MAX_DEPTH --recode \\\n   --stdout 2&gt;/dev/null |\n gzip -c &gt; $OUTVCF\n\nCompare the results with the original input:\n\nbcftools stats $OUTVCF | grep \"^SN\"\n\nSN  0   number of samples:  10\nSN  0   number of records:  31629\nSN  0   number of no-ALTs:  0\nSN  0   number of SNPs: 31510\nSN  0   number of MNPs: 0\nSN  0   number of indels:   0\nSN  0   number of others:   0\nSN  0   number of multiallelic sites:   1353\nSN  0   number of multiallelic SNP sites:   563\n\n\nQuite a substantial portion variants have in fact been removed, which here can most likely be attributed to the low average sequencing coverage.",
     "crumbs": [
       "Slides",
       "Exercises",
@@ -318,7 +318,7 @@
       "Slides",
       "Exercises",
       "Variant calling",
-      "Variant calling index"
+      "Listing"
     ]
   },
   {
@@ -331,7 +331,7 @@
       "Slides",
       "Exercises",
       "Variant calling",
-      "Variant calling index"
+      "Listing"
     ]
   },
   {
@@ -344,7 +344,7 @@
       "Slides",
       "Exercises",
       "Variant calling",
-      "Variant calling index"
+      "Listing"
     ]
   },
   {
@@ -357,7 +357,7 @@
       "Slides",
       "Exercises",
       "Variant calling",
-      "Variant calling index"
+      "Listing"
     ]
   },
   {
@@ -370,7 +370,7 @@
       "Slides",
       "Exercises",
       "Variant calling",
-      "Variant calling index"
+      "Listing"
     ]
   },
   {
@@ -556,7 +556,7 @@
     "crumbs": [
       "Slides",
       "Population structure",
-      "Population structure"
+      "Listing"
     ]
   },
   {
@@ -568,7 +568,7 @@
     "crumbs": [
       "Slides",
       "Population structure",
-      "Population structure"
+      "Listing"
     ]
   },
   {
@@ -580,7 +580,7 @@
     "crumbs": [
       "Slides",
       "Population structure",
-      "Population structure"
+      "Listing"
     ]
   },
   {
@@ -592,7 +592,7 @@
     "crumbs": [
       "Slides",
       "Genetic diversity",
-      "Genetic diversity"
+      "Listing"
     ]
   },
   {
@@ -604,7 +604,7 @@
     "crumbs": [
       "Slides",
       "Genetic diversity",
-      "Genetic diversity"
+      "Listing"
     ]
   },
   {
@@ -616,7 +616,7 @@
     "crumbs": [
       "Slides",
       "Genetic diversity",
-      "Genetic diversity"
+      "Listing"
     ]
   },
   {
@@ -760,7 +760,7 @@
     "crumbs": [
       "Slides",
       "Variant filtering",
-      "Variant filtering"
+      "Listing"
     ]
   },
   {
@@ -772,7 +772,7 @@
     "crumbs": [
       "Slides",
       "Variant filtering",
-      "Variant filtering"
+      "Listing"
     ]
   },
   {
@@ -784,7 +784,7 @@
     "crumbs": [
       "Slides",
       "Variant filtering",
-      "Variant filtering"
+      "Listing"
     ]
   },
   {
@@ -960,7 +960,7 @@
     "href": "slides/variant_calling/dna_sequencing.html#dna-sequences-in-fastq-format",
     "title": "DNA sequencing data",
     "section": "DNA sequences in FASTQ format",
-    "text": "DNA sequences in FASTQ format\n\nls --long --human fastq/*.fastq.gz\n\n\n\n-rw-r--r-- 1 runner runner 302K Sep 16 08:10 fastq/PUN-Y-INJ_R1.fastq.gz\n-rw-r--r-- 1 runner runner 393K Sep 16 08:10 fastq/PUN-Y-INJ_R2.fastq.gz\n\n\n\nCount number of lines:\n\nzcat fastq/PUN-Y-INJ_R1.fastq.gz | wc --lines\n\n15768\n\n\n\n\n\n\n\nFormat:\n\nsequence id (prefixed by @)\nDNA sequence\nseparator (+)\nPhred base quality scores\n\n\n\nzcat fastq/PUN-Y-INJ_R1.fastq.gz | head --lines 8 | cut --characters -30\n\n@SRR9309790.10003134\nTAAATCGATTCGTTTTTGCTATCTTCGTCT\n+\nAAFFFJJJJJJJFJJJJJJJJJJJJJJJJJ\n@SRR9309790.10003222\nTAAATCGATTCGTTTTTGCTATCTTCGTCT\n+\nAAFFFJJJJJJJJJJJJJJJJJJJJJJJJJ\n\n\n\n\n\n\nFirst data encounter is usually FASTQ files from sequencing center. Files contain sequence reads that are generated by the sequencing machine. They correspond to short stretches of DNA that have been sequentially read by the machine, resulting in a string of base calls that constitute the reads. Every DNA base has an associated so-called Phred-scaled quality score from 0 to 93 that are encoded using ASCII 33 to 126.\nThe format consists of 1. @ title with id 2. raw sequence 3. +: a separator with optional description 4. the quality scores",
+    "text": "DNA sequences in FASTQ format\n\nls --long --human fastq/*.fastq.gz\n\n\n\n-rw-r--r-- 1 runner runner 302K Sep 17 07:22 fastq/PUN-Y-INJ_R1.fastq.gz\n-rw-r--r-- 1 runner runner 393K Sep 17 07:22 fastq/PUN-Y-INJ_R2.fastq.gz\n\n\n\nCount number of lines:\n\nzcat fastq/PUN-Y-INJ_R1.fastq.gz | wc --lines\n\n15768\n\n\n\n\n\n\n\nFormat:\n\nsequence id (prefixed by @)\nDNA sequence\nseparator (+)\nPhred base quality scores\n\n\n\nzcat fastq/PUN-Y-INJ_R1.fastq.gz | head --lines 8 | cut --characters -30\n\n@SRR9309790.10003134\nTAAATCGATTCGTTTTTGCTATCTTCGTCT\n+\nAAFFFJJJJJJJFJJJJJJJJJJJJJJJJJ\n@SRR9309790.10003222\nTAAATCGATTCGTTTTTGCTATCTTCGTCT\n+\nAAFFFJJJJJJJJJJJJJJJJJJJJJJJJJ\n\n\n\n\n\n\nFirst data encounter is usually FASTQ files from sequencing center. Files contain sequence reads that are generated by the sequencing machine. They correspond to short stretches of DNA that have been sequentially read by the machine, resulting in a string of base calls that constitute the reads. Every DNA base has an associated so-called Phred-scaled quality score from 0 to 93 that are encoded using ASCII 33 to 126.\nThe format consists of 1. @ title with id 2. raw sequence 3. +: a separator with optional description 4. the quality scores",
     "crumbs": [
       "Slides",
       "Variant calling",
@@ -1594,7 +1594,7 @@
     "crumbs": [
       "Slides",
       "Population genetics foundations",
-      "Population genetics foundations"
+      "Listing"
     ]
   },
   {
@@ -1606,7 +1606,7 @@
     "crumbs": [
       "Slides",
       "Population genetics foundations",
-      "Population genetics foundations"
+      "Listing"
     ]
   },
   {
@@ -1618,7 +1618,7 @@
     "crumbs": [
       "Slides",
       "Population genetics foundations",
-      "Population genetics foundations"
+      "Listing"
     ]
   },
   {
@@ -1918,7 +1918,7 @@
     "crumbs": [
       "Slides",
       "Variant calling",
-      "Variant calling"
+      "Listing"
     ]
   },
   {
@@ -1930,7 +1930,7 @@
     "crumbs": [
       "Slides",
       "Variant calling",
-      "Variant calling"
+      "Listing"
     ]
   },
   {
@@ -1942,7 +1942,7 @@
     "crumbs": [
       "Slides",
       "Variant calling",
-      "Variant calling"
+      "Listing"
     ]
   },
   {
@@ -2130,7 +2130,7 @@
     "href": "slides/variant_filtering/variant_filtering.html#monkeyflower-call-set-with-variant-sites-only",
     "title": "Variant filtering",
     "section": "Monkeyflower call set with variant sites only",
-    "text": "Monkeyflower call set with variant sites only\n\nVariant statistics for a variant only file from 10 Monkeyflower individuals.\n\n\nbcftools stats variantsites.vcf.gz | grep \"^SN\"\n\nSN  0   number of samples:  10\nSN  0   number of records:  12622\nSN  0   number of no-ALTs:  0\nSN  0   number of SNPs: 10422\nSN  0   number of MNPs: 0\nSN  0   number of indels:   2221\nSN  0   number of others:   0\nSN  0   number of multiallelic sites:   1038\nSN  0   number of multiallelic SNP sites:   236\n\n\n\nUse vcftools to compile data to generate summary statistics\nPlot and select thresholds",
+    "text": "Monkeyflower call set with variant sites only\n\nVariant statistics for a variant only file from 10 Monkeyflower individuals.\n\n\nbcftools stats variantsites.vcf.gz | grep \"^SN\"\n\nSN  0   number of samples:  10\nSN  0   number of records:  12706\nSN  0   number of no-ALTs:  0\nSN  0   number of SNPs: 10415\nSN  0   number of MNPs: 0\nSN  0   number of indels:   2317\nSN  0   number of others:   0\nSN  0   number of multiallelic sites:   1038\nSN  0   number of multiallelic SNP sites:   192\n\n\n\nUse vcftools to compile data to generate summary statistics\nPlot and select thresholds",
     "crumbs": [
       "Slides",
       "Variant filtering",
@@ -2178,7 +2178,7 @@
     "href": "slides/variant_filtering/variant_filtering.html#monkeyflower-call-set-with-invariant-sites",
     "title": "Variant filtering",
     "section": "Monkeyflower call set with invariant sites",
-    "text": "Monkeyflower call set with invariant sites\n\nVariant statistics for an all sites file from 10 Monkeyflower individuals.\n\n\nbcftools stats allsites.vcf.gz | grep \"^SN\"\n\nSN  0   number of samples:  10\nSN  0   number of records:  10035\nSN  0   number of no-ALTs:  9286\nSN  0   number of SNPs: 344\nSN  0   number of MNPs: 0\nSN  0   number of indels:   117\nSN  0   number of others:   0\nSN  0   number of multiallelic sites:   49\nSN  0   number of multiallelic SNP sites:   5\n\n\nFiltering as before but excluding MAF, variant quality filters",
+    "text": "Monkeyflower call set with invariant sites\n\nVariant statistics for an all sites file from 10 Monkeyflower individuals.\n\n\nbcftools stats allsites.vcf.gz | grep \"^SN\"\n\nSN  0   number of samples:  10\nSN  0   number of records:  10069\nSN  0   number of no-ALTs:  9309\nSN  0   number of SNPs: 380\nSN  0   number of MNPs: 0\nSN  0   number of indels:   121\nSN  0   number of others:   0\nSN  0   number of multiallelic sites:   53\nSN  0   number of multiallelic SNP sites:   5\n\n\nFiltering as before but excluding MAF, variant quality filters",
     "crumbs": [
       "Slides",
       "Variant filtering",
@@ -2635,7 +2635,7 @@
     "crumbs": [
       "Slides",
       "Exercises",
-      "Exercises"
+      "Listing"
     ]
   },
   {
@@ -2647,7 +2647,7 @@
     "crumbs": [
       "Slides",
       "Exercises",
-      "Exercises"
+      "Listing"
     ]
   },
   {
@@ -2659,7 +2659,7 @@
     "crumbs": [
       "Slides",
       "Exercises",
-      "Exercises"
+      "Listing"
     ]
   },
   {
@@ -2671,7 +2671,7 @@
     "crumbs": [
       "Slides",
       "Exercises",
-      "Exercises"
+      "Listing"
     ]
   },
   {
@@ -2683,7 +2683,7 @@
     "crumbs": [
       "Slides",
       "Exercises",
-      "Exercises"
+      "Listing"
     ]
   },
   {
@@ -2826,7 +2826,7 @@
       "Slides",
       "Exercises",
       "Variant filtering",
-      "Variant filtering index"
+      "Listing"
     ]
   },
   {
@@ -2839,7 +2839,7 @@
       "Slides",
       "Exercises",
       "Variant filtering",
-      "Variant filtering index"
+      "Listing"
     ]
   },
   {
@@ -2852,7 +2852,7 @@
       "Slides",
       "Exercises",
       "Variant filtering",
-      "Variant filtering index"
+      "Listing"
     ]
   },
   {
@@ -2977,7 +2977,7 @@
     "href": "exercises/recombination_linkage/ld_decay.html#calculate-average-ld",
     "title": "Linkage disequilibrium decay",
     "section": "Calculate average LD",
-    "text": "Calculate average LD\nIn the previous step, we have calculated pairwise LD between individual marker pairs. However, in order to make a nice looking LD decay plot, we want average LD binned by distance. To facilitate this calculation, below you’ll find an R function that does just that!\n\n#'\n#' Calculate average linkage disequilibrium between pairs of SNPs binned by distance\n#'\ncalc_ld &lt;- function(filename, max_bin = 1e+05) {\n    ld &lt;- read.table(pipe(paste(\"zstdcat\", filename, \"| sed -e \\\"s/#//\\\"\")), header = TRUE)\n    ld$dist &lt;- ld$POS_B - ld$POS_A\n    ld$distc &lt;- cut(ld$dist, breaks = seq(from = 0, to = max_bin + 1, by = 100))\n\n    ldr2 &lt;- ld %&gt;%\n        group_by(distc) %&gt;%\n        summarise(mean = mean(UNPHASED_R2), median = median(UNPHASED_R2), count = length(UNPHASED_R2))\n\n    labs &lt;- levels(ld$distc)\n    ldr2$dist &lt;- as.numeric(sub(\"[^,]*,([^]]*)\\\\]\", \"\\\\1\", labs))\n    return(ldr2)\n}\n\nCopy-paste the function into your R session and run it on the output file:\n\nld2r &lt;- calc_ld(\"monkeyflower_ld.vcor.zst\")\nhead(ld2r, 3)\n\n# A tibble: 3 × 5\n  distc      mean median count  dist\n  &lt;fct&gt;     &lt;dbl&gt;  &lt;dbl&gt; &lt;int&gt; &lt;dbl&gt;\n1 (0,100]   0.240 0.0351  2312   100\n2 (100,200] 0.204 0.0286  1507   200\n3 (200,300] 0.190 0.0260  1289   300\n\n\nWe use head to view the contents of the output tibble. Each row corresponds to an interval (distc column) along with mean/median \\(r^2\\) values, number of data points in interval, and a column containing the interval endpoint. We plot the mean against the endpoint below:\n\n\n\n\n\n\n\n\nIn this particular figure, we see that for short distances, LD is high, but that it decays towards the background value at around 20-25kb. That gives us a rule of thumb for how large windows to choose for genome scans, for instance. That’s it!",
+    "text": "Calculate average LD\nIn the previous step, we have calculated pairwise LD between individual marker pairs. However, in order to make a nice looking LD decay plot, we want average LD binned by distance. To facilitate this calculation, below you’ll find an R function that does just that!\n\n#'\n#' Calculate average linkage disequilibrium between pairs of SNPs binned by distance\n#'\ncalc_ld &lt;- function(filename, max_bin = 1e+05) {\n    ld &lt;- read.table(pipe(paste(\"zstdcat\", filename, \"| sed -e \\\"s/#//\\\"\")), header = TRUE)\n    ld$dist &lt;- ld$POS_B - ld$POS_A\n    ld$distc &lt;- cut(ld$dist, breaks = seq(from = 0, to = max_bin + 1, by = 100))\n\n    ldr2 &lt;- ld %&gt;%\n        group_by(distc) %&gt;%\n        summarise(mean = mean(UNPHASED_R2), median = median(UNPHASED_R2), count = length(UNPHASED_R2))\n\n    labs &lt;- levels(ld$distc)\n    ldr2$dist &lt;- as.numeric(sub(\"[^,]*,([^]]*)\\\\]\", \"\\\\1\", labs))\n    return(ldr2)\n}\n\nCopy-paste the function into your R session and run it on the output file:\n\nld2r &lt;- calc_ld(\"monkeyflower_ld.vcor.zst\")\nhead(ld2r, 3)\n\n# A tibble: 3 × 5\n  distc      mean median count  dist\n  &lt;fct&gt;     &lt;dbl&gt;  &lt;dbl&gt; &lt;int&gt; &lt;dbl&gt;\n1 (0,100]   0.234 0.0346  2422   100\n2 (100,200] 0.215 0.0311  1482   200\n3 (200,300] 0.196 0.0277  1331   300\n\n\nWe use head to view the contents of the output tibble. Each row corresponds to an interval (distc column) along with mean/median \\(r^2\\) values, number of data points in interval, and a column containing the interval endpoint. We plot the mean against the endpoint below:\n\nggplot(ld2r, aes(x = dist, y = mean)) + geom_point() + xlim(0, 1e+05)\n\n\n\n\n\n\n\nIn this particular figure, we see that for short distances, LD is high, but that it decays towards the background value at around 20-25kb. That gives us a rule of thumb for how large windows to choose for genome scans, for instance. That’s it!",
     "crumbs": [
       "Slides",
       "Exercises",

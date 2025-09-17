@@ -249,7 +249,7 @@ window.Quarto = {
 <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../slides/foundations/index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Population genetics foundations</span></a>
+ <span class="menu-text">Listing</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -296,7 +296,7 @@ window.Quarto = {
 <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../slides/variant_calling/index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Variant calling</span></a>
+ <span class="menu-text">Listing</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -337,7 +337,7 @@ window.Quarto = {
 <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../slides/variant_filtering/index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Variant filtering</span></a>
+ <span class="menu-text">Listing</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -366,7 +366,7 @@ window.Quarto = {
 <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../slides/genetic_diversity/index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Genetic diversity</span></a>
+ <span class="menu-text">Listing</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -389,7 +389,7 @@ window.Quarto = {
 <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../slides/population_structure/index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Population structure</span></a>
+ <span class="menu-text">Listing</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -420,7 +420,7 @@ window.Quarto = {
 <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../exercises/index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Exercises</span></a>
+ <span class="menu-text">Listing</span></a>
   </div>
 </li>
           <li class="sidebar-item sidebar-item-section">
@@ -458,7 +458,7 @@ window.Quarto = {
 <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../exercises/variant_calling/index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Variant calling index</span></a>
+ <span class="menu-text">Listing</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -499,7 +499,7 @@ window.Quarto = {
 <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../exercises/variant_filtering/index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Variant filtering index</span></a>
+ <span class="menu-text">Listing</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -528,7 +528,7 @@ window.Quarto = {
 <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../exercises/recombination_linkage/index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Recombination and linkage index</span></a>
+ <span class="menu-text">Listing</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -551,7 +551,7 @@ window.Quarto = {
 <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../exercises/genetic_diversity/index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Genetic diversity index</span></a>
+ <span class="menu-text">Listing</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -574,7 +574,7 @@ window.Quarto = {
 <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../exercises/population_structure/index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Population structure index</span></a>
+ <span class="menu-text">Listing</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -657,7 +657,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">16-Sep-2025</p>
+      <p class="date">17-Sep-2025</p>
     </div>
   </div>
   
@@ -1008,13 +1008,14 @@ Note
 <pre><code># A tibble: 3 × 5
   distc      mean median count  dist
   &lt;fct&gt;     &lt;dbl&gt;  &lt;dbl&gt; &lt;int&gt; &lt;dbl&gt;
-1 (0,100]   0.240 0.0351  2312   100
-2 (100,200] 0.204 0.0286  1507   200
-3 (200,300] 0.190 0.0260  1289   300</code></pre>
+1 (0,100]   0.234 0.0346  2422   100
+2 (100,200] 0.215 0.0311  1482   200
+3 (200,300] 0.196 0.0277  1331   300</code></pre>
 </div>
 </div>
 <p>We use <code>head</code> to view the contents of the output <a href="https://tibble.tidyverse.org/">tibble</a>. Each row corresponds to an interval (<code>distc</code> column) along with mean/median <span class="math inline">\(r^2\)</span> values, number of data points in interval, and a column containing the interval endpoint. We plot the mean against the endpoint below:</p>
 <div class="cell">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">ld2r</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">dist</span>, y <span class="op">=</span> <span class="va">mean</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html">xlim</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1e+05</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure"><p><a href="ld_decay_files/figure-html/plot-ld2-1.svg" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img src="ld_decay_files/figure-html/plot-ld2-1.svg" class="img-fluid figure-img" width="672"></a></p>

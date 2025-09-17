@@ -155,7 +155,7 @@ window.Quarto = {
 
 </head>
 
-<body class="nav-fixed quarto-light">
+<body class="nav-sidebar floating nav-fixed quarto-light">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -193,14 +193,450 @@ window.Quarto = {
 </div>
       </div> <!-- /container-fluid -->
     </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../slides/index.html">Slides</a></li><li class="breadcrumb-item"><a href="../slides/index.html">Listing</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
 </header>
 <!-- content -->
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
 <!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Slides</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../slides/index.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Listing</span></a>
+  </div>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false">
+ <span class="menu-text">Introduction</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../slides/pgip/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Population genomics in practice</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false">
+ <span class="menu-text">Population genetics foundations</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../slides/foundations/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Listing</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../slides/foundations/data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data and definitions</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../slides/foundations/alleles.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Alleles and genealogies</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../slides/foundations/linkage.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Linkage disequilibrium</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../slides/foundations/wrightfisher.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">The Wright-Fisher model</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../slides/foundations/diversity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Genetic diversity</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false">
+ <span class="menu-text">Variant calling</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../slides/variant_calling/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Listing</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../slides/variant_calling/dna_sequencing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">DNA sequencing data</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../slides/variant_calling/read_mapping.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Read mapping</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../slides/variant_calling/variant_calling.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Variant calling and genotyping</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../slides/variant_calling/reproducibility.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Variant calling workflows</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false">
+ <span class="menu-text">Variant filtering</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../slides/variant_filtering/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Listing</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../slides/variant_filtering/variant_filtering.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Variant filtering</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../slides/variant_filtering/depth_filtering.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Depth filtering</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false">
+ <span class="menu-text">Genetic diversity</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../slides/genetic_diversity/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Listing</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../slides/genetic_diversity/diversity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Genetic diversity</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="false">
+ <span class="menu-text">Population structure</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../slides/population_structure/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Listing</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../slides/population_structure/pca.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Principal component analysis</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../slides/population_structure/admixture.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Admixture</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
+ <span class="menu-text">Exercises</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../exercises/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Listing</span></a>
+  </div>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="false">
+ <span class="menu-text">Data</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../exercises/compute_environment/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Compute environment</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../exercises/datasets/monkeyflowers.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Monkeyflowers dataset</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="false">
+ <span class="menu-text">Variant calling</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-10" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../exercises/variant_calling/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Listing</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../exercises/variant_calling/introduction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Variant calling introduction</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../exercises/variant_calling/data_qc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data quality control</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../exercises/variant_calling/read_mapping.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Read mapping and duplicate removal</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../exercises/variant_calling/variant_calling_workflow.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Variant calling workflow</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="false">
+ <span class="menu-text">Variant filtering</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-11" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../exercises/variant_filtering/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Listing</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../exercises/variant_filtering/basic_filtering.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Basic variant filtering</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../exercises/variant_filtering/depth_filtering.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Depth filtering on invariant sites</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" role="navigation" aria-expanded="false">
+ <span class="menu-text">Recombination and linkage</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-12" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../exercises/recombination_linkage/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Listing</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../exercises/recombination_linkage/ld_decay.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Linkage disequilibrium decay</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-13" role="navigation" aria-expanded="false">
+ <span class="menu-text">Genetic diversity</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-13" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-13" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../exercises/genetic_diversity/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Listing</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../exercises/genetic_diversity/landscape.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Genetic diversity landscapes</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-14" role="navigation" aria-expanded="false">
+ <span class="menu-text">Population structure</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-14" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-14" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../exercises/population_structure/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Listing</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../exercises/population_structure/pca.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Principal component analysis</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../exercises/population_structure/admixture.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Admixture</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../exercises/population_structure/dstats.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">D-statistics</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-15" role="navigation" aria-expanded="true">
+ <span class="menu-text">Code recipes</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-15" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-15" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../recipes/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Code recipes</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     
 <!-- main -->
-<main class="content column-page" id="quarto-document-content">
+<main class="content column-page-right" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../slides/index.html">Slides</a></li><li class="breadcrumb-item"><a href="../slides/index.html">Listing</a></li></ol></nav>
 <div class="quarto-title">
@@ -215,7 +651,7 @@ window.Quarto = {
 </div>
 
 
-<div class="quarto-title-meta column-page">
+<div class="quarto-title-meta column-page-right">
 
     
   
@@ -266,7 +702,7 @@ Description
 </thead>
 <tbody class="list">
 
-<tr data-index="0" data-listing-file-modified-sort="1758009895024" data-listing-reading-time-sort="14" data-listing-word-count-sort="2735" data-listing-title-sort="Population genomics in practice" data-listing-filename-sort="index.qmd">
+<tr data-index="0" data-listing-file-modified-sort="1758093426126" data-listing-reading-time-sort="14" data-listing-word-count-sort="2735" data-listing-title-sort="Population genomics in practice" data-listing-filename-sort="index.qmd">
 <td>
 <a href="../slides/pgip/index.html" class="title listing-title">Population genomics in practice</a>
 </td>
@@ -276,7 +712,7 @@ Description
 
 </tr>
 
-<tr data-index="1" data-listing-file-modified-sort="1758009895020" data-listing-reading-time-sort="1" data-listing-word-count-sort="11" data-listing-title-sort="Population genetics foundations" data-listing-filename-sort="index.qmd">
+<tr data-index="1" data-listing-file-modified-sort="1758093426122" data-listing-reading-time-sort="1" data-listing-word-count-sort="11" data-listing-title-sort="Population genetics foundations" data-listing-filename-sort="index.qmd">
 <td>
 <a href="../slides/foundations/index.html" class="title listing-title">Population genetics foundations</a>
 </td>
@@ -286,7 +722,7 @@ Description
 
 </tr>
 
-<tr data-index="2" data-listing-file-modified-sort="1758009895031" data-listing-reading-time-sort="1" data-listing-word-count-sort="10" data-listing-title-sort="Variant calling" data-listing-filename-sort="index.qmd">
+<tr data-index="2" data-listing-file-modified-sort="1758093426132" data-listing-reading-time-sort="1" data-listing-word-count-sort="10" data-listing-title-sort="Variant calling" data-listing-filename-sort="index.qmd">
 <td>
 <a href="../slides/variant_calling/index.html" class="title listing-title">Variant calling</a>
 </td>
@@ -296,7 +732,7 @@ Description
 
 </tr>
 
-<tr data-index="3" data-listing-file-modified-sort="1758009895031" data-listing-reading-time-sort="1" data-listing-word-count-sort="7" data-listing-title-sort="Variant filtering" data-listing-filename-sort="index.qmd">
+<tr data-index="3" data-listing-file-modified-sort="1758093426133" data-listing-reading-time-sort="1" data-listing-word-count-sort="7" data-listing-title-sort="Variant filtering" data-listing-filename-sort="index.qmd">
 <td>
 <a href="../slides/variant_filtering/index.html" class="title listing-title">Variant filtering</a>
 </td>
@@ -306,7 +742,7 @@ Description
 
 </tr>
 
-<tr data-index="4" data-listing-file-modified-sort="1758009895025" data-listing-reading-time-sort="1" data-listing-word-count-sort="7" data-listing-title-sort="Recombination and linkage" data-listing-filename-sort="index.qmd">
+<tr data-index="4" data-listing-file-modified-sort="1758093426127" data-listing-reading-time-sort="1" data-listing-word-count-sort="7" data-listing-title-sort="Recombination and linkage" data-listing-filename-sort="index.qmd">
 <td>
 <a href="../slides/recombination/index.html" class="title listing-title">Recombination and linkage</a>
 </td>
@@ -316,7 +752,7 @@ Description
 
 </tr>
 
-<tr data-index="5" data-listing-file-modified-sort="1758009895023" data-listing-reading-time-sort="1" data-listing-word-count-sort="11" data-listing-title-sort="Genetic diversity" data-listing-filename-sort="index.qmd">
+<tr data-index="5" data-listing-file-modified-sort="1758093426125" data-listing-reading-time-sort="1" data-listing-word-count-sort="11" data-listing-title-sort="Genetic diversity" data-listing-filename-sort="index.qmd">
 <td>
 <a href="../slides/genetic_diversity/index.html" class="title listing-title">Genetic diversity</a>
 </td>
@@ -326,7 +762,7 @@ Description
 
 </tr>
 
-<tr data-index="6" data-listing-file-modified-sort="1758009895025" data-listing-reading-time-sort="1" data-listing-word-count-sort="5" data-listing-title-sort="Population structure" data-listing-filename-sort="index.qmd">
+<tr data-index="6" data-listing-file-modified-sort="1758093426126" data-listing-reading-time-sort="1" data-listing-word-count-sort="5" data-listing-title-sort="Population structure" data-listing-filename-sort="index.qmd">
 <td>
 <a href="../slides/population_structure/index.html" class="title listing-title">Population structure</a>
 </td>
