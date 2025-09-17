@@ -546,6 +546,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/docutils-0.22-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/doit-0.36.0-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/dpath-2.2.0-pyha770c72_0.conda
+      - conda: https://conda.anaconda.org/conda-forge/noarch/drawsvg-2.4.0-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/dulwich-0.22.8-py311h9e33e62_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/eido-0.2.4-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/epoxy-1.5.10-h166bdaf_1.tar.bz2
@@ -1293,6 +1294,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/a2/17/e09357274699c6e012bbb5a8ea14765a4d5860bb658df1931c9f90d53bd3/shapely-2.1.1-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: git+https://github.com/tskit-dev/tsbrowse?rev=2faab76ad3a1f4bb51e6a39ce1c244dc1ac8209b#2faab76ad3a1f4bb51e6a39ce1c244dc1ac8209b
       - pypi: git+https://github.com/percyfal/tseda.git?rev=pgip#f43fa6c728aca8e1ca664ed8ef346ad5de857c88
+      - pypi: https://files.pythonhosted.org/packages/14/6c/a4f65936bb358e26f0a219c86188e9e7a1a920d98dea59a73aa686f43a82/tskit_arg_visualizer-0.1.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/df/f0/959f9d9f5b27bf759fd3c8476a8460ed5e31b3b80e6c8510cf5d944f566e/tszip-0.2.4-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/37/87/1f677586e8ac487e29672e4b17455758fce261de06a0d086167bb760361a/uc_micro_py-1.0.3-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/8d/f0/73c24457c941b8b08f7d090853e40f4b2cdde88b5da721f3f28e98df77c9/xarray-2025.9.0-py3-none-any.whl
@@ -1454,6 +1456,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/docutils-0.22-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/doit-0.36.0-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/dpath-2.2.0-pyha770c72_0.conda
+      - conda: https://conda.anaconda.org/conda-forge/noarch/drawsvg-2.4.0-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-64/dulwich-0.22.8-py311h3b9c2be_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/eido-0.2.4-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-64/epoxy-1.5.10-h5eb16cf_1.tar.bz2
@@ -2181,6 +2184,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/19/97/2df985b1e03f90c503796ad5ecd3d9ed305123b64d4ccb54616b30295b29/shapely-2.1.1-cp311-cp311-macosx_10_9_x86_64.whl
       - pypi: git+https://github.com/tskit-dev/tsbrowse?rev=2faab76ad3a1f4bb51e6a39ce1c244dc1ac8209b#2faab76ad3a1f4bb51e6a39ce1c244dc1ac8209b
       - pypi: git+https://github.com/percyfal/tseda.git?rev=pgip#f43fa6c728aca8e1ca664ed8ef346ad5de857c88
+      - pypi: https://files.pythonhosted.org/packages/14/6c/a4f65936bb358e26f0a219c86188e9e7a1a920d98dea59a73aa686f43a82/tskit_arg_visualizer-0.1.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/df/f0/959f9d9f5b27bf759fd3c8476a8460ed5e31b3b80e6c8510cf5d944f566e/tszip-0.2.4-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/37/87/1f677586e8ac487e29672e4b17455758fce261de06a0d086167bb760361a/uc_micro_py-1.0.3-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/8d/f0/73c24457c941b8b08f7d090853e40f4b2cdde88b5da721f3f28e98df77c9/xarray-2025.9.0-py3-none-any.whl
@@ -6088,6 +6092,17 @@ packages:
   - pkg:pypi/dpath?source=hash-mapping
   size: 21344
   timestamp: 1718243548474
+- conda: https://conda.anaconda.org/conda-forge/noarch/drawsvg-2.4.0-pyhd8ed1ab_1.conda
+  sha256: e302bfcd6ea3f4d98310ed6a75c1bc7c98dcb9d8a5bef0bce473d5f0138a3392
+  md5: ba00aa866acefb46b3786e5287c3d0a0
+  depends:
+  - python >=3.9
+  license: MIT
+  license_family: MIT
+  purls:
+  - pkg:pypi/drawsvg?source=hash-mapping
+  size: 41437
+  timestamp: 1735836255151
 - conda: https://conda.anaconda.org/conda-forge/linux-64/dulwich-0.22.8-py311h9e33e62_0.conda
   sha256: 64f2704c4b3907fefae27e744b414aa3f81df1df2b6c88a440723b88fe2d7477
   md5: 2d2e806c71919732efcb879a192f37e7
@@ -21595,6 +21610,16 @@ packages:
   - pkg:pypi/tskit?source=hash-mapping
   size: 625769
   timestamp: 1756768374533
+- pypi: https://files.pythonhosted.org/packages/14/6c/a4f65936bb358e26f0a219c86188e9e7a1a920d98dea59a73aa686f43a82/tskit_arg_visualizer-0.1.0-py3-none-any.whl
+  name: tskit-arg-visualizer
+  version: 0.1.0
+  sha256: 0e5521848eeadb5aec6dfed74b75c676ac2fe89c6962cdc3d77384b42edcc11f
+  requires_dist:
+  - pandas
+  - msprime
+  - ipython
+  - tqdm
+  requires_python: '>=3.7'
 - pypi: https://files.pythonhosted.org/packages/df/f0/959f9d9f5b27bf759fd3c8476a8460ed5e31b3b80e6c8510cf5d944f566e/tszip-0.2.4-py3-none-any.whl
   name: tszip
   version: 0.2.4

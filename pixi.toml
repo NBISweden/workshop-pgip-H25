@@ -119,6 +119,7 @@ xyzservices = "==2024.6.0"
 python = "==3.11.9"
 numpy = ">=1.26.4,<2"
 cpython = ">=3.11.13,<4"
+drawsvg = ">=2.4.0,<3"
 
 [feature.build.tasks]
 rpgip = "R -e \"library(devtools); devtools::install_local('src/R/pgip', upgrade=F)\""
@@ -148,6 +149,7 @@ cmd = "quarto render --profile production"
 [feature.build.pypi-dependencies]
 tseda = { git = "https://github.com/percyfal/tseda.git", rev = "pgip" }
 dask = { version = "*", extras = ["dataframe"] }
+tskit-arg-visualizer = ">=0.1.0, <0.2"
 
 [feature.bioconductor.dependencies]
 r-biocmanager = "*"

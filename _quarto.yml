@@ -40,6 +40,7 @@ project:
     - slides/simulation/index.qmd
     - slides/simulation/stdpopsim.qmd
     - slides/simulation/coalescent.qmd
+    - slides/simulation/argintro.qmd
     # Exercises and datasets
     - exercises/index.qmd
     - exercises/compute_environment/index.qmd

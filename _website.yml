@@ -69,6 +69,7 @@ website:
                 href: slides/simulation/index.qmd
               - slides/simulation/stdpopsim.qmd
               - slides/simulation/coalescent.qmd
+              - slides/simulation/argintro.qmd
       - section: Exercises
         contents:
           - text: Listing
