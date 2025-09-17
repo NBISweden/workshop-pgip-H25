@@ -1,13 +1,18 @@
 ---
-title: Introduction to stdpopsim
+title: Brief introduction to simulation packages and stdpopsim
+subtitle: >-
+  Making simulations with stdpopsim, the standard library for
+  population genetic simulation models
 description: >-
   Short introduction to stdpopsim, the standard library for population
   genetic simulation models.
 author:
   - Per Unneberg
+  - Yan Wong
 format:
-  nbis-course-revealjs:
+  nbis-quarto-revealjs:
     toc: false
+    footer: Simulation packages
 ---
 
 ## Setup  {visibility="hidden" .unnumbered .unlisted}
@@ -15,3 +20,300 @@ format:
 {{< include ../_knitr.qmd >}}
 
 {{< include ../_rlibs.qmd >}}
+
+## SLiM
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+:::{layout-ncol=2}
+
+![Ben Haller](/slides/simulation/assets/images/ben_haller.webp){width=100px}
+
+![SLiM: An Evolutionary Simulation Framework](/slides/simulation/assets/images/SLiM_1024.webp){width=100px}
+
+:::
+
+- A forward-time simulator
+- R-like programming language
+- Useful teaching GUI
+- Simplification leads to **tree sequence recording** (tskit)
+
+:::
+
+::: {.column width="50%"}
+
+![SLiM GUI](/slides/simulation/assets/images/slimgui.webp)
+
+:::
+
+::::
+
+## Eidos: an R-like programming language
+
+:::{}
+
+```{r engine="c"}
+#| label: slim-example
+#| echo: true
+#| eval: false
+// set up a simple neutral simulation
+initialize()
+{
+// set the overall mutation rate
+initializeMutationRate(1e-7);
+// m1 mutation type: neutral
+initializeMutationType("m1", 0.5, "f", 0.0);
+// g1 genomic element type: uses m1 for all mutations
+initializeGenomicElementType("g1", m1, 1.0);
+// uniform chromosome of length 100 kb
+initializeGenomicElement(g1, 0, 99999);
+// uniform recombination along the chromosome
+initializeRecombinationRate(1e-8);
+}
+// create a population of 500 individuals
+1 early()
+{
+sim.addSubpop("p1", 500);
+}
+// run to tick 10000
+10000 early()
+{
+sim.simulationFinished();
+}
+```
+
+Comes with a huge manual [@haller_SLiMEvolutionarySimulation_2022] (700+
+pages!)
+
+:::
+
+## SLiM resources{.smaller}
+
+:::: {.columns}
+
+::: {.column width="80%"}
+
+#### An introduction to SLiM (Ben Haller): [video](http://benhaller.com/slim/V_SLiMIntro_1080p.mp4) (1 hour)
+
+13 March 2024: This is a one-hour introductory talk about SLiM, first
+presented during the Modeling & Theory in Population Biology series
+in 2024. It's a great place to start if you're not sure what SLiM is,
+what it can do, and why you might want to use it.
+
+#### A practical Introduction to the Tree Sequence (Peter Ralph): [video](http://benhaller.com/workshops/PeterRalph_tskit_intro.mp4) (24 min.)
+
+16 June 2023: This is a fairly short talk about the tree sequence data
+structure, both in the abstract and as used in SLiM simulations. It'll
+help you understand what tree sequences are, why you might want to use
+them, and how to get started with them.
+
+[<https://messerlab.org/slim/#Videos>]{.larger}
+
+#### SLiM Workshops
+
+We run 5-day [SLiM workshops](https://messerlab.org/slim/#Workshops)
+that are free and open to the public (with registration). The best
+place to watch for announcements of new workshops is the
+[slim-discuss](https://groups.google.com/d/forum/slim-discuss) mailing
+list. We have one scheduled in Europe for 2026 so far, and expect that
+there will be several more:
+
+[17 August – 21 August 2026, University of
+Iceland](https://groups.google.com/g/slim-discuss/c/IZuz-gt4LHg),
+Reykjavík, Iceland
+
+If you would like to host a workshop at your institution, please
+contact us!
+
+The workshop materials are now online, for people who want to do it
+themselves; visit the [online workshop download
+page](http://benhaller.com/workshops/workshops.html) for more
+information.
+
+:::
+
+::: {.column width="20%"}
+
+![SLiM core team](/slides/simulation/assets/images/slimcore.webp)\
+
+![Practical introduction](/slides/simulation/assets/images/practical_introduction.webp)\
+
+![Umeå workshop](/slides/simulation/assets/images/workshop_2019_sweden_small.webp)\
+
+:::
+
+::::
+
+## msprime
+
+:::: {.columns}
+
+::: {.column width="60%"}
+
+![Jerome
+Kelleher](/slides/simulation/assets/images/jerome.webp){width=30%
+fig-align=center}
+
+- Fast & flexible backward-time simulator
+- Separates *ancestry* from *mutation* simulation
+- Arbitrary discrete demographies / species
+- Pedigree support (e.g., 1M+ Quebec ARG)
+- Approximate extension to selective sweeps
+
+:::
+
+::: {.column width="40%"}
+
+![msprime](/slides/simulation/assets/images/msprime.webp)\
+
+![demes](/slides/simulation/assets/images/demes.webp)\
+
+:::
+
+::::
+
+## Recapitation
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+![tskit](/slides/simulation/assets/images/tskit_logo.webp)\
+
+#### Recapitation
+
+- Combine forward- & backward-time simulations
+- E.g., only forward-simulate the period of interest (reduce burn-in)
+
+:::
+
+::: {.column width="50%"}
+
+![SLiM forward simulation](/slides/simulation/assets/images/forward_slim.webp){width=80%}\
+
+:::
+
+::::
+
+## Recapitation
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+![tskit](/slides/simulation/assets/images/tskit_logo.webp)\
+
+#### Recapitation
+
+- Combine forward- & backward-time simulations
+- E.g., only forward-simulate the period of interest (reduce burn-in)
+
+:::
+
+::: {.column width="50%"}
+
+![SLiM forward simulation](/slides/simulation/assets/images/recapitation.webp){width=80%}\
+
+:::
+
+::::
+
+## Spatial population genetics in R
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+#### *slendr*: Population Genetic Simulations in R
+
+##### Overview
+
+*slendr* is a toolbox for running population genomic simulations
+entirely in R. Our original motivation for developing it was to
+provide a framework for simulating spatially-explicit genomic data on
+real geographic landscapes, however, it has grown to be much more than
+that since then: slendr can now simulate data from traditional,
+non-spatial demographic models using msprime as a simulation engine,
+and it even supports selection scenarios via user-defined SLiM
+estension snippets.
+
+[<https://www.slendr.net>]{.larger}
+
+![Martin Petr](/slides/simulation/assets/images/martin_petr.webp){width=200px}
+
+:::
+
+::: {.column width="50%"}
+
+![slendr_logo](https://slendr.net/logo.png){width=100px}\
+
+![slendr demographic history](https://slendr.net/reference/figures/README-plot_popmaps-1.png)\
+
+:::
+
+::::
+
+## PopSim consortium
+
+:::: {.columns}
+
+::: {.column width="40%"}
+
+::: {layout="[60,30,10]" layout-valign="top"}
+
+![Mallard black duck demography](https://popsim-consortium.github.io/stdpopsim-docs/stable/_images/sec_catalog_anapla_models_mallardblackduck_2l19.png)\
+
+![Mallard black duck](/slides/simulation/assets/images/mallard.webp)\
+
+:::
+
+::: {layout="[60,30,10]" layout-valign="top"}
+
+![Anopheles gambiae demography](https://popsim-consortium.github.io/stdpopsim-docs/stable/_images/sec_catalog_anogam_models_gabonag1000g_1a17.png)\
+
+![Anopheles gambiae](/slides/simulation/assets/images/anopheles_gambiae.webp)\
+
+:::
+
+:::
+
+::: {.column width="60%"}
+
+![stdpopsim banner](/slides/simulation/assets/images/stdpopsim_banner.webp)\
+
+[<https://github.com/popsim-consortium>]{.larger}
+
+::: {layout="[65,35]" layout-valign="top"}
+
+![Ancient Eurasia demography](https://popsim-consortium.github.io/stdpopsim-docs/stable/_images/sec_catalog_homsap_models_ancienteurasia_9k19.png)\
+
+![Ancient eurasia](/slides/simulation/assets/images/ancient_eurasia.webp)\
+
+:::
+
+:::
+
+::::
+
+## stdpopsim
+
+:::{}
+
+<iframe width="1200" height="1000" src="https://popsim-consortium.github.io/stdpopsim-docs/stable/index.html"></iframe>
+
+:::
+
+## stdpopsim - specifying the engine
+
+:::{}
+
+<iframe width="1200" height="1000" src="https://popsim-consortium.github.io/stdpopsim-docs/stable/tutorial.html#using-the-slim-simulation-engine"></iframe>
+
+:::
+
+## Bibliography {.unnumbered .unlisted .smaller}
+
+::: { #refs }
+:::
