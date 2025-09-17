@@ -20,6 +20,7 @@ project:
     - slides/foundations/linkage.qmd
     - slides/foundations/wrightfisher.qmd
     - slides/foundations/diversity.qmd
+    - slides/foundations/selection.qmd
     - slides/variant_calling/index.qmd
     - slides/variant_calling/dna_sequencing.qmd
     - slides/variant_calling/read_mapping.qmd
@@ -34,8 +35,11 @@ project:
     - slides/population_structure/index.qmd
     - slides/population_structure/pca.qmd
     - slides/population_structure/admixture.qmd
-    # - slides/simulation/index.qmd
-    # - slides/scratch/index.qmd
+    - slides/selection/index.qmd
+    - slides/demography/index.qmd
+    - slides/simulation/index.qmd
+    - slides/simulation/stdpopsim.qmd
+    - slides/simulation/coalescent.qmd
     # Exercises and datasets
     - exercises/index.qmd
     - exercises/compute_environment/index.qmd
@@ -58,11 +62,11 @@ project:
     - exercises/population_structure/dstats.qmd
     # - exercises/demography/index.qmd
     # - exercises/selection/index.qmd
-    # - exercises/simulation/index.qmd
-    # - exercises/simulation/howto.qmd
-    # - exercises/simulation/stdpopsim_lab.qmd
-    # - exercises/simulation/stdpopsim_lab_II.qmd
-    # - exercises/simulation/simulation.qmd
+    - exercises/simulation/index.qmd
+    - exercises/simulation/howto.qmd
+    - exercises/simulation/stdpopsim_lab.qmd
+    - exercises/simulation/stdpopsim_lab_II.qmd
+    - exercises/simulation/simulation.qmd
     # - exercises/ancestral_recombination_graphs/index.qmd
     # Recipes
     - recipes/index.qmd

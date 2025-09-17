@@ -1,0 +1,18 @@
+---
+title: Demography
+description: >-
+  Collection of presentations about demographic inference.
+format:
+  nbis-course-html:
+    number-sections: false
+---
+
+## About
+
+{{< meta description >}}
+
+## Listing
+
+Presentations and exercises are available at
+<https://uppsala.instructure.com/courses/105981/modules> in the
+`Demographic modelling` module.
