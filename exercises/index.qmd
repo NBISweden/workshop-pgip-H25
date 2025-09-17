@@ -19,7 +19,7 @@ listing:
     - genetic_diversity/index.qmd
     - population_structure/index.qmd
 toc: false
-sidebar: false
+sidebar: true
 ---
 
 ## Information
