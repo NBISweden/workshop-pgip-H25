@@ -316,7 +316,7 @@ endpoint. We plot the mean against the endpoint below:
 
 ```{r }
 #| label: plot-ld2
-#| echo: false
+#| echo: true
 #| eval: true
 ggplot(ld2r, aes(x=dist, y=mean)) + geom_point() + xlim(0, 100000)
 ```
