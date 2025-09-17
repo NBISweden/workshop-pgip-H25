@@ -22,7 +22,8 @@ website:
               - slides/pgip/index.qmd
           - section: Population genetics foundations
             contents:
-              - slides/foundations/index.qmd
+              - text: Listing
+                href: slides/foundations/index.qmd
               - slides/foundations/data.qmd
               - slides/foundations/alleles.qmd
               - slides/foundations/linkage.qmd
@@ -30,56 +31,66 @@ website:
               - slides/foundations/diversity.qmd
           - section: Variant calling
             contents:
-              - slides/variant_calling/index.qmd
+              - text: Listing
+                href: slides/variant_calling/index.qmd
               - slides/variant_calling/dna_sequencing.qmd
               - slides/variant_calling/read_mapping.qmd
               - slides/variant_calling/variant_calling.qmd
               - slides/variant_calling/reproducibility.qmd
           - section: Variant filtering
             contents:
-              - slides/variant_filtering/index.qmd
+              - text: Listing
+                href: slides/variant_filtering/index.qmd
               - slides/variant_filtering/variant_filtering.qmd
               - slides/variant_filtering/depth_filtering.qmd
           - section: Genetic diversity
             contents:
-              - slides/genetic_diversity/index.qmd
+              - text: Listing
+                href: slides/genetic_diversity/index.qmd
               - slides/genetic_diversity/diversity.qmd
           - section: Population structure
             contents:
-              - slides/population_structure/index.qmd
+              - text: Listing
+                href: slides/population_structure/index.qmd
               - slides/population_structure/pca.qmd
               - slides/population_structure/admixture.qmd
           # - slides/simulation/index.qmd
       - section: Exercises
         contents:
-          - exercises/index.qmd
+          - text: Listing
+            href: exercises/index.qmd
           - section: Data
             contents:
               - exercises/compute_environment/index.qmd
               - exercises/datasets/monkeyflowers.qmd
           - section: Variant calling
             contents:
-              - exercises/variant_calling/index.qmd
+              - text: Listing
+                href: exercises/variant_calling/index.qmd
               - exercises/variant_calling/introduction.qmd
               - exercises/variant_calling/data_qc.qmd
               - exercises/variant_calling/read_mapping.qmd
               - exercises/variant_calling/variant_calling_workflow.qmd
           - section: Variant filtering
             contents:
-              - exercises/variant_filtering/index.qmd
+              - text: Listing
+                href: exercises/variant_filtering/index.qmd
               - exercises/variant_filtering/basic_filtering.qmd
               - exercises/variant_filtering/depth_filtering.qmd
           - section: Recombination and linkage
             contents:
-              - exercises/recombination_linkage/index.qmd
+              - text: Listing
+                href: exercises/recombination_linkage/index.qmd
               - exercises/recombination_linkage/ld_decay.qmd
           - section: Genetic diversity
             contents:
-              - exercises/genetic_diversity/index.qmd
+              - text: Listing
+                href: exercises/genetic_diversity/index.qmd
               - exercises/genetic_diversity/landscape.qmd
           - section: Population structure
             contents:
-              - exercises/population_structure/index.qmd
+              - text: Listing
+                href: exercises/population_structure/index.qmd
               - exercises/population_structure/pca.qmd
               - exercises/population_structure/admixture.qmd
               - exercises/population_structure/dstats.qmd

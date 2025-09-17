@@ -17,7 +17,7 @@ listing:
     - population_structure/index.qmd
 date: ""
 toc: false
-sidebar: false
+sidebar: true
 format:
   nbis-course-html:
     number-sections: false
