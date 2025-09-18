@@ -1,4 +1,5 @@
 import msprime
+import tskit
 
 
 def tree_topology(
@@ -65,3 +66,15 @@ def tree_viz_example():
         random_seed=2,
     )
     return ts
+
+
+def basics_tree():
+    ts = tskit.load("data/basics.trees")
+    ts = ts.delete_sites(0)
+    return ts
+
+
+def treemut():
+    ts = basics_tree()
+    tsmut = msprime.sim_mutations(ts, rate=1e-5, random_seed=228)
+    return tsmut
