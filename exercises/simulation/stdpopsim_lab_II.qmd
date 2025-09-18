@@ -548,9 +548,10 @@ for hap, index in zip([0, 1], [211, 212]):
     ax2 = ax.twinx()
     ax2.set_ylabel(f"Hap {hap}")
     plt.suptitle(
-        f"GNN plot for focal individual {focal_ind},
-        {ts.population(ts.individuals_population[focal_ind]).metadata['name']}
-        population")
+        f"GNN plot for focal individual {focal_ind}, " +
+        f"{ts.population(ts.individuals_population[focal_ind]).metadata['name']}" +
+        "population"
+    )
 plt.xlabel("Genome position (bp)")
 plt.show()
 ```
@@ -580,8 +581,11 @@ for hap, index in zip([0, 1], [211, 212]):
         bottom += data[popmd[i]["name"]]
     ax2 = ax.twinx()
     ax2.set_ylabel(f"Hap {hap}")
-plt.suptitle(f"GNN plot for focal individual {focal_ind},
-{ts.population(ts.individuals_population[focal_ind]).metadata['name']} population")
+plt.suptitle(
+    f"GNN plot for focal individual {focal_ind}, " +
+    "{ts.population(ts.individuals_population[focal_ind]).metadata['name']} " +
+    "population"
+)
 plt.xlabel("Genome position (bp)")
 plt.show()
 ```
