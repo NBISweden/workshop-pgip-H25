@@ -909,15 +909,33 @@ Funded by EBP-NOR (Earth Biogenome Project Norway)
 
 ## Tree sequence inference in Monkeyflower
 
+:::: {.columns}
+
+::: {.column width="20%"}
+
+![raxml](/slides/simulation/assets/images/monkeyflower-raxml.webp)\
+
+:::
+
+::: {.column width="60%"}
+
+![Densitree](/slides/simulation/assets/images/monkeyflower-densitree.webp)\
+
+![pca](/slides/simulation/assets/images/monkeyflower-pca.svg)\
+
+:::
+
+::: {.column width="20%" .fragment}
+
 ::: {}
 
 ![Rulegraph, tsinfer](/slides/simulation/assets/images/tsinfer.svg){height=600px fig-align=center}\
 
 :::
 
-## tseda - tree sequence exploratory data analysis
+:::
 
-Demonstrate tseda
+::::
 
 ## Bibliography {.unnumbered .unlisted .smaller}
 
