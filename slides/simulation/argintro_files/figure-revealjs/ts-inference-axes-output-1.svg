@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+     width="700" height="500" viewBox="0 0 700 500">
+<defs>
+<marker markerWidth="6.0" markerHeight="6.0600000000000005" viewBox="-0.1 -0.51 1.0 1.01" orient="auto" id="IJylrbU60">
+<path d="M-0.1,0.5 L-0.1,-0.5 L0.9,0 Z" fill="black" />
+</marker>
+</defs>
+<path d="M150,500 L150,15" stroke="black" stroke-width="2" fill="none" marker-end="url(#IJylrbU60)" />
+<path d="M100,450 L635,450" stroke="black" stroke-width="2" fill="none" marker-end="url(#IJylrbU60)" />
+<text x="0" y="20" font-size="24" text-anchor="start">Scalability</text>
+<text x="540" y="490" font-size="24" text-anchor="start">Accuracy</text>
+</svg>

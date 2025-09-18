@@ -121,7 +121,7 @@
     div.csl-indent {
       margin-left: 2em;
     }  </style>
-  <link rel="stylesheet" href="../../site_libs/revealjs/dist/theme/quarto-802d3b82e08d8dc8d935d89a8ebe9074.css">
+  <link rel="stylesheet" href="../../site_libs/revealjs/dist/theme/quarto-dd75e976e0414ec343b1912506d158bc.css">
   <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
   <script>document.addEventListener("DOMContentLoaded", function () {
  var mathElements = document.getElementsByClassName("math");
@@ -544,14 +544,14 @@ Variant Quality Score Recalibration
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a></a><span class="ex">bcftools</span> stats variantsites.vcf.gz <span class="kw">|</span> <span class="fu">grep</span> <span class="st">"^SN"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>SN  0   number of samples:  10
-SN  0   number of records:  12706
+SN  0   number of records:  12740
 SN  0   number of no-ALTs:  0
-SN  0   number of SNPs: 10415
+SN  0   number of SNPs: 10426
 SN  0   number of MNPs: 0
-SN  0   number of indels:   2317
+SN  0   number of indels:   2328
 SN  0   number of others:   0
-SN  0   number of multiallelic sites:   1038
-SN  0   number of multiallelic SNP sites:   192</code></pre>
+SN  0   number of multiallelic sites:   993
+SN  0   number of multiallelic SNP sites:   211</code></pre>
 </div>
 </div>
 </div>
@@ -746,14 +746,14 @@ Figure&nbsp;8: Genome-wide inbreeding coefficient by individual
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a></a><span class="ex">bcftools</span> stats allsites.vcf.gz <span class="kw">|</span> <span class="fu">grep</span> <span class="st">"^SN"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>SN  0   number of samples:  10
-SN  0   number of records:  10069
-SN  0   number of no-ALTs:  9309
-SN  0   number of SNPs: 380
+SN  0   number of records:  10067
+SN  0   number of no-ALTs:  9319
+SN  0   number of SNPs: 377
 SN  0   number of MNPs: 0
-SN  0   number of indels:   121
+SN  0   number of indels:   100
 SN  0   number of others:   0
-SN  0   number of multiallelic sites:   53
-SN  0   number of multiallelic SNP sites:   5</code></pre>
+SN  0   number of multiallelic sites:   51
+SN  0   number of multiallelic SNP sites:   8</code></pre>
 </div>
 </div>
 <p>Filtering as before but excluding MAF, variant quality filters</p>

@@ -1,87 +1,10 @@
 [
   {
-    "listing": "/exercises/population_structure/index.html",
+    "listing": "/exercises/variant_filtering/index.html",
     "items": [
-      "/exercises/population_structure/pca.html",
-      "/exercises/population_structure/admixture.html",
-      "/exercises/population_structure/dstats.html"
+      "/exercises/variant_filtering/basic_filtering.html",
+      "/exercises/variant_filtering/depth_filtering.html"
     ]
-  },
-  {
-    "listing": "/exercises/genetic_diversity/index.html",
-    "items": [
-      "/exercises/genetic_diversity/landscape.html"
-    ]
-  },
-  {
-    "listing": "/exercises/recombination_linkage/index.html",
-    "items": [
-      "/exercises/recombination_linkage/ld_decay.html"
-    ]
-  },
-  {
-    "listing": "/exercises/variant_calling/index.html",
-    "items": [
-      "/exercises/variant_calling/introduction.html",
-      "/exercises/variant_calling/data_qc.html",
-      "/exercises/variant_calling/read_mapping.html",
-      "/exercises/variant_calling/variant_calling_workflow.html"
-    ]
-  },
-  {
-    "listing": "/slides/population_structure/index.html",
-    "items": [
-      "/slides/population_structure/pca.html",
-      "/slides/population_structure/admixture.html"
-    ]
-  },
-  {
-    "listing": "/slides/genetic_diversity/index.html",
-    "items": [
-      "/slides/genetic_diversity/diversity.html"
-    ]
-  },
-  {
-    "listing": "/slides/variant_filtering/index.html",
-    "items": [
-      "/slides/variant_filtering/variant_filtering.html",
-      "/slides/variant_filtering/depth_filtering.html"
-    ]
-  },
-  {
-    "listing": "/slides/index.html",
-    "items": [
-      "/slides/pgip/index.html",
-      "/slides/foundations/index.html",
-      "/slides/variant_calling/index.html",
-      "/slides/variant_filtering/index.html",
-      "/slides/recombination/index.html",
-      "/slides/genetic_diversity/index.html",
-      "/slides/population_structure/index.html"
-    ]
-  },
-  {
-    "listing": "/slides/foundations/index.html",
-    "items": [
-      "/slides/foundations/data.html",
-      "/slides/foundations/alleles.html",
-      "/slides/foundations/linkage.html",
-      "/slides/foundations/wrightfisher.html",
-      "/slides/foundations/diversity.html"
-    ]
-  },
-  {
-    "listing": "/slides/variant_calling/index.html",
-    "items": [
-      "/slides/variant_calling/dna_sequencing.html",
-      "/slides/variant_calling/read_mapping.html",
-      "/slides/variant_calling/variant_calling.html",
-      "/slides/variant_calling/reproducibility.html"
-    ]
-  },
-  {
-    "listing": "/slides/recombination/index.html",
-    "items": []
   },
   {
     "listing": "/exercises/index.html",
@@ -96,10 +19,108 @@
     ]
   },
   {
-    "listing": "/exercises/variant_filtering/index.html",
+    "listing": "/slides/simulation/index.html",
     "items": [
-      "/exercises/variant_filtering/basic_filtering.html",
-      "/exercises/variant_filtering/depth_filtering.html"
+      "/slides/simulation/stdpopsim.html",
+      "/slides/simulation/coalescent.html",
+      "/slides/simulation/argintro.html"
+    ]
+  },
+  {
+    "listing": "/slides/recombination/index.html",
+    "items": []
+  },
+  {
+    "listing": "/slides/variant_calling/index.html",
+    "items": [
+      "/slides/variant_calling/dna_sequencing.html",
+      "/slides/variant_calling/read_mapping.html",
+      "/slides/variant_calling/variant_calling.html",
+      "/slides/variant_calling/reproducibility.html"
+    ]
+  },
+  {
+    "listing": "/slides/index.html",
+    "items": [
+      "/slides/pgip/index.html",
+      "/slides/foundations/index.html",
+      "/slides/variant_calling/index.html",
+      "/slides/variant_filtering/index.html",
+      "/slides/recombination/index.html",
+      "/slides/genetic_diversity/index.html",
+      "/slides/population_structure/index.html",
+      "/slides/selection/index.html",
+      "/slides/demography/index.html",
+      "/slides/simulation/index.html"
+    ]
+  },
+  {
+    "listing": "/slides/foundations/index.html",
+    "items": [
+      "/slides/foundations/data.html",
+      "/slides/foundations/alleles.html",
+      "/slides/foundations/linkage.html",
+      "/slides/foundations/wrightfisher.html",
+      "/slides/foundations/diversity.html",
+      "/slides/foundations/selection.html"
+    ]
+  },
+  {
+    "listing": "/slides/variant_filtering/index.html",
+    "items": [
+      "/slides/variant_filtering/variant_filtering.html",
+      "/slides/variant_filtering/depth_filtering.html"
+    ]
+  },
+  {
+    "listing": "/slides/genetic_diversity/index.html",
+    "items": [
+      "/slides/genetic_diversity/diversity.html"
+    ]
+  },
+  {
+    "listing": "/slides/population_structure/index.html",
+    "items": [
+      "/slides/population_structure/pca.html",
+      "/slides/population_structure/admixture.html"
+    ]
+  },
+  {
+    "listing": "/exercises/variant_calling/index.html",
+    "items": [
+      "/exercises/variant_calling/introduction.html",
+      "/exercises/variant_calling/data_qc.html",
+      "/exercises/variant_calling/read_mapping.html",
+      "/exercises/variant_calling/variant_calling_workflow.html"
+    ]
+  },
+  {
+    "listing": "/exercises/recombination_linkage/index.html",
+    "items": [
+      "/exercises/recombination_linkage/ld_decay.html"
+    ]
+  },
+  {
+    "listing": "/exercises/genetic_diversity/index.html",
+    "items": [
+      "/exercises/genetic_diversity/landscape.html"
+    ]
+  },
+  {
+    "listing": "/exercises/population_structure/index.html",
+    "items": [
+      "/exercises/population_structure/pca.html",
+      "/exercises/population_structure/admixture.html",
+      "/exercises/population_structure/dstats.html"
+    ]
+  },
+  {
+    "listing": "/exercises/simulation/index.html",
+    "items": [
+      "/exercises/simulation/howto.html",
+      "/exercises/simulation/stdpopsim_lab.html",
+      "/exercises/simulation/stdpopsim_lab_II.html",
+      "/exercises/simulation/simulation.html"
     ]
   }
 ]
