@@ -1,5 +1,7 @@
 ---
 title: Introduction to simulation with msprime
+description: >-
+  Introduction to simulation with msprime
 author: Per Unneberg
 format:
   nbis-course-html:
@@ -725,7 +727,3 @@ $F_{ST}$](https://alimanfoo.github.io/2015/09/21/estimating-fst.html):
 > very technical when you start reading the literature
 
 Amen.
-
-We will look into more comparisons to real Monkeyflower data in an
-upcoming exercise, but hopefully this has given you an idea of what
-simulations can be used for in an experiment!

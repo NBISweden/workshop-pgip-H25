@@ -1,0 +1,925 @@
+---
+title: Ancestral recombination graph inference
+subtitle: Inferring tree sequences for population genomics
+description: >-
+  Introduction to inference of ancestral recombination graphs in
+  population genomics.
+author:
+  - Per Unneberg
+format:
+  nbis-quarto-revealjs:
+    toc: false
+jupyter: python3
+---
+
+## What are Ancestral Recombination Graphs?
+
+:::{style="text-align: center;"}
+
+:::: {.three_column_grid}
+
+:::{}
+
+![](/slides/simulation/assets/images/darwin_I_think.webp){height="450"}
+
+:::
+
+:::{}
+
+![](/slides/simulation/assets/images/haeckel_tree.webp){height="450"}
+
+:::
+
+:::{}
+
+![](/slides/simulation/assets/images/halanych_2004.webp){height="370"}
+
+::: {.flushright .smallest}
+
+@halanych_NewViewAnimal_2004
+
+:::
+
+:::
+
+::::
+
+Trees are everywhere in biology...
+
+::: {.fragment}
+
+... an ARG (recombinant genealogy) is a generalisation of an
+evolutionary tree
+
+:::
+
+:::
+
+::: {.notes}
+
+Metazoa figure: Halanych (2004): The new view of animal phylogeny
+
+:::
+
+## The coalescent with recombination
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+#### No recombination
+
+![No recombination](/slides/simulation/assets/images/norecomb.svg){fig-align=center height=400px}\
+
+:::
+
+::: {.column width="50%"}
+
+#### With recombination
+
+![With recombination](/slides/simulation/assets/images/recomb.svg){fig-align=center height=400px}\
+
+:::
+
+::::
+
+To the left, an ARG without recombination. To the right, recombination
+splits lineage 1 going backwards in time, where $L_1$ takes the left
+path, and $R_1$ the right. Consequently, $L_1$ and $R_1$ have
+*different* MRCAs!
+
+## ARG visualization
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+```{python }
+#| label: python-draw-arg-and-save
+#| echo: false
+#| eval: true
+import tskit_arg_visualizer
+import treeviz
+ts = treeviz.tree_viz_example()
+d3arg = tskit_arg_visualizer.D3ARG.from_ts(ts)
+d3arg.draw(
+    width=440,
+    height=400,
+    y_axis_labels=False,
+    edge_type="ortho",
+    sample_order=[1, 0, 7, 2, 3, 6, 4, 5]
+)
+```
+
+:::
+
+::: {.column width="50%"}
+
+```{python }
+#| label: draw-ts
+#| echo: false
+#| eval: true
+css_string = (
+    "#tsviz "
+    # Hide internal node labels & symbols
+    ".node:not(.leaf) > .sym, .node:not(.leaf) > .lab {display: none}"
+    ".x-axis .lab {color: red;} .ticks .lab {font-size: 0;}"
+    ".y-axis .ticks .lab {font-size: 0;}"
+)
+ts = treeviz.tree_viz_example()
+d3arg = tskit_arg_visualizer.D3ARG.from_ts(ts)
+ts.draw_svg(
+    time_scale="log_time",
+    size=(1200, 300),
+    y_axis=True,
+    node_labels={},
+    style=css_string,
+    root_svg_attributes={'id': "tsviz"},
+)
+```
+
+:::{.flushright}
+
+[<https://github.com/kitchensjn/tskit_arg_visualizer>
+@wong_GeneralEfficientRepresentation_2024]{.smaller}
+
+:::
+
+:::
+
+::::
+
+## Why ARGs?
+
+:::{}
+
+Generalises an evolutionary "tree" to genome-wide inheritance
+
+#### Understanding
+
+- Describes the processes that generated genomic data
+- Helps to generate hypotheses
+
+#### Power
+
+- "True" genealogy represents total DNA history
+
+#### Size & Speed
+
+- Tree-like structures make algorithms fast
+- Can compress variant data: an "evolutionary encoding"
+
+#### Representation
+
+- Duality ARG - tree sequence along a genome, where a tree is defined
+  over a non-recombining interval
+
+::: {.flushright}
+
+*But still early days...*
+
+:::
+
+:::
+
+::: {.notes}
+
+From Yan's slides
+
+:::
+
+## Of genotype matrices and genealogical trees
+
+![](assets/images/ralph-2020-fig1.webp)
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+:::
+
+::: {.column width="50%"}
+
+::: {.flushright}
+
+*Efficiently Summarizing Relationships in Large Samples: A General
+Duality Between Statistics of Genealogies and Genomes.*
+@ralph_EfficientlySummarizingRelationships_2020, Fig. 1
+
+:::
+
+:::
+
+::::
+
+::: {.notes}
+
+Usually we summarize data in a table of genotypes (genotype matrix).
+The sequences are related to oneanother, a relationship that can be
+illustrated as a tree. By overlaying information on mutations on the
+tree, we can also regenerate the sequences, as shown here. Note also
+that the figure hints that a tree representation is a more
+**efficient** representation of the data, in addition to being more
+**accurate** and containing **more information** (demographic events,
+history, ...)
+
+:::
+
+## Trees capture biology
+
+:::: {style="display: grid; grid-template-columns: 300px 300px 300px 300px;
+grid-row-gap: 0px; grid-column-gap: 10px;"}
+
+:::{}
+
+*Neutral*
+
+```{python }
+#| label: msprime-trees-neutral
+#| echo: false
+#| eval: true
+#| fig-format: svg
+#| output: asis
+#| out-width: 200px
+import treeviz
+print(treeviz.tree_topology(model="neutral", svgid="neutral"))
+```
+
+:::
+
+:::{}
+
+*Expansion*
+
+```{python }
+#| label: msprime-trees-expansion
+#| echo: false
+#| eval: true
+#| fig-format: svg
+#| output: asis
+#| out-width: 100%
+import treeviz
+print(treeviz.tree_topology(model="expansion", svgid="expansion"))
+```
+
+:::
+
+:::{}
+
+*Bottleneck*
+
+```{python }
+#| label: msprime-trees-bottleneck
+#| echo: false
+#| eval: true
+#| fig-format: svg
+#| output: asis
+#| out-width: 100%
+import treeviz
+print(treeviz.tree_topology(model="bottleneck", svgid="bottleneck"))
+```
+
+:::
+
+:::{}
+
+*Selection*
+
+```{python }
+#| label: msprime-trees-selection
+#| echo: false
+#| eval: true
+#| fig-format: svg
+#| output: asis
+#| out-width: 100%
+import treeviz
+print(treeviz.tree_topology(model="selection", svgid="selection"))
+```
+
+:::
+
+::::
+
+::: {.notes}
+
+cf <https://tskit.dev/tutorials/viz.html>
+
+segue: problem is that sequences recombine leading to
+
+Segue: need to transition to ARGs somehow; trees are genealogies, but they change with recombination
+
+:::
+
+## msprime stores data as succinct tree sequences
+
+![Tree sequences [@baumdicker_EfficientAncestryMutation_2022, Fig. 2]](assets/images/baumdicker-2022-fig2.webp){width=700}
+
+## Tree sequences compress data and speedup analyses
+
+:::: {style="display: grid; grid-template-columns: 400px 140px 600px;
+220:grid-row-gap: 0px; grid-column-gap: 10px;"}
+
+:::{}
+
+- Compact storage (“domain specific compression”)
+- Fast, efficient analysis (a "succinct" structure)
+- Well tested, open source (active dev community)
+
+:::
+
+:::{.smallr}
+
+Data compression
+
+:::
+
+:::{}
+
+![](assets/images/tskit-data-compression.svg){width=80%}
+
+:::
+
+:::{}
+
+- Built-in functionality (well documented: <http://tskit.dev>)
+
+::::{.smallr}
+
+...but limited support for major genomic rearrangements (e.g.
+inversions, large indels): genomes should be (reasonably) aligned =>
+current primary focus = **population genetics**
+
+::::
+
+:::
+
+:::{.smallr}
+
+Speed
+
+:::
+
+:::{}
+
+![](assets/images/tskit-analysis-speed.svg){width=80%}
+
+:::
+
+:::{}
+:::
+
+:::{}
+:::
+
+:::{.smallest}
+
+::: {.flushright}
+
+Source: [What is a tree sequence? (https://tskit.dev/tutorials/what_is.html)](https://tskit.dev/tutorials/what_is.html)
+
+:::
+
+:::
+
+::::
+
+## tskit terminology: the basics
+
+```{python }
+#| label: basic-tree-file
+#| echo: false
+#| eval: true
+#| output: asis
+#| fig-format: svg
+import treeviz
+ts = treeviz.basics_tree()
+style = (
+    ".node > .lab {font-size: 150%}"
+    ".x-axis {font-size: 150%}"
+    ".y-axis {font-size: 150%}"
+)
+print(ts.draw_svg(y_axis=True, y_gridlines=True, time_scale="log_time",
+                  y_ticks=[0, 3, 10, 30, 100, 300, 800],
+                  size=(1200, 380), style=style))
+```
+
+:::{}
+
+- Multiple local trees exist along a genome of fixed length (by
+  convention measured in base pairs)
+- Genomes exist at specific times, and arerepresented by nodes (the
+  same node can persist across many local trees)
+- Some nodes are most recent common ancestors (MRCAs) of other nodes
+- Entities are zero-based: the rst node has id 0, the second id 1, ...
+
+:::
+
+::: {.flushright}
+
+Images from online tutorial "Terminology & concepts" <https://tskit.dev/tutorials/terminology_and_concepts.html>
+
+:::
+
+## tskit terminology: nodes and edges {.smallest}
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+```{python }
+#| label: tskit-nodes-and-edges
+#| echo: false
+#| eval: true
+#| output: asis
+#| fig-format: svg
+import treeviz
+ts = treeviz.basics_tree()
+style = (
+    ".node > .lab {font-size: 75%}"
+    ".x-axis {font-size: 75%}"
+    ".y-axis {font-size: 75%}"
+)
+print(ts.draw_svg(y_axis=True, y_gridlines=True, time_scale="log_time",
+                  y_ticks=[0, 3, 10, 30, 100, 300, 1000],
+                  size=(500, 200), style=style))
+```
+
+::: {.fragment}
+
+**Nodes (=genomes)**
+
+- exist at a specific [time]{.cbppink .heavy}
+- can be [flagged]{.cbpgreen .heavy} as "samples"
+- can belong to "[individuals]{.cbporange .heavy}" (e.g., 2 nodes per
+  individuals in humans) and, if useful, "[populations]{.cbptomato
+  .heavy}"
+
+::: {.small .dna}
+
+<!-- markdownlint-disable MD013 -->
+
+|                id | flags |         population |         individual | [time]{.cbppink-bg} | metadata |
+|------------------:|------:|-------------------:|-------------------:|--------------------:|---------:|
+|                 0 |     1 |                  0 |                  0 |          0.00000000 |          |
+|                 1 |     1 |                  0 | [0]{.cbporange-bg} |          0.00000000 |          |
+|                 2 |     1 |                  0 | [1]{.cbporange-bg} |          0.00000000 |          |
+|                 3 |     1 | [0]{.cbptomato-bg} | [1]{.cbporange-bg} |          0.00000000 |          |
+|                 4 |     1 | [0]{.cbptomato-bg} |                  2 |          0.00000000 |          |
+| [5]{.cbpgreen-bg} |     1 | [0]{.cbptomato-bg} |                  2 |          0.00000000 |          |
+| [6]{.cbpgreen-bg} |     0 |                  0 |                 -1 |         14.70054184 |          |
+|                 7 |     0 |                  0 |                 -1 |         40.95936939 |          |
+|                 8 |     0 |                  0 |                 -1 |         72.52965866 |          |
+|                 9 |     0 |                  0 |                 -1 |        297.22307150 |          |
+|                10 |     0 |                  0 |                 -1 |        340.15496436 |          |
+|                11 |     0 |                  0 |                 -1 |        605.35907657 |          |
+
+<!-- markdownlint-enable MD013 -->
+
+:::
+
+:::
+
+:::
+
+::: {.column width="50%"}
+
+::: {.fragment}
+
+**Edges**
+
+- Connect a [parent & child]{.cbppink .heavy}
+- Have a [left & right]{.cbpblue .heavy} genomic coordinate
+- Usually span multiple trees (e.g., edges connecting nodes 1+7 and
+  4+7)
+
+:::{.small .dna}
+
+<!-- markdownlint-disable MD013-->
+
+| id |             left |               right | [parent]{.cbppink-bg} | [child]{.cbppink-bg} | metadata |
+|---:|-----------------:|--------------------:|----------------------:|---------------------:|---------:|
+|  0 |                0 |                1000 |                     6 |                    2 |          |
+|  1 |                0 |                1000 |                     6 |                    5 |          |
+|  2 | [0]{.cbpblue-bg} | [1000]{.cbpblue-bg} |                     7 |                    1 |          |
+|  3 | [0]{.cbpblue-bg} | [1000]{.cbpblue-bg} |                     7 |                    4 |          |
+|  4 |                0 |                1000 |                     8 |                    3 |          |
+|  5 |                0 |                1000 |                     8 |                    6 |          |
+|  6 |              307 |                1000 |                     9 |                    0 |          |
+|  7 |              307 |                1000 |                     9 |                    7 |          |
+|  8 |                0 |                 307 |                    10 |                    0 |          |
+|  9 |                0 |                 567 |                    10 |                    8 |          |
+| 10 |              307 |                 567 |                    10 |                    9 |          |
+| 11 |                0 |                 307 |                    11 |                    7 |          |
+| 12 |              567 |                1000 |                    11 |                    8 |          |
+| 13 |              567 |                1000 |                    11 |                    9 |          |
+| 14 |                0 |                 307 |                    11 |                   10 |          |
+
+<!-- markdownlint-enable MD013 -->
+
+:::
+
+:::
+
+:::
+
+::::
+
+## tskit terminology: sites and mutations
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+```{python }
+#| label: tskit-sites-and-mutations-1
+#| echo: false
+#| eval: true
+#| output: asis
+#| fig-format: svg
+import treeviz
+ts = treeviz.treemut()
+style = (
+    ".node > .lab {font-size: 75%} "
+    ".x-axis {font-size: 75%} "
+    ".y-axis {font-size: 75%} "
+    ".mut .sym {stroke: none} "
+    ".mut .lab {fill: none} "
+    ".site  {stroke-width: 1px} "
+)
+css_string = "#tsmut1 {" + style + "}"
+
+print(ts.draw_svg(y_axis=True, y_gridlines=True, time_scale="log_time",
+                  y_ticks=[0, 3, 10, 30, 100, 300, 1000],
+                  size=(500, 200), style=css_string,
+                  root_svg_attributes={'id': 'tsmut1'}))
+
+```
+
+:::
+
+::: {.column width="50%"}
+
+This is how we can encode genetic variation. Most genomic positions do
+not vary between genomes: usually we don’t bother tracking these.
+
+:::
+
+::::
+
+## tskit terminology: sites and mutations
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+```{python }
+#| label: tskit-sites-and-mutations-2
+#| echo: false
+#| eval: true
+#| output: asis
+#| fig-format: svg
+import treeviz
+ts = treeviz.treemut()
+style = (
+    ".node > .lab {font-size: 75%} "
+    ".x-axis {font-size: 75%} "
+    ".y-axis {font-size: 75%} "
+    ".mut .sym {stroke: none} "
+    ".mut .lab {fill: none} "
+    ".site  {stroke-width: 1px} "
+    ".site.s0 .sym {stroke: #D55E00; stroke-width: 3px} "
+)
+css_string = "#tsmut2 {" + style + "}"
+print(ts.draw_svg(y_axis=True, y_gridlines=True, time_scale="log_time",
+                  y_ticks=[0, 3, 10, 30, 100, 300, 1000],
+                  size=(500, 200), style=css_string,
+                  root_svg_attributes={'id': 'tsmut2'}))
+```
+
+:::{}
+
+We can create a [site]{.cbptomato .heavy} at a given genomic
+[position]{.cbpgreen .heavy} with a fixed [ancestral state]{.cbpblue
+.heavy}.
+
+:::{.dna .smallr}
+
+| id |           position |  ancestral_state | metadata |
+|---:|-------------------:|-----------------:|---------:|
+|  0 | [52]{.cbpgreen-bg} | [C]{.cbpblue-bg} |          |
+|  1 |                200 |                A |          |
+|  2 |                335 |                A |          |
+|  3 |                354 |                A |          |
+|  4 |                474 |                G |          |
+|  5 |                523 |                A |          |
+|  6 |                774 |                C |          |
+|  7 |                796 |                C |          |
+|  8 |                957 |                A |          |
+
+:::
+
+:::
+
+:::
+
+::: {.column width="50%"}
+
+This is how we can encode genetic variation. Most genomic positions do
+not vary between genomes: usually we don’t bother tracking these.
+
+:::
+
+::::
+
+## tskit terminology: sites and mutations
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+```{python }
+#| label: tskit-sites-and-mutations-3
+#| echo: false
+#| eval: true
+#| output: asis
+#| fig-format: svg
+import treeviz
+style = (
+    ".node > .lab {font-size: 75%} "
+    ".x-axis {font-size: 75%} "
+    ".y-axis {font-size: 75%} "
+    ".site  {stroke-width: 1px} "
+    ".site.s0 .sym {stroke: #D55E00; stroke-width: 3px} "
+)
+css_string = "#tsmut3 {" + style + "}"
+ts = treeviz.treemut()
+print(ts.draw_svg(y_axis=True, y_gridlines=True, time_scale="log_time",
+                  y_ticks=[0, 3, 10, 30, 100, 300, 1000],
+                  size=(500, 200), style=css_string,
+                  root_svg_attributes={'id': 'tsmut3'}))
+```
+
+:::{}
+
+We can create a [site]{.cbptomato .heavy} at a given genomic
+[position]{.cbpgreen .heavy} with a fixed [ancestral state]{.cbpblue
+.heavy}.
+
+:::{.dna .smallr}
+
+| id |           position |  ancestral_state | metadata |
+|---:|-------------------:|-----------------:|---------:|
+|  0 | [52]{.cbpgreen-bg} | [C]{.cbpblue-bg} |          |
+|  1 |                200 |                A |          |
+|  2 |                335 |                A |          |
+|  3 |                354 |                A |          |
+|  4 |                474 |                G |          |
+|  5 |                523 |                A |          |
+|  6 |                774 |                C |          |
+|  7 |                796 |                C |          |
+|  8 |                957 |                A |          |
+
+:::
+
+:::
+
+:::
+
+::: {.column width="50%"}
+
+This is how we can encode genetic variation. Most genomic positions do
+not vary between genomes: usually we don’t bother tracking these.
+
+:::{}
+
+Normally, a site is created in order to place one or [more]{.cbporange
+.heavy} [mutations]{.cbptomato .heavy} at that site
+
+::: {.dna .smallr}
+
+| id |               site | node |         time | derived_state | parent | metadata |
+|---:|-------------------:|-----:|-------------:|--------------:|-------:|---------:|
+|  0 |                  0 |    8 | 247.85988972 |             T |     -1 |          |
+|  1 |                  1 |    0 | 169.80687857 |             C |     -1 |          |
+|  2 |                  2 |    3 |  31.84262397 |             C |     -1 |          |
+|  3 | [3]{.cbporange-bg} |    9 | 326.26095349 |             C |     -1 |          |
+|  4 | [3]{.cbporange-bg} |    7 |  71.04212649 |             T |      3 |          |
+|  5 |                  4 |    3 |  42.72352948 |             C |     -1 |          |
+|  6 |                  5 |    7 |  55.44045835 |             T |     -1 |          |
+|  7 |                  6 |    0 | 259.82567754 |             T |     -1 |          |
+|  8 |                  7 |    8 | 169.87040769 |             G |     -1 |          |
+|  9 |                  8 |    0 |  42.47396523 |             C |     -1 |          |
+
+:::
+
+:::
+
+:::
+
+::::
+
+## Tree sequence inference methods
+
+[**tsinfer/tsdate**]{.fragment fragment-index=2 .absolute top=100 left=170 .citebox}
+[**relate**]{.fragment fragment-index=2 .absolute top=150 left=250 .citebox}
+[**ARGweaver**]{.fragment fragment-index=1 .absolute top=480 left=500 .citebox}
+[**SINGER**]{.fragment fragment-index=3 .absolute top=300 left=470 .citebox}
+[**ARGNeedle**]{.fragment fragment-index=4 .absolute top=200 right=100 .citebox}
+[**Threads**]{.fragment fragment-index=4 .absolute top=300 right=100 .citebox}
+
+[Analysis of tree sequences with]{.absolute top=470 right=40 .fragment
+fragment-index=5}
+![](https://github.com/tskit-dev/administrative/blob/main/logos/pngs/tskit/Tskit_logo.png?raw=true){height=100px
+.absolute top=500 right=100 .fragment fragment-index=5}
+
+:::{}
+
+```{python }
+#| label: ts-inference-axes
+#| echo: false
+#| eval: true
+#| output: asis
+#| fig-format: svg
+import drawsvg as draw
+d = draw.Drawing(700, 500, origin=(0, 0))
+
+arrow = draw.Marker(-0.1, -0.51, 0.9, 0.5, scale=6, orient='auto')
+arrow.append(draw.Lines(-0.1, 0.5, -0.1, -0.5, 0.9, 0, fill='black', close=True))
+p = draw.Path(stroke_width=2, fill="black", stroke="black", marker_end=arrow)
+d.append(draw.Line(150, 500, 150, 15,
+        stroke='black', stroke_width=2, fill='none',
+        marker_end=arrow))
+d.append(draw.Line(100, 450, 635, 450,
+        stroke='black', stroke_width=2, fill='none',
+        marker_end=arrow))
+d.append(draw.Text('Scalability', 24, 0, 20, text_anchor='start', line_height=1))
+d.append(draw.Text('Accuracy', 24, 540, 490, text_anchor='start', line_height=1))
+
+d
+```
+
+:::
+
+<!--
+
+:::{.absolute top=600 left=100 style="font-size: 0.7em;" }
+
+[^1^: @rasmussen_GenomewideInferenceAncestral_2014;]{.fragment fragment-index=1}
+[^2^: @kelleher_InferringWholegenomeHistories_2019;]{.fragment fragment-index=2}
+[^3^: @speidel_MethodGenomewideGenealogy_2019;]{.fragment fragment-index=2}
+[^4^: @deng_RobustAccurateBayesian_2024;]{.fragment fragment-index=3}
+
+:::
+
+-->
+
+:::{.absolute top=650 right=0 style="font-size:0.8em;"}
+
+Adapted from slide by Yun Deng.
+
+:::
+
+::: {.notes}
+
+From Felsenstein equation to inference? (too detailed; Simon's version
+probably simpler)
+
+Felsenstein: knowing P(G|D) provides information of entire
+evolutionary history
+
+Rasmus talk: advent of NGS rendered estimation of P(G|D) difficult so
+summary stats / SFS-based analyses preferred.
+
+Pros (Myers' slides, Harris' comments): summary stats
+
+Seminal paper: Rasmussen (2014) showed that it actually *is* possible
+to infer ARGs -> rapid development of new methods
+
+:::
+
+## Relate
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+:::{layout-ncol=2}
+
+![Leo Speidel](https://leospeidel.github.io/images/teampic/leo_riken.JPG){width=50px fig-align=left}
+
+![Haplotypes and
+trees](https://myersgroup.github.io/relate/figures/treeplot.png){width=70%}\
+
+:::
+
+![Relate method](https://media.springernature.com/full/springer-static/image/art%3A10.1038%2Fs41588-019-0484-x/MediaObjects/41588_2019_484_Fig1_HTML.png?as=webp){width=70%}\
+
+- fast, but limited sample sizes (1000s?)
+- good support for ancient DNA
+
+:::{.flushright}
+
+[@speidel_MethodGenomewideGenealogy_2019]
+
+:::
+
+:::
+
+::: {.column width="50%"}
+
+![Speidel mice](/slides/simulation/assets/images/speidel_mice.webp)\
+
+:::{.flushright}
+
+[@speidel_GenealogyEstimationThousands_2019]
+
+:::
+
+:::
+
+::::
+
+## tsinfer - tree sequence inference
+
+:::: {.columns}
+
+::: {.column width="30%"}
+
+- fast
+- scales! (millions of samples!)
+- introduces tree sequence format
+- only genealogies, no branch lengths (but see tsdate [@wohns_UnifiedGenealogyModern_2022]
+
+:::
+
+::: {.column width="70%"}
+
+![Tsinfer
+GNNs](https://media.springernature.com/full/springer-static/image/art%3A10.1038%2Fs41588-019-0483-y/MediaObjects/41588_2019_483_Fig4_HTML.png?as=webp){width=70%
+fig-align=center}\
+
+::: {.flushright}
+
+[@kelleher_InferringWholegenomeHistories_2019]
+
+:::
+
+:::
+
+::::
+
+## GARG workshop Drøbak research station Aug-24 {.center}
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+![](/slides/simulation/assets/images/gargcontent.webp){fig-align=center}
+
+```{=html}
+<p style="text-align:center; font-size: 2em; line-height: 0.3;">.</p>
+<p style="text-align:center; font-size: 2em; line-height: 0.3;">.</p>
+<p style="text-align:center; font-size: 2em; line-height: 0.3;">.</p>
+```
+
+:::
+
+::: {.column width="50%"}
+
+![](/slides/simulation/assets/images/PXL_20240820_100540036.webp){fig-align=center}
+![](/slides/simulation/assets/images/jose.webp){.absolute top=100 right=50 height="100"}
+
+:::
+
+::::
+
+::: {.notes}
+
+Funded by EBP-NOR (Earth Biogenome Project Norway)
+
+:::
+
+## Mapping workflow Monkeyflower
+
+:::{}
+
+![Rulegraph, all](/slides/simulation/assets/images/rulegraph.svg){height=600px fig-align=center}\
+
+:::
+
+## Tree sequence inference in Monkeyflower
+
+::: {}
+
+![Rulegraph, tsinfer](/slides/simulation/assets/images/tsinfer.svg){height=600px fig-align=center}\
+
+:::
+
+## tseda - tree sequence exploratory data analysis
+
+Demonstrate tseda
+
+## Bibliography {.unnumbered .unlisted .smaller}
+
+::: { #refs }
+:::

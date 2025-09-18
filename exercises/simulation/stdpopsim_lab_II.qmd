@@ -1,5 +1,7 @@
 ---
 title: Simulating selection with stdpopsim
+description: >-
+  Simulations of more complex scenarios with stdpopsim
 author: Per Unneberg
 format:
   nbis-course-html:
@@ -22,7 +24,6 @@ jupyter:
     language: python
     name: python3
 ---
-
 
 ## Setup
 
@@ -516,55 +517,71 @@ window_size = windows[1] - windows[0]
 
 Thereafter, we pick a focal individual, arbitrarily choosing `id=3`:
 
-```{python}
-import tsbrowse
-from tsbrowse import preprocess as preprocess_
-from tseda import datastore
-from tseda.datastore import preprocess
-import tszip
-
-tszip.compress(ts, "data/chimp_selection.trees.tsz")
-preprocess_.preprocess("data/chimp_selection.trees.tsz",
-"data/chimp_selection.trees.tsb")
-tsm = tsbrowse.model.TSModel("data/chimp_selection.trees.tsb")
-
-individuals_table, sample_sets_table = preprocess(tsm)
-ds = datastore.DataStore(
-        tsm=tsm,
-        individuals_table=individuals_table,
-        sample_sets_table=sample_sets_table,
-    )
-print(ds)
-```
-
-```{python}
-from tseda.vpages.ignn import VBar
-vb = VBar(datastore=ds)
-```
-
-```{python}
-vb
-```
-
-```{python}
-from tseda.vpages.ignn import GNNHaplotype
-gnn = GNNHaplotype(datastore=ds)
-gnn.individual_id = 3
-```
-
 Individual 3 has two chromosomes encoded by nodes 6 and 7. The
 `workshop.haplotype_gnn` is a function that traverses the tree
 sequence along the genome and calculates the GNN proportions for each
 tree, binning the results in our pre-defined windows, for both
 chromosomes, returning the result as a Pandas DataFrame.
 
-The `haplotype` index is either `0` or `1`, indicating the two
-haplotypes. We plot the haplotypes:
+```{python}
+focal_ind = 3
+df = workshop.haplotype_gnn(ts, focal_ind, windows, sample_sets[0:3])
+df.columns = [popmd[i]["name"] for i in range(3)]
+df.head() # Print the first lines of the table
+```
+
+The `haplotype` index is either `0` or `1`, indicating the two haplotypes. We plot the haplotypes:
 
 ```{python}
-gnn
+fig, axes = plt.subplots(2, 1, figsize=(15, 2), sharex=True)
+
+for hap, index in zip([0, 1], [211, 212]):
+    ax = plt.subplot(index)
+    data = df[df.index.get_level_values("haplotype") == hap]
+    bottom = np.zeros(data.shape[0])
+    for i in range(len(data.columns)):
+        p = ax.bar(data.index.get_level_values("start"),
+                   data[popmd[i]["name"]], width=window_size,
+                   label=popmd[i]["name"], bottom=bottom,
+                   color=popmd[i]["mpl_color"])
+        bottom += data[popmd[i]["name"]]
+    ax2 = ax.twinx()
+    ax2.set_ylabel(f"Hap {hap}")
+    plt.suptitle(
+        f"GNN plot for focal individual {focal_ind},
+        {ts.population(ts.individuals_population[focal_ind]).metadata['name']}
+        population")
+plt.xlabel("Genome position (bp)")
+plt.show()
 ```
 
 <dl class="exercise"><dt>Exercise 3.</dt>
 <dd>Plot some haplotype GNNs from other individuals and populations.</a>.</dd>
 </dl>
+
+```{python}
+#| scrolled: true
+# Change the focal individual and rerun
+focal_ind = 3
+df = workshop.haplotype_gnn(ts, focal_ind, windows, sample_sets[0:3])
+df.columns = [popmd[i]["name"] for i in range(3)]
+
+fig, axes = plt.subplots(2, 1, figsize=(15, 2), sharex=True)
+
+for hap, index in zip([0, 1], [211, 212]):
+    ax = plt.subplot(index)
+    data = df[df.index.get_level_values("haplotype") == hap]
+    bottom = np.zeros(data.shape[0])
+    for i in range(len(data.columns)):
+        p = ax.bar(data.index.get_level_values("start"),
+                   data[popmd[i]["name"]], width=window_size,
+                   label=popmd[i]["name"], bottom=bottom,
+                   color=popmd[i]["mpl_color"])
+        bottom += data[popmd[i]["name"]]
+    ax2 = ax.twinx()
+    ax2.set_ylabel(f"Hap {hap}")
+plt.suptitle(f"GNN plot for focal individual {focal_ind},
+{ts.population(ts.individuals_population[focal_ind]).metadata['name']} population")
+plt.xlabel("Genome position (bp)")
+plt.show()
+```

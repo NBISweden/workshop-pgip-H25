@@ -1,5 +1,7 @@
 ---
 title: HOWTO
+description: >-
+  Start here: introduction to notebook setup.
 format:
   nbis-course-html:
     number-sections: false

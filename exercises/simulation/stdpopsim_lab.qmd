@@ -1,6 +1,8 @@
 ---
 title: Introduction to stdpopsim
 author: Per Unneberg
+description: >-
+  Introduction to simulations with stdpopsim
 format:
   nbis-course-html:
     number-sections: false

@@ -13,13 +13,23 @@ exercise:
   venv: e-simulation
   data: monkeyflower/simulation/
   wget_opts: \-\-cut-dirs=5
+listing:
+  id: sim-listing
+  type: table
+  sort: false
+  fields: [title, description]
+  contents:
+    - howto.qmd
+    - stdpopsim_lab.qmd
+    - stdpopsim_lab_II.qmd
+    - simulation.qmd
 ---
 
 ## About
 
 Collection of exercises related to simulation.
 
-## Exercises
+## Listing
 
-[HOWTO](howto.qmd)
-: Start here: introduction to notebook setup.
+:::{#sim-listing}
+:::
