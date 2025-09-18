@@ -1,5 +1,21 @@
 /*-- scss:rules --*/
 
+// four-color viridis
+$viridis1: #440154FF;
+$viridis2: #31688EFF;
+$viridis3: #35B779FF;
+$viridis4: #FDE725FF;
+
+// Color-blind palette
+$cbpgray: #999999;
+$cbporange: #E69F00;
+$cbpblue: #56B4E9;
+$cbpgreen: #009E73;
+$cbpyellow: #F0E442;
+$cbpdarkblue: #0072B2;
+$cbptomato: #D55E00;
+$cbppink: #CC79A7;
+
 .circular-image img {
   height: 150px;
   width: 150px;
@@ -56,4 +72,126 @@
     grid-row-gap: 0px;
     grid-column-gap: 30px;
     margin-top: 30px;
+}
+
+.lime {
+    color: $lime;
+}
+.lime25 {
+    color: $lime25;
+}
+.lime50 {
+    color: $lime50;
+}
+.lime75 {
+    color: $lime75;
+}
+.teal {
+    color: $teal;
+}
+.teal25 {
+    color: $teal25;
+}
+.teal50 {
+    color: $teal50;
+}
+.teal75 {
+    color: $teal75;
+}
+.aqua {
+    color: $aqua;
+}
+.aqua25 {
+    color: $aqua25;
+}
+.aqua50 {
+    color: $aqua50;
+}
+.aqua75 {
+    color: $aqua75;
+}
+.grape {
+    color: $grape;
+}
+.grape25 {
+    color: $grape25;
+}
+.grape50 {
+    color: $grape50;
+}
+.grape75 {
+    color: $grape75;
+}
+.lightgray {
+    color: $lightgray;
+}
+.mediumgray {
+    color: $mediumgray;
+}
+.darkgray {
+    color: $darkgray;
+}
+.black {
+    color: $black;
+}
+.viridis1 {
+    color: $viridis1;
+}
+.viridis2 {
+    color: $viridis2;
+}
+.viridis3 {
+    color: $viridis3;
+}
+.viridis4 {
+    color: $viridis4;
+}
+.cbpgray {
+    color: $cbpgray;
+}
+.cbporange {
+    color: $cbporange;
+}
+.cbpblue {
+    color: $cbpblue;
+}
+.cbpgreen {
+    color: $cbpgreen;
+}
+.cbpyellow {
+    color: $cbpyellow;
+}
+.cbpdarkblue {
+    color: $cbpdarkblue;
+}
+.cbptomato {
+    color: $cbptomato;
+}
+.cbppink {
+    color: $cbppink;
+}
+
+.cbpgray-bg {
+    background-color: $cbpgray;
+}
+.cbporange-bg {
+    background-color: $cbporange;
+}
+.cbpblue-bg {
+    background-color: $cbpblue;
+}
+.cbpgreen-bg {
+    background-color: $cbpgreen;
+}
+.cbpyellow-bg {
+    background-color: $cbpyellow;
+}
+.cbpdarkblue-bg {
+    background-color: $cbpdarkblue;
+}
+.cbptomato-bg {
+    background-color: $cbptomato;
+}
+.cbppink-bg {
+    background-color: $cbppink;
 }
